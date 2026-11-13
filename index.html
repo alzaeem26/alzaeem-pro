@@ -1,0 +1,1774 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>الزعيم برو | إدارة الميزانية والديون ومواعيد التحصيل</title>
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    * { font-family: 'Cairo', system-ui, -apple-system, sans-serif; }
+    body { background-color: #f8fafc; color: #0f172a; }
+    .tab-btn.active {
+      background-color: #0f766e;
+      color: #ffffff;
+      box-shadow: 0 4px 12px -2px rgba(15, 118, 110, 0.28);
+    }
+    .glass-card {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04);
+    }
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateY(12px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .animate-slide-up { animation: slideUp 0.2s ease-out; }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col">
+
+  <!-- Top Header -->
+  <header class="bg-white border-b border-slate-200 sticky top-0 z-30">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-3 flex flex-wrap items-center justify-between gap-3">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-xl bg-teal-700 text-white flex items-center justify-center shadow-sm">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+          </svg>
+        </div>
+        <div>
+          <h1 class="text-lg sm:text-xl font-extrabold text-slate-900 leading-tight">الزعيم برو</h1>
+          <p class="text-xs text-slate-500">إدارة الميزانية، الدخل والمصروف، الديون ومواعيد التحصيل</p>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-2 flex-wrap">
+        <select id="currencySelect" aria-label="العملة الافتراضية" class="text-sm bg-slate-100 border border-slate-200 rounded-lg px-2.5 py-2 font-semibold text-slate-700 focus:outline-none focus:ring-2 focus:ring-teal-600"></select>
+
+        <button id="btnManageSettings" type="button" onclick="openSettingsModal()" class="text-xs sm:text-sm bg-teal-50 hover:bg-teal-100 text-teal-800 font-bold px-3 py-2 rounded-lg transition flex items-center gap-1.5" title="إدارة العملات والتصنيفات الجاهزة">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"/></svg>
+          <span>العملات والتصنيفات</span>
+        </button>
+
+        <button id="btnExportJson" type="button" class="text-xs sm:text-sm bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold px-3 py-2 rounded-lg transition flex items-center gap-1.5" title="تصدير نسخة احتياطية">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+          <span class="hidden sm:inline">نسخة احتياطية</span>
+        </button>
+
+        <label class="text-xs sm:text-sm bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold px-3 py-2 rounded-lg transition cursor-pointer flex items-center gap-1.5" title="استيراد نسخة احتياطية">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/></svg>
+          <span class="hidden sm:inline">استيراد</span>
+          <input id="inputImportJson" type="file" accept=".json" class="hidden" />
+        </label>
+
+        <button id="btnResetData" type="button" class="text-xs sm:text-sm bg-rose-50 hover:bg-rose-100 text-rose-700 font-semibold px-3 py-2 rounded-lg transition" title="إعادة ضبط البيانات">
+          تصفير
+        </button>
+      </div>
+    </div>
+
+    <!-- Navigation Tabs -->
+    <nav class="max-w-7xl mx-auto px-4 sm:px-6 pb-3 flex items-center gap-2 overflow-x-auto no-scrollbar" aria-label="التنقل الرئيسي">
+      <button type="button" data-tab="dashboard" class="tab-btn active whitespace-nowrap px-4 py-2 rounded-xl text-sm font-bold transition flex items-center gap-2">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+        لوحة التحكم
+      </button>
+      <button type="button" data-tab="transactions" class="tab-btn whitespace-nowrap px-4 py-2 rounded-xl text-sm font-bold text-slate-600 hover:bg-slate-100 transition flex items-center gap-2">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"/></svg>
+        المدخول والمصروف
+      </button>
+      <button type="button" data-tab="budget" class="tab-btn whitespace-nowrap px-4 py-2 rounded-xl text-sm font-bold text-slate-600 hover:bg-slate-100 transition flex items-center gap-2">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M11 3.055A9.001 9.001 0 1020.945 13H11V3.055z"/><path stroke-linecap="round" stroke-linejoin="round" d="M20.488 9H15V3.512A9.025 9.025 0 0120.488 9z"/></svg>
+        الميزانية
+      </button>
+      <button type="button" data-tab="debts" class="tab-btn whitespace-nowrap px-4 py-2 rounded-xl text-sm font-bold text-slate-600 hover:bg-slate-100 transition flex items-center gap-2">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
+        تحصيل الديون
+        <span id="navDebtBadge" class="hidden bg-amber-100 text-amber-800 text-xs px-1.5 py-0.5 rounded-full">0</span>
+      </button>
+      <button type="button" data-tab="schedule" class="tab-btn whitespace-nowrap px-4 py-2 rounded-xl text-sm font-bold text-slate-600 hover:bg-slate-100 transition flex items-center gap-2">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+        مواعيد القبض والتحصيل
+        <span id="navScheduleBadge" class="hidden bg-rose-100 text-rose-700 text-xs px-1.5 py-0.5 rounded-full">0</span>
+      </button>
+    </nav>
+  </header>
+
+  <!-- Main Content -->
+  <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 py-6 space-y-6">
+
+    <!-- ==================== TAB 1: DASHBOARD ==================== -->
+    <section id="view-dashboard" class="tab-view space-y-6">
+      <div class="flex flex-wrap items-center justify-between gap-3">
+        <div>
+          <h2 class="text-xl font-extrabold text-slate-900">الملخص المالي العام</h2>
+          <p class="text-sm text-slate-500" id="dashboardDateLabel"></p>
+        </div>
+        <div class="flex flex-wrap items-center gap-2">
+          <button type="button" onclick="openTxModal('income')" class="bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-bold px-4 py-2.5 rounded-xl shadow-sm transition flex items-center gap-1.5">
+            <span>+</span> مدخول جديد
+          </button>
+          <button type="button" onclick="openTxModal('expense')" class="bg-rose-600 hover:bg-rose-700 text-white text-sm font-bold px-4 py-2.5 rounded-xl shadow-sm transition flex items-center gap-1.5">
+            <span>−</span> مصروف جديد
+          </button>
+          <button type="button" onclick="openDebtModal()" class="bg-amber-600 hover:bg-amber-700 text-white text-sm font-bold px-4 py-2.5 rounded-xl shadow-sm transition flex items-center gap-1.5">
+            <span>+</span> دين للتحصيل
+          </button>
+          <button type="button" onclick="openScheduleModal()" class="bg-teal-700 hover:bg-teal-800 text-white text-sm font-bold px-4 py-2.5 rounded-xl shadow-sm transition flex items-center gap-1.5">
+            <span>+</span> موعد قبض
+          </button>
+        </div>
+      </div>
+
+      <!-- KPI Cards -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div class="glass-card rounded-2xl p-5">
+          <div class="flex items-center justify-between mb-2">
+            <span class="text-xs font-bold text-slate-500">الرصيد الصافي الحالي</span>
+            <span class="w-8 h-8 rounded-lg bg-teal-50 text-teal-700 flex items-center justify-center font-bold">Σ</span>
+          </div>
+          <p id="kpiBalance" class="text-xl sm:text-2xl font-extrabold text-slate-900 leading-snug">0</p>
+          <p id="kpiBudgetStatus" class="text-xs text-slate-500 mt-1"></p>
+        </div>
+
+        <div class="glass-card rounded-2xl p-5">
+          <div class="flex items-center justify-between mb-2">
+            <span class="text-xs font-bold text-slate-500">إجمالي المدخول</span>
+            <span class="w-8 h-8 rounded-lg bg-emerald-50 text-emerald-700 flex items-center justify-center font-bold">↑</span>
+          </div>
+          <p id="kpiIncome" class="text-xl sm:text-2xl font-extrabold text-emerald-600 leading-snug">0</p>
+          <p id="kpiIncomeCount" class="text-xs text-slate-500 mt-1"></p>
+        </div>
+
+        <div class="glass-card rounded-2xl p-5">
+          <div class="flex items-center justify-between mb-2">
+            <span class="text-xs font-bold text-slate-500">إجمالي المصروف</span>
+            <span class="w-8 h-8 rounded-lg bg-rose-50 text-rose-700 flex items-center justify-center font-bold">↓</span>
+          </div>
+          <p id="kpiExpense" class="text-xl sm:text-2xl font-extrabold text-rose-600 leading-snug">0</p>
+          <p id="kpiExpenseCount" class="text-xs text-slate-500 mt-1"></p>
+        </div>
+
+        <div class="glass-card rounded-2xl p-5">
+          <div class="flex items-center justify-between mb-2">
+            <span class="text-xs font-bold text-slate-500">ديون متبقية للتحصيل</span>
+            <span class="w-8 h-8 rounded-lg bg-amber-50 text-amber-700 flex items-center justify-center font-bold">⏳</span>
+          </div>
+          <p id="kpiDebtsRemaining" class="text-xl sm:text-2xl font-extrabold text-amber-600 leading-snug">0</p>
+          <p id="kpiSchedulesAlert" class="text-xs text-slate-500 mt-1"></p>
+        </div>
+      </div>
+
+      <!-- Charts Row -->
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+        <div class="glass-card rounded-2xl p-5 lg:col-span-2">
+          <h3 class="text-base font-bold text-slate-900 mb-3">التدفق المالي (المدخول مقابل المصروف)</h3>
+          <div class="relative h-72">
+            <canvas id="cashflowChart"></canvas>
+          </div>
+        </div>
+        <div class="glass-card rounded-2xl p-5">
+          <h3 class="text-base font-bold text-slate-900 mb-3">توزيع المصاريف حسب الفئة</h3>
+          <div class="relative h-72">
+            <canvas id="expensePieChart"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <!-- Upcoming Collections & Recent Transactions -->
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+        <div class="glass-card rounded-2xl p-5">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="text-base font-bold text-slate-900">مواعيد القبض والتحصيل القادمة والمتأخرة</h3>
+            <button type="button" onclick="switchTab('schedule')" class="text-xs font-bold text-teal-700 hover:underline">عرض الكل</button>
+          </div>
+          <div id="dashboardUpcomingSchedules" class="space-y-3"></div>
+        </div>
+
+        <div class="glass-card rounded-2xl p-5">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="text-base font-bold text-slate-900">أحدث الحركات المالية</h3>
+            <button type="button" onclick="switchTab('transactions')" class="text-xs font-bold text-teal-700 hover:underline">عرض السجل</button>
+          </div>
+          <div id="dashboardRecentTx" class="space-y-2.5"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== TAB 2: TRANSACTIONS ==================== -->
+    <section id="view-transactions" class="tab-view hidden space-y-5">
+      <div class="flex flex-wrap items-center justify-between gap-3">
+        <div>
+          <h2 class="text-xl font-extrabold text-slate-900">سجل المدخول والمصروف</h2>
+          <p class="text-sm text-slate-500">تتبع جميع عمليات القبض والصرف بالتفاصيل الكاملة مع الفلترة والبحث</p>
+        </div>
+        <div class="flex items-center gap-2">
+          <button type="button" onclick="openTxModal('income')" class="bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-bold px-4 py-2.5 rounded-xl transition">+ مدخول</button>
+          <button type="button" onclick="openTxModal('expense')" class="bg-rose-600 hover:bg-rose-700 text-white text-sm font-bold px-4 py-2.5 rounded-xl transition">− مصروف</button>
+          <button type="button" id="btnExportCsv" class="bg-slate-100 hover:bg-slate-200 text-slate-700 text-sm font-bold px-3.5 py-2.5 rounded-xl transition">تصدير CSV</button>
+        </div>
+      </div>
+
+      <!-- Filters -->
+      <div class="glass-card rounded-2xl p-4 grid grid-cols-1 sm:grid-cols-5 gap-3">
+        <input id="txSearch" type="text" placeholder="ابحث بالوصف أو التفاصيل..." class="bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-teal-600" />
+        <select id="txFilterType" class="bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-teal-600">
+          <option value="all">جميع الحركات</option>
+          <option value="income">المدخول فقط</option>
+          <option value="expense">المصروف فقط</option>
+        </select>
+        <select id="txFilterCategory" class="bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-teal-600">
+          <option value="all">جميع التصنيفات</option>
+        </select>
+        <select id="txFilterCurrency" class="bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-teal-600">
+          <option value="all">جميع العملات</option>
+        </select>
+        <input id="txFilterMonth" type="month" class="bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-teal-600" />
+      </div>
+
+      <!-- Transactions Table -->
+      <div class="glass-card rounded-2xl overflow-hidden">
+        <div class="overflow-x-auto">
+          <table class="w-full text-sm text-right">
+            <thead class="bg-slate-50 border-b border-slate-200 text-slate-600 font-bold">
+              <tr>
+                <th class="px-4 py-3">التاريخ</th>
+                <th class="px-4 py-3">النوع</th>
+                <th class="px-4 py-3">التصنيف</th>
+                <th class="px-4 py-3">الوصف والتفاصيل</th>
+                <th class="px-4 py-3">طريقة الدفع</th>
+                <th class="px-4 py-3">المبلغ</th>
+                <th class="px-4 py-3 text-center">إجراء</th>
+              </tr>
+            </thead>
+            <tbody id="txTableBody" class="divide-y divide-slate-100"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== TAB 3: BUDGET ==================== -->
+    <section id="view-budget" class="tab-view hidden space-y-5">
+      <div class="flex flex-wrap items-center justify-between gap-3">
+        <div>
+          <h2 class="text-xl font-extrabold text-slate-900">تخطيط الميزانية الشهرية</h2>
+          <p class="text-sm text-slate-500">راقب سقف الإنفاق لكل تصنيف مقارنة بالمصروف الفعلي للشهر المحدد</p>
+        </div>
+        <div class="flex items-center gap-2">
+          <input id="budgetMonthPicker" type="month" class="bg-white border border-slate-200 rounded-xl px-3.5 py-2 text-sm font-bold text-slate-700 focus:outline-none focus:ring-2 focus:ring-teal-600" />
+          <button type="button" onclick="openBudgetModal()" class="bg-teal-700 hover:bg-teal-800 text-white text-sm font-bold px-4 py-2.5 rounded-xl transition">+ فئة ميزانية</button>
+        </div>
+      </div>
+
+      <!-- Budget Summary -->
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <div class="glass-card rounded-2xl p-5">
+          <span class="text-xs font-bold text-slate-500">إجمالي الميزانية المخططة</span>
+          <p id="budgetTotalLimit" class="text-2xl font-extrabold text-slate-900 mt-1">0</p>
+        </div>
+        <div class="glass-card rounded-2xl p-5">
+          <span class="text-xs font-bold text-slate-500">المصروف الفعلي في الشهر</span>
+          <p id="budgetTotalSpent" class="text-2xl font-extrabold text-rose-600 mt-1">0</p>
+        </div>
+        <div class="glass-card rounded-2xl p-5">
+          <span class="text-xs font-bold text-slate-500">المتبقي من الميزانية</span>
+          <p id="budgetTotalRemaining" class="text-2xl font-extrabold text-emerald-600 mt-1">0</p>
+        </div>
+      </div>
+
+      <!-- Budget Categories Grid -->
+      <div id="budgetCardsGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+    </section>
+
+    <!-- ==================== TAB 4: DEBTS ==================== -->
+    <section id="view-debts" class="tab-view hidden space-y-5">
+      <div class="flex flex-wrap items-center justify-between gap-3">
+        <div>
+          <h2 class="text-xl font-extrabold text-slate-900">إدارة وتحصيل الديون</h2>
+          <p class="text-sm text-slate-500">متابعة الذمم المالية، تسجيل الدفعات الجزئية أو الكاملة، وربطها تلقائياً بالمدخول</p>
+        </div>
+        <button type="button" onclick="openDebtModal()" class="bg-amber-600 hover:bg-amber-700 text-white text-sm font-bold px-4 py-2.5 rounded-xl transition">+ إضافة دين جديد</button>
+      </div>
+
+      <!-- Debt Summary -->
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <div class="glass-card rounded-2xl p-5">
+          <span class="text-xs font-bold text-slate-500">إجمالي الديون المسجلة</span>
+          <p id="debtTotalAmount" class="text-xl sm:text-2xl font-extrabold text-slate-900 mt-1">0</p>
+        </div>
+        <div class="glass-card rounded-2xl p-5">
+          <span class="text-xs font-bold text-slate-500">المبالغ المحصلة</span>
+          <p id="debtTotalCollected" class="text-xl sm:text-2xl font-extrabold text-emerald-600 mt-1">0</p>
+        </div>
+        <div class="glass-card rounded-2xl p-5">
+          <span class="text-xs font-bold text-slate-500">المتبقي قيد التحصيل</span>
+          <p id="debtTotalRemaining" class="text-xl sm:text-2xl font-extrabold text-amber-600 mt-1">0</p>
+        </div>
+      </div>
+
+      <!-- Debt Filters -->
+      <div class="flex flex-wrap items-center gap-2">
+        <button type="button" data-debt-filter="all" class="debt-filter-btn bg-teal-700 text-white text-xs font-bold px-3.5 py-2 rounded-xl">الكل</button>
+        <button type="button" data-debt-filter="pending" class="debt-filter-btn bg-white border border-slate-200 text-slate-700 text-xs font-bold px-3.5 py-2 rounded-xl">قيد التحصيل</button>
+        <button type="button" data-debt-filter="overdue" class="debt-filter-btn bg-white border border-slate-200 text-slate-700 text-xs font-bold px-3.5 py-2 rounded-xl">متأخرة</button>
+        <button type="button" data-debt-filter="paid" class="debt-filter-btn bg-white border border-slate-200 text-slate-700 text-xs font-bold px-3.5 py-2 rounded-xl">محصلة بالكامل</button>
+      </div>
+
+      <!-- Debts Grid -->
+      <div id="debtsGrid" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
+    </section>
+
+    <!-- ==================== TAB 5: SCHEDULE ==================== -->
+    <section id="view-schedule" class="tab-view hidden space-y-5">
+      <div class="flex flex-wrap items-center justify-between gap-3">
+        <div>
+          <h2 class="text-xl font-extrabold text-slate-900">مواعيد القبض والتحصيل</h2>
+          <p class="text-sm text-slate-500">جدولة دفعات القبض، تذكير بالمواعيد المتأخرة ومواعيد اليوم، وتأكيد التحصيل بضغطة زر</p>
+        </div>
+        <button type="button" onclick="openScheduleModal()" class="bg-teal-700 hover:bg-teal-800 text-white text-sm font-bold px-4 py-2.5 rounded-xl transition">+ تحديد موعد قبض</button>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-5">
+        <!-- Mini Interactive Calendar -->
+        <div class="glass-card rounded-2xl p-5">
+          <div class="flex items-center justify-between mb-4">
+            <button type="button" id="calPrevMonth" class="p-2 rounded-lg hover:bg-slate-100 text-slate-600 font-bold">‹</button>
+            <h3 id="calMonthTitle" class="text-base font-extrabold text-slate-900"></h3>
+            <button type="button" id="calNextMonth" class="p-2 rounded-lg hover:bg-slate-100 text-slate-600 font-bold">›</button>
+          </div>
+          <div class="grid grid-cols-7 gap-1 text-center text-xs font-bold text-slate-500 mb-2">
+            <span>سبت</span><span>أحد</span><span>إثنين</span><span>ثلاثاء</span><span>أربعاء</span><span>خميس</span><span>جمعة</span>
+          </div>
+          <div id="calendarDaysGrid" class="grid grid-cols-7 gap-1 text-center text-sm"></div>
+          <div class="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500">
+            <span class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded-full bg-rose-500 inline-block"></span> متأخر</span>
+            <span class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded-full bg-amber-500 inline-block"></span> قادم</span>
+            <span class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded-full bg-emerald-500 inline-block"></span> مكتمل</span>
+          </div>
+        </div>
+
+        <!-- Schedule List -->
+        <div class="glass-card rounded-2xl p-5 lg:col-span-2 space-y-4">
+          <div class="flex flex-wrap items-center justify-between gap-2">
+            <div class="flex flex-wrap items-center gap-2">
+              <button type="button" data-sched-filter="all" class="sched-filter-btn bg-teal-700 text-white text-xs font-bold px-3 py-1.5 rounded-lg">الكل</button>
+              <button type="button" data-sched-filter="overdue" class="sched-filter-btn bg-slate-100 text-slate-700 text-xs font-bold px-3 py-1.5 rounded-lg">متأخرة</button>
+              <button type="button" data-sched-filter="today" class="sched-filter-btn bg-slate-100 text-slate-700 text-xs font-bold px-3 py-1.5 rounded-lg">اليوم</button>
+              <button type="button" data-sched-filter="upcoming" class="sched-filter-btn bg-slate-100 text-slate-700 text-xs font-bold px-3 py-1.5 rounded-lg">قادمة</button>
+              <button type="button" data-sched-filter="completed" class="sched-filter-btn bg-slate-100 text-slate-700 text-xs font-bold px-3 py-1.5 rounded-lg">مكتملة</button>
+            </div>
+            <button type="button" id="btnClearDateFilter" class="hidden text-xs font-bold text-teal-700 hover:underline">عرض كل الأيام</button>
+          </div>
+          <div id="scheduleListContainer" class="space-y-3"></div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ==================== MODALS ==================== -->
+
+  <!-- Transaction Modal -->
+  <div id="txModal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-xs z-50 hidden items-center justify-center p-4 overflow-y-auto">
+    <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-xl animate-slide-up my-auto">
+      <div class="flex items-center justify-between mb-4">
+        <h3 id="txModalTitle" class="text-lg font-extrabold text-slate-900">إضافة حركة مالية</h3>
+        <button type="button" onclick="closeModal('txModal')" class="text-slate-400 hover:text-slate-700 text-xl font-bold">✕</button>
+      </div>
+      <form id="txForm" class="space-y-3.5">
+        <div class="grid grid-cols-2 gap-2 bg-slate-100 p-1 rounded-xl">
+          <button type="button" id="btnTypeIncome" onclick="setTxType('income')" class="py-2 rounded-lg text-sm font-bold transition">مدخول (قبض)</button>
+          <button type="button" id="btnTypeExpense" onclick="setTxType('expense')" class="py-2 rounded-lg text-sm font-bold transition">مصروف (صرف)</button>
+        </div>
+        <input type="hidden" id="txType" value="expense" />
+
+        <div class="grid grid-cols-3 gap-3">
+          <div class="col-span-2">
+            <label class="block text-xs font-bold text-slate-600 mb-1">المبلغ</label>
+            <input id="txAmount" type="number" step="0.01" min="0.01" inputmode="decimal" required placeholder="0.00" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-base font-bold focus:outline-none focus:ring-2 focus:ring-teal-600" />
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-600 mb-1">العملة</label>
+            <select id="txCurrency" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-2.5 py-2.5 text-sm font-bold focus:outline-none focus:ring-2 focus:ring-teal-600"></select>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <div class="flex items-center justify-between mb-1">
+              <label class="text-xs font-bold text-slate-600">التصنيف</label>
+              <button type="button" onclick="toggleQuickCatRow()" class="text-[11px] font-bold text-teal-700 hover:underline">+ تصنيف جديد</button>
+            </div>
+            <select id="txCategory" required class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-teal-600"></select>
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-600 mb-1">التاريخ</label>
+            <input id="txDate" type="date" required class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-teal-600" />
+          </div>
+        </div>
+
+        <!-- Inline Quick Add Category -->
+        <div id="quickCatRow" class="hidden bg-teal-50 border border-teal-200 rounded-xl p-2.5 flex items-center gap-2">
+          <input id="quickCatInput" type="text" placeholder="اسم التصنيف الجديد..." class="flex-1 bg-white border border-teal-200 rounded-lg px-2.5 py-1.5 text-xs focus:outline-none focus:ring-2 focus:ring-teal-600" />
+          <button type="button" onclick="saveQuickCat()" class="bg-teal-700 hover:bg-teal-800 text-white text-xs font-bold px-3 py-1.5 rounded-lg">إضافة</button>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-slate-600 mb-1">طريقة الدفع</label>
+          <select id="txMethod" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-teal-600">
+            <option value="نقدي">نقدي</option>
+            <option value="تحويل بنكي">تحويل بنكي</option>
+            <option value="محفظة إلكترونية">محفظة إلكترونية</option>
+            <option value="شيك / حوالة">شيك / حوالة</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-slate-600 mb-1">العنوان / الوصف المختصر</label>
+          <input id="txNote" type="text" required placeholder="مثال: راتب، فاتورة كهرباء، مبيعات..." class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-teal-600" />
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-slate-600 mb-1">التفاصيل الإضافية (رقم الفاتورة، الجهة، الكمية...)</label>
+          <textarea id="txDetails" rows="2" placeholder="أدخل تفاصيل إضافية للعملية (اختياري)..." class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-teal-600"></textarea>
+        </div>
+
+        <button type="submit" class="w-full bg-teal-700 hover:bg-teal-800 text-white font-bold py-3 rounded-xl transition">حفظ الحركة</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Settings: Currencies & Categories Modal -->
+  <div id="settingsModal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-xs z-50 hidden items-center justify-center p-4 overflow-y-auto">
+    <div class="bg-white rounded-2xl max-w-lg w-full p-6 shadow-xl animate-slide-up my-auto space-y-5">
+      <div class="flex items-center justify-between">
+        <h3 class="text-lg font-extrabold text-slate-900">إدارة العملات والتصنيفات الجاهزة</h3>
+        <button type="button" onclick="closeModal('settingsModal')" class="text-slate-400 hover:text-slate-700 text-xl font-bold">✕</button>
+      </div>
+
+      <!-- Currencies Section -->
+      <div class="space-y-3 border-b border-slate-100 pb-4">
+        <h4 class="text-sm font-extrabold text-slate-800">العملات المتاحة</h4>
+        <form id="addCurrencyForm" class="grid grid-cols-1 sm:grid-cols-3 gap-2">
+          <input id="newCurrName" type="text" required placeholder="اسم العملة (مثال: دينار أردني)" class="bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-teal-600" />
+          <input id="newCurrCode" type="text" required placeholder="الرمز (مثال: د.أ)" class="bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-teal-600" />
+          <button type="submit" class="bg-teal-700 hover:bg-teal-800 text-white text-xs font-bold py-2 rounded-xl transition">+ إضافة عملة</button>
+        </form>
+        <div id="currenciesList" class="flex flex-wrap gap-2"></div>
+      </div>
+
+      <!-- Income Categories Section -->
+      <div class="space-y-3 border-b border-slate-100 pb-4">
+        <h4 class="text-sm font-extrabold text-emerald-700">تصنيفات المدخول الجاهزة</h4>
+        <form id="addIncomeCatForm" class="flex gap-2">
+          <input id="newIncomeCatName" type="text" required placeholder="تصنيف مدخول جديد (مثال: عمولات، إيجارات)..." class="flex-1 bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-emerald-600" />
+          <button type="submit" class="bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold px-4 py-2 rounded-xl transition">+ إضافة</button>
+        </form>
+        <div id="incomeCatsList" class="flex flex-wrap gap-2"></div>
+      </div>
+
+      <!-- Expense Categories Section -->
+      <div class="space-y-3">
+        <h4 class="text-sm font-extrabold text-rose-700">تصنيفات المصروف الجاهزة</h4>
+        <form id="addExpenseCatForm" class="flex gap-2">
+          <input id="newExpenseCatName" type="text" required placeholder="تصنيف مصروف جديد (مثال: صيانة، صحة)..." class="flex-1 bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-rose-600" />
+          <button type="submit" class="bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold px-4 py-2 rounded-xl transition">+ إضافة</button>
+        </form>
+        <div id="expenseCatsList" class="flex flex-wrap gap-2"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Budget Category Modal -->
+  <div id="budgetModal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-xs z-50 hidden items-center justify-center p-4">
+    <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-xl animate-slide-up">
+      <div class="flex items-center justify-between mb-4">
+        <h3 class="text-lg font-extrabold text-slate-900">إضافة / تعديل فئة ميزانية</h3>
+        <button type="button" onclick="closeModal('budgetModal')" class="text-slate-400 hover:text-slate-700 text-xl font-bold">✕</button>
+      </div>
+      <form id="budgetForm" class="space-y-4">
+        <div>
+          <label class="block text-xs font-bold text-slate-600 mb-1">اسم الفئة</label>
+          <input id="budgetCatName" type="text" required placeholder="مثال: سكن وإيجار، تسوق..." class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-teal-600" />
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-slate-600 mb-1">الحد الأقصى الشهري</label>
+          <input id="budgetCatLimit" type="number" step="0.01" min="1" inputmode="decimal" required placeholder="500" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-base font-bold focus:outline-none focus:ring-2 focus:ring-teal-600" />
+        </div>
+        <button type="submit" class="w-full bg-teal-700 hover:bg-teal-800 text-white font-bold py-3 rounded-xl transition">حفظ الميزانية</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Debt Modal -->
+  <div id="debtModal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-xs z-50 hidden items-center justify-center p-4">
+    <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-xl animate-slide-up">
+      <div class="flex items-center justify-between mb-4">
+        <h3 class="text-lg font-extrabold text-slate-900">تسجيل دين جديد للتحصيل</h3>
+        <button type="button" onclick="closeModal('debtModal')" class="text-slate-400 hover:text-slate-700 text-xl font-bold">✕</button>
+      </div>
+      <form id="debtForm" class="space-y-4">
+        <div>
+          <label class="block text-xs font-bold text-slate-600 mb-1">اسم المدين / الجهة</label>
+          <input id="debtName" type="text" required placeholder="مثال: شركة النور، أحمد محمود..." class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-teal-600" />
+        </div>
+        <div class="grid grid-cols-3 gap-3">
+          <div class="col-span-2">
+            <label class="block text-xs font-bold text-slate-600 mb-1">المبلغ الإجمالي</label>
+            <input id="debtAmount" type="number" step="0.01" min="0.01" inputmode="decimal" required placeholder="0.00" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-base font-bold focus:outline-none focus:ring-2 focus:ring-teal-600" />
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-600 mb-1">العملة</label>
+            <select id="debtCurrency" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-2.5 py-2.5 text-sm font-bold focus:outline-none focus:ring-2 focus:ring-teal-600"></select>
+          </div>
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-bold text-slate-600 mb-1">تاريخ الاستحقاق</label>
+            <input id="debtDueDate" type="date" required class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-teal-600" />
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-600 mb-1">رقم الهاتف (اختياري)</label>
+            <input id="debtPhone" type="tel" inputmode="numeric" placeholder="09xxxxxxxx" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-teal-600" />
+          </div>
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-slate-600 mb-1">تفاصيل وملاحظات</label>
+          <input id="debtNote" type="text" placeholder="تفاصيل الفاتورة أو الاتفاق..." class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-teal-600" />
+        </div>
+        <label class="flex items-center gap-2 text-xs font-bold text-slate-700 cursor-pointer">
+          <input id="debtAutoSchedule" type="checkbox" checked class="rounded text-teal-700 focus:ring-teal-600" />
+          إضافة موعد تحصيل تلقائي في جدول المواعيد بتاريخ الاستحقاق
+        </label>
+        <button type="submit" class="w-full bg-amber-600 hover:bg-amber-700 text-white font-bold py-3 rounded-xl transition">حفظ الدين</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Debt Payment Modal -->
+  <div id="debtPayModal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-xs z-50 hidden items-center justify-center p-4">
+    <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-xl animate-slide-up">
+      <div class="flex items-center justify-between mb-4">
+        <h3 class="text-lg font-extrabold text-slate-900">تسجيل دفعة تحصيل</h3>
+        <button type="button" onclick="closeModal('debtPayModal')" class="text-slate-400 hover:text-slate-700 text-xl font-bold">✕</button>
+      </div>
+      <form id="debtPayForm" class="space-y-4">
+        <input type="hidden" id="payDebtId" />
+        <div class="bg-amber-50 border border-amber-200 rounded-xl p-3 text-sm">
+          <p class="font-bold text-slate-800" id="payDebtLabel"></p>
+          <p class="text-xs text-amber-800 mt-0.5">المتبقي الحالي: <span id="payDebtRemaining" class="font-extrabold"></span></p>
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-slate-600 mb-1">مبلغ الدفعة المحصلة</label>
+          <input id="payAmount" type="number" step="0.01" min="0.01" inputmode="decimal" required class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-base font-bold focus:outline-none focus:ring-2 focus:ring-teal-600" />
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-slate-600 mb-1">تاريخ القبض</label>
+          <input id="payDate" type="date" required class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-teal-600" />
+        </div>
+        <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 rounded-xl transition">تأكيد القبض وإضافته للمدخول</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Schedule Modal -->
+  <div id="scheduleModal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-xs z-50 hidden items-center justify-center p-4">
+    <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-xl animate-slide-up">
+      <div class="flex items-center justify-between mb-4">
+        <h3 class="text-lg font-extrabold text-slate-900">تحديد موعد قبض / تحصيل</h3>
+        <button type="button" onclick="closeModal('scheduleModal')" class="text-slate-400 hover:text-slate-700 text-xl font-bold">✕</button>
+      </div>
+      <form id="scheduleForm" class="space-y-4">
+        <div>
+          <label class="block text-xs font-bold text-slate-600 mb-1">عنوان الموعد / الجهة</label>
+          <input id="schedTitle" type="text" required placeholder="مثال: قبض إيجار، تحصيل قسط عميل..." class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-teal-600" />
+        </div>
+        <div class="grid grid-cols-3 gap-3">
+          <div class="col-span-2">
+            <label class="block text-xs font-bold text-slate-600 mb-1">المبلغ المتوقع</label>
+            <input id="schedAmount" type="number" step="0.01" min="0.01" inputmode="decimal" required placeholder="0.00" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-base font-bold focus:outline-none focus:ring-2 focus:ring-teal-600" />
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-600 mb-1">العملة</label>
+            <select id="schedCurrency" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-2.5 py-2.5 text-sm font-bold focus:outline-none focus:ring-2 focus:ring-teal-600"></select>
+          </div>
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-bold text-slate-600 mb-1">تاريخ القبض</label>
+            <input id="schedDate" type="date" required class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-teal-600" />
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-600 mb-1">التكرار</label>
+            <select id="schedRecurrence" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-teal-600">
+              <option value="once">مرة واحدة</option>
+              <option value="weekly">أسبوعي</option>
+              <option value="monthly">شهري</option>
+            </select>
+          </div>
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-slate-600 mb-1">ربط بدين (اختياري)</label>
+          <select id="schedLinkedDebt" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-teal-600">
+            <option value="">بدون ربط</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-slate-600 mb-1">تفاصيل وملاحظات</label>
+          <input id="schedNote" type="text" placeholder="مكان التحصيل أو تفاصيل إضافية..." class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-teal-600" />
+        </div>
+        <button type="submit" class="w-full bg-teal-700 hover:bg-teal-800 text-white font-bold py-3 rounded-xl transition">حفظ الموعد</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Confirm Reset Modal -->
+  <div id="resetModal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-xs z-50 hidden items-center justify-center p-4">
+    <div class="bg-white rounded-2xl max-w-sm w-full p-6 shadow-xl animate-slide-up text-center space-y-4">
+      <div class="w-12 h-12 rounded-full bg-rose-100 text-rose-600 flex items-center justify-center mx-auto text-xl font-bold">!</div>
+      <h3 class="text-lg font-extrabold text-slate-900">إعادة ضبط البيانات</h3>
+      <p class="text-sm text-slate-600">هل تريد مسح جميع البيانات الحالية والبدء بسجل فارغ، أم استعادة البيانات التجريبية؟</p>
+      <div class="flex flex-col gap-2">
+        <button type="button" id="btnConfirmEmpty" class="w-full bg-rose-600 hover:bg-rose-700 text-white font-bold py-2.5 rounded-xl text-sm transition">مسح الكل والبدء من الصفر</button>
+        <button type="button" id="btnConfirmDemo" class="w-full bg-teal-700 hover:bg-teal-800 text-white font-bold py-2.5 rounded-xl text-sm transition">استعادة البيانات التجريبية</button>
+        <button type="button" onclick="closeModal('resetModal')" class="w-full bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold py-2.5 rounded-xl text-sm transition">إلغاء</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification -->
+  <div id="toast" class="fixed bottom-5 left-1/2 -translate-x-1/2 bg-slate-900 text-white text-sm font-bold px-5 py-3 rounded-xl shadow-lg z-50 hidden transition-opacity"></div>
+
+  <script>
+    const STORAGE_KEY = 'alzaeem_pro_state_v1';
+    const DEFAULT_CURRENCIES = [
+      { code: '$', name: 'دولار أمريكي' },
+      { code: 'ل.س', name: 'ليرة سورية' },
+      { code: '₺', name: 'ليرة تركية' },
+      { code: 'ر.س', name: 'ريال سعودي' },
+      { code: '€', name: 'يورو' }
+    ];
+    const DEFAULT_INCOME_CATEGORIES = ['راتب / دخل ثابت', 'مبيعات / خدمات', 'تحصيل ديون', 'أرباح واستثمار', 'إيرادات أخرى'];
+    const DEFAULT_EXPENSE_BUDGETS = [
+      { name: 'سكن وإيجار', limit: 450 },
+      { name: 'طعام ومشتريات', limit: 350 },
+      { name: 'فواتير واتصالات', limit: 150 },
+      { name: 'مواصلات ووقود', limit: 120 },
+      { name: 'تشغيل وعمل', limit: 300 },
+      { name: 'طوارئ وأخرى', limit: 130 }
+    ];
+
+    function todayISO(offsetDays = 0) {
+      const d = new Date();
+      d.setDate(d.getDate() + offsetDays);
+      return d.toISOString().split('T')[0];
+    }
+
+    function currentMonthISO() {
+      return todayISO().slice(0, 7);
+    }
+
+    function createDemoState() {
+      const m = currentMonthISO();
+      return {
+        currency: '$',
+        currencies: JSON.parse(JSON.stringify(DEFAULT_CURRENCIES)),
+        incomeCategories: [...DEFAULT_INCOME_CATEGORIES],
+        expenseCategories: DEFAULT_EXPENSE_BUDGETS.map(b => b.name),
+        budgets: JSON.parse(JSON.stringify(DEFAULT_EXPENSE_BUDGETS)),
+        transactions: [
+          { id: 'tx_1', type: 'income', amount: 1800, currency: '$', category: 'راتب / دخل ثابت', date: `${m}-01`, method: 'تحويل بنكي', note: 'الدخل الشهري الأساسي', details: 'حوالة شهرية - دفعة كاملة' },
+          { id: 'tx_2', type: 'expense', amount: 400, currency: '$', category: 'سكن وإيجار', date: `${m}-02`, method: 'نقدي', note: 'إيجار الشهر', details: 'تسليم نقدي للمالك بموجب إيصال #104' },
+          { id: 'tx_3', type: 'expense', amount: 195, currency: '$', category: 'طعام ومشتريات', date: `${m}-05`, method: 'نقدي', note: 'مشتريات أسبوعية', details: 'مواد تموينية وخضار من السوق المركزي' },
+          { id: 'tx_4', type: 'income', amount: 450, currency: '$', category: 'مبيعات / خدمات', date: `${m}-07`, method: 'محفظة إلكترونية', note: 'دفعة مشروع تصميم', details: 'الدفعة الأولى 50% من عقد التطوير' },
+          { id: 'tx_5', type: 'expense', amount: 110, currency: '$', category: 'فواتير واتصالات', date: `${m}-09`, method: 'محفظة إلكترونية', note: 'إنترنت وكهرباء', details: 'اشتراك إنترنت شهري + فاتورة أمبيرات' },
+          { id: 'tx_6', type: 'expense', amount: 85, currency: '$', category: 'مواصلات ووقود', date: `${m}-11`, method: 'نقدي', note: 'تعبئة وقود وتنقلات', details: 'بنزين 20 لتر + تنقلات عمل' }
+        ],
+        debts: [
+          { id: 'debt_1', name: 'شركة الأفق للتجارة', phone: '0933123456', totalAmount: 900, paidAmount: 300, currency: '$', dueDate: todayISO(4), note: 'باقي دفعة توريد بضاعة' },
+          { id: 'debt_2', name: 'خالد العلي', phone: '0944987654', totalAmount: 350, paidAmount: 0, currency: '$', dueDate: todayISO(-2), note: 'سلفة شخصية متفق عليها' },
+          { id: 'debt_3', name: 'مؤسسة البناء الحديث', phone: '0955112233', totalAmount: 600, paidAmount: 600, currency: '$', dueDate: todayISO(-5), note: 'تم السداد بالكامل' }
+        ],
+        schedules: [
+          { id: 'sch_1', title: 'تحصيل قسط شركة الأفق', amount: 300, currency: '$', date: todayISO(4), recurrence: 'once', debtId: 'debt_1', status: 'pending', note: 'تحويل بنكي أو نقدي' },
+          { id: 'sch_2', title: 'استرداد سلفة خالد العلي', amount: 350, currency: '$', date: todayISO(-2), recurrence: 'once', debtId: 'debt_2', status: 'pending', note: 'التواصل هاتفياً للتأكيد' },
+          { id: 'sch_3', title: 'قبض إيجار المكتب الفرعي', amount: 250, currency: '$', date: todayISO(0), recurrence: 'monthly', debtId: '', status: 'pending', note: 'موعد التحصيل الشهري' },
+          { id: 'sch_4', title: 'دفعة اشتراك خدمة سحابية', amount: 180, currency: '$', date: todayISO(9), recurrence: 'monthly', debtId: '', status: 'pending', note: 'تحصيل دوري' }
+        ]
+      };
+    }
+
+    function ensureStateFields(s) {
+      if (!s.currencies || !s.currencies.length) s.currencies = JSON.parse(JSON.stringify(DEFAULT_CURRENCIES));
+      if (!s.currency) s.currency = s.currencies[0].code;
+      if (!s.incomeCategories || !s.incomeCategories.length) s.incomeCategories = [...DEFAULT_INCOME_CATEGORIES];
+      if (!s.expenseCategories || !s.expenseCategories.length) {
+        s.expenseCategories = (s.budgets && s.budgets.length) ? s.budgets.map(b => b.name) : DEFAULT_EXPENSE_BUDGETS.map(b => b.name);
+      }
+      if (!s.budgets) s.budgets = JSON.parse(JSON.stringify(DEFAULT_EXPENSE_BUDGETS));
+      if (!s.transactions) s.transactions = [];
+      if (!s.debts) s.debts = [];
+      if (!s.schedules) s.schedules = [];
+      return s;
+    }
+
+    function loadState() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY) || localStorage.getItem('mizan_pro_state_v1');
+        if (raw) return ensureStateFields(JSON.parse(raw));
+      } catch (e) {}
+      return createDemoState();
+    }
+
+    function saveState() {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+      } catch (e) {}
+    }
+
+    let state = loadState();
+    let activeTab = 'dashboard';
+    let debtFilter = 'all';
+    let schedFilter = 'all';
+    let selectedCalDate = '';
+    let calViewDate = new Date();
+    let cashflowChartInstance = null;
+    let expensePieChartInstance = null;
+
+    function fmt(num, curr = state.currency) {
+      const val = Number(num || 0);
+      return `${val.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 2 })} ${curr || state.currency}`;
+    }
+
+    function fmtMulti(items, valueFn) {
+      const totals = {};
+      items.forEach(item => {
+        const c = item.currency || state.currency;
+        const v = Number(valueFn(item) || 0);
+        totals[c] = (totals[c] || 0) + v;
+      });
+      const entries = Object.entries(totals).filter(([, v]) => Math.abs(v) > 0.0001);
+      if (entries.length === 0) return fmt(0, state.currency);
+      return entries.map(([c, v]) => fmt(v, c)).join(' | ');
+    }
+
+    function showToast(msg) {
+      const el = document.getElementById('toast');
+      el.textContent = msg;
+      el.classList.remove('hidden');
+      clearTimeout(el._timer);
+      el._timer = setTimeout(() => el.classList.add('hidden'), 2800);
+    }
+
+    function openModal(id) {
+      const el = document.getElementById(id);
+      el.classList.remove('hidden');
+      el.classList.add('flex');
+    }
+
+    function closeModal(id) {
+      const el = document.getElementById(id);
+      el.classList.add('hidden');
+      el.classList.remove('flex');
+    }
+
+    function populateCurrencySelects() {
+      const opts = state.currencies.map(c => `<option value="${escapeHtml(c.code)}">${escapeHtml(c.name)} (${escapeHtml(c.code)})</option>`).join('');
+      const shortOpts = state.currencies.map(c => `<option value="${escapeHtml(c.code)}">${escapeHtml(c.code)} - ${escapeHtml(c.name)}</option>`).join('');
+
+      const mainSel = document.getElementById('currencySelect');
+      mainSel.innerHTML = opts;
+      if (!state.currencies.some(c => c.code === state.currency)) {
+        state.currency = state.currencies[0].code;
+      }
+      mainSel.value = state.currency;
+
+      ['txCurrency', 'debtCurrency', 'schedCurrency'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) {
+          const prev = el.value;
+          el.innerHTML = shortOpts;
+          el.value = state.currencies.some(c => c.code === prev) ? prev : state.currency;
+        }
+      });
+    }
+
+    function switchTab(tabName) {
+      activeTab = tabName;
+      document.querySelectorAll('.tab-btn').forEach(btn => {
+        const isActive = btn.dataset.tab === tabName;
+        btn.classList.toggle('active', isActive);
+        btn.classList.toggle('text-slate-600', !isActive);
+      });
+      document.querySelectorAll('.tab-view').forEach(sec => {
+        sec.classList.toggle('hidden', sec.id !== `view-${tabName}`);
+      });
+      renderAll();
+    }
+
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+      btn.addEventListener('click', () => switchTab(btn.dataset.tab));
+    });
+
+    // Currency switcher
+    const currencySelect = document.getElementById('currencySelect');
+    currencySelect.addEventListener('change', () => {
+      state.currency = currencySelect.value;
+      saveState();
+      renderAll();
+      showToast(`تم تعيين العملة الافتراضية إلى ${state.currency}`);
+    });
+
+    // ==================== SETTINGS: CURRENCIES & CATEGORIES ====================
+    function openSettingsModal() {
+      renderSettingsLists();
+      openModal('settingsModal');
+    }
+
+    function renderSettingsLists() {
+      document.getElementById('currenciesList').innerHTML = state.currencies.map((c, i) => `
+        <span class="inline-flex items-center gap-1.5 bg-slate-100 text-slate-800 text-xs font-bold px-3 py-1.5 rounded-full">
+          ${escapeHtml(c.name)} (${escapeHtml(c.code)})
+          ${state.currencies.length > 1 ? `<button type="button" onclick="removeCurrency(${i})" class="text-rose-600 hover:text-rose-800 font-extrabold">×</button>` : ''}
+        </span>
+      `).join('');
+
+      document.getElementById('incomeCatsList').innerHTML = state.incomeCategories.map((cat, i) => `
+        <span class="inline-flex items-center gap-1.5 bg-emerald-50 text-emerald-800 text-xs font-bold px-3 py-1.5 rounded-full">
+          ${escapeHtml(cat)}
+          ${state.incomeCategories.length > 1 ? `<button type="button" onclick="removePresetCat('income', ${i})" class="text-rose-600 hover:text-rose-800 font-extrabold">×</button>` : ''}
+        </span>
+      `).join('');
+
+      document.getElementById('expenseCatsList').innerHTML = state.expenseCategories.map((cat, i) => `
+        <span class="inline-flex items-center gap-1.5 bg-rose-50 text-rose-800 text-xs font-bold px-3 py-1.5 rounded-full">
+          ${escapeHtml(cat)}
+          ${state.expenseCategories.length > 1 ? `<button type="button" onclick="removePresetCat('expense', ${i})" class="text-rose-600 hover:text-rose-800 font-extrabold">×</button>` : ''}
+        </span>
+      `).join('');
+    }
+
+    function removeCurrency(idx) {
+      if (state.currencies.length <= 1) return;
+      state.currencies.splice(idx, 1);
+      if (!state.currencies.some(c => c.code === state.currency)) {
+        state.currency = state.currencies[0].code;
+      }
+      saveState();
+      populateCurrencySelects();
+      renderSettingsLists();
+      renderAll();
+      showToast('تم حذف العملة');
+    }
+
+    function removePresetCat(type, idx) {
+      const list = type === 'income' ? state.incomeCategories : state.expenseCategories;
+      if (list.length <= 1) return;
+      list.splice(idx, 1);
+      saveState();
+      renderSettingsLists();
+      renderAll();
+      showToast('تم حذف التصنيف');
+    }
+
+    document.getElementById('addCurrencyForm').addEventListener('submit', e => {
+      e.preventDefault();
+      const name = document.getElementById('newCurrName').value.trim();
+      const code = document.getElementById('newCurrCode').value.trim();
+      if (!name || !code) return;
+      if (state.currencies.some(c => c.code === code)) {
+        showToast('هذه العملة موجودة مسبقاً');
+        return;
+      }
+      state.currencies.push({ code, name });
+      document.getElementById('addCurrencyForm').reset();
+      saveState();
+      populateCurrencySelects();
+      renderSettingsLists();
+      showToast(`تمت إضافة العملة: ${name}`);
+    });
+
+    document.getElementById('addIncomeCatForm').addEventListener('submit', e => {
+      e.preventDefault();
+      const val = document.getElementById('newIncomeCatName').value.trim();
+      if (!val || state.incomeCategories.includes(val)) return;
+      state.incomeCategories.push(val);
+      document.getElementById('newIncomeCatName').value = '';
+      saveState();
+      renderSettingsLists();
+      renderAll();
+      showToast('تمت إضافة تصنيف المدخول');
+    });
+
+    document.getElementById('addExpenseCatForm').addEventListener('submit', e => {
+      e.preventDefault();
+      const val = document.getElementById('newExpenseCatName').value.trim();
+      if (!val || state.expenseCategories.includes(val)) return;
+      state.expenseCategories.push(val);
+      document.getElementById('newExpenseCatName').value = '';
+      saveState();
+      renderSettingsLists();
+      renderAll();
+      showToast('تمت إضافة تصنيف المصروف');
+    });
+
+    // ==================== RENDER DASHBOARD ====================
+    function renderDashboard() {
+      const today = todayISO();
+      document.getElementById('dashboardDateLabel').textContent = `تاريخ اليوم: ${new Date().toLocaleDateString('ar-EG', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}`;
+
+      const incomes = state.transactions.filter(t => t.type === 'income');
+      const expenses = state.transactions.filter(t => t.type === 'expense');
+
+      // Net balance per currency
+      const netByCurr = {};
+      state.transactions.forEach(t => {
+        const c = t.currency || state.currency;
+        const delta = t.type === 'income' ? Number(t.amount) : -Number(t.amount);
+        netByCurr[c] = (netByCurr[c] || 0) + delta;
+      });
+      const netEntries = Object.entries(netByCurr);
+      const balanceText = netEntries.length ? netEntries.map(([c, v]) => fmt(v, c)).join(' | ') : fmt(0);
+      const primaryNet = netByCurr[state.currency] || 0;
+
+      const totalBudget = state.budgets.reduce((s, b) => s + Number(b.limit), 0);
+      const thisMonth = currentMonthISO();
+      const monthExpensePrimary = state.transactions
+        .filter(t => t.type === 'expense' && t.date.startsWith(thisMonth) && (t.currency || state.currency) === state.currency)
+        .reduce((s, t) => s + Number(t.amount), 0);
+      const budgetPct = totalBudget > 0 ? Math.round((monthExpensePrimary / totalBudget) * 100) : 0;
+
+      const overdueCount = state.schedules.filter(s => s.status === 'pending' && s.date < today).length;
+      const todayCount = state.schedules.filter(s => s.status === 'pending' && s.date === today).length;
+
+      document.getElementById('kpiBalance').textContent = balanceText;
+      document.getElementById('kpiBalance').className = `text-xl sm:text-2xl font-extrabold leading-snug ${primaryNet >= 0 ? 'text-slate-900' : 'text-rose-600'}`;
+      document.getElementById('kpiBudgetStatus').textContent = `استهلاك ميزانية الشهر (${state.currency}): ${budgetPct}%`;
+
+      document.getElementById('kpiIncome').textContent = fmtMulti(incomes, t => t.amount);
+      document.getElementById('kpiIncomeCount').textContent = `${incomes.length} عملية قبض مسجلة`;
+
+      document.getElementById('kpiExpense').textContent = fmtMulti(expenses, t => t.amount);
+      document.getElementById('kpiExpenseCount').textContent = `${expenses.length} عملية صرف مسجلة`;
+
+      document.getElementById('kpiDebtsRemaining').textContent = fmtMulti(state.debts, d => Math.max(0, Number(d.totalAmount) - Number(d.paidAmount)));
+      document.getElementById('kpiSchedulesAlert').textContent = `${overdueCount} متأخر • ${todayCount} مستحق اليوم`;
+
+      // Badges
+      const pendingDebtsCount = state.debts.filter(d => Number(d.totalAmount) > Number(d.paidAmount)).length;
+      const navDebtBadge = document.getElementById('navDebtBadge');
+      navDebtBadge.textContent = pendingDebtsCount;
+      navDebtBadge.classList.toggle('hidden', pendingDebtsCount === 0);
+
+      const alertSchedCount = overdueCount + todayCount;
+      const navScheduleBadge = document.getElementById('navScheduleBadge');
+      navScheduleBadge.textContent = alertSchedCount;
+      navScheduleBadge.classList.toggle('hidden', alertSchedCount === 0);
+
+      // Upcoming schedules widget
+      const upcomingEl = document.getElementById('dashboardUpcomingSchedules');
+      const pendingScheds = state.schedules.filter(s => s.status === 'pending').sort((a, b) => a.date.localeCompare(b.date)).slice(0, 4);
+      if (pendingScheds.length === 0) {
+        upcomingEl.innerHTML = `<p class="text-sm text-slate-400 text-center py-6">لا توجد مواعيد تحصيل معلقة حالياً</p>`;
+      } else {
+        upcomingEl.innerHTML = pendingScheds.map(s => {
+          const isOverdue = s.date < today;
+          const isToday = s.date === today;
+          const badge = isOverdue
+            ? `<span class="bg-rose-100 text-rose-700 text-xs font-bold px-2 py-0.5 rounded-full">متأخر</span>`
+            : isToday
+              ? `<span class="bg-amber-100 text-amber-800 text-xs font-bold px-2 py-0.5 rounded-full">اليوم</span>`
+              : `<span class="bg-teal-50 text-teal-700 text-xs font-bold px-2 py-0.5 rounded-full">${s.date}</span>`;
+          return `
+            <div class="flex items-center justify-between gap-3 p-3 rounded-xl bg-slate-50 border border-slate-100">
+              <div class="min-w-0">
+                <div class="flex items-center gap-2">
+                  <p class="font-bold text-sm text-slate-800 truncate">${escapeHtml(s.title)}</p>
+                  ${badge}
+                </div>
+                <p class="text-xs text-slate-500 mt-0.5">${fmt(s.amount, s.currency)}</p>
+              </div>
+              <button type="button" onclick="completeSchedule('${s.id}')" class="shrink-0 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold px-3 py-1.5 rounded-lg transition">تم القبض</button>
+            </div>
+          `;
+        }).join('');
+      }
+
+      // Recent transactions widget
+      const recentEl = document.getElementById('dashboardRecentTx');
+      const recentTxs = [...state.transactions].sort((a, b) => b.date.localeCompare(a.date)).slice(0, 5);
+      if (recentTxs.length === 0) {
+        recentEl.innerHTML = `<p class="text-sm text-slate-400 text-center py-6">لا توجد حركات مالية مسجلة</p>`;
+      } else {
+        recentEl.innerHTML = recentTxs.map(t => `
+          <div class="flex items-center justify-between gap-3 p-2.5 rounded-xl hover:bg-slate-50 transition">
+            <div class="flex items-center gap-3 min-w-0">
+              <div class="w-9 h-9 rounded-xl flex items-center justify-center font-bold text-sm shrink-0 ${t.type === 'income' ? 'bg-emerald-100 text-emerald-700' : 'bg-rose-100 text-rose-700'}">
+                ${t.type === 'income' ? '↑' : '↓'}
+              </div>
+              <div class="min-w-0">
+                <p class="font-bold text-sm text-slate-800 truncate">${escapeHtml(t.note)}</p>
+                <p class="text-xs text-slate-500 truncate">${escapeHtml(t.category)} • ${t.date}${t.details ? ` • ${escapeHtml(t.details)}` : ''}</p>
+              </div>
+            </div>
+            <span class="font-extrabold text-sm shrink-0 ${t.type === 'income' ? 'text-emerald-600' : 'text-rose-600'}">
+              ${t.type === 'income' ? '+' : '−'}${fmt(t.amount, t.currency)}
+            </span>
+          </div>
+        `).join('');
+      }
+
+      renderCharts();
+    }
+
+    function renderCharts() {
+      const ctxFlow = document.getElementById('cashflowChart');
+      const ctxPie = document.getElementById('expensePieChart');
+      if (!ctxFlow || !ctxPie || typeof Chart === 'undefined') return;
+
+      const primaryTxs = state.transactions.filter(t => (t.currency || state.currency) === state.currency);
+      const monthsSet = new Set(primaryTxs.map(t => t.date.slice(0, 7)));
+      monthsSet.add(currentMonthISO());
+      const months = Array.from(monthsSet).sort().slice(-6);
+
+      const incomeSeries = months.map(m => primaryTxs.filter(t => t.type === 'income' && t.date.startsWith(m)).reduce((s, t) => s + Number(t.amount), 0));
+      const expenseSeries = months.map(m => primaryTxs.filter(t => t.type === 'expense' && t.date.startsWith(m)).reduce((s, t) => s + Number(t.amount), 0));
+
+      if (cashflowChartInstance) cashflowChartInstance.destroy();
+      cashflowChartInstance = new Chart(ctxFlow, {
+        type: 'bar',
+        data: {
+          labels: months,
+          datasets: [
+            { label: `المدخول (${state.currency})`, data: incomeSeries, backgroundColor: '#10b981', borderRadius: 6 },
+            { label: `المصروف (${state.currency})`, data: expenseSeries, backgroundColor: '#f43f5e', borderRadius: 6 }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: { legend: { position: 'top', labels: { font: { family: 'Cairo' } } } },
+          scales: { y: { beginAtZero: true } }
+        }
+      });
+
+      const expByCat = {};
+      primaryTxs.filter(t => t.type === 'expense').forEach(t => {
+        expByCat[t.category] = (expByCat[t.category] || 0) + Number(t.amount);
+      });
+      const pieLabels = Object.keys(expByCat);
+      const pieData = Object.values(expByCat);
+
+      if (expensePieChartInstance) expensePieChartInstance.destroy();
+      expensePieChartInstance = new Chart(ctxPie, {
+        type: 'doughnut',
+        data: {
+          labels: pieLabels.length ? pieLabels : ['لا توجد مصاريف'],
+          datasets: [{
+            data: pieData.length ? pieData : [1],
+            backgroundColor: pieData.length ? ['#0f766e', '#f59e0b', '#f43f5e', '#3b82f6', '#8b5cf6', '#ec4899', '#64748b'] : ['#e2e8f0'],
+            borderWidth: 0
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: { legend: { position: 'bottom', labels: { font: { family: 'Cairo' } } } }
+        }
+      });
+    }
+
+    // ==================== RENDER TRANSACTIONS ====================
+    function renderTransactions() {
+      const catSelect = document.getElementById('txFilterCategory');
+      const allCats = Array.from(new Set([...state.incomeCategories, ...state.expenseCategories, ...state.budgets.map(b => b.name)]));
+      const prevVal = catSelect.value;
+      catSelect.innerHTML = `<option value="all">جميع التصنيفات</option>` + allCats.map(c => `<option value="${escapeHtml(c)}">${escapeHtml(c)}</option>`).join('');
+      if (allCats.includes(prevVal)) catSelect.value = prevVal;
+
+      const currFilterSel = document.getElementById('txFilterCurrency');
+      const prevCurr = currFilterSel.value;
+      currFilterSel.innerHTML = `<option value="all">جميع العملات</option>` + state.currencies.map(c => `<option value="${escapeHtml(c.code)}">${escapeHtml(c.name)} (${escapeHtml(c.code)})</option>`).join('');
+      if (state.currencies.some(c => c.code === prevCurr)) currFilterSel.value = prevCurr;
+
+      const search = document.getElementById('txSearch').value.trim().toLowerCase();
+      const typeF = document.getElementById('txFilterType').value;
+      const catF = catSelect.value;
+      const currF = currFilterSel.value;
+      const monthF = document.getElementById('txFilterMonth').value;
+
+      const filtered = state.transactions.filter(t => {
+        if (typeF !== 'all' && t.type !== typeF) return false;
+        if (catF !== 'all' && t.category !== catF) return false;
+        if (currF !== 'all' && (t.currency || state.currency) !== currF) return false;
+        if (monthF && !t.date.startsWith(monthF)) return false;
+        if (search) {
+          const hay = `${t.note} ${t.details || ''} ${t.category}`.toLowerCase();
+          if (!hay.includes(search)) return false;
+        }
+        return true;
+      }).sort((a, b) => b.date.localeCompare(a.date));
+
+      const tbody = document.getElementById('txTableBody');
+      if (filtered.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="7" class="text-center py-8 text-slate-400">لا توجد حركات مطابقة للبحث</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = filtered.map(t => `
+        <tr class="hover:bg-slate-50 transition">
+          <td class="px-4 py-3 text-slate-600 whitespace-nowrap">${t.date}</td>
+          <td class="px-4 py-3 whitespace-nowrap">
+            <span class="px-2.5 py-1 rounded-full text-xs font-bold ${t.type === 'income' ? 'bg-emerald-100 text-emerald-700' : 'bg-rose-100 text-rose-700'}">
+              ${t.type === 'income' ? 'مدخول' : 'مصروف'}
+            </span>
+          </td>
+          <td class="px-4 py-3 font-semibold text-slate-700">${escapeHtml(t.category)}</td>
+          <td class="px-4 py-3 text-slate-800">
+            <div class="font-bold">${escapeHtml(t.note)}</div>
+            ${t.details ? `<div class="text-xs text-slate-500 mt-0.5">${escapeHtml(t.details)}</div>` : ''}
+          </td>
+          <td class="px-4 py-3 text-slate-500 text-xs">${escapeHtml(t.method || 'نقدي')}</td>
+          <td class="px-4 py-3 font-extrabold whitespace-nowrap ${t.type === 'income' ? 'text-emerald-600' : 'text-rose-600'}">
+            ${t.type === 'income' ? '+' : '−'}${fmt(t.amount, t.currency)}
+          </td>
+          <td class="px-4 py-3 text-center">
+            <button type="button" onclick="deleteTx('${t.id}')" class="text-xs text-rose-600 hover:text-rose-800 font-bold px-2 py-1 rounded-lg hover:bg-rose-50">حذف</button>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    ['txSearch', 'txFilterType', 'txFilterCategory', 'txFilterCurrency', 'txFilterMonth'].forEach(id => {
+      document.getElementById(id).addEventListener('input', renderTransactions);
+    });
+
+    function deleteTx(id) {
+      state.transactions = state.transactions.filter(t => t.id !== id);
+      saveState();
+      renderAll();
+      showToast('تم حذف الحركة المالية');
+    }
+
+    // ==================== RENDER BUDGET ====================
+    const budgetMonthPicker = document.getElementById('budgetMonthPicker');
+    budgetMonthPicker.value = currentMonthISO();
+    budgetMonthPicker.addEventListener('change', renderBudget);
+
+    function renderBudget() {
+      const m = budgetMonthPicker.value || currentMonthISO();
+      const totalLimit = state.budgets.reduce((s, b) => s + Number(b.limit), 0);
+      const monthExpenses = state.transactions.filter(t => t.type === 'expense' && t.date.startsWith(m) && (t.currency || state.currency) === state.currency);
+      const totalSpent = monthExpenses.reduce((s, t) => s + Number(t.amount), 0);
+      const remaining = totalLimit - totalSpent;
+
+      document.getElementById('budgetTotalLimit').textContent = fmt(totalLimit);
+      document.getElementById('budgetTotalSpent').textContent = fmt(totalSpent);
+      document.getElementById('budgetTotalRemaining').textContent = fmt(remaining);
+      document.getElementById('budgetTotalRemaining').className = `text-2xl font-extrabold mt-1 ${remaining >= 0 ? 'text-emerald-600' : 'text-rose-600'}`;
+
+      const grid = document.getElementById('budgetCardsGrid');
+      grid.innerHTML = state.budgets.map((b, idx) => {
+        const spent = monthExpenses.filter(t => t.category === b.name).reduce((s, t) => s + Number(t.amount), 0);
+        const pct = b.limit > 0 ? Math.min(100, Math.round((spent / b.limit) * 100)) : 0;
+        const rawPct = b.limit > 0 ? Math.round((spent / b.limit) * 100) : 0;
+        const barColor = rawPct >= 100 ? 'bg-rose-600' : rawPct >= 80 ? 'bg-amber-500' : 'bg-teal-600';
+        const statusBadge = rawPct >= 100
+          ? `<span class="text-xs font-bold bg-rose-100 text-rose-700 px-2 py-0.5 rounded-full">تجاوز الحد (${rawPct}%)</span>`
+          : rawPct >= 80
+            ? `<span class="text-xs font-bold bg-amber-100 text-amber-800 px-2 py-0.5 rounded-full">قريب من الحد (${rawPct}%)</span>`
+            : `<span class="text-xs font-bold bg-emerald-100 text-emerald-700 px-2 py-0.5 rounded-full">${rawPct}% مستهلك</span>`;
+
+        return `
+          <div class="glass-card rounded-2xl p-5 space-y-3">
+            <div class="flex items-center justify-between gap-2">
+              <h4 class="font-extrabold text-slate-900">${escapeHtml(b.name)}</h4>
+              ${statusBadge}
+            </div>
+            <div class="w-full bg-slate-100 h-2.5 rounded-full overflow-hidden">
+              <div class="${barColor} h-full rounded-full transition-all" style="width: ${pct}%"></div>
+            </div>
+            <div class="flex items-center justify-between text-xs text-slate-600">
+              <span>المصروف: <strong class="text-slate-900">${fmt(spent)}</strong></span>
+              <span>المخصص: <strong class="text-slate-900">${fmt(b.limit)}</strong></span>
+            </div>
+            <div class="pt-2 border-t border-slate-100 flex items-center justify-between gap-2">
+              <button type="button" onclick="editBudgetLimit(${idx})" class="text-xs font-bold text-teal-700 hover:underline">تعديل السقف</button>
+              <button type="button" onclick="deleteBudgetCat(${idx})" class="text-xs font-bold text-rose-600 hover:underline">حذف الفئة</button>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function openBudgetModal(catName = '', limit = '') {
+      document.getElementById('budgetCatName').value = catName;
+      document.getElementById('budgetCatLimit').value = limit;
+      openModal('budgetModal');
+    }
+
+    function editBudgetLimit(idx) {
+      const b = state.budgets[idx];
+      openBudgetModal(b.name, b.limit);
+    }
+
+    function deleteBudgetCat(idx) {
+      state.budgets.splice(idx, 1);
+      saveState();
+      renderAll();
+      showToast('تم حذف فئة الميزانية');
+    }
+
+    document.getElementById('budgetForm').addEventListener('submit', e => {
+      e.preventDefault();
+      const name = document.getElementById('budgetCatName').value.trim();
+      const limit = parseFloat(document.getElementById('budgetCatLimit').value);
+      if (!name || isNaN(limit) || limit <= 0) return;
+
+      const existing = state.budgets.find(b => b.name === name);
+      if (existing) {
+        existing.limit = limit;
+      } else {
+        state.budgets.push({ name, limit });
+      }
+      if (!state.expenseCategories.includes(name)) {
+        state.expenseCategories.push(name);
+      }
+      saveState();
+      closeModal('budgetModal');
+      renderAll();
+      showToast('تم حفظ فئة الميزانية بنجاح');
+    });
+
+    // ==================== RENDER DEBTS ====================
+    document.querySelectorAll('.debt-filter-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        debtFilter = btn.dataset.debtFilter;
+        document.querySelectorAll('.debt-filter-btn').forEach(b => {
+          const active = b.dataset.debtFilter === debtFilter;
+          b.className = `debt-filter-btn text-xs font-bold px-3.5 py-2 rounded-xl ${active ? 'bg-teal-700 text-white' : 'bg-white border border-slate-200 text-slate-700'}`;
+        });
+        renderDebts();
+      });
+    });
+
+    function renderDebts() {
+      const today = todayISO();
+      document.getElementById('debtTotalAmount').textContent = fmtMulti(state.debts, d => d.totalAmount);
+      document.getElementById('debtTotalCollected').textContent = fmtMulti(state.debts, d => d.paidAmount);
+      document.getElementById('debtTotalRemaining').textContent = fmtMulti(state.debts, d => Math.max(0, Number(d.totalAmount) - Number(d.paidAmount)));
+
+      const filtered = state.debts.filter(d => {
+        const rem = Number(d.totalAmount) - Number(d.paidAmount);
+        if (debtFilter === 'pending') return rem > 0;
+        if (debtFilter === 'overdue') return rem > 0 && d.dueDate < today;
+        if (debtFilter === 'paid') return rem <= 0;
+        return true;
+      });
+
+      const grid = document.getElementById('debtsGrid');
+      if (filtered.length === 0) {
+        grid.innerHTML = `<div class="col-span-full glass-card rounded-2xl p-8 text-center text-slate-400 text-sm">لا توجد ديون ضمن هذا التصنيف</div>`;
+        return;
+      }
+
+      grid.innerHTML = filtered.map(d => {
+        const rem = Math.max(0, Number(d.totalAmount) - Number(d.paidAmount));
+        const pct = d.totalAmount > 0 ? Math.min(100, Math.round((d.paidAmount / d.totalAmount) * 100)) : 100;
+        const isPaid = rem <= 0;
+        const isOverdue = !isPaid && d.dueDate < today;
+        const dCurr = d.currency || state.currency;
+
+        const badge = isPaid
+          ? `<span class="bg-emerald-100 text-emerald-700 text-xs font-bold px-2.5 py-1 rounded-full">محصل بالكامل</span>`
+          : isOverdue
+            ? `<span class="bg-rose-100 text-rose-700 text-xs font-bold px-2.5 py-1 rounded-full">متأخر (${d.dueDate})</span>`
+            : `<span class="bg-amber-100 text-amber-800 text-xs font-bold px-2.5 py-1 rounded-full">يستحق: ${d.dueDate}</span>`;
+
+        return `
+          <div class="glass-card rounded-2xl p-5 space-y-3">
+            <div class="flex items-start justify-between gap-2">
+              <div>
+                <h4 class="font-extrabold text-base text-slate-900">${escapeHtml(d.name)}</h4>
+                <p class="text-xs text-slate-500 mt-0.5">${escapeHtml(d.note || 'بدون ملاحظات')} ${d.phone ? `• 📞 ${escapeHtml(d.phone)}` : ''}</p>
+              </div>
+              ${badge}
+            </div>
+            <div class="w-full bg-slate-100 h-2.5 rounded-full overflow-hidden">
+              <div class="${isPaid ? 'bg-emerald-600' : 'bg-amber-500'} h-full rounded-full" style="width: ${pct}%"></div>
+            </div>
+            <div class="grid grid-cols-3 gap-2 text-xs bg-slate-50 p-3 rounded-xl">
+              <div><span class="text-slate-500 block">الإجمالي</span><strong class="text-slate-900">${fmt(d.totalAmount, dCurr)}</strong></div>
+              <div><span class="text-slate-500 block">المحصل</span><strong class="text-emerald-600">${fmt(d.paidAmount, dCurr)}</strong></div>
+              <div><span class="text-slate-500 block">المتبقي</span><strong class="text-amber-700">${fmt(rem, dCurr)}</strong></div>
+            </div>
+            <div class="flex items-center justify-between gap-2 pt-1">
+              ${!isPaid ? `<button type="button" onclick="openDebtPayModal('${d.id}')" class="bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold px-4 py-2 rounded-xl transition">تسجيل دفعة قبض</button>` : `<span class="text-xs font-bold text-emerald-600">✓ تم التحصيل</span>`}
+              <button type="button" onclick="deleteDebt('${d.id}')" class="text-xs font-bold text-rose-600 hover:underline">حذف</button>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function openDebtModal() {
+      document.getElementById('debtForm').reset();
+      document.getElementById('debtDueDate').value = todayISO(7);
+      populateCurrencySelects();
+      openModal('debtModal');
+    }
+
+    document.getElementById('debtForm').addEventListener('submit', e => {
+      e.preventDefault();
+      const name = document.getElementById('debtName').value.trim();
+      const amount = parseFloat(document.getElementById('debtAmount').value);
+      const currency = document.getElementById('debtCurrency').value || state.currency;
+      const dueDate = document.getElementById('debtDueDate').value;
+      const phone = document.getElementById('debtPhone').value.trim();
+      const note = document.getElementById('debtNote').value.trim();
+      const autoSched = document.getElementById('debtAutoSchedule').checked;
+      if (!name || isNaN(amount) || amount <= 0 || !dueDate) return;
+
+      const debtId = 'debt_' + Date.now();
+      state.debts.push({ id: debtId, name, phone, totalAmount: amount, paidAmount: 0, currency, dueDate, note });
+
+      if (autoSched) {
+        state.schedules.push({
+          id: 'sch_' + Date.now(),
+          title: `تحصيل دين: ${name}`,
+          amount,
+          currency,
+          date: dueDate,
+          recurrence: 'once',
+          debtId,
+          status: 'pending',
+          note: note || 'موعد تحصيل مرتبط بالدين'
+        });
+      }
+
+      saveState();
+      closeModal('debtModal');
+      renderAll();
+      showToast('تم تسجيل الدين بنجاح');
+    });
+
+    function openDebtPayModal(debtId) {
+      const d = state.debts.find(x => x.id === debtId);
+      if (!d) return;
+      const dCurr = d.currency || state.currency;
+      const rem = Math.max(0, Number(d.totalAmount) - Number(d.paidAmount));
+      document.getElementById('payDebtId').value = debtId;
+      document.getElementById('payDebtLabel').textContent = `المدين: ${d.name}`;
+      document.getElementById('payDebtRemaining').textContent = fmt(rem, dCurr);
+      document.getElementById('payAmount').value = rem;
+      document.getElementById('payAmount').max = rem;
+      document.getElementById('payDate').value = todayISO();
+      openModal('debtPayModal');
+    }
+
+    document.getElementById('debtPayForm').addEventListener('submit', e => {
+      e.preventDefault();
+      const debtId = document.getElementById('payDebtId').value;
+      const payAmt = parseFloat(document.getElementById('payAmount').value);
+      const payDate = document.getElementById('payDate').value;
+      const d = state.debts.find(x => x.id === debtId);
+      if (!d || isNaN(payAmt) || payAmt <= 0) return;
+
+      const dCurr = d.currency || state.currency;
+      d.paidAmount = Math.min(Number(d.totalAmount), Number(d.paidAmount) + payAmt);
+      state.transactions.push({
+        id: 'tx_' + Date.now(),
+        type: 'income',
+        amount: payAmt,
+        currency: dCurr,
+        category: 'تحصيل ديون',
+        date: payDate,
+        method: 'نقدي',
+        note: `تحصيل دفعة من ${d.name}`,
+        details: d.note || 'دفعة تحصيل دين مسجل'
+      });
+
+      if (d.paidAmount >= d.totalAmount) {
+        state.schedules.forEach(s => { if (s.debtId === d.id) s.status = 'completed'; });
+      }
+
+      saveState();
+      closeModal('debtPayModal');
+      renderAll();
+      showToast('تم تسجيل الدفعة وإضافتها للمدخول');
+    });
+
+    function deleteDebt(id) {
+      state.debts = state.debts.filter(d => d.id !== id);
+      saveState();
+      renderAll();
+      showToast('تم حذف سجل الدين');
+    }
+
+    // ==================== RENDER SCHEDULE & CALENDAR ====================
+    document.querySelectorAll('.sched-filter-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        schedFilter = btn.dataset.schedFilter;
+        selectedCalDate = '';
+        document.getElementById('btnClearDateFilter').classList.add('hidden');
+        document.querySelectorAll('.sched-filter-btn').forEach(b => {
+          const active = b.dataset.schedFilter === schedFilter;
+          b.className = `sched-filter-btn text-xs font-bold px-3 py-1.5 rounded-lg ${active ? 'bg-teal-700 text-white' : 'bg-slate-100 text-slate-700'}`;
+        });
+        renderSchedule();
+      });
+    });
+
+    document.getElementById('calPrevMonth').addEventListener('click', () => {
+      calViewDate.setMonth(calViewDate.getMonth() - 1);
+      renderSchedule();
+    });
+
+    document.getElementById('calNextMonth').addEventListener('click', () => {
+      calViewDate.setMonth(calViewDate.getMonth() + 1);
+      renderSchedule();
+    });
+
+    document.getElementById('btnClearDateFilter').addEventListener('click', () => {
+      selectedCalDate = '';
+      document.getElementById('btnClearDateFilter').classList.add('hidden');
+      renderSchedule();
+    });
+
+    function selectCalendarDate(isoDate) {
+      selectedCalDate = isoDate;
+      document.getElementById('btnClearDateFilter').classList.remove('hidden');
+      renderSchedule();
+    }
+
+    function renderSchedule() {
+      const today = todayISO();
+      const year = calViewDate.getFullYear();
+      const month = calViewDate.getMonth();
+      const monthNames = ['يناير', 'فبراير', 'مارس', 'أبريل', 'مايو', 'يونيو', 'يوليو', 'أغسطس', 'سبتمبر', 'أكتوبر', 'نوفمبر', 'ديسمبر'];
+      document.getElementById('calMonthTitle').textContent = `${monthNames[month]} ${year}`;
+
+      const firstDay = new Date(year, month, 1);
+      const startOffset = (firstDay.getDay() + 1) % 7;
+      const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+      const calGrid = document.getElementById('calendarDaysGrid');
+      let cellsHtml = '';
+      for (let i = 0; i < startOffset; i++) cellsHtml += `<div></div>`;
+
+      for (let day = 1; day <= daysInMonth; day++) {
+        const iso = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+        const dayScheds = state.schedules.filter(s => s.date === iso);
+        const hasOverdue = dayScheds.some(s => s.status === 'pending' && s.date < today);
+        const hasPending = dayScheds.some(s => s.status === 'pending' && s.date >= today);
+        const hasDone = dayScheds.some(s => s.status === 'completed');
+
+        const isSelected = selectedCalDate === iso;
+        const isTodayCell = iso === today;
+
+        let dotHtml = '';
+        if (hasOverdue) dotHtml = `<span class="w-1.5 h-1.5 rounded-full bg-rose-500 mx-auto mt-0.5 block"></span>`;
+        else if (hasPending) dotHtml = `<span class="w-1.5 h-1.5 rounded-full bg-amber-500 mx-auto mt-0.5 block"></span>`;
+        else if (hasDone) dotHtml = `<span class="w-1.5 h-1.5 rounded-full bg-emerald-500 mx-auto mt-0.5 block"></span>`;
+
+        cellsHtml += `
+          <button type="button" onclick="selectCalendarDate('${iso}')" class="py-1.5 rounded-lg text-xs font-bold transition flex flex-col items-center justify-center ${isSelected ? 'bg-teal-700 text-white' : isTodayCell ? 'bg-teal-50 text-teal-800 border border-teal-300' : 'hover:bg-slate-100 text-slate-700'}">
+            <span>${day}</span>
+            ${dotHtml}
+          </button>
+        `;
+      }
+      calGrid.innerHTML = cellsHtml;
+
+      const filtered = state.schedules.filter(s => {
+        if (selectedCalDate) return s.date === selectedCalDate;
+        if (schedFilter === 'overdue') return s.status === 'pending' && s.date < today;
+        if (schedFilter === 'today') return s.status === 'pending' && s.date === today;
+        if (schedFilter === 'upcoming') return s.status === 'pending' && s.date > today;
+        if (schedFilter === 'completed') return s.status === 'completed';
+        return true;
+      }).sort((a, b) => a.date.localeCompare(b.date));
+
+      const container = document.getElementById('scheduleListContainer');
+      if (filtered.length === 0) {
+        container.innerHTML = `<p class="text-sm text-slate-400 text-center py-8">لا توجد مواعيد قبض مطابقة</p>`;
+        return;
+      }
+
+      const recLabels = { once: 'مرة واحدة', weekly: 'أسبوعي', monthly: 'شهري' };
+      container.innerHTML = filtered.map(s => {
+        const isDone = s.status === 'completed';
+        const isOverdue = !isDone && s.date < today;
+        const isToday = !isDone && s.date === today;
+
+        const badge = isDone
+          ? `<span class="bg-emerald-100 text-emerald-700 text-xs font-bold px-2.5 py-0.5 rounded-full">تم التحصيل</span>`
+          : isOverdue
+            ? `<span class="bg-rose-100 text-rose-700 text-xs font-bold px-2.5 py-0.5 rounded-full">متأخر</span>`
+            : isToday
+              ? `<span class="bg-amber-100 text-amber-800 text-xs font-bold px-2.5 py-0.5 rounded-full">اليوم</span>`
+              : `<span class="bg-blue-50 text-blue-700 text-xs font-bold px-2.5 py-0.5 rounded-full">قادم</span>`;
+
+        return `
+          <div class="p-4 rounded-xl border ${isDone ? 'bg-slate-50 border-slate-100 opacity-75' : isOverdue ? 'bg-rose-50/40 border-rose-200' : 'bg-white border-slate-200'} flex flex-wrap items-center justify-between gap-3">
+            <div class="min-w-0">
+              <div class="flex items-center gap-2 flex-wrap">
+                <h4 class="font-extrabold text-sm text-slate-900">${escapeHtml(s.title)}</h4>
+                ${badge}
+                <span class="text-xs text-slate-500 bg-slate-100 px-2 py-0.5 rounded-md">${recLabels[s.recurrence] || 'مرة واحدة'}</span>
+              </div>
+              <p class="text-xs text-slate-500 mt-1">التاريخ: <strong class="text-slate-700">${s.date}</strong> • المبلغ: <strong class="text-teal-700">${fmt(s.amount, s.currency)}</strong> ${s.note ? `• ${escapeHtml(s.note)}` : ''}</p>
+            </div>
+            <div class="flex items-center gap-2">
+              ${!isDone ? `<button type="button" onclick="completeSchedule('${s.id}')" class="bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold px-3.5 py-2 rounded-xl transition">تأكيد القبض</button>` : ''}
+              <button type="button" onclick="deleteSchedule('${s.id}')" class="text-xs font-bold text-rose-600 hover:underline px-2">حذف</button>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function openScheduleModal() {
+      document.getElementById('scheduleForm').reset();
+      document.getElementById('schedDate').value = todayISO();
+      populateCurrencySelects();
+      const debtSel = document.getElementById('schedLinkedDebt');
+      const openDebts = state.debts.filter(d => Number(d.totalAmount) > Number(d.paidAmount));
+      debtSel.innerHTML = `<option value="">بدون ربط</option>` + openDebts.map(d => `<option value="${d.id}">${escapeHtml(d.name)} (${fmt(d.totalAmount - d.paidAmount, d.currency)})</option>`).join('');
+      openModal('scheduleModal');
+    }
+
+    document.getElementById('scheduleForm').addEventListener('submit', e => {
+      e.preventDefault();
+      const title = document.getElementById('schedTitle').value.trim();
+      const amount = parseFloat(document.getElementById('schedAmount').value);
+      const currency = document.getElementById('schedCurrency').value || state.currency;
+      const date = document.getElementById('schedDate').value;
+      const recurrence = document.getElementById('schedRecurrence').value;
+      const debtId = document.getElementById('schedLinkedDebt').value;
+      const note = document.getElementById('schedNote').value.trim();
+      if (!title || isNaN(amount) || amount <= 0 || !date) return;
+
+      state.schedules.push({ id: 'sch_' + Date.now(), title, amount, currency, date, recurrence, debtId, status: 'pending', note });
+      saveState();
+      closeModal('scheduleModal');
+      renderAll();
+      showToast('تم تحديد موعد القبض بنجاح');
+    });
+
+    function completeSchedule(schedId) {
+      const s = state.schedules.find(x => x.id === schedId);
+      if (!s || s.status === 'completed') return;
+      s.status = 'completed';
+
+      const sCurr = s.currency || state.currency;
+      state.transactions.push({
+        id: 'tx_' + Date.now(),
+        type: 'income',
+        amount: Number(s.amount),
+        currency: sCurr,
+        category: s.debtId ? 'تحصيل ديون' : 'إيرادات أخرى',
+        date: todayISO(),
+        method: 'نقدي',
+        note: `تحصيل موعد: ${s.title}`,
+        details: s.note || 'تحصيل مجدول'
+      });
+
+      if (s.debtId) {
+        const d = state.debts.find(x => x.id === s.debtId);
+        if (d) {
+          d.paidAmount = Math.min(Number(d.totalAmount), Number(d.paidAmount) + Number(s.amount));
+        }
+      }
+
+      if (s.recurrence === 'weekly' || s.recurrence === 'monthly') {
+        const nextD = new Date(s.date);
+        if (s.recurrence === 'weekly') nextD.setDate(nextD.getDate() + 7);
+        else nextD.setMonth(nextD.getMonth() + 1);
+        state.schedules.push({
+          ...s,
+          id: 'sch_' + (Date.now() + 1),
+          date: nextD.toISOString().split('T')[0],
+          status: 'pending'
+        });
+      }
+
+      saveState();
+      renderAll();
+      showToast('تم تأكيد القبض وإضافته إلى المدخول');
+    }
+
+    function deleteSchedule(id) {
+      state.schedules = state.schedules.filter(s => s.id !== id);
+      saveState();
+      renderAll();
+      showToast('تم حذف الموعد');
+    }
+
+    // ==================== TRANSACTION MODAL ====================
+    function setTxType(type) {
+      document.getElementById('txType').value = type;
+      const btnIn = document.getElementById('btnTypeIncome');
+      const btnEx = document.getElementById('btnTypeExpense');
+      btnIn.className = `py-2 rounded-lg text-sm font-bold transition ${type === 'income' ? 'bg-emerald-600 text-white shadow-xs' : 'text-slate-600'}`;
+      btnEx.className = `py-2 rounded-lg text-sm font-bold transition ${type === 'expense' ? 'bg-rose-600 text-white shadow-xs' : 'text-slate-600'}`;
+
+      const catSelect = document.getElementById('txCategory');
+      const cats = type === 'income' ? state.incomeCategories : Array.from(new Set([...state.expenseCategories, ...state.budgets.map(b => b.name)]));
+      catSelect.innerHTML = (cats.length ? cats : ['أخرى']).map(c => `<option value="${escapeHtml(c)}">${escapeHtml(c)}</option>`).join('');
+    }
+
+    function toggleQuickCatRow() {
+      const row = document.getElementById('quickCatRow');
+      row.classList.toggle('hidden');
+      if (!row.classList.contains('hidden')) document.getElementById('quickCatInput').focus();
+    }
+
+    function saveQuickCat() {
+      const val = document.getElementById('quickCatInput').value.trim();
+      if (!val) return;
+      const type = document.getElementById('txType').value;
+      const targetList = type === 'income' ? state.incomeCategories : state.expenseCategories;
+      if (!targetList.includes(val)) {
+        targetList.push(val);
+        saveState();
+      }
+      setTxType(type);
+      document.getElementById('txCategory').value = val;
+      document.getElementById('quickCatInput').value = '';
+      document.getElementById('quickCatRow').classList.add('hidden');
+      showToast(`تمت إضافة التصنيف: ${val}`);
+    }
+
+    function openTxModal(type = 'expense') {
+      document.getElementById('txForm').reset();
+      document.getElementById('txDate').value = todayISO();
+      document.getElementById('quickCatRow').classList.add('hidden');
+      populateCurrencySelects();
+      setTxType(type);
+      openModal('txModal');
+    }
+
+    document.getElementById('txForm').addEventListener('submit', e => {
+      e.preventDefault();
+      const type = document.getElementById('txType').value;
+      const amount = parseFloat(document.getElementById('txAmount').value);
+      const currency = document.getElementById('txCurrency').value || state.currency;
+      const category = document.getElementById('txCategory').value;
+      const date = document.getElementById('txDate').value;
+      const method = document.getElementById('txMethod').value;
+      const note = document.getElementById('txNote').value.trim();
+      const details = document.getElementById('txDetails').value.trim();
+      if (isNaN(amount) || amount <= 0 || !date || !note) return;
+
+      state.transactions.push({ id: 'tx_' + Date.now(), type, amount, currency, category, date, method, note, details });
+      saveState();
+      closeModal('txModal');
+      renderAll();
+      showToast(type === 'income' ? 'تم تسجيل المدخول' : 'تم تسجيل المصروف');
+    });
+
+    // ==================== BACKUP, IMPORT, CSV, RESET ====================
+    document.getElementById('btnExportJson').addEventListener('click', () => {
+      const blob = new Blob([JSON.stringify(state, null, 2)], { type: 'application/json' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = `alzaeem-pro-backup-${todayISO()}.json`;
+      a.click();
+      showToast('تم تصدير النسخة الاحتياطية');
+    });
+
+    document.getElementById('inputImportJson').addEventListener('change', e => {
+      const file = e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = ev => {
+        try {
+          const parsed = JSON.parse(ev.target.result);
+          if (parsed && Array.isArray(parsed.transactions) && Array.isArray(parsed.debts)) {
+            state = ensureStateFields(parsed);
+            populateCurrencySelects();
+            saveState();
+            renderAll();
+            showToast('تم استيراد البيانات بنجاح');
+          } else {
+            showToast('ملف النسخة الاحتياطية غير صالح');
+          }
+        } catch {
+          showToast('تعذر قراءة الملف');
+        }
+      };
+      reader.readAsText(file);
+      e.target.value = '';
+    });
+
+    document.getElementById('btnExportCsv').addEventListener('click', () => {
+      const header = ['التاريخ', 'النوع', 'التصنيف', 'الوصف', 'التفاصيل', 'طريقة الدفع', 'المبلغ', 'العملة'];
+      const rows = state.transactions.map(t => [
+        t.date,
+        t.type === 'income' ? 'مدخول' : 'مصروف',
+        `"${(t.category || '').replace(/"/g, '""')}"`,
+        `"${(t.note || '').replace(/"/g, '""')}"`,
+        `"${(t.details || '').replace(/"/g, '""')}"`,
+        `"${(t.method || '').replace(/"/g, '""')}"`,
+        t.amount,
+        `"${(t.currency || state.currency).replace(/"/g, '""')}"`
+      ].join(','));
+      const csv = '\uFEFF' + [header.join(','), ...rows].join('\n');
+      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = `alzaeem-transactions-${todayISO()}.csv`;
+      a.click();
+      showToast('تم تصدير ملف CSV');
+    });
+
+    document.getElementById('btnResetData').addEventListener('click', () => openModal('resetModal'));
+    document.getElementById('btnConfirmEmpty').addEventListener('click', () => {
+      state = ensureStateFields({
+        currency: state.currency || '$',
+        currencies: state.currencies,
+        incomeCategories: state.incomeCategories,
+        expenseCategories: state.expenseCategories,
+        budgets: JSON.parse(JSON.stringify(DEFAULT_EXPENSE_BUDGETS)),
+        transactions: [],
+        debts: [],
+        schedules: []
+      });
+      saveState();
+      closeModal('resetModal');
+      renderAll();
+      showToast('تم تصفير جميع السجلات');
+    });
+    document.getElementById('btnConfirmDemo').addEventListener('click', () => {
+      state = createDemoState();
+      populateCurrencySelects();
+      saveState();
+      closeModal('resetModal');
+      renderAll();
+      showToast('تمت استعادة البيانات التجريبية');
+    });
+
+    function escapeHtml(str) {
+      return String(str || '').replace(/[&<>"']/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[m]));
+    }
+
+    function renderAll() {
+      populateCurrencySelects();
+      renderDashboard();
+      renderTransactions();
+      renderBudget();
+      renderDebts();
+      renderSchedule();
+    }
+
+    window.addEventListener('DOMContentLoaded', renderAll);
+  </script>
+</body>
+</html>
