@@ -255,20 +255,22 @@
         </div>
       </div>
 
-      <div class="glass-card p-4 grid grid-cols-1 sm:grid-cols-5 gap-3">
-        <input id="txSearch" type="text" placeholder="ابحث بالوصف أو التفاصيل..." class="ios-input rounded-xl px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-sky-500" />
-        <select id="txFilterType" class="ios-input rounded-xl px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-sky-500">
-          <option value="all">جميع الحركات</option>
-          <option value="income">المدخول فقط</option>
-          <option value="expense">المصروف فقط</option>
-        </select>
-        <select id="txFilterCategory" class="ios-input rounded-xl px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-sky-500">
-          <option value="all">جميع التصنيفات</option>
-        </select>
-        <select id="txFilterCurrency" class="ios-input rounded-xl px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-sky-500">
-          <option value="all">جميع العملات</option>
-        </select>
-        <input id="txFilterMonth" type="month" class="ios-input rounded-xl px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-sky-500" />
+      <div class="glass-card p-3 sm:p-4 space-y-2 sm:space-y-0 sm:grid sm:grid-cols-5 sm:gap-3">
+        <input id="txSearch" type="text" placeholder="ابحث بالوصف أو التفاصيل..." class="ios-input w-full rounded-xl px-3.5 py-2 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-sky-500" />
+        <div class="grid grid-cols-4 gap-1.5 sm:col-span-4 sm:gap-3">
+          <select id="txFilterType" class="ios-input w-full rounded-xl px-1.5 sm:px-3 py-2 text-[11px] sm:text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-sky-500">
+            <option value="all">الكل</option>
+            <option value="income">المدخول</option>
+            <option value="expense">المصروف</option>
+          </select>
+          <select id="txFilterCategory" class="ios-input w-full rounded-xl px-1.5 sm:px-3 py-2 text-[11px] sm:text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-sky-500">
+            <option value="all">التصنيفات</option>
+          </select>
+          <select id="txFilterCurrency" class="ios-input w-full rounded-xl px-1.5 sm:px-3 py-2 text-[11px] sm:text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-sky-500">
+            <option value="all">العملات</option>
+          </select>
+          <input id="txFilterMonth" type="month" class="ios-input w-full rounded-xl px-1 sm:px-3 py-2 text-[10px] sm:text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-sky-500" />
+        </div>
       </div>
 
       <div class="glass-card overflow-hidden">
@@ -325,44 +327,42 @@
     <!-- ==================== TAB 4: PEOPLE & DEBTS ==================== -->
     <section id="view-debts" class="tab-view hidden space-y-5">
       <div class="space-y-3">
-        <div class="flex flex-wrap items-center justify-between gap-2">
-          <div>
-            <h2 class="text-xl font-extrabold text-slate-900">الأشخاص وتحصيل الديون</h2>
-            <p class="text-xs sm:text-sm text-slate-600">إضافة الأشخاص ومتابعة ديونهم ودفعاتهم المالية</p>
-          </div>
-          <button id="btnExportDebtsExcel" type="button" onclick="exportVisibleDebtsCsv()" class="ios-btn bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold px-3.5 py-2 rounded-xl shadow-xs flex items-center gap-1.5">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
-            تصدير السجل إكسل
-          </button>
+        <div>
+          <h2 class="text-xl font-extrabold text-slate-900">الأشخاص وتحصيل الديون</h2>
+          <p class="text-xs sm:text-sm text-slate-600">إضافة الأشخاص ومتابعة ديونهم ودفعاتهم المالية</p>
         </div>
-        <div class="grid grid-cols-3 sm:flex sm:flex-wrap items-center gap-1.5 sm:gap-2">
-          <button type="button" onclick="openPersonModal()" class="ios-btn bg-gradient-to-br from-indigo-500 to-violet-600 text-white text-[11px] sm:text-sm font-bold px-2 sm:px-4 py-2 rounded-xl sm:rounded-2xl shadow-sm text-center truncate">+ إضافة شخص</button>
-          <button type="button" onclick="pickDeviceContact(true)" class="ios-btn bg-white/80 hover:bg-white text-indigo-700 border border-white text-[11px] sm:text-sm font-bold px-2 sm:px-3.5 py-2 rounded-xl sm:rounded-2xl shadow-xs text-center truncate">جهات الاتصال</button>
-          <button type="button" onclick="openDebtModal()" class="ios-btn bg-gradient-to-br from-amber-500 to-amber-600 text-white text-[11px] sm:text-sm font-bold px-2 sm:px-4 py-2 rounded-xl sm:rounded-2xl shadow-sm text-center truncate">+ دين جديد</button>
+
+        <!-- All 4 top buttons in 1 single row -->
+        <div class="grid grid-cols-4 sm:flex sm:flex-wrap items-center gap-1.5 sm:gap-2">
+          <button type="button" onclick="openPersonModal()" class="ios-btn bg-gradient-to-br from-indigo-500 to-violet-600 text-white text-[10px] sm:text-sm font-bold px-1.5 sm:px-4 py-2 rounded-xl sm:rounded-2xl shadow-sm text-center truncate">+ شخص</button>
+          <button type="button" onclick="pickDeviceContact(true)" class="ios-btn bg-white/80 hover:bg-white text-indigo-700 border border-white text-[10px] sm:text-sm font-bold px-1.5 sm:px-3.5 py-2 rounded-xl sm:rounded-2xl shadow-xs text-center truncate">جهات الاتصال</button>
+          <button type="button" onclick="openDebtModal()" class="ios-btn bg-gradient-to-br from-amber-500 to-amber-600 text-white text-[10px] sm:text-sm font-bold px-1.5 sm:px-4 py-2 rounded-xl sm:rounded-2xl shadow-sm text-center truncate">+ دين جديد</button>
+          <button id="btnExportDebtsExcel" type="button" onclick="exportVisibleDebtsCsv()" class="ios-btn bg-emerald-600 hover:bg-emerald-700 text-white text-[10px] sm:text-sm font-bold px-1.5 sm:px-3.5 py-2 rounded-xl sm:rounded-2xl shadow-xs text-center truncate">تصدير إكسل</button>
+        </div>
+
+        <!-- 3 Debt Summary Cards immediately below buttons in 1 single row -->
+        <div class="grid grid-cols-3 gap-2 sm:gap-4">
+          <div class="glass-card p-3 sm:p-5">
+            <span class="text-[10px] sm:text-xs font-bold text-slate-600 block truncate">إجمالي الديون</span>
+            <p id="debtTotalAmount" class="text-sm sm:text-2xl font-extrabold text-slate-900 mt-1 break-words">0</p>
+          </div>
+          <div class="glass-card p-3 sm:p-5">
+            <span class="text-[10px] sm:text-xs font-bold text-slate-600 block truncate">المبالغ المحصلة</span>
+            <p id="debtTotalCollected" class="text-sm sm:text-2xl font-extrabold text-emerald-600 mt-1 break-words">0</p>
+          </div>
+          <div class="glass-card p-3 sm:p-5">
+            <span class="text-[10px] sm:text-xs font-bold text-slate-600 block truncate">المتبقي</span>
+            <p id="debtTotalRemaining" class="text-sm sm:text-2xl font-extrabold text-amber-600 mt-1 break-words">0</p>
+          </div>
         </div>
       </div>
 
-      <div class="glass-card p-5 space-y-3">
+      <div class="glass-card p-4 sm:p-5 space-y-3">
         <div class="flex items-center justify-between">
           <h3 class="text-base font-extrabold text-slate-900">الأشخاص والجهات المسجلون</h3>
           <span class="text-xs font-bold text-slate-500" id="peopleCountLabel"></span>
         </div>
         <div id="peopleGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3"></div>
-      </div>
-
-      <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <div class="glass-card p-5">
-          <span class="text-xs font-bold text-slate-600">إجمالي الديون المسجلة</span>
-          <p id="debtTotalAmount" class="text-xl sm:text-2xl font-extrabold text-slate-900 mt-1">0</p>
-        </div>
-        <div class="glass-card p-5">
-          <span class="text-xs font-bold text-slate-600">المبالغ المحصلة</span>
-          <p id="debtTotalCollected" class="text-xl sm:text-2xl font-extrabold text-emerald-600 mt-1">0</p>
-        </div>
-        <div class="glass-card p-5">
-          <span class="text-xs font-bold text-slate-600">المتبقي قيد التحصيل</span>
-          <p id="debtTotalRemaining" class="text-xl sm:text-2xl font-extrabold text-amber-600 mt-1">0</p>
-        </div>
       </div>
 
       <div class="flex flex-wrap items-center gap-2">
@@ -579,6 +579,23 @@
           نقل البيانات الحالية إلى هذا الحساب (إذا كان حساباً جديداً)
         </label>
         <button type="submit" class="ios-btn w-full bg-gradient-to-br from-indigo-500 to-violet-600 text-white font-bold py-3 rounded-2xl">دخول وتفعيل الحساب</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Sign Out Password Modal -->
+  <div id="signOutModal" class="fixed inset-0 bg-slate-900/35 backdrop-blur-md z-50 hidden items-center justify-center p-4">
+    <div class="ios-modal max-w-sm w-full p-6 animate-slide-up text-center space-y-4">
+      <div class="w-12 h-12 rounded-full bg-rose-500/15 text-rose-600 flex items-center justify-center mx-auto text-xl font-bold">🔒</div>
+      <h3 class="text-lg font-extrabold text-slate-900">تأكيد الخروج من الحساب</h3>
+      <p class="text-xs text-slate-600">أدخل رمز الحماية الخاص بالحساب (أو <strong class="text-slate-800">0000</strong> إذا لم تحدد رمزاً) لتأكيد الخروج.</p>
+      <form id="signOutForm" class="space-y-3">
+        <input id="signOutPasswordInput" type="password" inputmode="numeric" maxlength="10" required placeholder="••••" class="ios-input w-full rounded-xl px-3.5 py-2.5 text-center text-base font-extrabold tracking-widest focus:outline-none focus:ring-2 focus:ring-rose-500" />
+        <p id="signOutPasswordError" class="hidden text-xs font-bold text-rose-600">كلمة المرور غير صحيحة!</p>
+        <div class="flex gap-2">
+          <button type="submit" class="ios-btn flex-1 bg-rose-600 hover:bg-rose-700 text-white font-bold py-2.5 rounded-2xl text-sm">تأكيد الخروج</button>
+          <button type="button" onclick="closeModal('signOutModal')" class="ios-btn flex-1 bg-slate-200/70 hover:bg-slate-200 text-slate-700 font-bold py-2.5 rounded-2xl text-sm">إلغاء</button>
+        </div>
       </form>
     </div>
   </div>
@@ -1233,12 +1250,35 @@
     });
 
     function signOutAccount() {
+      document.getElementById('signOutPasswordInput').value = '';
+      document.getElementById('signOutPasswordError').classList.add('hidden');
+      openModal('signOutModal');
+    }
+
+    document.getElementById('signOutForm').addEventListener('submit', e => {
+      e.preventDefault();
+      const entered = document.getElementById('signOutPasswordInput').value.trim();
+      let expected = '0000';
+      try {
+        const metas = JSON.parse(localStorage.getItem(ACCOUNTS_META_KEY) || '{}');
+        if (activeAccount && activeAccount.email && metas[activeAccount.email] && metas[activeAccount.email].pin) {
+          expected = metas[activeAccount.email].pin;
+        }
+      } catch (err) {}
+
+      if (entered !== expected) {
+        document.getElementById('signOutPasswordError').classList.remove('hidden');
+        showToast('كلمة المرور غير صحيحة');
+        return;
+      }
+
       activeAccount = null;
       try { localStorage.removeItem(ACTIVE_ACCOUNT_KEY); } catch (err) {}
       state = loadState();
+      closeModal('signOutModal');
       renderAll();
       showToast('تم تسجيل الخروج والعودة للوضع المحلي');
-    }
+    });
 
     function sendBackupToEmail() {
       const email = activeAccount && activeAccount.email ? activeAccount.email : '';
