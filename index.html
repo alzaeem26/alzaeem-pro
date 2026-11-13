@@ -567,17 +567,18 @@
   <div id="personModal" class="fixed inset-0 bg-slate-900/35 backdrop-blur-md z-50 hidden items-center justify-center p-4">
     <div class="ios-modal max-w-md w-full p-6 animate-slide-up">
       <div class="flex items-center justify-between mb-4">
-        <h3 class="text-lg font-extrabold text-slate-900">إضافة شخص / جهة للتعامل</h3>
+        <h3 id="personModalTitle" class="text-lg font-extrabold text-slate-900">إضافة شخص / جهة للتعامل</h3>
         <button type="button" onclick="closeModal('personModal')" class="w-8 h-8 rounded-full bg-slate-200/70 hover:bg-slate-200 text-slate-600 flex items-center justify-center text-sm font-bold">✕</button>
       </div>
       <form id="personForm" class="space-y-4">
+        <input type="hidden" id="editPersonId" value="" />
         <div>
           <label class="block text-xs font-bold text-slate-600 mb-1">اسم الشخص أو الجهة</label>
           <input id="personName" type="text" required placeholder="مثال: أحمد محمود، شركة النور..." class="ios-input w-full rounded-xl px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-sky-500" />
         </div>
         <div>
-          <label class="block text-xs font-bold text-slate-600 mb-1">رقم الهاتف (اختياري)</label>
-          <input id="personPhone" type="tel" inputmode="numeric" placeholder="09xxxxxxxx" class="ios-input w-full rounded-xl px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-sky-500" />
+          <label class="block text-xs font-bold text-slate-600 mb-1">رقم الهاتف / واتساب</label>
+          <input id="personPhone" type="tel" inputmode="numeric" placeholder="مثال: 09xxxxxxxx أو 9639xxxxxxxx" class="ios-input w-full rounded-xl px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-sky-500" />
         </div>
         <div>
           <label class="block text-xs font-bold text-slate-600 mb-1">ملاحظات (اختياري)</label>
@@ -828,6 +829,18 @@
             </select>
           </div>
         </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-bold text-slate-600 mb-1">الشخص / الجهة</label>
+            <select id="schedPersonSelect" class="ios-input w-full rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-sky-500">
+              <option value="">بدون تحديد</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-600 mb-1">رقم الواتساب</label>
+            <input id="schedPhone" type="tel" inputmode="numeric" placeholder="09xxxxxxxx" class="ios-input w-full rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500" />
+          </div>
+        </div>
         <div>
           <label class="block text-xs font-bold text-slate-600 mb-1">ربط بدين (اختياري)</label>
           <select id="schedLinkedDebt" class="ios-input w-full rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-sky-500">
@@ -838,6 +851,10 @@
           <label class="block text-xs font-bold text-slate-600 mb-1">تفاصيل وملاحظات</label>
           <input id="schedNote" type="text" placeholder="مكان التحصيل أو تفاصيل إضافية..." class="ios-input w-full rounded-xl px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-sky-500" />
         </div>
+        <label class="flex items-center gap-2 text-xs font-bold text-emerald-800 bg-emerald-500/10 border border-emerald-200 rounded-xl p-2.5 cursor-pointer">
+          <input id="schedSendWhatsapp" type="checkbox" checked class="rounded text-emerald-600 focus:ring-emerald-500" />
+          إرسال إشعار بالموعد عبر واتساب فوراً عند الحفظ
+        </label>
         <button type="submit" class="ios-btn w-full bg-gradient-to-br from-sky-500 to-teal-700 text-white font-bold py-3 rounded-2xl">حفظ الموعد</button>
       </form>
     </div>
@@ -1101,6 +1118,52 @@
       if (debtPerson) {
         debtPerson.innerHTML = `<option value="">-- اختر شخصاً أو أدخل اسماً بالأسفل --</option>` + state.people.map(p => `<option value="${p.id}">${escapeHtml(p.name)}</option>`).join('');
       }
+
+      const schedPerson = document.getElementById('schedPersonSelect');
+      if (schedPerson) {
+        schedPerson.innerHTML = `<option value="">بدون تحديد</option>` + state.people.map(p => `<option value="${p.id}">${escapeHtml(p.name)}</option>`).join('');
+      }
+    }
+
+    function formatWaPhone(raw) {
+      let digits = String(raw || '').replace(/[^\d]/g, '');
+      if (!digits) return '';
+      if (digits.startsWith('00')) digits = digits.slice(2);
+      if (digits.startsWith('09') && digits.length === 10) digits = '963' + digits.slice(1);
+      else if (digits.startsWith('0') && digits.length >= 9) digits = '963' + digits.slice(1);
+      return digits;
+    }
+
+    function getSchedulePhone(s) {
+      if (s.phone) return s.phone;
+      if (s.personName) {
+        const p = state.people.find(x => x.name === s.personName);
+        if (p && p.phone) return p.phone;
+      }
+      if (s.debtId) {
+        const d = state.debts.find(x => x.id === s.debtId);
+        if (d) {
+          if (d.phone) return d.phone;
+          const p = state.people.find(x => x.name === d.name);
+          if (p && p.phone) return p.phone;
+        }
+      }
+      return '';
+    }
+
+    function sendWhatsappReminder(schedId) {
+      const s = state.schedules.find(x => x.id === schedId);
+      if (!s) return;
+      const rawPhone = getSchedulePhone(s);
+      const waPhone = formatWaPhone(rawPhone);
+      if (!waPhone) {
+        showToast('لا يوجد رقم هاتف مسجل لهذا الموعد');
+        return;
+      }
+      const sCurr = s.currency || state.currency;
+      const msg = `السلام عليكم، نود تذكيركم بموعد القبض/التحصيل (${s.title}) بمبلغ ${fmt(s.amount, sCurr)} بتاريخ ${s.date}.${s.note ? ' ملاحظة: ' + s.note : ''} — الزعيم برو`;
+      const url = `https://wa.me/${waPhone}?text=${encodeURIComponent(msg)}`;
+      window.open(url, '_blank', 'noopener');
     }
 
     function switchTab(tabName) {
@@ -1129,17 +1192,47 @@
     });
 
     // ==================== PEOPLE MANAGEMENT ====================
-    function openPersonModal() {
+    function openPersonModal(personId = '') {
       document.getElementById('personForm').reset();
+      document.getElementById('editPersonId').value = personId || '';
+      if (personId) {
+        const p = state.people.find(x => x.id === personId);
+        if (p) {
+          document.getElementById('personModalTitle').textContent = 'تعديل بيانات الشخص';
+          document.getElementById('personName').value = p.name;
+          document.getElementById('personPhone').value = p.phone || '';
+          document.getElementById('personNote').value = p.note || '';
+        }
+      } else {
+        document.getElementById('personModalTitle').textContent = 'إضافة شخص / جهة للتعامل';
+      }
       openModal('personModal');
     }
 
     document.getElementById('personForm').addEventListener('submit', e => {
       e.preventDefault();
+      const editId = document.getElementById('editPersonId').value;
       const name = document.getElementById('personName').value.trim();
       const phone = document.getElementById('personPhone').value.trim();
       const note = document.getElementById('personNote').value.trim();
       if (!name) return;
+
+      if (editId) {
+        const p = state.people.find(x => x.id === editId);
+        if (p) {
+          const oldName = p.name;
+          p.name = name;
+          p.phone = phone;
+          p.note = note;
+          state.debts.forEach(d => { if (d.name === oldName) { d.name = name; if (phone) d.phone = phone; } });
+          saveState();
+          closeModal('personModal');
+          renderAll();
+          showToast(`تم تحديث بيانات ${name}`);
+          return;
+        }
+      }
+
       if (state.people.some(p => p.name === name)) {
         showToast('هذا الشخص مسجل مسبقاً');
         return;
@@ -1204,7 +1297,10 @@
                 <h4 class="font-extrabold text-sm text-slate-900 truncate">${escapeHtml(p.name)}</h4>
                 <p class="text-[11px] text-slate-500 truncate">${p.phone ? `📞 ${escapeHtml(p.phone)}` : 'بدون رقم'} ${p.note ? `• ${escapeHtml(p.note)}` : ''}</p>
               </div>
-              <button type="button" onclick="deletePerson('${p.id}')" class="text-xs text-rose-500 hover:text-rose-700 font-bold" title="حذف الشخص">×</button>
+              <div class="flex items-center gap-1.5 shrink-0">
+                <button type="button" onclick="openPersonModal('${p.id}')" class="text-[11px] text-sky-700 hover:underline font-bold">تعديل</button>
+                <button type="button" onclick="deletePerson('${p.id}')" class="text-xs text-rose-500 hover:text-rose-700 font-bold" title="حذف الشخص">×</button>
+              </div>
             </div>
             <div class="flex items-center justify-between gap-2 pt-2 border-t border-white/60">
               <span class="text-[11px] text-slate-600">المتبقي: <strong class="text-amber-700">${remText}</strong></span>
@@ -1370,7 +1466,10 @@
                 </div>
                 <p class="text-xs text-slate-600 mt-0.5">${fmt(s.amount, s.currency)}</p>
               </div>
-              <button type="button" onclick="openScheduleCollectModal('${s.id}')" class="ios-btn shrink-0 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold px-3 py-1.5 rounded-xl shadow-xs">قبض</button>
+              <div class="flex items-center gap-1.5 shrink-0">
+                ${getSchedulePhone(s) ? `<button type="button" onclick="sendWhatsappReminder('${s.id}')" class="ios-btn bg-emerald-500/15 hover:bg-emerald-500/25 text-emerald-800 text-xs font-bold px-2.5 py-1.5 rounded-xl" title="إرسال تذكير واتساب">واتساب</button>` : ''}
+                <button type="button" onclick="openScheduleCollectModal('${s.id}')" class="ios-btn bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold px-3 py-1.5 rounded-xl shadow-xs">قبض</button>
+              </div>
             </div>
           `;
         }).join('');
@@ -2020,6 +2119,7 @@
               <p class="text-xs text-slate-600 mt-1">التاريخ: <strong class="text-slate-800">${s.date}</strong> • المبلغ: <strong class="text-sky-800">${fmt(s.amount, s.currency)}</strong> ${s.note ? `• ${escapeHtml(s.note)}` : ''}</p>
             </div>
             <div class="flex items-center gap-2">
+              ${!isDone && getSchedulePhone(s) ? `<button type="button" onclick="sendWhatsappReminder('${s.id}')" class="ios-btn bg-emerald-500/15 hover:bg-emerald-500/25 text-emerald-800 text-xs font-bold px-3 py-2 rounded-xl">واتساب</button>` : ''}
               ${!isDone ? `<button type="button" onclick="openScheduleCollectModal('${s.id}')" class="ios-btn bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold px-3.5 py-2 rounded-xl shadow-xs">قبض</button>` : ''}
               <button type="button" onclick="deleteSchedule('${s.id}')" class="text-xs font-bold text-rose-600 hover:underline px-2">حذف</button>
             </div>
@@ -2031,12 +2131,39 @@
     function openScheduleModal() {
       document.getElementById('scheduleForm').reset();
       document.getElementById('schedDate').value = todayISO();
+      document.getElementById('schedSendWhatsapp').checked = true;
       populateCurrencySelects();
+      populatePeopleSelects();
       const debtSel = document.getElementById('schedLinkedDebt');
       const openDebts = state.debts.filter(d => Number(d.totalAmount) > Number(d.paidAmount));
       debtSel.innerHTML = `<option value="">بدون ربط</option>` + openDebts.map(d => `<option value="${d.id}">${escapeHtml(d.name)} (${fmt(d.totalAmount - d.paidAmount, d.currency)})</option>`).join('');
       openModal('scheduleModal');
     }
+
+    document.getElementById('schedPersonSelect').addEventListener('change', e => {
+      const p = state.people.find(x => x.id === e.target.value);
+      if (p) {
+        document.getElementById('schedPhone').value = p.phone || '';
+        if (!document.getElementById('schedTitle').value.trim()) {
+          document.getElementById('schedTitle').value = `تحصيل من ${p.name}`;
+        }
+      }
+    });
+
+    document.getElementById('schedLinkedDebt').addEventListener('change', e => {
+      const d = state.debts.find(x => x.id === e.target.value);
+      if (d) {
+        const rem = Math.max(0, Number(d.totalAmount) - Number(d.paidAmount));
+        if (rem > 0) document.getElementById('schedAmount').value = rem;
+        document.getElementById('schedCurrency').value = d.currency || state.currency;
+        if (!document.getElementById('schedTitle').value.trim()) {
+          document.getElementById('schedTitle').value = `تحصيل دين: ${d.name}`;
+        }
+        const p = state.people.find(x => x.name === d.name);
+        if (p) document.getElementById('schedPersonSelect').value = p.id;
+        document.getElementById('schedPhone').value = d.phone || (p ? p.phone : '') || '';
+      }
+    });
 
     document.getElementById('scheduleForm').addEventListener('submit', e => {
       e.preventDefault();
@@ -2046,14 +2173,23 @@
       const date = document.getElementById('schedDate').value;
       const recurrence = document.getElementById('schedRecurrence').value;
       const debtId = document.getElementById('schedLinkedDebt').value;
+      const phone = document.getElementById('schedPhone').value.trim();
+      const personId = document.getElementById('schedPersonSelect').value;
+      const personObj = state.people.find(x => x.id === personId);
+      const personName = personObj ? personObj.name : '';
       const note = document.getElementById('schedNote').value.trim();
+      const sendWa = document.getElementById('schedSendWhatsapp').checked;
       if (!title || isNaN(amount) || amount <= 0 || !date) return;
 
-      state.schedules.push({ id: 'sch_' + Date.now(), title, amount, currency, date, recurrence, debtId, status: 'pending', note });
+      const schId = 'sch_' + Date.now();
+      state.schedules.push({ id: schId, title, amount, currency, date, recurrence, debtId, personName, phone, status: 'pending', note });
       saveState();
       closeModal('scheduleModal');
       renderAll();
       showToast('تم تحديد موعد القبض بنجاح');
+      if (sendWa && formatWaPhone(phone)) {
+        sendWhatsappReminder(schId);
+      }
     });
 
     function openScheduleCollectModal(schedId) {
