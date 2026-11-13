@@ -129,7 +129,7 @@
         </button>
         <button type="button" data-tab="settings" class="tab-btn ios-btn whitespace-nowrap px-3.5 py-2 rounded-xl text-xs sm:text-sm font-bold text-slate-600 hover:bg-white/60 flex items-center gap-1.5">
           <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"/></svg>
-          العملات والنسخ
+          الإعدادات والتهيئة
         </button>
       </nav>
     </div>
@@ -304,18 +304,18 @@
         </div>
       </div>
 
-      <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <div class="glass-card p-5">
-          <span class="text-xs font-bold text-slate-600">إجمالي الميزانية المخططة</span>
-          <p id="budgetTotalLimit" class="text-2xl font-extrabold text-slate-900 mt-1">0</p>
+      <div class="grid grid-cols-3 gap-2 sm:gap-4">
+        <div class="glass-card p-3 sm:p-5">
+          <span class="text-[10px] sm:text-xs font-bold text-slate-600 block truncate">إجمالي الميزانية</span>
+          <p id="budgetTotalLimit" class="text-sm sm:text-2xl font-extrabold text-slate-900 mt-1 break-words">0</p>
         </div>
-        <div class="glass-card p-5">
-          <span class="text-xs font-bold text-slate-600">المصروف الفعلي في الشهر</span>
-          <p id="budgetTotalSpent" class="text-2xl font-extrabold text-rose-600 mt-1">0</p>
+        <div class="glass-card p-3 sm:p-5">
+          <span class="text-[10px] sm:text-xs font-bold text-slate-600 block truncate">المصروف الفعلي</span>
+          <p id="budgetTotalSpent" class="text-sm sm:text-2xl font-extrabold text-rose-600 mt-1 break-words">0</p>
         </div>
-        <div class="glass-card p-5">
-          <span class="text-xs font-bold text-slate-600">المتبقي من الميزانية</span>
-          <p id="budgetTotalRemaining" class="text-2xl font-extrabold text-emerald-600 mt-1">0</p>
+        <div class="glass-card p-3 sm:p-5">
+          <span class="text-[10px] sm:text-xs font-bold text-slate-600 block truncate">المتبقي</span>
+          <p id="budgetTotalRemaining" class="text-sm sm:text-2xl font-extrabold text-emerald-600 mt-1 break-words">0</p>
         </div>
       </div>
 
@@ -324,15 +324,21 @@
 
     <!-- ==================== TAB 4: PEOPLE & DEBTS ==================== -->
     <section id="view-debts" class="tab-view hidden space-y-5">
-      <div class="flex flex-wrap items-center justify-between gap-3">
-        <div>
-          <h2 class="text-xl font-extrabold text-slate-900">الأشخاص وتحصيل الديون</h2>
-          <p class="text-sm text-slate-600">إضافة الأشخاص والجهات المتعامل معهم، ومتابعة ديونهم ودفعاتهم المالية</p>
+      <div class="space-y-3">
+        <div class="flex flex-wrap items-center justify-between gap-2">
+          <div>
+            <h2 class="text-xl font-extrabold text-slate-900">الأشخاص وتحصيل الديون</h2>
+            <p class="text-xs sm:text-sm text-slate-600">إضافة الأشخاص ومتابعة ديونهم ودفعاتهم المالية</p>
+          </div>
+          <button id="btnExportDebtsExcel" type="button" onclick="exportVisibleDebtsCsv()" class="ios-btn bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold px-3.5 py-2 rounded-xl shadow-xs flex items-center gap-1.5">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+            تصدير السجل إكسل
+          </button>
         </div>
-        <div class="flex flex-wrap items-center gap-2">
-          <button type="button" onclick="openPersonModal()" class="ios-btn bg-gradient-to-br from-indigo-500 to-violet-600 text-white text-sm font-bold px-4 py-2.5 rounded-2xl shadow-sm">+ إضافة شخص</button>
-          <button type="button" onclick="pickDeviceContact(true)" class="ios-btn bg-white/80 hover:bg-white text-indigo-700 border border-white text-sm font-bold px-3.5 py-2.5 rounded-2xl shadow-xs">من جهات الاتصال</button>
-          <button type="button" onclick="openDebtModal()" class="ios-btn bg-gradient-to-br from-amber-500 to-amber-600 text-white text-sm font-bold px-4 py-2.5 rounded-2xl shadow-sm">+ إضافة دين جديد</button>
+        <div class="grid grid-cols-3 sm:flex sm:flex-wrap items-center gap-1.5 sm:gap-2">
+          <button type="button" onclick="openPersonModal()" class="ios-btn bg-gradient-to-br from-indigo-500 to-violet-600 text-white text-[11px] sm:text-sm font-bold px-2 sm:px-4 py-2 rounded-xl sm:rounded-2xl shadow-sm text-center truncate">+ إضافة شخص</button>
+          <button type="button" onclick="pickDeviceContact(true)" class="ios-btn bg-white/80 hover:bg-white text-indigo-700 border border-white text-[11px] sm:text-sm font-bold px-2 sm:px-3.5 py-2 rounded-xl sm:rounded-2xl shadow-xs text-center truncate">جهات الاتصال</button>
+          <button type="button" onclick="openDebtModal()" class="ios-btn bg-gradient-to-br from-amber-500 to-amber-600 text-white text-[11px] sm:text-sm font-bold px-2 sm:px-4 py-2 rounded-xl sm:rounded-2xl shadow-sm text-center truncate">+ دين جديد</button>
         </div>
       </div>
 
@@ -423,21 +429,23 @@
         <span id="fullLogTotalCount" class="text-xs font-extrabold bg-white/75 border border-white px-3.5 py-2 rounded-full text-slate-700">0 سجل</span>
       </div>
 
-      <div class="glass-card p-4 grid grid-cols-1 sm:grid-cols-4 gap-3">
-        <input id="fullLogSearch" type="text" placeholder="ابحث باسم الشخص، الوصف، التفاصيل..." class="ios-input rounded-xl px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-sky-500" />
-        <select id="fullLogType" class="ios-input rounded-xl px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-sky-500">
-          <option value="all">جميع السجلات</option>
-          <option value="income">المدخول فقط</option>
-          <option value="expense">المصروف فقط</option>
-          <option value="debt">الديون فقط</option>
-          <option value="schedule">مواعيد القبض فقط</option>
-        </select>
-        <select id="fullLogCurrency" class="ios-input rounded-xl px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-sky-500">
-          <option value="all">جميع العملات</option>
-        </select>
-        <select id="fullLogPerson" class="ios-input rounded-xl px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-sky-500">
-          <option value="all">جميع الأشخاص</option>
-        </select>
+      <div class="glass-card p-3 sm:p-4 space-y-2.5 sm:space-y-0 sm:grid sm:grid-cols-4 sm:gap-3">
+        <input id="fullLogSearch" type="text" placeholder="ابحث باسم الشخص، الوصف، التفاصيل..." class="ios-input w-full rounded-xl px-3.5 py-2 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-sky-500" />
+        <div class="grid grid-cols-3 gap-1.5 sm:col-span-3 sm:gap-3">
+          <select id="fullLogType" class="ios-input w-full rounded-xl px-2 sm:px-3 py-2 text-[11px] sm:text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-sky-500">
+            <option value="all">كل السجلات</option>
+            <option value="income">المدخول</option>
+            <option value="expense">المصروف</option>
+            <option value="debt">الديون</option>
+            <option value="schedule">المواعيد</option>
+          </select>
+          <select id="fullLogCurrency" class="ios-input w-full rounded-xl px-2 sm:px-3 py-2 text-[11px] sm:text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-sky-500">
+            <option value="all">كل العملات</option>
+          </select>
+          <select id="fullLogPerson" class="ios-input w-full rounded-xl px-2 sm:px-3 py-2 text-[11px] sm:text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-sky-500">
+            <option value="all">كل الأشخاص</option>
+          </select>
+        </div>
       </div>
 
       <div class="glass-card overflow-hidden">
@@ -460,104 +468,81 @@
     </section>
 
     <!-- ==================== TAB 7: SETTINGS, CURRENCIES, BACKUPS & INSTALL ==================== -->
-    <section id="view-settings" class="tab-view hidden space-y-6">
-      <div class="flex flex-wrap items-center justify-between gap-3">
-        <div>
-          <h2 class="text-xl font-extrabold text-slate-900">العملات والتصنيفات والنسخ الاحتياطي</h2>
-          <p class="text-sm text-slate-600">التحكم بالعملات، التصنيفات الجاهزة، النسخ الاحتياطي، وتثبيت التطبيق على الموبايل</p>
-        </div>
-        <button id="btnInstallApp" type="button" class="ios-btn bg-gradient-to-br from-sky-500 to-teal-700 text-white text-xs sm:text-sm font-bold px-4 py-2.5 rounded-2xl shadow-md flex items-center gap-2">
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
-          تثبيت كاختصار تطبيق
+    <section id="view-settings" class="tab-view hidden space-y-3.5">
+      <div class="flex flex-wrap items-center justify-between gap-2">
+        <h2 class="text-lg sm:text-xl font-extrabold text-slate-900">الإعدادات والتهيئة</h2>
+        <button id="btnInstallApp" type="button" class="ios-btn bg-gradient-to-br from-sky-500 to-teal-700 text-white text-xs font-bold px-3 py-1.5 rounded-xl shadow-xs flex items-center gap-1.5">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
+          تثبيت كاختصار
         </button>
       </div>
 
-      <!-- Account & Private Email Backup Card -->
-      <div class="glass-card p-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <div class="space-y-1">
+      <!-- Compact Account & Private Email Backup Card -->
+      <div class="glass-card p-3.5 sm:p-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2.5">
+        <div class="space-y-0.5 min-w-0">
           <div class="flex items-center gap-2 flex-wrap">
-            <h3 class="text-base font-extrabold text-slate-900">الحساب الشخصي والخصوصية</h3>
-            <span id="accountStatusBadge" class="text-[11px] font-bold bg-emerald-500/15 text-emerald-800 px-2.5 py-0.5 rounded-full">حساب محلي معزول</span>
+            <h3 class="text-sm font-extrabold text-slate-900">الحساب الشخصي</h3>
+            <span id="accountStatusBadge" class="text-[10px] font-bold bg-emerald-500/15 text-emerald-800 px-2 py-0.5 rounded-full">حساب محلي معزول</span>
           </div>
-          <p id="accountCurrentInfo" class="text-xs text-slate-600">الوضع المحلي الافتراضي — سجل دخولك ببريدك الإلكتروني لعزل بياناتك وجهات اتصالك وإرسال النسخ لبريدك.</p>
-          <p class="text-[11px] text-teal-800 font-semibold">🔒 بياناتك وجهات اتصالك تُحفظ محلياً في جهازك ومفصولة لكل بريد إلكتروني ولا تُشارك مع أي حسابات أخرى.</p>
+          <p id="accountCurrentInfo" class="text-[11px] text-slate-600 truncate">الوضع المحلي الافتراضي — سجل ببريدك لعزل بياناتك وإرسال النسخ لبريدك.</p>
         </div>
-        <div class="flex flex-wrap items-center gap-2 shrink-0">
-          <button type="button" onclick="openAccountModal()" class="ios-btn bg-gradient-to-br from-indigo-500 to-violet-600 text-white text-xs sm:text-sm font-bold px-4 py-2.5 rounded-2xl shadow-sm">
-            تسجيل الدخول / الحساب
-          </button>
-          <button id="btnEmailBackup" type="button" onclick="sendBackupToEmail()" class="ios-btn bg-white/80 hover:bg-white text-sky-800 border border-white text-xs sm:text-sm font-bold px-3.5 py-2.5 rounded-2xl shadow-xs">
-            إرسال نسخة لإيميلي
-          </button>
-          <button id="btnSignOutAccount" type="button" onclick="signOutAccount()" class="hidden ios-btn bg-rose-500/10 hover:bg-rose-500/20 text-rose-700 text-xs font-bold px-3 py-2.5 rounded-2xl">
-            خروج
-          </button>
+        <div class="flex flex-wrap items-center gap-1.5 shrink-0">
+          <button type="button" onclick="openAccountModal()" class="ios-btn bg-gradient-to-br from-indigo-500 to-violet-600 text-white text-xs font-bold px-3 py-1.5 rounded-xl shadow-xs">الحساب / دخول</button>
+          <button id="btnEmailBackup" type="button" onclick="sendBackupToEmail()" class="ios-btn bg-white/80 hover:bg-white text-sky-800 border border-white text-xs font-bold px-3 py-1.5 rounded-xl shadow-xs">نسخة لإيميلي</button>
+          <button id="btnSignOutAccount" type="button" onclick="signOutAccount()" class="hidden ios-btn bg-rose-500/10 hover:bg-rose-500/20 text-rose-700 text-xs font-bold px-2.5 py-1.5 rounded-xl">خروج</button>
         </div>
       </div>
 
-      <div class="grid grid-cols-1 lg:grid-cols-2 gap-5">
-        <!-- Currencies Card -->
-        <div class="glass-card p-6 space-y-4">
-          <div class="flex flex-wrap items-center justify-between gap-2">
-            <h3 class="text-base font-extrabold text-slate-900">إدارة العملات</h3>
-            <div class="flex items-center gap-2">
-              <label class="text-xs font-bold text-slate-600">الافتراضية:</label>
-              <select id="currencySelect" aria-label="العملة الافتراضية" class="ios-input text-xs rounded-xl px-2.5 py-1.5 font-bold text-slate-800 focus:outline-none focus:ring-2 focus:ring-sky-500"></select>
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-3.5">
+        <!-- Compact Currencies Card -->
+        <div class="glass-card p-3.5 sm:p-4 space-y-2.5">
+          <div class="flex items-center justify-between gap-2">
+            <h3 class="text-sm font-extrabold text-slate-900">العملات</h3>
+            <div class="flex items-center gap-1.5">
+              <label class="text-[11px] font-bold text-slate-600">الافتراضية:</label>
+              <select id="currencySelect" aria-label="العملة الافتراضية" class="ios-input text-xs rounded-lg px-2 py-1 font-bold text-slate-800 focus:outline-none focus:ring-2 focus:ring-sky-500"></select>
             </div>
           </div>
-          <form id="addCurrencyForm" class="grid grid-cols-1 sm:grid-cols-3 gap-2">
-            <input id="newCurrName" type="text" required placeholder="اسم العملة (مثال: دينار أردني)" class="ios-input rounded-xl px-3 py-2.5 text-xs focus:outline-none focus:ring-2 focus:ring-sky-500" />
-            <input id="newCurrCode" type="text" required placeholder="الرمز (مثال: د.أ)" class="ios-input rounded-xl px-3 py-2.5 text-xs focus:outline-none focus:ring-2 focus:ring-sky-500" />
-            <button type="submit" class="ios-btn bg-gradient-to-br from-sky-500 to-teal-700 text-white text-xs font-bold py-2.5 rounded-xl">+ إضافة عملة</button>
+          <form id="addCurrencyForm" class="grid grid-cols-3 gap-1.5">
+            <input id="newCurrName" type="text" required placeholder="اسم العملة" class="ios-input rounded-lg px-2.5 py-1.5 text-xs focus:outline-none focus:ring-2 focus:ring-sky-500" />
+            <input id="newCurrCode" type="text" required placeholder="الرمز" class="ios-input rounded-lg px-2.5 py-1.5 text-xs focus:outline-none focus:ring-2 focus:ring-sky-500" />
+            <button type="submit" class="ios-btn bg-gradient-to-br from-sky-500 to-teal-700 text-white text-xs font-bold py-1.5 rounded-lg">+ إضافة</button>
           </form>
-          <div id="currenciesList" class="flex flex-wrap gap-2 pt-1"></div>
+          <div id="currenciesList" class="flex flex-wrap gap-1.5"></div>
         </div>
 
-        <!-- Backup & Import Card -->
-        <div class="glass-card p-6 space-y-4">
-          <h3 class="text-base font-extrabold text-slate-900">النسخ الاحتياطي والاستيراد</h3>
-          <p class="text-xs text-slate-600">احفظ نسخة من جميع بياناتك (الحركات، الأشخاص، الميزانية، الديون، المواعيد، العملات) أو استرجعها في أي وقت.</p>
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            <button id="btnExportJson" type="button" class="ios-btn bg-gradient-to-br from-sky-500 to-teal-700 text-white text-sm font-bold px-4 py-3 rounded-2xl shadow-sm flex items-center justify-center gap-2">
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
-              تصدير نسخة احتياطية (JSON)
-            </button>
-            <label class="ios-btn bg-white/80 hover:bg-white text-slate-800 border border-white text-sm font-bold px-4 py-3 rounded-2xl cursor-pointer flex items-center justify-center gap-2 shadow-xs">
-              <svg class="w-4 h-4 text-sky-700" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/></svg>
-              استيراد نسخة احتياطية
+        <!-- Compact Backup, Import & Reset Card -->
+        <div class="glass-card p-3.5 sm:p-4 space-y-2.5">
+          <h3 class="text-sm font-extrabold text-slate-900">النسخ الاحتياطي والتصفير</h3>
+          <div class="grid grid-cols-3 gap-1.5">
+            <button id="btnExportJson" type="button" class="ios-btn bg-gradient-to-br from-sky-500 to-teal-700 text-white text-[11px] sm:text-xs font-bold px-2 py-2 rounded-xl shadow-xs text-center">تصدير JSON</button>
+            <label class="ios-btn bg-white/80 hover:bg-white text-slate-800 border border-white text-[11px] sm:text-xs font-bold px-2 py-2 rounded-xl cursor-pointer text-center shadow-xs">
+              استيراد JSON
               <input id="inputImportJson" type="file" accept=".json" class="hidden" />
             </label>
+            <button id="btnResetData" type="button" class="ios-btn bg-rose-600 hover:bg-rose-700 text-white text-[11px] sm:text-xs font-bold px-2 py-2 rounded-xl shadow-xs text-center">تصفير (0000)</button>
           </div>
-
-          <div class="pt-3 border-t border-white/60 flex flex-wrap items-center justify-between gap-3 bg-rose-500/10 border border-rose-200/70 rounded-2xl p-4">
-            <div>
-              <h4 class="text-sm font-extrabold text-rose-800">منطقة الخطر — تصفير البيانات</h4>
-              <p class="text-xs text-rose-700 mt-0.5">يتطلب إدخال كلمة المرور (0000) لتأكيد مسح السجلات.</p>
-            </div>
-            <button id="btnResetData" type="button" class="ios-btn bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold px-4 py-2.5 rounded-xl shadow-xs">
-              تصفير البيانات
-            </button>
-          </div>
+          <p class="text-[11px] text-slate-500">التصفير محمي بتنبيه وكلمة مرور (0000) لحماية سجلاتك.</p>
         </div>
 
-        <!-- Preset Income Categories -->
-        <div class="glass-card p-6 space-y-3">
-          <h3 class="text-base font-extrabold text-emerald-700">تصنيفات المدخول الجاهزة</h3>
-          <form id="addIncomeCatForm" class="flex gap-2">
-            <input id="newIncomeCatName" type="text" required placeholder="تصنيف مدخول جديد (مثال: عمولات، إيجارات)..." class="ios-input flex-1 rounded-xl px-3 py-2.5 text-xs focus:outline-none focus:ring-2 focus:ring-emerald-500" />
-            <button type="submit" class="ios-btn bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold px-4 py-2.5 rounded-xl">+ إضافة</button>
+        <!-- Compact Preset Income Categories -->
+        <div class="glass-card p-3.5 sm:p-4 space-y-2.5">
+          <h3 class="text-sm font-extrabold text-emerald-700">تصنيفات المدخول الجاهزة</h3>
+          <form id="addIncomeCatForm" class="flex gap-1.5">
+            <input id="newIncomeCatName" type="text" required placeholder="تصنيف مدخول جديد..." class="ios-input flex-1 rounded-lg px-2.5 py-1.5 text-xs focus:outline-none focus:ring-2 focus:ring-emerald-500" />
+            <button type="submit" class="ios-btn bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold px-3 py-1.5 rounded-lg">+ إضافة</button>
           </form>
-          <div id="incomeCatsList" class="flex flex-wrap gap-2"></div>
+          <div id="incomeCatsList" class="flex flex-wrap gap-1.5"></div>
         </div>
 
-        <!-- Preset Expense Categories -->
-        <div class="glass-card p-6 space-y-3">
-          <h3 class="text-base font-extrabold text-rose-700">تصنيفات المصروف الجاهزة</h3>
-          <form id="addExpenseCatForm" class="flex gap-2">
-            <input id="newExpenseCatName" type="text" required placeholder="تصنيف مصروف جديد (مثال: صيانة، صحة)..." class="ios-input flex-1 rounded-xl px-3 py-2.5 text-xs focus:outline-none focus:ring-2 focus:ring-rose-500" />
-            <button type="submit" class="ios-btn bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold px-4 py-2.5 rounded-xl">+ إضافة</button>
+        <!-- Compact Preset Expense Categories -->
+        <div class="glass-card p-3.5 sm:p-4 space-y-2.5">
+          <h3 class="text-sm font-extrabold text-rose-700">تصنيفات المصروف الجاهزة</h3>
+          <form id="addExpenseCatForm" class="flex gap-1.5">
+            <input id="newExpenseCatName" type="text" required placeholder="تصنيف مصروف جديد..." class="ios-input flex-1 rounded-lg px-2.5 py-1.5 text-xs focus:outline-none focus:ring-2 focus:ring-rose-500" />
+            <button type="submit" class="ios-btn bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold px-3 py-1.5 rounded-lg">+ إضافة</button>
           </form>
-          <div id="expenseCatsList" class="flex flex-wrap gap-2"></div>
+          <div id="expenseCatsList" class="flex flex-wrap gap-1.5"></div>
         </div>
       </div>
     </section>
@@ -2025,7 +2010,7 @@
       document.getElementById('budgetTotalLimit').textContent = fmt(totalLimit);
       document.getElementById('budgetTotalSpent').textContent = fmt(totalSpent);
       document.getElementById('budgetTotalRemaining').textContent = fmt(remaining);
-      document.getElementById('budgetTotalRemaining').className = `text-2xl font-extrabold mt-1 ${remaining >= 0 ? 'text-emerald-600' : 'text-rose-600'}`;
+      document.getElementById('budgetTotalRemaining').className = `text-sm sm:text-2xl font-extrabold mt-1 break-words ${remaining >= 0 ? 'text-emerald-600' : 'text-rose-600'}`;
 
       const grid = document.getElementById('budgetCardsGrid');
       grid.innerHTML = state.budgets.map((b, idx) => {
@@ -2385,6 +2370,44 @@
       renderAll();
       showToast('تم تسجيل الدفعة وإضافتها للمدخول');
     });
+
+    function exportVisibleDebtsCsv() {
+      const today = todayISO();
+      const visible = state.debts.filter(d => {
+        const rem = Number(d.totalAmount) - Number(d.paidAmount);
+        if (debtFilter === 'pending') return rem > 0;
+        if (debtFilter === 'overdue') return rem > 0 && d.dueDate < today;
+        if (debtFilter === 'paid') return rem <= 0;
+        return true;
+      });
+      if (!visible.length) {
+        showToast('لا توجد ديون ظاهرة للتصدير');
+        return;
+      }
+      const header = ['المدين', 'الهاتف', 'المبلغ الإجمالي', 'المحصل', 'المتبقي', 'العملة', 'تاريخ الاستحقاق', 'الحالة', 'ملاحظات'];
+      const rows = visible.map(d => {
+        const rem = Math.max(0, Number(d.totalAmount) - Number(d.paidAmount));
+        const status = rem <= 0 ? 'محصل بالكامل' : (d.dueDate < today ? 'متأخر' : 'قيد التحصيل');
+        return [
+          `"${(d.name || '').replace(/"/g, '""')}"`,
+          `"${(d.phone || '').replace(/"/g, '""')}"`,
+          d.totalAmount,
+          d.paidAmount,
+          rem,
+          `"${(d.currency || state.currency).replace(/"/g, '""')}"`,
+          d.dueDate,
+          `"${status}"`,
+          `"${(d.note || '').replace(/"/g, '""')}"`
+        ].join(',');
+      });
+      const csv = '\uFEFF' + [header.join(','), ...rows].join('\n');
+      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = `alzaeem-debts-${todayISO()}.csv`;
+      a.click();
+      showToast('تم تصدير سجل الديون كملف إكسل (CSV)');
+    }
 
     function deleteDebt(id) {
       state.debts = state.debts.filter(d => d.id !== id);
