@@ -758,10 +758,33 @@
           <label class="block text-xs font-bold text-slate-600 mb-1">تفاصيل وملاحظات</label>
           <input id="debtNote" type="text" placeholder="تفاصيل الفاتورة أو الاتفاق..." class="ios-input w-full rounded-xl px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-sky-500" />
         </div>
-        <label class="flex items-center gap-2 text-xs font-bold text-slate-700 cursor-pointer">
-          <input id="debtAutoSchedule" type="checkbox" checked class="rounded text-sky-600 focus:ring-sky-500" />
-          إضافة موعد تحصيل تلقائي في جدول المواعيد بتاريخ الاستحقاق
-        </label>
+        <div class="space-y-2.5 bg-white/55 border border-white/80 rounded-2xl p-3">
+          <label class="flex items-center gap-2 text-xs font-bold text-slate-800 cursor-pointer">
+            <input id="debtIsInstallment" type="checkbox" class="rounded text-sky-600 focus:ring-sky-500" />
+            تقسيط المبلغ على دفعات (أقساط مجدولة)
+          </label>
+          <div id="debtInstallmentBox" class="hidden space-y-2.5 pt-2 border-t border-white/70">
+            <div class="grid grid-cols-2 gap-2.5">
+              <div>
+                <label class="block text-[11px] font-bold text-slate-600 mb-1">عدد الأقساط</label>
+                <input id="debtInstallmentCount" type="number" min="2" max="60" value="3" inputmode="numeric" class="ios-input w-full rounded-xl px-3 py-2 text-sm font-bold focus:outline-none focus:ring-2 focus:ring-sky-500" />
+              </div>
+              <div>
+                <label class="block text-[11px] font-bold text-slate-600 mb-1">دورية القسط</label>
+                <select id="debtInstallmentFreq" class="ios-input w-full rounded-xl px-2.5 py-2 text-xs font-bold focus:outline-none focus:ring-2 focus:ring-sky-500">
+                  <option value="monthly">شهري</option>
+                  <option value="biweekly">كل أسبوعين</option>
+                  <option value="weekly">أسبوعي</option>
+                </select>
+              </div>
+            </div>
+            <p id="debtInstallmentPreview" class="text-[11px] font-bold text-sky-800 bg-sky-500/10 rounded-xl px-3 py-1.5"></p>
+          </div>
+          <label id="debtAutoScheduleWrap" class="flex items-center gap-2 text-xs font-bold text-slate-700 cursor-pointer">
+            <input id="debtAutoSchedule" type="checkbox" checked class="rounded text-sky-600 focus:ring-sky-500" />
+            إضافة موعد تحصيل تلقائي في جدول المواعيد بتاريخ الاستحقاق
+          </label>
+        </div>
         <button type="submit" class="ios-btn w-full bg-gradient-to-br from-amber-500 to-amber-600 text-white font-bold py-3 rounded-2xl">حفظ الدين</button>
       </form>
     </div>
@@ -789,6 +812,43 @@
           <input id="payDate" type="date" required class="ios-input w-full rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500" />
         </div>
         <button type="submit" class="ios-btn w-full bg-gradient-to-br from-emerald-500 to-emerald-600 text-white font-bold py-3 rounded-2xl">تأكيد القبض وإضافته للمدخول</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Installment Plan Modal (Split existing debt) -->
+  <div id="installmentPlanModal" class="fixed inset-0 bg-slate-900/35 backdrop-blur-md z-50 hidden items-center justify-center p-4">
+    <div class="ios-modal max-w-md w-full p-6 animate-slide-up">
+      <div class="flex items-center justify-between mb-4">
+        <h3 class="text-lg font-extrabold text-slate-900">جدولة المتبقي بالأقساط</h3>
+        <button type="button" onclick="closeModal('installmentPlanModal')" class="w-8 h-8 rounded-full bg-slate-200/70 hover:bg-slate-200 text-slate-600 flex items-center justify-center text-sm font-bold">✕</button>
+      </div>
+      <form id="installmentPlanForm" class="space-y-4">
+        <input type="hidden" id="instPlanDebtId" />
+        <div class="bg-sky-500/10 border border-sky-300/60 rounded-2xl p-3 text-sm">
+          <p class="font-bold text-slate-900" id="instPlanDebtLabel"></p>
+          <p class="text-xs text-sky-900 mt-0.5">المبلغ المتبقي للتقسيط: <span id="instPlanRemaining" class="font-extrabold"></span></p>
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-bold text-slate-600 mb-1">عدد الأقساط</label>
+            <input id="instPlanCount" type="number" min="2" max="60" value="3" inputmode="numeric" required class="ios-input w-full rounded-xl px-3.5 py-2.5 text-base font-bold focus:outline-none focus:ring-2 focus:ring-sky-500" />
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-600 mb-1">دورية السداد</label>
+            <select id="instPlanFreq" class="ios-input w-full rounded-xl px-3 py-2.5 text-sm font-bold focus:outline-none focus:ring-2 focus:ring-sky-500">
+              <option value="monthly">شهري</option>
+              <option value="biweekly">كل أسبوعين</option>
+              <option value="weekly">أسبوعي</option>
+            </select>
+          </div>
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-slate-600 mb-1">تاريخ أول قسط</label>
+          <input id="instPlanStartDate" type="date" required class="ios-input w-full rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-sky-500" />
+        </div>
+        <p id="instPlanPreview" class="text-xs font-bold text-sky-800 bg-sky-500/10 rounded-xl px-3 py-2"></p>
+        <button type="submit" class="ios-btn w-full bg-gradient-to-br from-sky-500 to-teal-700 text-white font-bold py-3 rounded-2xl">إنشاء جدول الأقساط</button>
       </form>
     </div>
   </div>
@@ -1895,8 +1955,22 @@
               <div><span class="text-slate-500 block">المحصل</span><strong class="text-emerald-600">${fmt(d.paidAmount, dCurr)}</strong></div>
               <div><span class="text-slate-500 block">المتبقي</span><strong class="text-amber-700">${fmt(rem, dCurr)}</strong></div>
             </div>
-            <div class="flex items-center justify-between gap-2 pt-1">
-              ${!isPaid ? `<button type="button" onclick="openDebtPayModal('${d.id}')" class="ios-btn bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold px-4 py-2 rounded-xl shadow-xs">تسجيل دفعة قبض</button>` : `<span class="text-xs font-bold text-emerald-600">✓ تم التحصيل</span>`}
+            ${(() => {
+              const linkedInsts = state.schedules.filter(sc => sc.debtId === d.id);
+              if (linkedInsts.length > 1) {
+                const doneCnt = linkedInsts.filter(sc => sc.status === 'completed').length;
+                return `<div class="text-[11px] font-bold text-sky-800 bg-sky-500/10 rounded-xl px-3 py-1.5 flex items-center justify-between">
+                  <span>نظام الأقساط: ${doneCnt} من ${linkedInsts.length} قسط محصل</span>
+                  <button type="button" onclick="switchTab('schedule')" class="underline">عرض الأقساط</button>
+                </div>`;
+              }
+              return '';
+            })()}
+            <div class="flex flex-wrap items-center justify-between gap-2 pt-1">
+              <div class="flex items-center gap-2">
+                ${!isPaid ? `<button type="button" onclick="openDebtPayModal('${d.id}')" class="ios-btn bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold px-3.5 py-2 rounded-xl shadow-xs">تسجيل دفعة قبض</button>` : `<span class="text-xs font-bold text-emerald-600">✓ تم التحصيل</span>`}
+                ${!isPaid ? `<button type="button" onclick="openInstallmentPlanModal('${d.id}')" class="ios-btn bg-sky-500/15 hover:bg-sky-500/25 text-sky-800 text-xs font-bold px-3 py-2 rounded-xl">تقسيط</button>` : ''}
+              </div>
               <button type="button" onclick="deleteDebt('${d.id}')" class="text-xs font-bold text-rose-600 hover:underline">حذف</button>
             </div>
           </div>
@@ -1904,11 +1978,62 @@
       }).join('');
     }
 
+    function generateInstallmentSchedules(debtId, name, totalAmt, currency, startDate, count, freq, phone, note) {
+      const n = Math.max(2, parseInt(count, 10) || 2);
+      const baseAmt = Math.floor((totalAmt / n) * 100) / 100;
+      let assigned = 0;
+      for (let i = 0; i < n; i++) {
+        const d = new Date(startDate);
+        if (freq === 'weekly') d.setDate(d.getDate() + i * 7);
+        else if (freq === 'biweekly') d.setDate(d.getDate() + i * 14);
+        else d.setMonth(d.getMonth() + i);
+        const iso = d.toISOString().split('T')[0];
+        const amt = (i === n - 1) ? Number((totalAmt - assigned).toFixed(2)) : baseAmt;
+        assigned += amt;
+        state.schedules.push({
+          id: `sch_${Date.now()}_${i}`,
+          title: `قسط (${i + 1}/${n}): ${name}`,
+          amount: amt,
+          currency,
+          date: iso,
+          recurrence: 'once',
+          debtId,
+          personName: name,
+          phone: phone || '',
+          status: 'pending',
+          note: note || `قسط رقم ${i + 1} من ${n}`
+        });
+      }
+    }
+
+    function updateDebtInstallmentPreview() {
+      const amt = parseFloat(document.getElementById('debtAmount').value) || 0;
+      const cnt = Math.max(2, parseInt(document.getElementById('debtInstallmentCount').value, 10) || 2);
+      const curr = document.getElementById('debtCurrency').value || state.currency;
+      const per = amt > 0 ? (amt / cnt) : 0;
+      document.getElementById('debtInstallmentPreview').textContent = `قيمة كل قسط تقريباً: ${fmt(per, curr)} × ${cnt} أقساط`;
+    }
+
+    document.getElementById('debtIsInstallment').addEventListener('change', e => {
+      const checked = e.target.checked;
+      document.getElementById('debtInstallmentBox').classList.toggle('hidden', !checked);
+      document.getElementById('debtAutoScheduleWrap').classList.toggle('hidden', checked);
+      updateDebtInstallmentPreview();
+    });
+
+    ['debtAmount', 'debtInstallmentCount', 'debtCurrency'].forEach(id => {
+      document.getElementById(id).addEventListener('input', updateDebtInstallmentPreview);
+    });
+
     function openDebtModal() {
       document.getElementById('debtForm').reset();
       document.getElementById('debtDueDate').value = todayISO(7);
+      document.getElementById('debtIsInstallment').checked = false;
+      document.getElementById('debtInstallmentBox').classList.add('hidden');
+      document.getElementById('debtAutoScheduleWrap').classList.remove('hidden');
       populateCurrencySelects();
       populatePeopleSelects();
+      updateDebtInstallmentPreview();
       openModal('debtModal');
     }
 
@@ -1920,6 +2045,9 @@
       const dueDate = document.getElementById('debtDueDate').value;
       const phone = document.getElementById('debtPhone').value.trim();
       const note = document.getElementById('debtNote').value.trim();
+      const isInst = document.getElementById('debtIsInstallment').checked;
+      const instCount = parseInt(document.getElementById('debtInstallmentCount').value, 10) || 3;
+      const instFreq = document.getElementById('debtInstallmentFreq').value;
       const autoSched = document.getElementById('debtAutoSchedule').checked;
       if (!name || isNaN(amount) || amount <= 0 || !dueDate) return;
 
@@ -1930,7 +2058,9 @@
       const debtId = 'debt_' + Date.now();
       state.debts.push({ id: debtId, name, phone, totalAmount: amount, paidAmount: 0, currency, dueDate, note });
 
-      if (autoSched) {
+      if (isInst) {
+        generateInstallmentSchedules(debtId, name, amount, currency, dueDate, instCount, instFreq, phone, note);
+      } else if (autoSched) {
         state.schedules.push({
           id: 'sch_' + Date.now(),
           title: `تحصيل دين: ${name}`,
@@ -1939,6 +2069,8 @@
           date: dueDate,
           recurrence: 'once',
           debtId,
+          personName: name,
+          phone,
           status: 'pending',
           note: note || 'موعد تحصيل مرتبط بالدين'
         });
@@ -1947,7 +2079,57 @@
       saveState();
       closeModal('debtModal');
       renderAll();
-      showToast('تم تسجيل الدين بنجاح');
+      showToast(isInst ? `تم تسجيل الدين وجدولة ${instCount} أقساط` : 'تم تسجيل الدين بنجاح');
+    });
+
+    function openInstallmentPlanModal(debtId) {
+      const d = state.debts.find(x => x.id === debtId);
+      if (!d) return;
+      const rem = Math.max(0, Number(d.totalAmount) - Number(d.paidAmount));
+      if (rem <= 0) return;
+      const dCurr = d.currency || state.currency;
+      document.getElementById('instPlanDebtId').value = debtId;
+      document.getElementById('instPlanDebtLabel').textContent = `المدين: ${d.name}`;
+      document.getElementById('instPlanRemaining').textContent = fmt(rem, dCurr);
+      document.getElementById('instPlanCount').value = 3;
+      document.getElementById('instPlanStartDate').value = todayISO(7);
+      updateInstPlanPreview();
+      openModal('installmentPlanModal');
+    }
+
+    function updateInstPlanPreview() {
+      const debtId = document.getElementById('instPlanDebtId').value;
+      const d = state.debts.find(x => x.id === debtId);
+      if (!d) return;
+      const rem = Math.max(0, Number(d.totalAmount) - Number(d.paidAmount));
+      const cnt = Math.max(2, parseInt(document.getElementById('instPlanCount').value, 10) || 2);
+      const dCurr = d.currency || state.currency;
+      document.getElementById('instPlanPreview').textContent = `قيمة كل قسط: ${fmt(rem / cnt, dCurr)} × ${cnt} أقساط`;
+    }
+
+    document.getElementById('instPlanCount').addEventListener('input', updateInstPlanPreview);
+
+    document.getElementById('installmentPlanForm').addEventListener('submit', e => {
+      e.preventDefault();
+      const debtId = document.getElementById('instPlanDebtId').value;
+      const d = state.debts.find(x => x.id === debtId);
+      if (!d) return;
+      const rem = Math.max(0, Number(d.totalAmount) - Number(d.paidAmount));
+      const cnt = Math.max(2, parseInt(document.getElementById('instPlanCount').value, 10) || 2);
+      const freq = document.getElementById('instPlanFreq').value;
+      const startDate = document.getElementById('instPlanStartDate').value || todayISO(7);
+      const dCurr = d.currency || state.currency;
+
+      // Remove old pending schedules for this debt and replace with new installment plan
+      state.schedules = state.schedules.filter(sc => !(sc.debtId === debtId && sc.status === 'pending'));
+      const p = state.people.find(x => x.name === d.name);
+      const phone = d.phone || (p ? p.phone : '') || '';
+      generateInstallmentSchedules(debtId, d.name, rem, dCurr, startDate, cnt, freq, phone, d.note);
+
+      saveState();
+      closeModal('installmentPlanModal');
+      renderAll();
+      showToast(`تم إنشاء ${cnt} أقساط مجدولة بنجاح`);
     });
 
     function openDebtPayModal(debtId) {
