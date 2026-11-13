@@ -79,9 +79,9 @@
 </head>
 <body class="min-h-screen flex flex-col">
 
-  <!-- Top Header -->
+  <!-- Top Header (Clean iOS Header) -->
   <header class="ios-header sticky top-0 z-30">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-3 flex flex-wrap items-center justify-between gap-3">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-between gap-3">
       <div class="flex items-center gap-3">
         <div class="w-11 h-11 rounded-2xl bg-gradient-to-br from-sky-500 to-teal-700 text-white flex items-center justify-center shadow-md shadow-sky-500/25 ring-1 ring-white/50">
           <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
@@ -92,14 +92,6 @@
           <h1 class="text-lg sm:text-xl font-extrabold text-slate-900 leading-tight">الزعيم برو</h1>
           <p class="text-xs text-slate-600">إدارة الميزانية، الدخل والمصروف، الديون ومواعيد التحصيل</p>
         </div>
-      </div>
-
-      <div class="flex items-center gap-2">
-        <select id="currencySelect" aria-label="العملة الافتراضية" class="ios-input text-sm rounded-xl px-3 py-2 font-semibold text-slate-800 focus:outline-none focus:ring-2 focus:ring-sky-500"></select>
-        <button type="button" onclick="switchTab('settings')" class="ios-btn text-xs sm:text-sm bg-white/75 hover:bg-white text-slate-800 border border-white/85 font-bold px-3.5 py-2 rounded-xl shadow-xs flex items-center gap-1.5">
-          <svg class="w-4 h-4 text-sky-700" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
-          <span>الإعدادات والنسخ</span>
-        </button>
       </div>
     </div>
 
@@ -120,13 +112,17 @@
         </button>
         <button type="button" data-tab="debts" class="tab-btn ios-btn whitespace-nowrap px-4 py-2 rounded-xl text-sm font-bold text-slate-600 hover:bg-white/60 flex items-center gap-2">
           <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
-          تحصيل الديون
+          الأشخاص والديون
           <span id="navDebtBadge" class="hidden bg-amber-400/25 text-amber-900 text-xs px-1.5 py-0.5 rounded-full">0</span>
         </button>
         <button type="button" data-tab="schedule" class="tab-btn ios-btn whitespace-nowrap px-4 py-2 rounded-xl text-sm font-bold text-slate-600 hover:bg-white/60 flex items-center gap-2">
           <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
           مواعيد القبض والتحصيل
           <span id="navScheduleBadge" class="hidden bg-rose-500/20 text-rose-800 text-xs px-1.5 py-0.5 rounded-full">0</span>
+        </button>
+        <button type="button" data-tab="fullLog" class="tab-btn ios-btn whitespace-nowrap px-4 py-2 rounded-xl text-sm font-bold text-slate-600 hover:bg-white/60 flex items-center gap-2">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"/></svg>
+          السجل الكامل
         </button>
         <button type="button" data-tab="settings" class="tab-btn ios-btn whitespace-nowrap px-4 py-2 rounded-xl text-sm font-bold text-slate-600 hover:bg-white/60 flex items-center gap-2">
           <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"/></svg>
@@ -230,7 +226,7 @@
         <div class="glass-card p-5">
           <div class="flex items-center justify-between mb-4">
             <h3 class="text-base font-bold text-slate-900">أحدث الحركات المالية</h3>
-            <button type="button" onclick="switchTab('transactions')" class="text-xs font-bold text-sky-700 hover:underline">عرض السجل</button>
+            <button type="button" onclick="switchTab('fullLog')" class="text-xs font-bold text-sky-700 hover:underline">عرض السجل الكامل</button>
           </div>
           <div id="dashboardRecentTx" class="space-y-2.5"></div>
         </div>
@@ -320,16 +316,29 @@
       <div id="budgetCardsGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
     </section>
 
-    <!-- ==================== TAB 4: DEBTS ==================== -->
+    <!-- ==================== TAB 4: PEOPLE & DEBTS ==================== -->
     <section id="view-debts" class="tab-view hidden space-y-5">
       <div class="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h2 class="text-xl font-extrabold text-slate-900">إدارة وتحصيل الديون</h2>
-          <p class="text-sm text-slate-600">متابعة الذمم المالية، تسجيل الدفعات الجزئية أو الكاملة، وربطها تلقائياً بالمدخول</p>
+          <h2 class="text-xl font-extrabold text-slate-900">الأشخاص وتحصيل الديون</h2>
+          <p class="text-sm text-slate-600">إضافة الأشخاص والجهات المتعامل معهم، ومتابعة ديونهم ودفعاتهم المالية</p>
         </div>
-        <button type="button" onclick="openDebtModal()" class="ios-btn bg-gradient-to-br from-amber-500 to-amber-600 text-white text-sm font-bold px-4 py-2.5 rounded-2xl shadow-sm">+ إضافة دين جديد</button>
+        <div class="flex flex-wrap items-center gap-2">
+          <button type="button" onclick="openPersonModal()" class="ios-btn bg-gradient-to-br from-sky-500 to-teal-700 text-white text-sm font-bold px-4 py-2.5 rounded-2xl shadow-sm">+ إضافة شخص</button>
+          <button type="button" onclick="openDebtModal()" class="ios-btn bg-gradient-to-br from-amber-500 to-amber-600 text-white text-sm font-bold px-4 py-2.5 rounded-2xl shadow-sm">+ إضافة دين جديد</button>
+        </div>
       </div>
 
+      <!-- People Directory Section -->
+      <div class="glass-card p-5 space-y-3">
+        <div class="flex items-center justify-between">
+          <h3 class="text-base font-extrabold text-slate-900">الأشخاص والجهات المسجلون</h3>
+          <span class="text-xs font-bold text-slate-500" id="peopleCountLabel"></span>
+        </div>
+        <div id="peopleGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3"></div>
+      </div>
+
+      <!-- Debt Summary -->
       <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
         <div class="glass-card p-5">
           <span class="text-xs font-bold text-slate-600">إجمالي الديون المسجلة</span>
@@ -399,7 +408,55 @@
       </div>
     </section>
 
-    <!-- ==================== TAB 6: SETTINGS, CURRENCIES & BACKUPS ==================== -->
+    <!-- ==================== TAB 6: FULL LOG ==================== -->
+    <section id="view-fullLog" class="tab-view hidden space-y-5">
+      <div class="flex flex-wrap items-center justify-between gap-3">
+        <div>
+          <h2 class="text-xl font-extrabold text-slate-900">السجل الكامل الشامل</h2>
+          <p class="text-sm text-slate-600">عرض موحد ومرتب زمنياً لجميع الحركات المالية والديون ومواعيد القبض والتحصيل</p>
+        </div>
+        <span id="fullLogTotalCount" class="text-xs font-extrabold bg-white/75 border border-white px-3.5 py-2 rounded-full text-slate-700">0 سجل</span>
+      </div>
+
+      <!-- Full Log Filters -->
+      <div class="glass-card p-4 grid grid-cols-1 sm:grid-cols-4 gap-3">
+        <input id="fullLogSearch" type="text" placeholder="ابحث باسم الشخص، الوصف، التفاصيل..." class="ios-input rounded-xl px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-sky-500" />
+        <select id="fullLogType" class="ios-input rounded-xl px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-sky-500">
+          <option value="all">جميع السجلات</option>
+          <option value="income">المدخول فقط</option>
+          <option value="expense">المصروف فقط</option>
+          <option value="debt">الديون فقط</option>
+          <option value="schedule">مواعيد القبض فقط</option>
+        </select>
+        <select id="fullLogCurrency" class="ios-input rounded-xl px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-sky-500">
+          <option value="all">جميع العملات</option>
+        </select>
+        <select id="fullLogPerson" class="ios-input rounded-xl px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-sky-500">
+          <option value="all">جميع الأشخاص</option>
+        </select>
+      </div>
+
+      <!-- Full Log Table -->
+      <div class="glass-card overflow-hidden">
+        <div class="overflow-x-auto">
+          <table class="w-full text-sm text-right">
+            <thead class="bg-white/45 border-b border-white/70 text-slate-700 font-bold">
+              <tr>
+                <th class="px-4 py-3">التاريخ</th>
+                <th class="px-4 py-3">السجل</th>
+                <th class="px-4 py-3">الشخص / التصنيف</th>
+                <th class="px-4 py-3">العنوان والتفاصيل</th>
+                <th class="px-4 py-3">الحالة</th>
+                <th class="px-4 py-3">المبلغ</th>
+              </tr>
+            </thead>
+            <tbody id="fullLogTableBody" class="divide-y divide-white/50"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== TAB 7: SETTINGS, CURRENCIES & BACKUPS ==================== -->
     <section id="view-settings" class="tab-view hidden space-y-6">
       <div>
         <h2 class="text-xl font-extrabold text-slate-900">العملات والتصنيفات والنسخ الاحتياطي</h2>
@@ -409,9 +466,12 @@
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-5">
         <!-- Currencies Card -->
         <div class="glass-card p-6 space-y-4">
-          <div class="flex items-center justify-between">
+          <div class="flex flex-wrap items-center justify-between gap-2">
             <h3 class="text-base font-extrabold text-slate-900">إدارة العملات</h3>
-            <span class="text-xs font-bold bg-sky-500/15 text-sky-800 px-2.5 py-1 rounded-full">العملة الافتراضية: <span id="settingsDefaultCurrLabel"></span></span>
+            <div class="flex items-center gap-2">
+              <label class="text-xs font-bold text-slate-600">الافتراضية:</label>
+              <select id="currencySelect" aria-label="العملة الافتراضية" class="ios-input text-xs rounded-xl px-2.5 py-1.5 font-bold text-slate-800 focus:outline-none focus:ring-2 focus:ring-sky-500"></select>
+            </div>
           </div>
           <form id="addCurrencyForm" class="grid grid-cols-1 sm:grid-cols-3 gap-2">
             <input id="newCurrName" type="text" required placeholder="اسم العملة (مثال: دينار أردني)" class="ios-input rounded-xl px-3 py-2.5 text-xs focus:outline-none focus:ring-2 focus:ring-sky-500" />
@@ -424,7 +484,7 @@
         <!-- Backup & Import Card -->
         <div class="glass-card p-6 space-y-4">
           <h3 class="text-base font-extrabold text-slate-900">النسخ الاحتياطي والاستيراد</h3>
-          <p class="text-xs text-slate-600">احفظ نسخة من جميع بياناتك (الحركات، الميزانية، الديون، المواعيد، العملات) أو استرجعها في أي وقت.</p>
+          <p class="text-xs text-slate-600">احفظ نسخة من جميع بياناتك (الحركات، الأشخاص، الميزانية، الديون، المواعيد، العملات) أو استرجعها في أي وقت.</p>
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <button id="btnExportJson" type="button" class="ios-btn bg-gradient-to-br from-sky-500 to-teal-700 text-white text-sm font-bold px-4 py-3 rounded-2xl shadow-sm flex items-center justify-center gap-2">
               <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
@@ -474,6 +534,31 @@
 
   <!-- ==================== MODALS ==================== -->
 
+  <!-- Person Modal -->
+  <div id="personModal" class="fixed inset-0 bg-slate-900/35 backdrop-blur-md z-50 hidden items-center justify-center p-4">
+    <div class="ios-modal max-w-md w-full p-6 animate-slide-up">
+      <div class="flex items-center justify-between mb-4">
+        <h3 class="text-lg font-extrabold text-slate-900">إضافة شخص / جهة للتعامل</h3>
+        <button type="button" onclick="closeModal('personModal')" class="w-8 h-8 rounded-full bg-slate-200/70 hover:bg-slate-200 text-slate-600 flex items-center justify-center text-sm font-bold">✕</button>
+      </div>
+      <form id="personForm" class="space-y-4">
+        <div>
+          <label class="block text-xs font-bold text-slate-600 mb-1">اسم الشخص أو الجهة</label>
+          <input id="personName" type="text" required placeholder="مثال: أحمد محمود، شركة النور..." class="ios-input w-full rounded-xl px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-sky-500" />
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-slate-600 mb-1">رقم الهاتف (اختياري)</label>
+          <input id="personPhone" type="tel" inputmode="numeric" placeholder="09xxxxxxxx" class="ios-input w-full rounded-xl px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-sky-500" />
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-slate-600 mb-1">ملاحظات (اختياري)</label>
+          <input id="personNote" type="text" placeholder="طبيعة التعامل أو العنوان..." class="ios-input w-full rounded-xl px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-sky-500" />
+        </div>
+        <button type="submit" class="ios-btn w-full bg-gradient-to-br from-sky-500 to-teal-700 text-white font-bold py-3 rounded-2xl">حفظ الشخص</button>
+      </form>
+    </div>
+  </div>
+
   <!-- Transaction Modal -->
   <div id="txModal" class="fixed inset-0 bg-slate-900/35 backdrop-blur-md z-50 hidden items-center justify-center p-4 overflow-y-auto">
     <div class="ios-modal max-w-md w-full p-6 animate-slide-up my-auto">
@@ -518,14 +603,20 @@
           <button type="button" onclick="saveQuickCat()" class="bg-sky-600 hover:bg-sky-700 text-white text-xs font-bold px-3 py-1.5 rounded-lg">إضافة</button>
         </div>
 
-        <div>
-          <label class="block text-xs font-bold text-slate-600 mb-1">طريقة الدفع</label>
-          <select id="txMethod" class="ios-input w-full rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-sky-500">
-            <option value="نقدي">نقدي</option>
-            <option value="تحويل بنكي">تحويل بنكي</option>
-            <option value="محفظة إلكترونية">محفظة إلكترونية</option>
-            <option value="شيك / حوالة">شيك / حوالة</option>
-          </select>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-bold text-slate-600 mb-1">الشخص / الجهة (اختياري)</label>
+            <select id="txPerson" class="ios-input w-full rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-sky-500"></select>
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-600 mb-1">طريقة الدفع</label>
+            <select id="txMethod" class="ios-input w-full rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-sky-500">
+              <option value="نقدي">نقدي</option>
+              <option value="تحويل بنكي">تحويل بنكي</option>
+              <option value="محفظة إلكترونية">محفظة إلكترونية</option>
+              <option value="شيك / حوالة">شيك / حوالة</option>
+            </select>
+          </div>
         </div>
 
         <div>
@@ -595,13 +686,20 @@
   </div>
 
   <!-- Debt Modal -->
-  <div id="debtModal" class="fixed inset-0 bg-slate-900/35 backdrop-blur-md z-50 hidden items-center justify-center p-4">
-    <div class="ios-modal max-w-md w-full p-6 animate-slide-up">
+  <div id="debtModal" class="fixed inset-0 bg-slate-900/35 backdrop-blur-md z-50 hidden items-center justify-center p-4 overflow-y-auto">
+    <div class="ios-modal max-w-md w-full p-6 animate-slide-up my-auto">
       <div class="flex items-center justify-between mb-4">
         <h3 class="text-lg font-extrabold text-slate-900">تسجيل دين جديد للتحصيل</h3>
         <button type="button" onclick="closeModal('debtModal')" class="w-8 h-8 rounded-full bg-slate-200/70 hover:bg-slate-200 text-slate-600 flex items-center justify-center text-sm font-bold">✕</button>
       </div>
-      <form id="debtForm" class="space-y-4">
+      <form id="debtForm" class="space-y-3.5">
+        <div>
+          <div class="flex items-center justify-between mb-1">
+            <label class="text-xs font-bold text-slate-600">اختر شخصاً مسجلاً (أو أدخل اسماً جديداً)</label>
+            <button type="button" onclick="openPersonModal()" class="text-[11px] font-bold text-sky-700 hover:underline">+ شخص جديد</button>
+          </div>
+          <select id="debtPersonSelect" class="ios-input w-full rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-sky-500"></select>
+        </div>
         <div>
           <label class="block text-xs font-bold text-slate-600 mb-1">اسم المدين / الجهة</label>
           <input id="debtName" type="text" required placeholder="مثال: شركة النور، أحمد محمود..." class="ios-input w-full rounded-xl px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-sky-500" />
@@ -722,7 +820,7 @@
       <div class="w-12 h-12 rounded-full bg-rose-500/15 text-rose-600 flex items-center justify-center mx-auto text-xl font-bold">⚠</div>
       <h3 class="text-lg font-extrabold text-slate-900">تنبيه: تصفير البيانات</h3>
       <p class="text-xs text-rose-700 bg-rose-500/10 border border-rose-200 rounded-xl p-3 font-semibold">
-        تحذير: سيؤدي هذا الإجراء إلى حذف جميع الحركات المالية والديون والمواعيد الحالية نهائياً. يُنصح بتصدير نسخة احتياطية أولاً.
+        تحذير: سيؤدي هذا الإجراء إلى حذف جميع الحركات المالية والأشخاص والديون والمواعيد الحالية نهائياً. يُنصح بتصدير نسخة احتياطية أولاً.
       </p>
       <div class="text-right space-y-1.5">
         <label class="block text-xs font-bold text-slate-700">أدخل كلمة المرور للتأكيد (0000)</label>
@@ -777,13 +875,18 @@
         incomeCategories: [...DEFAULT_INCOME_CATEGORIES],
         expenseCategories: DEFAULT_EXPENSE_BUDGETS.map(b => b.name),
         budgets: JSON.parse(JSON.stringify(DEFAULT_EXPENSE_BUDGETS)),
+        people: [
+          { id: 'per_1', name: 'شركة الأفق للتجارة', phone: '0933123456', note: 'توريد بضائع ومستلزمات' },
+          { id: 'per_2', name: 'خالد العلي', phone: '0944987654', note: 'تعاملات وسلف شخصية' },
+          { id: 'per_3', name: 'مؤسسة البناء الحديث', phone: '0955112233', note: 'مقاولات وتنفيذ' }
+        ],
         transactions: [
-          { id: 'tx_1', type: 'income', amount: 1800, currency: '$', category: 'راتب / دخل ثابت', date: `${m}-01`, method: 'تحويل بنكي', note: 'الدخل الشهري الأساسي', details: 'حوالة شهرية - دفعة كاملة' },
-          { id: 'tx_2', type: 'expense', amount: 400, currency: '$', category: 'سكن وإيجار', date: `${m}-02`, method: 'نقدي', note: 'إيجار الشهر', details: 'تسليم نقدي للمالك بموجب إيصال #104' },
-          { id: 'tx_3', type: 'expense', amount: 195, currency: '$', category: 'طعام ومشتريات', date: `${m}-05`, method: 'نقدي', note: 'مشتريات أسبوعية', details: 'مواد تموينية وخضار من السوق المركزي' },
-          { id: 'tx_4', type: 'income', amount: 450, currency: '$', category: 'مبيعات / خدمات', date: `${m}-07`, method: 'محفظة إلكترونية', note: 'دفعة مشروع تصميم', details: 'الدفعة الأولى 50% من عقد التطوير' },
-          { id: 'tx_5', type: 'expense', amount: 110, currency: '$', category: 'فواتير واتصالات', date: `${m}-09`, method: 'محفظة إلكترونية', note: 'إنترنت وكهرباء', details: 'اشتراك إنترنت شهري + فاتورة أمبيرات' },
-          { id: 'tx_6', type: 'expense', amount: 85, currency: '$', category: 'مواصلات ووقود', date: `${m}-11`, method: 'نقدي', note: 'تعبئة وقود وتنقلات', details: 'بنزين 20 لتر + تنقلات عمل' }
+          { id: 'tx_1', type: 'income', amount: 1800, currency: '$', category: 'راتب / دخل ثابت', date: `${m}-01`, method: 'تحويل بنكي', personName: '', note: 'الدخل الشهري الأساسي', details: 'حوالة شهرية - دفعة كاملة' },
+          { id: 'tx_2', type: 'expense', amount: 400, currency: '$', category: 'سكن وإيجار', date: `${m}-02`, method: 'نقدي', personName: '', note: 'إيجار الشهر', details: 'تسليم نقدي للمالك بموجب إيصال #104' },
+          { id: 'tx_3', type: 'expense', amount: 195, currency: '$', category: 'طعام ومشتريات', date: `${m}-05`, method: 'نقدي', personName: '', note: 'مشتريات أسبوعية', details: 'مواد تموينية وخضار من السوق المركزي' },
+          { id: 'tx_4', type: 'income', amount: 450, currency: '$', category: 'مبيعات / خدمات', date: `${m}-07`, method: 'محفظة إلكترونية', personName: 'شركة الأفق للتجارة', note: 'دفعة مشروع تصميم', details: 'الدفعة الأولى 50% من عقد التطوير' },
+          { id: 'tx_5', type: 'expense', amount: 110, currency: '$', category: 'فواتير واتصالات', date: `${m}-09`, method: 'محفظة إلكترونية', personName: '', note: 'إنترنت وكهرباء', details: 'اشتراك إنترنت شهري + فاتورة أمبيرات' },
+          { id: 'tx_6', type: 'expense', amount: 85, currency: '$', category: 'مواصلات ووقود', date: `${m}-11`, method: 'نقدي', personName: '', note: 'تعبئة وقود وتنقلات', details: 'بنزين 20 لتر + تنقلات عمل' }
         ],
         debts: [
           { id: 'debt_1', name: 'شركة الأفق للتجارة', phone: '0933123456', totalAmount: 900, paidAmount: 300, currency: '$', dueDate: todayISO(4), note: 'باقي دفعة توريد بضاعة' },
@@ -807,6 +910,9 @@
         s.expenseCategories = (s.budgets && s.budgets.length) ? s.budgets.map(b => b.name) : DEFAULT_EXPENSE_BUDGETS.map(b => b.name);
       }
       if (!s.budgets) s.budgets = JSON.parse(JSON.stringify(DEFAULT_EXPENSE_BUDGETS));
+      if (!s.people) {
+        s.people = (s.debts || []).map((d, idx) => ({ id: 'per_' + idx, name: d.name, phone: d.phone || '', note: '' }));
+      }
       if (!s.transactions) s.transactions = [];
       if (!s.debts) s.debts = [];
       if (!s.schedules) s.schedules = [];
@@ -878,11 +984,13 @@
       const shortOpts = state.currencies.map(c => `<option value="${escapeHtml(c.code)}">${escapeHtml(c.code)} - ${escapeHtml(c.name)}</option>`).join('');
 
       const mainSel = document.getElementById('currencySelect');
-      mainSel.innerHTML = opts;
-      if (!state.currencies.some(c => c.code === state.currency)) {
-        state.currency = state.currencies[0].code;
+      if (mainSel) {
+        mainSel.innerHTML = opts;
+        if (!state.currencies.some(c => c.code === state.currency)) {
+          state.currency = state.currencies[0].code;
+        }
+        mainSel.value = state.currency;
       }
-      mainSel.value = state.currency;
 
       ['txCurrency', 'debtCurrency', 'schedCurrency'].forEach(id => {
         const el = document.getElementById(id);
@@ -892,6 +1000,20 @@
           el.value = state.currencies.some(c => c.code === prev) ? prev : state.currency;
         }
       });
+    }
+
+    function populatePeopleSelects() {
+      const txPerson = document.getElementById('txPerson');
+      if (txPerson) {
+        const prev = txPerson.value;
+        txPerson.innerHTML = `<option value="">بدون تحديد</option>` + state.people.map(p => `<option value="${escapeHtml(p.name)}">${escapeHtml(p.name)}</option>`).join('');
+        if (state.people.some(p => p.name === prev)) txPerson.value = prev;
+      }
+
+      const debtPerson = document.getElementById('debtPersonSelect');
+      if (debtPerson) {
+        debtPerson.innerHTML = `<option value="">-- اختر شخصاً أو أدخل اسماً بالأسفل --</option>` + state.people.map(p => `<option value="${p.id}">${escapeHtml(p.name)}</option>`).join('');
+      }
     }
 
     function switchTab(tabName) {
@@ -919,11 +1041,96 @@
       showToast(`تم تعيين العملة الافتراضية إلى ${state.currency}`);
     });
 
+    // ==================== PEOPLE MANAGEMENT ====================
+    function openPersonModal() {
+      document.getElementById('personForm').reset();
+      openModal('personModal');
+    }
+
+    document.getElementById('personForm').addEventListener('submit', e => {
+      e.preventDefault();
+      const name = document.getElementById('personName').value.trim();
+      const phone = document.getElementById('personPhone').value.trim();
+      const note = document.getElementById('personNote').value.trim();
+      if (!name) return;
+      if (state.people.some(p => p.name === name)) {
+        showToast('هذا الشخص مسجل مسبقاً');
+        return;
+      }
+      const newP = { id: 'per_' + Date.now(), name, phone, note };
+      state.people.push(newP);
+      saveState();
+      closeModal('personModal');
+      renderAll();
+      // If debt modal is open, select the newly added person automatically
+      const debtModal = document.getElementById('debtModal');
+      if (debtModal && !debtModal.classList.contains('hidden')) {
+        document.getElementById('debtPersonSelect').value = newP.id;
+        document.getElementById('debtName').value = newP.name;
+        document.getElementById('debtPhone').value = newP.phone;
+      }
+      showToast(`تمت إضافة ${name} بنجاح`);
+    });
+
+    function deletePerson(id) {
+      state.people = state.people.filter(p => p.id !== id);
+      saveState();
+      renderAll();
+      showToast('تم حذف الشخص من القائمة');
+    }
+
+    function openDebtForPerson(personId) {
+      const p = state.people.find(x => x.id === personId);
+      openDebtModal();
+      if (p) {
+        document.getElementById('debtPersonSelect').value = p.id;
+        document.getElementById('debtName').value = p.name;
+        document.getElementById('debtPhone').value = p.phone || '';
+      }
+    }
+
+    document.getElementById('debtPersonSelect').addEventListener('change', e => {
+      const p = state.people.find(x => x.id === e.target.value);
+      if (p) {
+        document.getElementById('debtName').value = p.name;
+        document.getElementById('debtPhone').value = p.phone || '';
+      }
+    });
+
+    function renderPeople() {
+      const grid = document.getElementById('peopleGrid');
+      const countLbl = document.getElementById('peopleCountLabel');
+      if (countLbl) countLbl.textContent = `${state.people.length} شخص / جهة`;
+      if (!grid) return;
+
+      if (state.people.length === 0) {
+        grid.innerHTML = `<p class="col-span-full text-xs text-slate-400 text-center py-4">لا يوجد أشخاص مسجلون بعد — أضف شخصاً للبدء بالتعامل معه</p>`;
+        return;
+      }
+
+      grid.innerHTML = state.people.map(p => {
+        const pDebts = state.debts.filter(d => d.name === p.name);
+        const remText = pDebts.length ? fmtMulti(pDebts, d => Math.max(0, Number(d.totalAmount) - Number(d.paidAmount))) : fmt(0);
+        return `
+          <div class="p-3.5 rounded-2xl bg-white/60 border border-white/85 flex flex-col justify-between gap-2.5">
+            <div class="flex items-start justify-between gap-2">
+              <div class="min-w-0">
+                <h4 class="font-extrabold text-sm text-slate-900 truncate">${escapeHtml(p.name)}</h4>
+                <p class="text-[11px] text-slate-500 truncate">${p.phone ? `📞 ${escapeHtml(p.phone)}` : 'بدون رقم'} ${p.note ? `• ${escapeHtml(p.note)}` : ''}</p>
+              </div>
+              <button type="button" onclick="deletePerson('${p.id}')" class="text-xs text-rose-500 hover:text-rose-700 font-bold" title="حذف الشخص">×</button>
+            </div>
+            <div class="flex items-center justify-between gap-2 pt-2 border-t border-white/60">
+              <span class="text-[11px] text-slate-600">المتبقي: <strong class="text-amber-700">${remText}</strong></span>
+              <button type="button" onclick="openDebtForPerson('${p.id}')" class="ios-btn bg-amber-500/15 hover:bg-amber-500/25 text-amber-800 text-[11px] font-bold px-2.5 py-1 rounded-lg">+ دين / دفعة</button>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
     // ==================== SETTINGS TAB: CURRENCIES & CATEGORIES ====================
     function renderSettingsLists() {
-      const defLabel = document.getElementById('settingsDefaultCurrLabel');
-      if (defLabel) defLabel.textContent = state.currency;
-
       document.getElementById('currenciesList').innerHTML = state.currencies.map((c, i) => `
         <span class="inline-flex items-center gap-1.5 bg-white/80 border border-white text-slate-800 text-xs font-bold px-3 py-1.5 rounded-full shadow-xs">
           ${escapeHtml(c.name)} (${escapeHtml(c.code)})
@@ -1096,7 +1303,7 @@
               </div>
               <div class="min-w-0">
                 <p class="font-bold text-sm text-slate-800 truncate">${escapeHtml(t.note)}</p>
-                <p class="text-xs text-slate-500 truncate">${escapeHtml(t.category)} • ${t.date}${t.details ? ` • ${escapeHtml(t.details)}` : ''}</p>
+                <p class="text-xs text-slate-500 truncate">${escapeHtml(t.category)} • ${t.date}${t.personName ? ` • ${escapeHtml(t.personName)}` : ''}</p>
               </div>
             </div>
             <span class="font-extrabold text-sm shrink-0 ${t.type === 'income' ? 'text-emerald-600' : 'text-rose-600'}">
@@ -1191,7 +1398,7 @@
         if (currF !== 'all' && (t.currency || state.currency) !== currF) return false;
         if (monthF && !t.date.startsWith(monthF)) return false;
         if (search) {
-          const hay = `${t.note} ${t.details || ''} ${t.category}`.toLowerCase();
+          const hay = `${t.note} ${t.details || ''} ${t.category} ${t.personName || ''}`.toLowerCase();
           if (!hay.includes(search)) return false;
         }
         return true;
@@ -1213,7 +1420,7 @@
           </td>
           <td class="px-4 py-3 font-semibold text-slate-700">${escapeHtml(t.category)}</td>
           <td class="px-4 py-3 text-slate-800">
-            <div class="font-bold">${escapeHtml(t.note)}</div>
+            <div class="font-bold">${escapeHtml(t.note)} ${t.personName ? `<span class="text-xs font-semibold text-sky-700">(${escapeHtml(t.personName)})</span>` : ''}</div>
             ${t.details ? `<div class="text-xs text-slate-500 mt-0.5">${escapeHtml(t.details)}</div>` : ''}
           </td>
           <td class="px-4 py-3 text-slate-600 text-xs">${escapeHtml(t.method || 'نقدي')}</td>
@@ -1237,6 +1444,119 @@
       renderAll();
       showToast('تم حذف الحركة المالية');
     }
+
+    // ==================== RENDER FULL LOG TAB ====================
+    function renderFullLog() {
+      const currSel = document.getElementById('fullLogCurrency');
+      const prevCurr = currSel.value;
+      currSel.innerHTML = `<option value="all">جميع العملات</option>` + state.currencies.map(c => `<option value="${escapeHtml(c.code)}">${escapeHtml(c.name)} (${escapeHtml(c.code)})</option>`).join('');
+      if (state.currencies.some(c => c.code === prevCurr)) currSel.value = prevCurr;
+
+      const perSel = document.getElementById('fullLogPerson');
+      const prevPer = perSel.value;
+      perSel.innerHTML = `<option value="all">جميع الأشخاص</option>` + state.people.map(p => `<option value="${escapeHtml(p.name)}">${escapeHtml(p.name)}</option>`).join('');
+      if (state.people.some(p => p.name === prevPer)) perSel.value = prevPer;
+
+      const today = todayISO();
+      const entries = [];
+
+      state.transactions.forEach(t => {
+        entries.push({
+          date: t.date,
+          kind: t.type,
+          kindLabel: t.type === 'income' ? 'مدخول' : 'مصروف',
+          badgeClass: t.type === 'income' ? 'bg-emerald-500/15 text-emerald-700' : 'bg-rose-500/15 text-rose-700',
+          partyOrCat: t.personName ? `${t.personName} • ${t.category}` : t.category,
+          personName: t.personName || '',
+          title: t.note,
+          details: t.details || t.method || '',
+          status: 'مكتمل',
+          amountText: `${t.type === 'income' ? '+' : '−'}${fmt(t.amount, t.currency)}`,
+          amountClass: t.type === 'income' ? 'text-emerald-600' : 'text-rose-600',
+          currency: t.currency || state.currency
+        });
+      });
+
+      state.debts.forEach(d => {
+        const rem = Math.max(0, Number(d.totalAmount) - Number(d.paidAmount));
+        const dCurr = d.currency || state.currency;
+        entries.push({
+          date: d.dueDate,
+          kind: 'debt',
+          kindLabel: 'دين للتحصيل',
+          badgeClass: 'bg-amber-500/20 text-amber-800',
+          partyOrCat: d.name,
+          personName: d.name,
+          title: `دين: ${d.name}`,
+          details: `${d.note || ''} (محصل: ${fmt(d.paidAmount, dCurr)} | متبقي: ${fmt(rem, dCurr)})`,
+          status: rem <= 0 ? 'محصل بالكامل' : (d.dueDate < today ? 'متأخر' : 'قيد التحصيل'),
+          amountText: fmt(d.totalAmount, dCurr),
+          amountClass: 'text-amber-700',
+          currency: dCurr
+        });
+      });
+
+      state.schedules.forEach(s => {
+        const sCurr = s.currency || state.currency;
+        entries.push({
+          date: s.date,
+          kind: 'schedule',
+          kindLabel: 'موعد قبض',
+          badgeClass: 'bg-sky-500/15 text-sky-800',
+          partyOrCat: 'جدول المواعيد',
+          personName: '',
+          title: s.title,
+          details: s.note || '',
+          status: s.status === 'completed' ? 'تم القبض' : (s.date < today ? 'متأخر' : 'مجدول'),
+          amountText: fmt(s.amount, sCurr),
+          amountClass: 'text-sky-800',
+          currency: sCurr
+        });
+      });
+
+      const search = document.getElementById('fullLogSearch').value.trim().toLowerCase();
+      const typeF = document.getElementById('fullLogType').value;
+      const currF = currSel.value;
+      const perF = perSel.value;
+
+      const filtered = entries.filter(e => {
+        if (typeF !== 'all' && e.kind !== typeF) return false;
+        if (currF !== 'all' && e.currency !== currF) return false;
+        if (perF !== 'all' && e.personName !== perF && !e.partyOrCat.includes(perF)) return false;
+        if (search) {
+          const hay = `${e.title} ${e.details} ${e.partyOrCat} ${e.status}`.toLowerCase();
+          if (!hay.includes(search)) return false;
+        }
+        return true;
+      }).sort((a, b) => b.date.localeCompare(a.date));
+
+      document.getElementById('fullLogTotalCount').textContent = `${filtered.length} سجل`;
+      const tbody = document.getElementById('fullLogTableBody');
+      if (filtered.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="6" class="text-center py-8 text-slate-400">لا توجد سجلات مطابقة</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = filtered.map(e => `
+        <tr class="hover:bg-white/50 transition">
+          <td class="px-4 py-3 text-slate-600 whitespace-nowrap">${e.date}</td>
+          <td class="px-4 py-3 whitespace-nowrap">
+            <span class="px-2.5 py-1 rounded-full text-xs font-bold ${e.badgeClass}">${e.kindLabel}</span>
+          </td>
+          <td class="px-4 py-3 font-semibold text-slate-700">${escapeHtml(e.partyOrCat)}</td>
+          <td class="px-4 py-3 text-slate-800">
+            <div class="font-bold">${escapeHtml(e.title)}</div>
+            ${e.details ? `<div class="text-xs text-slate-500 mt-0.5">${escapeHtml(e.details)}</div>` : ''}
+          </td>
+          <td class="px-4 py-3 text-xs font-bold text-slate-600 whitespace-nowrap">${e.status}</td>
+          <td class="px-4 py-3 font-extrabold whitespace-nowrap ${e.amountClass}">${e.amountText}</td>
+        </tr>
+      `).join('');
+    }
+
+    ['fullLogSearch', 'fullLogType', 'fullLogCurrency', 'fullLogPerson'].forEach(id => {
+      document.getElementById(id).addEventListener('input', renderFullLog);
+    });
 
     // ==================== RENDER BUDGET ====================
     const budgetMonthPicker = document.getElementById('budgetMonthPicker');
@@ -1403,6 +1723,7 @@
       document.getElementById('debtForm').reset();
       document.getElementById('debtDueDate').value = todayISO(7);
       populateCurrencySelects();
+      populatePeopleSelects();
       openModal('debtModal');
     }
 
@@ -1416,6 +1737,10 @@
       const note = document.getElementById('debtNote').value.trim();
       const autoSched = document.getElementById('debtAutoSchedule').checked;
       if (!name || isNaN(amount) || amount <= 0 || !dueDate) return;
+
+      if (!state.people.some(p => p.name === name)) {
+        state.people.push({ id: 'per_' + Date.now(), name, phone, note: '' });
+      }
 
       const debtId = 'debt_' + Date.now();
       state.debts.push({ id: debtId, name, phone, totalAmount: amount, paidAmount: 0, currency, dueDate, note });
@@ -1472,6 +1797,7 @@
         category: 'تحصيل ديون',
         date: payDate,
         method: 'نقدي',
+        personName: d.name,
         note: `تحصيل دفعة من ${d.name}`,
         details: d.note || 'دفعة تحصيل دين مسجل'
       });
@@ -1670,6 +1996,15 @@
       s.status = 'completed';
       s.collectedAmount = receivedAmt;
       const sCurr = s.currency || state.currency;
+      let personName = '';
+
+      if (s.debtId) {
+        const d = state.debts.find(x => x.id === s.debtId);
+        if (d) {
+          personName = d.name;
+          d.paidAmount = Math.min(Number(d.totalAmount), Number(d.paidAmount) + receivedAmt);
+        }
+      }
 
       state.transactions.push({
         id: 'tx_' + Date.now(),
@@ -1679,16 +2014,10 @@
         category: s.debtId ? 'تحصيل ديون' : 'إيرادات أخرى',
         date: collectDate,
         method: 'نقدي',
+        personName,
         note: `تحصيل موعد: ${s.title}`,
         details: collectDetails || `المبلغ المجدول: ${fmt(s.amount, sCurr)}`
       });
-
-      if (s.debtId) {
-        const d = state.debts.find(x => x.id === s.debtId);
-        if (d) {
-          d.paidAmount = Math.min(Number(d.totalAmount), Number(d.paidAmount) + receivedAmt);
-        }
-      }
 
       if (s.recurrence === 'weekly' || s.recurrence === 'monthly') {
         const nextD = new Date(s.date);
@@ -1755,6 +2084,7 @@
       document.getElementById('txDate').value = todayISO();
       document.getElementById('quickCatRow').classList.add('hidden');
       populateCurrencySelects();
+      populatePeopleSelects();
       setTxType(type);
       openModal('txModal');
     }
@@ -1766,12 +2096,13 @@
       const currency = document.getElementById('txCurrency').value || state.currency;
       const category = document.getElementById('txCategory').value;
       const date = document.getElementById('txDate').value;
+      const personName = document.getElementById('txPerson').value || '';
       const method = document.getElementById('txMethod').value;
       const note = document.getElementById('txNote').value.trim();
       const details = document.getElementById('txDetails').value.trim();
       if (isNaN(amount) || amount <= 0 || !date || !note) return;
 
-      state.transactions.push({ id: 'tx_' + Date.now(), type, amount, currency, category, date, method, note, details });
+      state.transactions.push({ id: 'tx_' + Date.now(), type, amount, currency, category, date, personName, method, note, details });
       saveState();
       closeModal('txModal');
       renderAll();
@@ -1813,11 +2144,12 @@
     });
 
     document.getElementById('btnExportCsv').addEventListener('click', () => {
-      const header = ['التاريخ', 'النوع', 'التصنيف', 'الوصف', 'التفاصيل', 'طريقة الدفع', 'المبلغ', 'العملة'];
+      const header = ['التاريخ', 'النوع', 'التصنيف', 'الشخص', 'الوصف', 'التفاصيل', 'طريقة الدفع', 'المبلغ', 'العملة'];
       const rows = state.transactions.map(t => [
         t.date,
         t.type === 'income' ? 'مدخول' : 'مصروف',
         `"${(t.category || '').replace(/"/g, '""')}"`,
+        `"${(t.personName || '').replace(/"/g, '""')}"`,
         `"${(t.note || '').replace(/"/g, '""')}"`,
         `"${(t.details || '').replace(/"/g, '""')}"`,
         `"${(t.method || '').replace(/"/g, '""')}"`,
@@ -1859,6 +2191,7 @@
         incomeCategories: state.incomeCategories,
         expenseCategories: state.expenseCategories,
         budgets: JSON.parse(JSON.stringify(DEFAULT_EXPENSE_BUDGETS)),
+        people: [],
         transactions: [],
         debts: [],
         schedules: []
@@ -1885,12 +2218,15 @@
 
     function renderAll() {
       populateCurrencySelects();
+      populatePeopleSelects();
       renderSettingsLists();
       renderDashboard();
       renderTransactions();
       renderBudget();
+      renderPeople();
       renderDebts();
       renderSchedule();
+      renderFullLog();
     }
 
     window.addEventListener('DOMContentLoaded', renderAll);
