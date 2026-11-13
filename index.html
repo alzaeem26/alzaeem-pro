@@ -472,6 +472,29 @@
         </button>
       </div>
 
+      <!-- Account & Private Email Backup Card -->
+      <div class="glass-card p-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div class="space-y-1">
+          <div class="flex items-center gap-2 flex-wrap">
+            <h3 class="text-base font-extrabold text-slate-900">الحساب الشخصي والخصوصية</h3>
+            <span id="accountStatusBadge" class="text-[11px] font-bold bg-emerald-500/15 text-emerald-800 px-2.5 py-0.5 rounded-full">حساب محلي معزول</span>
+          </div>
+          <p id="accountCurrentInfo" class="text-xs text-slate-600">الوضع المحلي الافتراضي — سجل دخولك ببريدك الإلكتروني لعزل بياناتك وجهات اتصالك وإرسال النسخ لبريدك.</p>
+          <p class="text-[11px] text-teal-800 font-semibold">🔒 بياناتك وجهات اتصالك تُحفظ محلياً في جهازك ومفصولة لكل بريد إلكتروني ولا تُشارك مع أي حسابات أخرى.</p>
+        </div>
+        <div class="flex flex-wrap items-center gap-2 shrink-0">
+          <button type="button" onclick="openAccountModal()" class="ios-btn bg-gradient-to-br from-indigo-500 to-violet-600 text-white text-xs sm:text-sm font-bold px-4 py-2.5 rounded-2xl shadow-sm">
+            تسجيل الدخول / الحساب
+          </button>
+          <button id="btnEmailBackup" type="button" onclick="sendBackupToEmail()" class="ios-btn bg-white/80 hover:bg-white text-sky-800 border border-white text-xs sm:text-sm font-bold px-3.5 py-2.5 rounded-2xl shadow-xs">
+            إرسال نسخة لإيميلي
+          </button>
+          <button id="btnSignOutAccount" type="button" onclick="signOutAccount()" class="hidden ios-btn bg-rose-500/10 hover:bg-rose-500/20 text-rose-700 text-xs font-bold px-3 py-2.5 rounded-2xl">
+            خروج
+          </button>
+        </div>
+      </div>
+
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-5">
         <!-- Currencies Card -->
         <div class="glass-card p-6 space-y-4">
@@ -542,6 +565,38 @@
   </main>
 
   <!-- ==================== MODALS ==================== -->
+
+  <!-- Account Sign-In Modal -->
+  <div id="accountModal" class="fixed inset-0 bg-slate-900/35 backdrop-blur-md z-50 hidden items-center justify-center p-4">
+    <div class="ios-modal max-w-md w-full p-6 animate-slide-up">
+      <div class="flex items-center justify-between mb-4">
+        <h3 class="text-lg font-extrabold text-slate-900">تجهيز الحساب الشخصي</h3>
+        <button type="button" onclick="closeModal('accountModal')" class="w-8 h-8 rounded-full bg-slate-200/70 hover:bg-slate-200 text-slate-600 flex items-center justify-center text-sm font-bold">✕</button>
+      </div>
+      <form id="accountForm" class="space-y-3.5">
+        <p class="text-xs text-slate-600 bg-sky-500/10 border border-sky-200 rounded-xl p-3">
+          لكل بريد إلكتروني مساحة تخزين معزولة تماماً على جهازك، ولا تُرسل جهات اتصالك أو بياناتك إلى أي خادم مشترك.
+        </p>
+        <div>
+          <label class="block text-xs font-bold text-slate-600 mb-1">البريد الإلكتروني (لحفظ النسخ الاحتياطية)</label>
+          <input id="accEmail" type="email" required placeholder="name@example.com" class="ios-input w-full rounded-xl px-3.5 py-2.5 text-sm text-left" dir="ltr" />
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-slate-600 mb-1">اسم الحساب (اختياري)</label>
+          <input id="accName" type="text" placeholder="مثال: حسابي الشخصي" class="ios-input w-full rounded-xl px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-sky-500" />
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-slate-600 mb-1">رمز حماية الحساب (PIN اختياري)</label>
+          <input id="accPin" type="password" inputmode="numeric" maxlength="6" placeholder="••••" class="ios-input w-full rounded-xl px-3.5 py-2.5 text-center text-sm font-bold tracking-widest focus:outline-none focus:ring-2 focus:ring-sky-500" />
+        </div>
+        <label class="flex items-center gap-2 text-xs font-bold text-slate-700 cursor-pointer">
+          <input id="accKeepCurrentData" type="checkbox" checked class="rounded text-sky-600 focus:ring-sky-500" />
+          نقل البيانات الحالية إلى هذا الحساب (إذا كان حساباً جديداً)
+        </label>
+        <button type="submit" class="ios-btn w-full bg-gradient-to-br from-indigo-500 to-violet-600 text-white font-bold py-3 rounded-2xl">دخول وتفعيل الحساب</button>
+      </form>
+    </div>
+  </div>
 
   <!-- Install App Instructions Modal -->
   <div id="installModal" class="fixed inset-0 bg-slate-900/35 backdrop-blur-md z-50 hidden items-center justify-center p-4">
@@ -1007,8 +1062,26 @@
       }
     });
 
-    // ==================== APP STATE ====================
+    // ==================== APP STATE & ISOLATED ACCOUNT ====================
+    const ACTIVE_ACCOUNT_KEY = 'alzaeem_pro_active_account_v1';
+    const ACCOUNTS_META_KEY = 'alzaeem_pro_accounts_meta_v1';
     const STORAGE_KEY = 'alzaeem_pro_state_v1';
+
+    function getActiveAccount() {
+      try {
+        const raw = localStorage.getItem(ACTIVE_ACCOUNT_KEY);
+        return raw ? JSON.parse(raw) : null;
+      } catch (e) { return null; }
+    }
+
+    function getStorageKeyForAccount(acc) {
+      if (acc && acc.email) {
+        return 'alzaeem_pro_user_' + acc.email.toLowerCase().trim();
+      }
+      return STORAGE_KEY;
+    }
+
+    let activeAccount = getActiveAccount();
     const DEFAULT_CURRENCIES = [
       { code: '$', name: 'دولار أمريكي' },
       { code: 'ل.س', name: 'ليرة سورية' },
@@ -1090,7 +1163,8 @@
 
     function loadState() {
       try {
-        const raw = localStorage.getItem(STORAGE_KEY) || localStorage.getItem('mizan_pro_state_v1');
+        const key = getStorageKeyForAccount(activeAccount);
+        const raw = localStorage.getItem(key) || (!activeAccount ? localStorage.getItem('mizan_pro_state_v1') : null);
         if (raw) return ensureStateFields(JSON.parse(raw));
       } catch (e) {}
       return createDemoState();
@@ -1098,8 +1172,114 @@
 
     function saveState() {
       try {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+        const key = getStorageKeyForAccount(activeAccount);
+        localStorage.setItem(key, JSON.stringify(state));
       } catch (e) {}
+    }
+
+    function renderAccountUI() {
+      const badge = document.getElementById('accountStatusBadge');
+      const info = document.getElementById('accountCurrentInfo');
+      const outBtn = document.getElementById('btnSignOutAccount');
+      if (!badge || !info || !outBtn) return;
+      if (activeAccount && activeAccount.email) {
+        badge.textContent = `مسجل: ${activeAccount.email}`;
+        info.textContent = `الحساب النشط: ${activeAccount.name || activeAccount.email} — بياناتك وجهات اتصالك معزولة ومحمية لهذا البريد فقط.`;
+        outBtn.classList.remove('hidden');
+      } else {
+        badge.textContent = 'حساب محلي معزول';
+        info.textContent = 'الوضع المحلي الافتراضي — سجل دخولك ببريدك الإلكتروني لعزل بياناتك وجهات اتصالك وإرسال النسخ لبريدك.';
+        outBtn.classList.add('hidden');
+      }
+    }
+
+    function openAccountModal() {
+      document.getElementById('accountForm').reset();
+      if (activeAccount) {
+        document.getElementById('accEmail').value = activeAccount.email || '';
+        document.getElementById('accName').value = activeAccount.name || '';
+      }
+      openModal('accountModal');
+    }
+
+    document.getElementById('accountForm').addEventListener('submit', e => {
+      e.preventDefault();
+      const email = document.getElementById('accEmail').value.trim().toLowerCase();
+      const name = document.getElementById('accName').value.trim();
+      const pin = document.getElementById('accPin').value.trim();
+      const keepCurrent = document.getElementById('accKeepCurrentData').checked;
+      if (!email) return;
+
+      let metas = {};
+      try { metas = JSON.parse(localStorage.getItem(ACCOUNTS_META_KEY) || '{}'); } catch (err) {}
+      if (metas[email] && metas[email].pin && metas[email].pin !== pin) {
+        showToast('رمز الحماية (PIN) غير صحيح لهذا الحساب');
+        return;
+      }
+
+      if (!metas[email]) {
+        metas[email] = { email, name, pin };
+      } else {
+        if (name) metas[email].name = name;
+        if (pin && !metas[email].pin) metas[email].pin = pin;
+      }
+      try { localStorage.setItem(ACCOUNTS_META_KEY, JSON.stringify(metas)); } catch (err) {}
+
+      const newAcc = { email, name: metas[email].name || email };
+      const targetKey = getStorageKeyForAccount(newAcc);
+      let existingData = null;
+      try { existingData = localStorage.getItem(targetKey); } catch (err) {}
+
+      activeAccount = newAcc;
+      try { localStorage.setItem(ACTIVE_ACCOUNT_KEY, JSON.stringify(activeAccount)); } catch (err) {}
+
+      if (existingData) {
+        state = ensureStateFields(JSON.parse(existingData));
+      } else if (keepCurrent) {
+        saveState();
+      } else {
+        state = createDemoState();
+        saveState();
+      }
+
+      closeModal('accountModal');
+      renderAll();
+      showToast(`تم تسجيل الدخول إلى ${email}`);
+    });
+
+    function signOutAccount() {
+      activeAccount = null;
+      try { localStorage.removeItem(ACTIVE_ACCOUNT_KEY); } catch (err) {}
+      state = loadState();
+      renderAll();
+      showToast('تم تسجيل الخروج والعودة للوضع المحلي');
+    }
+
+    function sendBackupToEmail() {
+      const email = activeAccount && activeAccount.email ? activeAccount.email : '';
+      if (!email) {
+        showToast('سجّل بريدك الإلكتروني أولاً لإرسال النسخة إليه');
+        openAccountModal();
+        return;
+      }
+      // 1. Download JSON backup file automatically
+      const filename = `alzaeem-pro-backup-${todayISO()}.json`;
+      const blob = new Blob([JSON.stringify(state, null, 2)], { type: 'application/json' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = filename;
+      a.click();
+
+      // 2. Open user's mail client addressed to their own email
+      const subject = encodeURIComponent(`نسخة احتياطية - الزعيم برو (${todayISO()})`);
+      const body = encodeURIComponent(
+        `مرحباً ${activeAccount.name || ''}،\n\n` +
+        `تم تنزيل ملف النسخة الاحتياطية (${filename}) على جهازك.\n` +
+        `يرجى إرفاق الملف بهذه الرسالة وإرسالها إلى بريدك للحفظ الآمن.\n\n` +
+        `ملخص البيانات: ${state.transactions.length} حركة مالية | ${state.people.length} شخص | ${state.debts.length} دين | ${state.schedules.length} موعد.`
+      );
+      window.location.href = `mailto:${encodeURIComponent(email)}?subject=${subject}&body=${body}`;
+      showToast('تم تنزيل النسخة الاحتياطية وفتح تطبيق البريد');
     }
 
     let state = loadState();
@@ -2648,6 +2828,7 @@
     }
 
     function renderAll() {
+      renderAccountUI();
       populateCurrencySelects();
       populatePeopleSelects();
       renderSettingsLists();
