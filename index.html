@@ -45,23 +45,23 @@
       border-radius: 22px;
     }
     .ios-modal {
-      background: rgba(255, 255, 255, 0.86);
+      background: rgba(255, 255, 255, 0.88);
       backdrop-filter: blur(30px) saturate(195%);
       -webkit-backdrop-filter: blur(30px) saturate(195%);
-      border: 1px solid rgba(255, 255, 255, 0.92);
+      border: 1px solid rgba(255, 255, 255, 0.94);
       box-shadow: 0 24px 60px rgba(15, 23, 42, 0.18), inset 0 1px 0 rgba(255, 255, 255, 0.95);
       border-radius: 26px;
     }
     .ios-input {
-      background: rgba(255, 255, 255, 0.68);
-      border: 1px solid rgba(255, 255, 255, 0.85);
+      background: rgba(255, 255, 255, 0.72);
+      border: 1px solid rgba(255, 255, 255, 0.88);
       box-shadow: inset 0 1px 2px rgba(15, 23, 42, 0.04);
     }
     .ios-input:focus {
-      background: rgba(255, 255, 255, 0.94);
+      background: rgba(255, 255, 255, 0.96);
     }
     .ios-nav-pill {
-      background: rgba(255, 255, 255, 0.45);
+      background: rgba(255, 255, 255, 0.48);
       backdrop-filter: blur(14px);
       -webkit-backdrop-filter: blur(14px);
       border: 1px solid rgba(255, 255, 255, 0.68);
@@ -92,10 +92,10 @@
 </head>
 <body class="min-h-screen flex flex-col">
 
-  <!-- Top Header: App Icon inline on the exact same row as Navigation Tabs -->
+  <!-- ==================== TOP HEADER & NAVIGATION ==================== -->
   <header class="ios-header sticky top-0 z-30">
     <div class="max-w-7xl mx-auto px-3 sm:px-6 py-2.5 flex items-center gap-2.5">
-      <!-- App Icon / Brand -->
+      <!-- App Icon & Brand -->
       <div class="flex items-center gap-2 shrink-0" title="الزعيم برو">
         <div class="w-10 h-10 rounded-2xl bg-gradient-to-br from-sky-500 to-teal-700 text-white flex items-center justify-center shadow-md shadow-sky-500/25 ring-1 ring-white/60">
           <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
@@ -105,7 +105,7 @@
         <span class="hidden lg:inline text-base font-extrabold text-slate-900 whitespace-nowrap">الزعيم برو</span>
       </div>
 
-      <!-- Navigation Tabs (Same Row) -->
+      <!-- Navigation Tabs -->
       <nav class="ios-nav-pill flex-1 min-w-0 rounded-2xl p-1 flex items-center gap-1 overflow-x-auto no-scrollbar" aria-label="التنقل الرئيسي">
         <button type="button" data-tab="dashboard" class="tab-btn ios-btn active whitespace-nowrap px-3.5 py-2 rounded-xl text-xs sm:text-sm font-bold flex items-center gap-1.5">
           <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
@@ -141,12 +141,12 @@
     </div>
   </header>
 
-  <!-- Main Content -->
+  <!-- ==================== MAIN CONTENT ==================== -->
   <main class="flex-1 max-w-7xl w-full mx-auto px-3.5 sm:px-6 py-5 space-y-5">
 
     <!-- ==================== TAB 1: DASHBOARD ==================== -->
     <section id="view-dashboard" class="tab-view space-y-5">
-      <!-- Daily Due & Overdue Reminder Banner -->
+      <!-- Daily Due & Overdue Alert Banner -->
       <div id="dailyAlertBanner" class="hidden glass-card border-2 border-amber-400/75 bg-amber-500/[0.10] p-3.5 sm:p-4 flex flex-wrap items-center justify-between gap-3">
         <div class="flex items-center gap-2.5 min-w-0">
           <span class="w-9 h-9 rounded-xl bg-amber-500 text-white flex items-center justify-center font-extrabold shrink-0">🔔</span>
@@ -160,13 +160,14 @@
           <button type="button" onclick="document.getElementById('dailyAlertBanner').classList.add('hidden')" class="text-xs font-bold text-amber-900 px-2 py-1">إخفاء</button>
         </div>
       </div>
+
       <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-3">
         <div>
           <h2 class="text-xl font-extrabold text-slate-900">الملخص المالي العام</h2>
           <p class="text-xs sm:text-sm text-slate-600" id="dashboardDateLabel"></p>
         </div>
 
-        <!-- 5 Quick Action Buttons: 2 rows on mobile (2 + 3), single wrap row on desktop -->
+        <!-- 5 Quick Action Buttons: 2 rows on mobile (2 + 3), 1 row on desktop -->
         <div class="grid grid-cols-6 sm:flex sm:flex-wrap items-center gap-2">
           <button type="button" onclick="openTxModal('income')" class="col-span-3 sm:col-auto ios-btn bg-gradient-to-br from-emerald-500 to-emerald-600 text-white text-xs sm:text-sm font-bold px-3 sm:px-4 py-2.5 rounded-2xl shadow-md shadow-emerald-500/25 flex items-center justify-center gap-1">
             <span>+</span> مدخول جديد
@@ -275,6 +276,7 @@
         </div>
       </div>
 
+      <!-- Search + Single Row Filter Controls -->
       <div class="glass-card p-3 sm:p-4 space-y-2 sm:space-y-0 sm:grid sm:grid-cols-5 sm:gap-3">
         <input id="txSearch" type="text" placeholder="ابحث بالوصف أو التفاصيل..." class="ios-input w-full rounded-xl px-3.5 py-2 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-sky-500" />
         <div class="grid grid-cols-4 gap-1.5 sm:col-span-4 sm:gap-3">
@@ -326,6 +328,7 @@
         </div>
       </div>
 
+      <!-- 3 Main Budget Summary Cards in 1 Single Row -->
       <div class="grid grid-cols-3 gap-2 sm:gap-4">
         <div class="glass-card p-3 sm:p-5">
           <span class="text-[10px] sm:text-xs font-bold text-slate-600 block truncate">إجمالي الميزانية</span>
@@ -349,10 +352,10 @@
       <div class="space-y-3">
         <div>
           <h2 class="text-xl font-extrabold text-slate-900">الأشخاص وتحصيل الديون</h2>
-          <p class="text-xs sm:text-sm text-slate-600">إضافة الأشخاص ومتابعة ديونهم ودفعاتهم المالية</p>
+          <p class="text-xs sm:text-sm text-slate-600">إضافة الأشخاص ومتابعة ديونهم ودفعاتهم المالية والأقساط</p>
         </div>
 
-        <!-- All 4 top buttons in 1 single row -->
+        <!-- 4 Top Buttons in 1 Single Row -->
         <div class="grid grid-cols-4 sm:flex sm:flex-wrap items-center gap-1.5 sm:gap-2">
           <button type="button" onclick="openPersonModal()" class="ios-btn bg-gradient-to-br from-indigo-500 to-violet-600 text-white text-[10px] sm:text-sm font-bold px-1.5 sm:px-4 py-2 rounded-xl sm:rounded-2xl shadow-sm text-center truncate">+ شخص</button>
           <button type="button" onclick="pickDeviceContact(true)" class="ios-btn bg-white/80 hover:bg-white text-indigo-700 border border-white text-[10px] sm:text-sm font-bold px-1.5 sm:px-3.5 py-2 rounded-xl sm:rounded-2xl shadow-xs text-center truncate">جهات الاتصال</button>
@@ -360,7 +363,7 @@
           <button id="btnExportDebtsExcel" type="button" onclick="exportVisibleDebtsCsv()" class="ios-btn bg-emerald-600 hover:bg-emerald-700 text-white text-[10px] sm:text-sm font-bold px-1.5 sm:px-3.5 py-2 rounded-xl sm:rounded-2xl shadow-xs text-center truncate">تصدير إكسل</button>
         </div>
 
-        <!-- 3 Debt Summary Cards immediately below buttons in 1 single row -->
+        <!-- 3 Debt Summary Cards immediately below buttons in 1 Single Row -->
         <div class="grid grid-cols-3 gap-2 sm:gap-4">
           <div class="glass-card p-3 sm:p-5">
             <span class="text-[10px] sm:text-xs font-bold text-slate-600 block truncate">إجمالي الديون</span>
@@ -377,6 +380,7 @@
         </div>
       </div>
 
+      <!-- Registered People Directory -->
       <div class="glass-card p-4 sm:p-5 space-y-3">
         <div class="flex items-center justify-between">
           <h3 class="text-base font-extrabold text-slate-900">الأشخاص والجهات المسجلون</h3>
@@ -385,6 +389,7 @@
         <div id="peopleGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3"></div>
       </div>
 
+      <!-- Debt Filters -->
       <div class="flex flex-wrap items-center gap-2">
         <button type="button" data-debt-filter="all" class="debt-filter-btn bg-gradient-to-br from-sky-500 to-teal-700 text-white text-xs font-bold px-3.5 py-2 rounded-xl shadow-xs">الكل</button>
         <button type="button" data-debt-filter="pending" class="debt-filter-btn bg-white/65 border border-white/80 text-slate-700 text-xs font-bold px-3.5 py-2 rounded-xl">قيد التحصيل</button>
@@ -392,6 +397,7 @@
         <button type="button" data-debt-filter="paid" class="debt-filter-btn bg-white/65 border border-white/80 text-slate-700 text-xs font-bold px-3.5 py-2 rounded-xl">محصلة بالكامل</button>
       </div>
 
+      <!-- Debts Grid -->
       <div id="debtsGrid" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
     </section>
 
@@ -406,6 +412,7 @@
       </div>
 
       <div class="grid grid-cols-1 lg:grid-cols-3 gap-5">
+        <!-- Calendar Widget -->
         <div class="glass-card p-5">
           <div class="flex items-center justify-between mb-4">
             <button type="button" id="calPrevMonth" class="p-2 rounded-xl hover:bg-white/60 text-slate-700 font-bold">‹</button>
@@ -423,6 +430,7 @@
           </div>
         </div>
 
+        <!-- Schedule Items List -->
         <div class="glass-card p-5 lg:col-span-2 space-y-4">
           <div class="flex flex-wrap items-center justify-between gap-2">
             <div class="flex flex-wrap items-center gap-2">
@@ -449,6 +457,7 @@
         <span id="fullLogTotalCount" class="text-xs font-extrabold bg-white/75 border border-white px-3.5 py-2 rounded-full text-slate-700">0 سجل</span>
       </div>
 
+      <!-- Search + 3 Filter Criteria in 1 Single Row -->
       <div class="glass-card p-3 sm:p-4 space-y-2.5 sm:space-y-0 sm:grid sm:grid-cols-4 sm:gap-3">
         <input id="fullLogSearch" type="text" placeholder="ابحث باسم الشخص، الوصف، التفاصيل..." class="ios-input w-full rounded-xl px-3.5 py-2 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-sky-500" />
         <div class="grid grid-cols-3 gap-1.5 sm:col-span-3 sm:gap-3">
@@ -487,7 +496,7 @@
       </div>
     </section>
 
-    <!-- ==================== TAB 7: SETTINGS, CURRENCIES, BACKUPS & INSTALL ==================== -->
+    <!-- ==================== TAB 7: SETTINGS & SETUP ==================== -->
     <section id="view-settings" class="tab-view hidden space-y-3.5">
       <div class="flex flex-wrap items-center justify-between gap-2">
         <h2 class="text-lg sm:text-xl font-extrabold text-slate-900">الإعدادات والتهيئة</h2>
@@ -514,7 +523,7 @@
       </div>
 
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-3.5">
-        <!-- Compact Currencies Card -->
+        <!-- Currencies Card -->
         <div class="glass-card p-3.5 sm:p-4 space-y-2.5">
           <div class="flex items-center justify-between gap-2">
             <h3 class="text-sm font-extrabold text-slate-900">العملات</h3>
@@ -531,7 +540,7 @@
           <div id="currenciesList" class="flex flex-wrap gap-1.5"></div>
         </div>
 
-        <!-- Compact Backup, Import & Reset Card -->
+        <!-- Backup, Import & Reset Card -->
         <div class="glass-card p-3.5 sm:p-4 space-y-2.5">
           <h3 class="text-sm font-extrabold text-slate-900">النسخ الاحتياطي والتصفير</h3>
           <div class="grid grid-cols-3 gap-1.5">
@@ -545,7 +554,7 @@
           <p class="text-[11px] text-slate-500">التصفير محمي بتنبيه وكلمة مرور (0000) لحماية سجلاتك.</p>
         </div>
 
-        <!-- Compact Preset Income Categories -->
+        <!-- Preset Income Categories -->
         <div class="glass-card p-3.5 sm:p-4 space-y-2.5">
           <h3 class="text-sm font-extrabold text-emerald-700">تصنيفات المدخول الجاهزة</h3>
           <form id="addIncomeCatForm" class="flex gap-1.5">
@@ -555,7 +564,7 @@
           <div id="incomeCatsList" class="flex flex-wrap gap-1.5"></div>
         </div>
 
-        <!-- Compact Preset Expense Categories -->
+        <!-- Preset Expense Categories -->
         <div class="glass-card p-3.5 sm:p-4 space-y-2.5">
           <h3 class="text-sm font-extrabold text-rose-700">تصنيفات المصروف الجاهزة</h3>
           <form id="addExpenseCatForm" class="flex gap-1.5">
@@ -691,7 +700,9 @@
             <label class="block text-xs font-bold text-slate-600 mb-1">المبلغ</label>
             <div class="flex items-center gap-1.5">
               <input id="txAmount" type="number" step="0.01" min="0.01" inputmode="decimal" required placeholder="0.00" class="ios-input w-full rounded-xl px-3.5 py-2.5 text-base font-bold focus:outline-none focus:ring-2 focus:ring-sky-500" />
-<button type="button" onclick="openCalculatorFor('txAmount')" class="ios-btn shrink-0 w-10 h-10 rounded-xl bg-sky-500/15 hover:bg-sky-500/25 text-sky-800 border border-sky-300/60 flex items-center justify-center" title="آلة حاسبة"><svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 7h6m-6 4h.01M12 11h.01M15 11h.01M9 15h.01M12 15h.01M15 15h.01M5 5a2 2 0 012-2h10a2 2 0 012 2v14a2 2 0 01-2 2H7a2 2 0 01-2-2V5z"/></svg></button>
+              <button type="button" onclick="openCalculatorFor('txAmount')" class="ios-btn shrink-0 w-10 h-10 rounded-xl bg-sky-500/15 hover:bg-sky-500/25 text-sky-800 border border-sky-300/60 flex items-center justify-center" title="آلة حاسبة">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 7h6m-6 4h.01M12 11h.01M15 11h.01M9 15h.01M12 15h.01M15 15h.01M5 5a2 2 0 012-2h10a2 2 0 012 2v14a2 2 0 01-2 2H7a2 2 0 01-2-2V5z"/></svg>
+              </button>
             </div>
           </div>
           <div>
@@ -700,6 +711,7 @@
           </div>
         </div>
 
+        <!-- Optional Exchange Rate to USD -->
         <div id="txRateBox" class="hidden bg-emerald-500/10 border border-emerald-300/60 rounded-xl p-2.5 space-y-1">
           <div class="flex items-center justify-between gap-2">
             <label class="text-[11px] font-bold text-emerald-900">سعر التصريف إلى الدولار ($) — اختياري</label>
@@ -707,8 +719,6 @@
           </div>
           <input id="txExchangeRate" type="number" step="0.0001" min="0.0001" inputmode="decimal" placeholder="مثال: 15000 (اتركه فارغاً للإبقاء بالعملة المختارة)" class="ios-input w-full rounded-lg px-3 py-1.5 text-xs font-bold focus:outline-none focus:ring-2 focus:ring-emerald-500" />
         </div>
-
-
 
         <div class="grid grid-cols-2 gap-3">
           <div>
@@ -775,7 +785,12 @@
         </div>
         <div>
           <label class="block text-xs font-bold text-slate-600 mb-1">المبلغ المقبوض فعلياً</label>
-          <div class="flex items-center gap-1.5"><input id="collectAmount" type="number" step="0.01" min="0.01" inputmode="decimal" required class="ios-input w-full rounded-xl px-3.5 py-2.5 text-base font-bold focus:outline-none focus:ring-2 focus:ring-emerald-500" /><button type="button" onclick="openCalculatorFor('collectAmount')" class="ios-btn shrink-0 w-10 h-10 rounded-xl bg-sky-500/15 hover:bg-sky-500/25 text-sky-800 border border-sky-300/60 flex items-center justify-center" title="آلة حاسبة"><svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 7h6m-6 4h.01M12 11h.01M15 11h.01M9 15h.01M12 15h.01M15 15h.01M5 5a2 2 0 012-2h10a2 2 0 012 2v14a2 2 0 01-2 2H7a2 2 0 01-2-2V5z"/></svg></button></div>
+          <div class="flex items-center gap-1.5">
+            <input id="collectAmount" type="number" step="0.01" min="0.01" inputmode="decimal" required class="ios-input w-full rounded-xl px-3.5 py-2.5 text-base font-bold focus:outline-none focus:ring-2 focus:ring-emerald-500" />
+            <button type="button" onclick="openCalculatorFor('collectAmount')" class="ios-btn shrink-0 w-10 h-10 rounded-xl bg-sky-500/15 hover:bg-sky-500/25 text-sky-800 border border-sky-300/60 flex items-center justify-center" title="آلة حاسبة">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 7h6m-6 4h.01M12 11h.01M15 11h.01M9 15h.01M12 15h.01M15 15h.01M5 5a2 2 0 012-2h10a2 2 0 012 2v14a2 2 0 01-2 2H7a2 2 0 01-2-2V5z"/></svg>
+            </button>
+          </div>
         </div>
         <div>
           <label class="block text-xs font-bold text-slate-600 mb-1">تاريخ القبض</label>
@@ -804,7 +819,12 @@
         </div>
         <div>
           <label class="block text-xs font-bold text-slate-600 mb-1">الحد الأقصى الشهري</label>
-          <div class="flex items-center gap-1.5"><input id="budgetCatLimit" type="number" step="0.01" min="1" inputmode="decimal" required placeholder="500" class="ios-input w-full rounded-xl px-3.5 py-2.5 text-base font-bold focus:outline-none focus:ring-2 focus:ring-sky-500" /><button type="button" onclick="openCalculatorFor('budgetCatLimit')" class="ios-btn shrink-0 w-10 h-10 rounded-xl bg-sky-500/15 hover:bg-sky-500/25 text-sky-800 border border-sky-300/60 flex items-center justify-center" title="آلة حاسبة"><svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 7h6m-6 4h.01M12 11h.01M15 11h.01M9 15h.01M12 15h.01M15 15h.01M5 5a2 2 0 012-2h10a2 2 0 012 2v14a2 2 0 01-2 2H7a2 2 0 01-2-2V5z"/></svg></button></div>
+          <div class="flex items-center gap-1.5">
+            <input id="budgetCatLimit" type="number" step="0.01" min="1" inputmode="decimal" required placeholder="500" class="ios-input w-full rounded-xl px-3.5 py-2.5 text-base font-bold focus:outline-none focus:ring-2 focus:ring-sky-500" />
+            <button type="button" onclick="openCalculatorFor('budgetCatLimit')" class="ios-btn shrink-0 w-10 h-10 rounded-xl bg-sky-500/15 hover:bg-sky-500/25 text-sky-800 border border-sky-300/60 flex items-center justify-center" title="آلة حاسبة">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 7h6m-6 4h.01M12 11h.01M15 11h.01M9 15h.01M12 15h.01M15 15h.01M5 5a2 2 0 012-2h10a2 2 0 012 2v14a2 2 0 01-2 2H7a2 2 0 01-2-2V5z"/></svg>
+            </button>
+          </div>
         </div>
         <button type="submit" class="ios-btn w-full bg-gradient-to-br from-sky-500 to-teal-700 text-white font-bold py-3 rounded-2xl">حفظ الميزانية</button>
       </form>
@@ -815,7 +835,7 @@
   <div id="debtModal" class="fixed inset-0 bg-slate-900/35 backdrop-blur-md z-50 hidden items-center justify-center p-4 overflow-y-auto">
     <div class="ios-modal max-w-md w-full p-6 animate-slide-up my-auto">
       <div class="flex items-center justify-between mb-4">
-        <h3 class="text-lg font-extrabold text-slate-900">تسجيل دين جديد للتحصيل</h3>
+        <h3 id="debtModalTitle" class="text-lg font-extrabold text-slate-900">تسجيل دين جديد للتحصيل</h3>
         <button type="button" onclick="closeModal('debtModal')" class="w-8 h-8 rounded-full bg-slate-200/70 hover:bg-slate-200 text-slate-600 flex items-center justify-center text-sm font-bold">✕</button>
       </div>
       <form id="debtForm" class="space-y-3.5">
@@ -834,7 +854,12 @@
         <div class="grid grid-cols-3 gap-3">
           <div class="col-span-2">
             <label class="block text-xs font-bold text-slate-600 mb-1">المبلغ الإجمالي</label>
-            <div class="flex items-center gap-1.5"><input id="debtAmount" type="number" step="0.01" min="0.01" inputmode="decimal" required placeholder="0.00" class="ios-input w-full rounded-xl px-3.5 py-2.5 text-base font-bold focus:outline-none focus:ring-2 focus:ring-sky-500" /><button type="button" onclick="openCalculatorFor('debtAmount')" class="ios-btn shrink-0 w-10 h-10 rounded-xl bg-sky-500/15 hover:bg-sky-500/25 text-sky-800 border border-sky-300/60 flex items-center justify-center" title="آلة حاسبة"><svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 7h6m-6 4h.01M12 11h.01M15 11h.01M9 15h.01M12 15h.01M15 15h.01M5 5a2 2 0 012-2h10a2 2 0 012 2v14a2 2 0 01-2 2H7a2 2 0 01-2-2V5z"/></svg></button></div>
+            <div class="flex items-center gap-1.5">
+              <input id="debtAmount" type="number" step="0.01" min="0.01" inputmode="decimal" required placeholder="0.00" class="ios-input w-full rounded-xl px-3.5 py-2.5 text-base font-bold focus:outline-none focus:ring-2 focus:ring-sky-500" />
+              <button type="button" onclick="openCalculatorFor('debtAmount')" class="ios-btn shrink-0 w-10 h-10 rounded-xl bg-sky-500/15 hover:bg-sky-500/25 text-sky-800 border border-sky-300/60 flex items-center justify-center" title="آلة حاسبة">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 7h6m-6 4h.01M12 11h.01M15 11h.01M9 15h.01M12 15h.01M15 15h.01M5 5a2 2 0 012-2h10a2 2 0 012 2v14a2 2 0 01-2 2H7a2 2 0 01-2-2V5z"/></svg>
+              </button>
+            </div>
           </div>
           <div>
             <label class="block text-xs font-bold text-slate-600 mb-1">العملة</label>
@@ -909,7 +934,12 @@
         </div>
         <div>
           <label class="block text-xs font-bold text-slate-600 mb-1">مبلغ الدفعة المحصلة</label>
-          <div class="flex items-center gap-1.5"><input id="payAmount" type="number" step="0.01" min="0.01" inputmode="decimal" required class="ios-input w-full rounded-xl px-3.5 py-2.5 text-base font-bold focus:outline-none focus:ring-2 focus:ring-emerald-500" /><button type="button" onclick="openCalculatorFor('payAmount')" class="ios-btn shrink-0 w-10 h-10 rounded-xl bg-sky-500/15 hover:bg-sky-500/25 text-sky-800 border border-sky-300/60 flex items-center justify-center" title="آلة حاسبة"><svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 7h6m-6 4h.01M12 11h.01M15 11h.01M9 15h.01M12 15h.01M15 15h.01M5 5a2 2 0 012-2h10a2 2 0 012 2v14a2 2 0 01-2 2H7a2 2 0 01-2-2V5z"/></svg></button></div>
+          <div class="flex items-center gap-1.5">
+            <input id="payAmount" type="number" step="0.01" min="0.01" inputmode="decimal" required class="ios-input w-full rounded-xl px-3.5 py-2.5 text-base font-bold focus:outline-none focus:ring-2 focus:ring-emerald-500" />
+            <button type="button" onclick="openCalculatorFor('payAmount')" class="ios-btn shrink-0 w-10 h-10 rounded-xl bg-sky-500/15 hover:bg-sky-500/25 text-sky-800 border border-sky-300/60 flex items-center justify-center" title="آلة حاسبة">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 7h6m-6 4h.01M12 11h.01M15 11h.01M9 15h.01M12 15h.01M15 15h.01M5 5a2 2 0 012-2h10a2 2 0 012 2v14a2 2 0 01-2 2H7a2 2 0 01-2-2V5z"/></svg>
+            </button>
+          </div>
         </div>
         <div>
           <label class="block text-xs font-bold text-slate-600 mb-1">تاريخ القبض</label>
@@ -920,7 +950,7 @@
     </div>
   </div>
 
-  <!-- Installment Plan Modal (Split existing debt) -->
+  <!-- Installment Plan Modal -->
   <div id="installmentPlanModal" class="fixed inset-0 bg-slate-900/35 backdrop-blur-md z-50 hidden items-center justify-center p-4">
     <div class="ios-modal max-w-md w-full p-6 animate-slide-up">
       <div class="flex items-center justify-between mb-4">
@@ -958,13 +988,13 @@
   </div>
 
   <!-- Schedule Modal -->
-  <div id="scheduleModal" class="fixed inset-0 bg-slate-900/35 backdrop-blur-md z-50 hidden items-center justify-center p-4">
-    <div class="ios-modal max-w-md w-full p-6 animate-slide-up">
+  <div id="scheduleModal" class="fixed inset-0 bg-slate-900/35 backdrop-blur-md z-50 hidden items-center justify-center p-4 overflow-y-auto">
+    <div class="ios-modal max-w-md w-full p-6 animate-slide-up my-auto">
       <div class="flex items-center justify-between mb-4">
         <h3 class="text-lg font-extrabold text-slate-900">تحديد موعد قبض / تحصيل</h3>
         <button type="button" onclick="closeModal('scheduleModal')" class="w-8 h-8 rounded-full bg-slate-200/70 hover:bg-slate-200 text-slate-600 flex items-center justify-center text-sm font-bold">✕</button>
       </div>
-      <form id="scheduleForm" class="space-y-4">
+      <form id="scheduleForm" class="space-y-3.5">
         <div>
           <label class="block text-xs font-bold text-slate-600 mb-1">عنوان الموعد / الجهة</label>
           <input id="schedTitle" type="text" required placeholder="مثال: قبض إيجار، تحصيل قسط عميل..." class="ios-input w-full rounded-xl px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-sky-500" />
@@ -972,7 +1002,12 @@
         <div class="grid grid-cols-3 gap-3">
           <div class="col-span-2">
             <label class="block text-xs font-bold text-slate-600 mb-1">المبلغ المتوقع</label>
-            <div class="flex items-center gap-1.5"><input id="schedAmount" type="number" step="0.01" min="0.01" inputmode="decimal" required placeholder="0.00" class="ios-input w-full rounded-xl px-3.5 py-2.5 text-base font-bold focus:outline-none focus:ring-2 focus:ring-sky-500" /><button type="button" onclick="openCalculatorFor('schedAmount')" class="ios-btn shrink-0 w-10 h-10 rounded-xl bg-sky-500/15 hover:bg-sky-500/25 text-sky-800 border border-sky-300/60 flex items-center justify-center" title="آلة حاسبة"><svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 7h6m-6 4h.01M12 11h.01M15 11h.01M9 15h.01M12 15h.01M15 15h.01M5 5a2 2 0 012-2h10a2 2 0 012 2v14a2 2 0 01-2 2H7a2 2 0 01-2-2V5z"/></svg></button></div>
+            <div class="flex items-center gap-1.5">
+              <input id="schedAmount" type="number" step="0.01" min="0.01" inputmode="decimal" required placeholder="0.00" class="ios-input w-full rounded-xl px-3.5 py-2.5 text-base font-bold focus:outline-none focus:ring-2 focus:ring-sky-500" />
+              <button type="button" onclick="openCalculatorFor('schedAmount')" class="ios-btn shrink-0 w-10 h-10 rounded-xl bg-sky-500/15 hover:bg-sky-500/25 text-sky-800 border border-sky-300/60 flex items-center justify-center" title="آلة حاسبة">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 7h6m-6 4h.01M12 11h.01M15 11h.01M9 15h.01M12 15h.01M15 15h.01M5 5a2 2 0 012-2h10a2 2 0 012 2v14a2 2 0 01-2 2H7a2 2 0 01-2-2V5z"/></svg>
+              </button>
+            </div>
           </div>
           <div>
             <label class="block text-xs font-bold text-slate-600 mb-1">العملة</label>
@@ -1052,7 +1087,7 @@
     </div>
   </div>
 
-  <!-- Person Statement Modal (كشف حساب شخص) -->
+  <!-- Person Statement Modal -->
   <div id="personStatementModal" class="fixed inset-0 bg-slate-900/35 backdrop-blur-md z-50 hidden items-center justify-center p-4 overflow-y-auto">
     <div class="ios-modal max-w-lg w-full p-6 animate-slide-up my-auto space-y-4">
       <div class="flex items-center justify-between">
@@ -1116,10 +1151,12 @@
   <script>
     // ==================== PWA MANIFEST & INSTALL SHORTCUT ====================
     let deferredInstallPrompt = null;
+
     function setupPwaManifest() {
       try {
         const c = document.createElement('canvas');
-        c.width = 192; c.height = 192;
+        c.width = 192;
+        c.height = 192;
         const ctx = c.getContext('2d');
         const grad = ctx.createLinearGradient(0, 0, 192, 192);
         grad.addColorStop(0, '#0ea5e9');
@@ -1171,7 +1208,7 @@
       }
     });
 
-    // ==================== APP STATE & ISOLATED ACCOUNT ====================
+    // ==================== STORAGE KEYS & ISOLATED ACCOUNT ====================
     const ACTIVE_ACCOUNT_KEY = 'alzaeem_pro_active_account_v1';
     const ACCOUNTS_META_KEY = 'alzaeem_pro_accounts_meta_v1';
     const STORAGE_KEY = 'alzaeem_pro_state_v1';
@@ -1180,7 +1217,9 @@
       try {
         const raw = localStorage.getItem(ACTIVE_ACCOUNT_KEY);
         return raw ? JSON.parse(raw) : null;
-      } catch (e) { return null; }
+      } catch (e) {
+        return null;
+      }
     }
 
     function getStorageKeyForAccount(acc) {
@@ -1191,6 +1230,7 @@
     }
 
     let activeAccount = getActiveAccount();
+
     const DEFAULT_CURRENCIES = [
       { code: '$', name: 'دولار أمريكي' },
       { code: 'ل.س', name: 'ليرة سورية' },
@@ -1198,7 +1238,15 @@
       { code: 'ر.س', name: 'ريال سعودي' },
       { code: '€', name: 'يورو' }
     ];
-    const DEFAULT_INCOME_CATEGORIES = ['راتب / دخل ثابت', 'مبيعات / خدمات', 'تحصيل ديون', 'أرباح واستثمار', 'إيرادات أخرى'];
+
+    const DEFAULT_INCOME_CATEGORIES = [
+      'راتب / دخل ثابت',
+      'مبيعات / خدمات',
+      'تحصيل ديون',
+      'أرباح واستثمار',
+      'إيرادات أخرى'
+    ];
+
     const DEFAULT_EXPENSE_BUDGETS = [
       { name: 'سكن وإيجار', limit: 450 },
       { name: 'طعام ومشتريات', limit: 350 },
@@ -1245,10 +1293,10 @@
           { id: 'debt_3', name: 'مؤسسة البناء الحديث', phone: '0955112233', totalAmount: 600, paidAmount: 600, currency: '$', dueDate: todayISO(-5), note: 'تم السداد بالكامل' }
         ],
         schedules: [
-          { id: 'sch_1', title: 'تحصيل قسط شركة الأفق', amount: 300, currency: '$', date: todayISO(4), recurrence: 'once', debtId: 'debt_1', status: 'pending', note: 'تحويل بنكي أو نقدي' },
-          { id: 'sch_2', title: 'استرداد سلفة خالد العلي', amount: 350, currency: '$', date: todayISO(-2), recurrence: 'once', debtId: 'debt_2', status: 'pending', note: 'التواصل هاتفياً للتأكيد' },
-          { id: 'sch_3', title: 'قبض إيجار المكتب الفرعي', amount: 250, currency: '$', date: todayISO(0), recurrence: 'monthly', debtId: '', status: 'pending', note: 'موعد التحصيل الشهري' },
-          { id: 'sch_4', title: 'دفعة اشتراك خدمة سحابية', amount: 180, currency: '$', date: todayISO(9), recurrence: 'monthly', debtId: '', status: 'pending', note: 'تحصيل دوري' }
+          { id: 'sch_1', title: 'تحصيل قسط شركة الأفق', amount: 300, currency: '$', date: todayISO(4), recurrence: 'once', debtId: 'debt_1', personName: 'شركة الأفق للتجارة', phone: '0933123456', status: 'pending', note: 'تحويل بنكي أو نقدي' },
+          { id: 'sch_2', title: 'استرداد سلفة خالد العلي', amount: 350, currency: '$', date: todayISO(-2), recurrence: 'once', debtId: 'debt_2', personName: 'خالد العلي', phone: '0944987654', status: 'pending', note: 'التواصل هاتفياً للتأكيد' },
+          { id: 'sch_3', title: 'قبض إيجار المكتب الفرعي', amount: 250, currency: '$', date: todayISO(0), recurrence: 'monthly', debtId: '', personName: '', phone: '', status: 'pending', note: 'موعد التحصيل الشهري' },
+          { id: 'sch_4', title: 'دفعة اشتراك خدمة سحابية', amount: 180, currency: '$', date: todayISO(9), recurrence: 'monthly', debtId: '', personName: '', phone: '', status: 'pending', note: 'تحصيل دوري' }
         ]
       };
     }
@@ -1286,11 +1334,13 @@
       } catch (e) {}
     }
 
+    // ==================== ACCOUNT UI & AUTHENTICATION ====================
     function renderAccountUI() {
       const badge = document.getElementById('accountStatusBadge');
       const info = document.getElementById('accountCurrentInfo');
       const outBtn = document.getElementById('btnSignOutAccount');
       if (!badge || !info || !outBtn) return;
+
       if (activeAccount && activeAccount.email) {
         badge.textContent = `مسجل: ${activeAccount.email}`;
         info.textContent = `الحساب النشط: ${activeAccount.name || activeAccount.email} — بياناتك وجهات اتصالك معزولة ومحمية لهذا البريد فقط.`;
@@ -1394,7 +1444,6 @@
         openAccountModal();
         return;
       }
-      // 1. Download JSON backup file automatically
       const filename = `alzaeem-pro-backup-${todayISO()}.json`;
       const blob = new Blob([JSON.stringify(state, null, 2)], { type: 'application/json' });
       const a = document.createElement('a');
@@ -1402,7 +1451,6 @@
       a.download = filename;
       a.click();
 
-      // 2. Open user's mail client addressed to their own email
       const subject = encodeURIComponent(`نسخة احتياطية - الزعيم برو (${todayISO()})`);
       const body = encodeURIComponent(
         `مرحباً ${activeAccount.name || ''}،\n\n` +
@@ -1414,6 +1462,7 @@
       showToast('تم تنزيل النسخة الاحتياطية وفتح تطبيق البريد');
     }
 
+    // ==================== GLOBAL STATE & HELPERS ====================
     let state = loadState();
     let activeTab = 'dashboard';
     let debtFilter = 'all';
@@ -1422,6 +1471,7 @@
     let calViewDate = new Date();
     let cashflowChartInstance = null;
     let expensePieChartInstance = null;
+    let currentStmtPersonId = '';
 
     const CURRENCY_PALETTE = [
       { badge: 'bg-emerald-500/20 text-emerald-900 border-emerald-400', row: 'border-2 border-emerald-400/75 bg-emerald-500/[0.08]' },
@@ -1458,6 +1508,10 @@
       return entries.map(([c, v]) => fmt(v, c)).join(' | ');
     }
 
+    function escapeHtml(str) {
+      return String(str || '').replace(/[&<>"']/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[m]));
+    }
+
     function showToast(msg) {
       const el = document.getElementById('toast');
       el.textContent = msg;
@@ -1468,12 +1522,14 @@
 
     function openModal(id) {
       const el = document.getElementById(id);
+      if (!el) return;
       el.classList.remove('hidden');
       el.classList.add('flex');
     }
 
     function closeModal(id) {
       const el = document.getElementById(id);
+      if (!el) return;
       el.classList.add('hidden');
       el.classList.remove('flex');
     }
@@ -1586,7 +1642,7 @@
       showToast(`تم تعيين العملة الافتراضية إلى ${state.currency}`);
     });
 
-    // ==================== PEOPLE MANAGEMENT ====================
+    // ==================== PEOPLE MANAGEMENT & STATEMENT ====================
     async function pickDeviceContact(openAfter = false) {
       try {
         if (!('contacts' in navigator && 'ContactsManager' in window)) {
@@ -1641,7 +1697,12 @@
           p.name = name;
           p.phone = phone;
           p.note = note;
-          state.debts.forEach(d => { if (d.name === oldName) { d.name = name; if (phone) d.phone = phone; } });
+          state.debts.forEach(d => {
+            if (d.name === oldName) {
+              d.name = name;
+              if (phone) d.phone = phone;
+            }
+          });
           saveState();
           closeModal('personModal');
           renderAll();
@@ -1659,6 +1720,7 @@
       saveState();
       closeModal('personModal');
       renderAll();
+
       const debtModal = document.getElementById('debtModal');
       if (debtModal && !debtModal.classList.contains('hidden')) {
         document.getElementById('debtPersonSelect').value = newP.id;
@@ -1729,6 +1791,49 @@
           </div>
         `;
       }).join('');
+    }
+
+    function openPersonStatementModal(personId) {
+      const p = state.people.find(x => x.id === personId);
+      if (!p) return;
+      currentStmtPersonId = personId;
+      document.getElementById('stmtPersonName').textContent = `كشف حساب: ${p.name}`;
+      document.getElementById('stmtPersonPhone').textContent = p.phone ? `📞 ${p.phone}` : 'بدون رقم هاتف';
+
+      const pDebts = state.debts.filter(d => d.name === p.name);
+      const pTxs = state.transactions.filter(t => t.personName === p.name);
+      const totD = fmtMulti(pDebts, d => d.totalAmount);
+      const totP = fmtMulti(pDebts, d => d.paidAmount);
+      const totR = fmtMulti(pDebts, d => Math.max(0, Number(d.totalAmount) - Number(d.paidAmount)));
+
+      document.getElementById('stmtSummaryBox').innerHTML = `
+        <div><span class="text-slate-500 block">إجمالي الديون</span><strong class="text-slate-900">${totD}</strong></div>
+        <div><span class="text-slate-500 block">المحصل</span><strong class="text-emerald-600">${totP}</strong></div>
+        <div><span class="text-slate-500 block">المتبقي</span><strong class="text-amber-700">${totR}</strong></div>
+      `;
+
+      const rows = [
+        ...pDebts.map(d => `<div class="p-2.5 rounded-xl bg-amber-500/10 border border-amber-300/60 flex justify-between"><span><strong>دين:</strong> ${escapeHtml(d.note || d.dueDate)} (${d.dueDate})</span><strong class="text-amber-800">${fmt(d.totalAmount, d.currency)}</strong></div>`),
+        ...pTxs.map(t => `<div class="p-2.5 rounded-xl bg-white/70 border border-white flex justify-between"><span><strong>${t.type === 'income' ? 'دفعة/مدخول' : 'مصروف'}:</strong> ${escapeHtml(t.note)} (${t.date})</span><strong class="${t.type === 'income' ? 'text-emerald-600' : 'text-rose-600'}">${fmt(t.amount, t.currency)}</strong></div>`)
+      ];
+      document.getElementById('stmtRowsList').innerHTML = rows.length ? rows.join('') : '<p class="text-center text-slate-400 py-4">لا توجد حركات مسجلة لهذا الشخص</p>';
+      openModal('personStatementModal');
+    }
+
+    function sendPersonStatementWhatsapp() {
+      const p = state.people.find(x => x.id === currentStmtPersonId);
+      if (!p) return;
+      const waPhone = formatWaPhone(p.phone);
+      if (!waPhone) {
+        showToast('أضف رقم هاتف لهذا الشخص أولاً');
+        return;
+      }
+      const pDebts = state.debts.filter(d => d.name === p.name);
+      const totD = fmtMulti(pDebts, d => d.totalAmount);
+      const totP = fmtMulti(pDebts, d => d.paidAmount);
+      const totR = fmtMulti(pDebts, d => Math.max(0, Number(d.totalAmount) - Number(d.paidAmount)));
+      const msg = `السلام عليكم ${p.name}، إليكم ملخص كشف الحساب من الزعيم برو:%0Aإجمالي الديون: ${totD}%0Aالمدفوع: ${totP}%0Aالمتبقي: ${totR}`;
+      window.open(`https://wa.me/${waPhone}?text=${msg}`, '_blank', 'noopener');
     }
 
     // ==================== SETTINGS TAB: CURRENCIES & CATEGORIES ====================
@@ -1889,8 +1994,9 @@
             : isToday
               ? `<span class="bg-amber-500/20 text-amber-800 text-xs font-bold px-2.5 py-0.5 rounded-full">اليوم</span>`
               : `<span class="bg-sky-500/15 text-sky-800 text-xs font-bold px-2.5 py-0.5 rounded-full">${s.date}</span>`;
+          const scs = getCurrencyStyle(s.currency);
           return `
-            <div class="flex items-center justify-between gap-3 p-3 rounded-2xl bg-white/55 border border-white/80">
+            <div class="flex items-center justify-between gap-3 p-3 rounded-2xl ${scs.row}">
               <div class="min-w-0">
                 <div class="flex items-center gap-2">
                   <p class="font-bold text-sm text-slate-800 truncate">${escapeHtml(s.title)}</p>
@@ -1915,24 +2021,24 @@
         recentEl.innerHTML = recentTxs.map(t => {
           const cs = getCurrencyStyle(t.currency);
           return `
-          <div class="flex items-center justify-between gap-3 p-2.5 rounded-2xl ${cs.row} hover:bg-white/55 transition">
-            <div class="flex items-center gap-3 min-w-0">
-              <div class="w-9 h-9 rounded-xl flex items-center justify-center font-bold text-sm shrink-0 ${t.type === 'income' ? 'bg-emerald-500/15 text-emerald-700' : 'bg-rose-500/15 text-rose-700'}">
-                ${t.type === 'income' ? '↑' : '↓'}
+            <div class="flex items-center justify-between gap-3 p-2.5 rounded-2xl ${cs.row} hover:bg-white/55 transition">
+              <div class="flex items-center gap-3 min-w-0">
+                <div class="w-9 h-9 rounded-xl flex items-center justify-center font-bold text-sm shrink-0 ${t.type === 'income' ? 'bg-emerald-500/15 text-emerald-700' : 'bg-rose-500/15 text-rose-700'}">
+                  ${t.type === 'income' ? '↑' : '↓'}
+                </div>
+                <div class="min-w-0">
+                  <p class="font-bold text-sm text-slate-800 truncate">${escapeHtml(t.note)}</p>
+                  <p class="text-xs text-slate-500 truncate">${escapeHtml(t.category)} • ${t.date}${t.personName ? ` • ${escapeHtml(t.personName)}` : ''}</p>
+                </div>
               </div>
-              <div class="min-w-0">
-                <p class="font-bold text-sm text-slate-800 truncate">${escapeHtml(t.note)}</p>
-                <p class="text-xs text-slate-500 truncate">${escapeHtml(t.category)} • ${t.date}${t.personName ? ` • ${escapeHtml(t.personName)}` : ''}</p>
+              <div class="flex flex-col items-end shrink-0 gap-0.5">
+                <span class="font-extrabold text-sm ${t.type === 'income' ? 'text-emerald-600' : 'text-rose-600'}">
+                  ${t.type === 'income' ? '+' : '−'}${fmt(t.amount, t.currency)}
+                </span>
+                <span class="text-[10px] font-bold px-2 py-0.5 rounded-full border ${cs.badge}">${escapeHtml(t.currency || state.currency)}</span>
               </div>
             </div>
-            <div class="flex flex-col items-end shrink-0 gap-0.5">
-              <span class="font-extrabold text-sm ${t.type === 'income' ? 'text-emerald-600' : 'text-rose-600'}">
-                ${t.type === 'income' ? '+' : '−'}${fmt(t.amount, t.currency)}
-              </span>
-              <span class="text-[10px] font-bold px-2 py-0.5 rounded-full border ${cs.badge}">${escapeHtml(t.currency || state.currency)}</span>
-            </div>
-          </div>
-        `;
+          `;
         }).join('');
       }
 
@@ -2036,31 +2142,31 @@
       tbody.innerHTML = filtered.map(t => {
         const cs = getCurrencyStyle(t.currency);
         return `
-        <tr class="${cs.row} hover:bg-white/50 transition">
-          <td class="px-4 py-3 text-slate-600 whitespace-nowrap">${t.date}</td>
-          <td class="px-4 py-3 whitespace-nowrap">
-            <span class="px-2.5 py-1 rounded-full text-xs font-bold ${t.type === 'income' ? 'bg-emerald-500/15 text-emerald-700' : 'bg-rose-500/15 text-rose-700'}">
-              ${t.type === 'income' ? 'مدخول' : 'مصروف'}
-            </span>
-          </td>
-          <td class="px-4 py-3 font-semibold text-slate-700">${escapeHtml(t.category)}</td>
-          <td class="px-4 py-3 text-slate-800">
-            <div class="font-bold">${escapeHtml(t.note)} ${t.personName ? `<span class="text-xs font-semibold text-sky-700">(${escapeHtml(t.personName)})</span>` : ''}</div>
-            ${t.details ? `<div class="text-xs text-slate-500 mt-0.5">${escapeHtml(t.details)}</div>` : ''}
-          </td>
-          <td class="px-4 py-3 text-slate-600 text-xs">${escapeHtml(t.method || 'نقدي')}</td>
-          <td class="px-4 py-3 font-extrabold whitespace-nowrap">
-            <div class="flex items-center gap-1.5">
-              <span class="${t.type === 'income' ? 'text-emerald-600' : 'text-rose-600'}">${t.type === 'income' ? '+' : '−'}${fmt(t.amount, t.currency)}</span>
-              <span class="text-[10px] font-bold px-2 py-0.5 rounded-full border ${cs.badge}">${escapeHtml(t.currency || state.currency)}</span>
-            </div>
-          </td>
-          <td class="px-4 py-3 text-center whitespace-nowrap">
-            <button type="button" onclick="editTx('${t.id}')" class="text-xs text-sky-700 hover:text-sky-900 font-bold px-2 py-1 rounded-xl hover:bg-sky-500/10">تعديل</button>
-            <button type="button" onclick="deleteTx('${t.id}')" class="text-xs text-rose-600 hover:text-rose-800 font-bold px-2 py-1 rounded-xl hover:bg-rose-500/10">حذف</button>
-          </td>
-        </tr>
-      `;
+          <tr class="${cs.row} hover:bg-white/50 transition">
+            <td class="px-4 py-3 text-slate-600 whitespace-nowrap">${t.date}</td>
+            <td class="px-4 py-3 whitespace-nowrap">
+              <span class="px-2.5 py-1 rounded-full text-xs font-bold ${t.type === 'income' ? 'bg-emerald-500/15 text-emerald-700' : 'bg-rose-500/15 text-rose-700'}">
+                ${t.type === 'income' ? 'مدخول' : 'مصروف'}
+              </span>
+            </td>
+            <td class="px-4 py-3 font-semibold text-slate-700">${escapeHtml(t.category)}</td>
+            <td class="px-4 py-3 text-slate-800">
+              <div class="font-bold">${escapeHtml(t.note)} ${t.personName ? `<span class="text-xs font-semibold text-sky-700">(${escapeHtml(t.personName)})</span>` : ''}</div>
+              ${t.details ? `<div class="text-xs text-slate-500 mt-0.5">${escapeHtml(t.details)}</div>` : ''}
+            </td>
+            <td class="px-4 py-3 text-slate-600 text-xs">${escapeHtml(t.method || 'نقدي')}</td>
+            <td class="px-4 py-3 font-extrabold whitespace-nowrap">
+              <div class="flex items-center gap-1.5">
+                <span class="${t.type === 'income' ? 'text-emerald-600' : 'text-rose-600'}">${t.type === 'income' ? '+' : '−'}${fmt(t.amount, t.currency)}</span>
+                <span class="text-[10px] font-bold px-2 py-0.5 rounded-full border ${cs.badge}">${escapeHtml(t.currency || state.currency)}</span>
+              </div>
+            </td>
+            <td class="px-4 py-3 text-center whitespace-nowrap">
+              <button type="button" onclick="editTx('${t.id}')" class="text-xs text-sky-700 hover:text-sky-900 font-bold px-2 py-1 rounded-xl hover:bg-sky-500/10">تعديل</button>
+              <button type="button" onclick="deleteTx('${t.id}')" class="text-xs text-rose-600 hover:text-rose-800 font-bold px-2 py-1 rounded-xl hover:bg-rose-500/10">حذف</button>
+            </td>
+          </tr>
+        `;
       }).join('');
     }
 
@@ -2133,8 +2239,8 @@
           kind: 'schedule',
           kindLabel: 'موعد قبض',
           badgeClass: 'bg-sky-500/15 text-sky-800',
-          partyOrCat: 'جدول المواعيد',
-          personName: '',
+          partyOrCat: s.personName || 'جدول المواعيد',
+          personName: s.personName || '',
           title: s.title,
           details: s.note || '',
           status: s.status === 'completed' ? 'تم القبض' : (s.date < today ? 'متأخر' : 'مجدول'),
@@ -2170,25 +2276,25 @@
       tbody.innerHTML = filtered.map(e => {
         const cs = getCurrencyStyle(e.currency);
         return `
-        <tr class="${cs.row} hover:bg-white/50 transition">
-          <td class="px-4 py-3 text-slate-600 whitespace-nowrap">${e.date}</td>
-          <td class="px-4 py-3 whitespace-nowrap">
-            <span class="px-2.5 py-1 rounded-full text-xs font-bold ${e.badgeClass}">${e.kindLabel}</span>
-          </td>
-          <td class="px-4 py-3 font-semibold text-slate-700">${escapeHtml(e.partyOrCat)}</td>
-          <td class="px-4 py-3 text-slate-800">
-            <div class="font-bold">${escapeHtml(e.title)}</div>
-            ${e.details ? `<div class="text-xs text-slate-500 mt-0.5">${escapeHtml(e.details)}</div>` : ''}
-          </td>
-          <td class="px-4 py-3 text-xs font-bold text-slate-600 whitespace-nowrap">${e.status}</td>
-          <td class="px-4 py-3 font-extrabold whitespace-nowrap">
-            <div class="flex items-center gap-1.5">
-              <span class="${e.amountClass}">${e.amountText}</span>
-              <span class="text-[10px] font-bold px-2 py-0.5 rounded-full border ${cs.badge}">${escapeHtml(e.currency)}</span>
-            </div>
-          </td>
-        </tr>
-      `;
+          <tr class="${cs.row} hover:bg-white/50 transition">
+            <td class="px-4 py-3 text-slate-600 whitespace-nowrap">${e.date}</td>
+            <td class="px-4 py-3 whitespace-nowrap">
+              <span class="px-2.5 py-1 rounded-full text-xs font-bold ${e.badgeClass}">${e.kindLabel}</span>
+            </td>
+            <td class="px-4 py-3 font-semibold text-slate-700">${escapeHtml(e.partyOrCat)}</td>
+            <td class="px-4 py-3 text-slate-800">
+              <div class="font-bold">${escapeHtml(e.title)}</div>
+              ${e.details ? `<div class="text-xs text-slate-500 mt-0.5">${escapeHtml(e.details)}</div>` : ''}
+            </td>
+            <td class="px-4 py-3 text-xs font-bold text-slate-600 whitespace-nowrap">${e.status}</td>
+            <td class="px-4 py-3 font-extrabold whitespace-nowrap">
+              <div class="flex items-center gap-1.5">
+                <span class="${e.amountClass}">${e.amountText}</span>
+                <span class="text-[10px] font-bold px-2 py-0.5 rounded-full border ${cs.badge}">${escapeHtml(e.currency)}</span>
+              </div>
+            </td>
+          </tr>
+        `;
       }).join('');
     }
 
@@ -2214,6 +2320,7 @@
       document.getElementById('budgetTotalRemaining').className = `text-sm sm:text-2xl font-extrabold mt-1 break-words ${remaining >= 0 ? 'text-emerald-600' : 'text-rose-600'}`;
 
       const grid = document.getElementById('budgetCardsGrid');
+      const bcs = getCurrencyStyle(state.currency);
       grid.innerHTML = state.budgets.map((b, idx) => {
         const spent = monthExpenses.filter(t => t.category === b.name).reduce((s, t) => s + Number(t.amount), 0);
         const pct = b.limit > 0 ? Math.min(100, Math.round((spent / b.limit) * 100)) : 0;
@@ -2225,9 +2332,8 @@
             ? `<span class="text-xs font-bold bg-amber-500/20 text-amber-800 px-2.5 py-0.5 rounded-full">قريب من الحد (${rawPct}%)</span>`
             : `<span class="text-xs font-bold bg-emerald-500/15 text-emerald-700 px-2.5 py-0.5 rounded-full">${rawPct}% مستهلك</span>`;
 
-        const dcs = getCurrencyStyle(dCurr);
         return `
-          <div class="glass-card ${dcs.row} p-5 space-y-3">
+          <div class="glass-card ${bcs.row} p-5 space-y-3">
             <div class="flex items-center justify-between gap-2">
               <h4 class="font-extrabold text-slate-900">${escapeHtml(b.name)}</h4>
               ${statusBadge}
@@ -2287,7 +2393,7 @@
       showToast('تم حفظ فئة الميزانية بنجاح');
     });
 
-    // ==================== RENDER DEBTS ====================
+    // ==================== RENDER DEBTS & INSTALLMENTS ====================
     document.querySelectorAll('.debt-filter-btn').forEach(btn => {
       btn.addEventListener('click', () => {
         debtFilter = btn.dataset.debtFilter;
@@ -2325,6 +2431,7 @@
         const isPaid = rem <= 0;
         const isOverdue = !isPaid && d.dueDate < today;
         const dCurr = d.currency || state.currency;
+        const dcs = getCurrencyStyle(dCurr);
 
         const badge = isPaid
           ? `<span class="bg-emerald-500/15 text-emerald-700 text-xs font-bold px-2.5 py-1 rounded-full">محصل بالكامل</span>`
@@ -2332,14 +2439,25 @@
             ? `<span class="bg-rose-500/15 text-rose-700 text-xs font-bold px-2.5 py-1 rounded-full">متأخر (${d.dueDate})</span>`
             : `<span class="bg-amber-500/20 text-amber-800 text-xs font-bold px-2.5 py-1 rounded-full">يستحق: ${d.dueDate}</span>`;
 
+        const linkedInsts = state.schedules.filter(sc => sc.debtId === d.id);
+        const instBanner = linkedInsts.length > 1
+          ? `<div class="text-[11px] font-bold text-sky-800 bg-sky-500/10 rounded-xl px-3 py-1.5 flex items-center justify-between">
+               <span>نظام الأقساط: ${linkedInsts.filter(sc => sc.status === 'completed').length} من ${linkedInsts.length} قسط محصل</span>
+               <button type="button" onclick="switchTab('schedule')" class="underline">عرض الأقساط</button>
+             </div>`
+          : '';
+
         return `
-          <div class="glass-card p-5 space-y-3">
+          <div class="glass-card ${dcs.row} p-5 space-y-3">
             <div class="flex items-start justify-between gap-2">
               <div>
                 <h4 class="font-extrabold text-base text-slate-900">${escapeHtml(d.name)}</h4>
                 <p class="text-xs text-slate-600 mt-0.5">${escapeHtml(d.note || 'بدون ملاحظات')} ${d.phone ? `• 📞 ${escapeHtml(d.phone)}` : ''}</p>
               </div>
-              ${badge}
+              <div class="flex items-center gap-1.5 shrink-0">
+                <span class="text-[10px] font-bold px-2 py-0.5 rounded-full border ${dcs.badge}">${escapeHtml(dCurr)}</span>
+                ${badge}
+              </div>
             </div>
             <div class="w-full bg-white/70 h-2.5 rounded-full overflow-hidden border border-white/80">
               <div class="${isPaid ? 'bg-emerald-500' : 'bg-amber-500'} h-full rounded-full" style="width: ${pct}%"></div>
@@ -2349,17 +2467,7 @@
               <div><span class="text-slate-500 block">المحصل</span><strong class="text-emerald-600">${fmt(d.paidAmount, dCurr)}</strong></div>
               <div><span class="text-slate-500 block">المتبقي</span><strong class="text-amber-700">${fmt(rem, dCurr)}</strong></div>
             </div>
-            ${(() => {
-              const linkedInsts = state.schedules.filter(sc => sc.debtId === d.id);
-              if (linkedInsts.length > 1) {
-                const doneCnt = linkedInsts.filter(sc => sc.status === 'completed').length;
-                return `<div class="text-[11px] font-bold text-sky-800 bg-sky-500/10 rounded-xl px-3 py-1.5 flex items-center justify-between">
-                  <span>نظام الأقساط: ${doneCnt} من ${linkedInsts.length} قسط محصل</span>
-                  <button type="button" onclick="switchTab('schedule')" class="underline">عرض الأقساط</button>
-                </div>`;
-              }
-              return '';
-            })()}
+            ${instBanner}
             <div class="flex flex-wrap items-center justify-between gap-2 pt-1">
               <div class="flex items-center gap-2">
                 ${!isPaid ? `<button type="button" onclick="openDebtPayModal('${d.id}')" class="ios-btn bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold px-3.5 py-2 rounded-xl shadow-xs">تسجيل دفعة قبض</button>` : `<span class="text-xs font-bold text-emerald-600">✓ تم التحصيل</span>`}
@@ -2425,6 +2533,7 @@
     function openDebtModal() {
       document.getElementById('debtForm').reset();
       document.getElementById('editDebtId').value = '';
+      document.getElementById('debtModalTitle').textContent = 'تسجيل دين جديد للتحصيل';
       document.getElementById('debtDueDate').value = todayISO(7);
       document.getElementById('debtIsInstallment').checked = false;
       document.getElementById('debtInstallmentBox').classList.add('hidden');
@@ -2441,6 +2550,7 @@
       if (!d) return;
       openDebtModal();
       document.getElementById('editDebtId').value = d.id;
+      document.getElementById('debtModalTitle').textContent = 'تعديل سجل الدين';
       document.getElementById('debtName').value = d.name;
       document.getElementById('debtAmount').value = d.totalAmount;
       document.getElementById('debtCurrency').value = d.currency || state.currency;
@@ -2553,7 +2663,6 @@
       const startDate = document.getElementById('instPlanStartDate').value || todayISO(7);
       const dCurr = d.currency || state.currency;
 
-      // Remove old pending schedules for this debt and replace with new installment plan
       state.schedules = state.schedules.filter(sc => !(sc.debtId === debtId && sc.status === 'pending'));
       const p = state.people.find(x => x.name === d.name);
       const phone = d.phone || (p ? p.phone : '') || '';
@@ -2782,51 +2891,6 @@
       }).join('');
     }
 
-    let currentStmtPersonId = '';
-
-    function openPersonStatementModal(personId) {
-      const p = state.people.find(x => x.id === personId);
-      if (!p) return;
-      currentStmtPersonId = personId;
-      document.getElementById('stmtPersonName').textContent = `كشف حساب: ${p.name}`;
-      document.getElementById('stmtPersonPhone').textContent = p.phone ? `📞 ${p.phone}` : 'بدون رقم هاتف';
-
-      const pDebts = state.debts.filter(d => d.name === p.name);
-      const pTxs = state.transactions.filter(t => t.personName === p.name);
-      const totD = fmtMulti(pDebts, d => d.totalAmount);
-      const totP = fmtMulti(pDebts, d => d.paidAmount);
-      const totR = fmtMulti(pDebts, d => Math.max(0, Number(d.totalAmount) - Number(d.paidAmount)));
-
-      document.getElementById('stmtSummaryBox').innerHTML = `
-        <div><span class="text-slate-500 block">إجمالي الديون</span><strong class="text-slate-900">${totD}</strong></div>
-        <div><span class="text-slate-500 block">المحصل</span><strong class="text-emerald-600">${totP}</strong></div>
-        <div><span class="text-slate-500 block">المتبقي</span><strong class="text-amber-700">${totR}</strong></div>
-      `;
-
-      const rows = [
-        ...pDebts.map(d => `<div class="p-2.5 rounded-xl bg-amber-500/10 border border-amber-300/60 flex justify-between"><span><strong>دين:</strong> ${escapeHtml(d.note || d.dueDate)} (${d.dueDate})</span><strong class="text-amber-800">${fmt(d.totalAmount, d.currency)}</strong></div>`),
-        ...pTxs.map(t => `<div class="p-2.5 rounded-xl bg-white/70 border border-white flex justify-between"><span><strong>${t.type === 'income' ? 'دفعة/مدخول' : 'مصروف'}:</strong> ${escapeHtml(t.note)} (${t.date})</span><strong class="${t.type === 'income' ? 'text-emerald-600' : 'text-rose-600'}">${fmt(t.amount, t.currency)}</strong></div>`)
-      ];
-      document.getElementById('stmtRowsList').innerHTML = rows.length ? rows.join('') : '<p class="text-center text-slate-400 py-4">لا توجد حركات مسجلة لهذا الشخص</p>';
-      openModal('personStatementModal');
-    }
-
-    function sendPersonStatementWhatsapp() {
-      const p = state.people.find(x => x.id === currentStmtPersonId);
-      if (!p) return;
-      const waPhone = formatWaPhone(p.phone);
-      if (!waPhone) {
-        showToast('أضف رقم هاتف لهذا الشخص أولاً');
-        return;
-      }
-      const pDebts = state.debts.filter(d => d.name === p.name);
-      const totD = fmtMulti(pDebts, d => d.totalAmount);
-      const totP = fmtMulti(pDebts, d => d.paidAmount);
-      const totR = fmtMulti(pDebts, d => Math.max(0, Number(d.totalAmount) - Number(d.paidAmount)));
-      const msg = `السلام عليكم ${p.name}، إليكم ملخص كشف الحساب من الزعيم برو:%0Aإجمالي الديون: ${totD}%0Aالمدفوع: ${totP}%0Aالمتبقي: ${totR}`;
-      window.open(`https://wa.me/${waPhone}?text=${msg}`, '_blank', 'noopener');
-    }
-
     function openScheduleModal() {
       document.getElementById('scheduleForm').reset();
       document.getElementById('schedDate').value = todayISO();
@@ -2862,6 +2926,7 @@
         const p = state.people.find(x => x.name === d.name);
         if (p) document.getElementById('schedPersonSelect').value = p.id;
         document.getElementById('schedPhone').value = d.phone || (p ? p.phone : '') || '';
+        updateRateBox('schedCurrency', 'schedRateBox', 'schedAmount', 'schedExchangeRate', 'schedRatePreview');
       }
     });
 
@@ -2920,7 +2985,7 @@
       s.status = 'completed';
       s.collectedAmount = receivedAmt;
       const sCurr = s.currency || state.currency;
-      let personName = '';
+      let personName = s.personName || '';
 
       if (s.debtId) {
         const d = state.debts.find(x => x.id === s.debtId);
@@ -2968,41 +3033,7 @@
       showToast('تم حذف الموعد');
     }
 
-    // ==================== TRANSACTION MODAL ====================
-    function setTxType(type) {
-      document.getElementById('txType').value = type;
-      const btnIn = document.getElementById('btnTypeIncome');
-      const btnEx = document.getElementById('btnTypeExpense');
-      btnIn.className = `py-2 rounded-xl text-sm font-bold transition ${type === 'income' ? 'bg-emerald-600 text-white shadow-xs' : 'text-slate-600'}`;
-      btnEx.className = `py-2 rounded-xl text-sm font-bold transition ${type === 'expense' ? 'bg-rose-600 text-white shadow-xs' : 'text-slate-600'}`;
-
-      const catSelect = document.getElementById('txCategory');
-      const cats = type === 'income' ? state.incomeCategories : Array.from(new Set([...state.expenseCategories, ...state.budgets.map(b => b.name)]));
-      catSelect.innerHTML = (cats.length ? cats : ['أخرى']).map(c => `<option value="${escapeHtml(c)}">${escapeHtml(c)}</option>`).join('');
-    }
-
-    function toggleQuickCatRow() {
-      const row = document.getElementById('quickCatRow');
-      row.classList.toggle('hidden');
-      if (!row.classList.contains('hidden')) document.getElementById('quickCatInput').focus();
-    }
-
-    function saveQuickCat() {
-      const val = document.getElementById('quickCatInput').value.trim();
-      if (!val) return;
-      const type = document.getElementById('txType').value;
-      const targetList = type === 'income' ? state.incomeCategories : state.expenseCategories;
-      if (!targetList.includes(val)) {
-        targetList.push(val);
-        saveState();
-      }
-      setTxType(type);
-      document.getElementById('txCategory').value = val;
-      document.getElementById('quickCatInput').value = '';
-      document.getElementById('quickCatRow').classList.add('hidden');
-      showToast(`تمت إضافة التصنيف: ${val}`);
-    }
-
+    // ==================== UNIVERSAL CALCULATOR & EXCHANGE RATE ====================
     let calcExpr = '';
     let calcTargetId = 'txAmount';
 
@@ -3031,11 +3062,10 @@
     }
 
     function safeEvalArithmetic(expr) {
-      const clean = String(expr || '').replace(/[^0-9+\-*/.()]/g, '');
+      const clean = String(expr || '').replace(/[^0-9+\-*/.]/g, '');
       if (!clean) return NaN;
       const tokens = clean.match(/(\d+\.?\d*|\.\d+|[+\-*/])/g);
       if (!tokens) return NaN;
-      // Shunting-yard / two-pass (*,/ then +,-)
       const vals = [];
       const ops = [];
       for (let i = 0; i < tokens.length; i++) {
@@ -3047,9 +3077,8 @@
         }
       }
       if (!vals.length || vals.length !== ops.length + 1) return NaN;
-      // First pass: * and /
-      let v2 = [vals[0]];
-      let o2 = [];
+      const v2 = [vals[0]];
+      const o2 = [];
       for (let i = 0; i < ops.length; i++) {
         if (ops[i] === '*' || ops[i] === '/') {
           const prev = v2.pop();
@@ -3130,6 +3159,41 @@
       document.getElementById(id).addEventListener('input', () => updateRateBox('schedCurrency', 'schedRateBox', 'schedAmount', 'schedExchangeRate', 'schedRatePreview'));
     });
 
+    // ==================== TRANSACTION MODAL ====================
+    function setTxType(type) {
+      document.getElementById('txType').value = type;
+      const btnIn = document.getElementById('btnTypeIncome');
+      const btnEx = document.getElementById('btnTypeExpense');
+      btnIn.className = `py-2 rounded-xl text-sm font-bold transition ${type === 'income' ? 'bg-emerald-600 text-white shadow-xs' : 'text-slate-600'}`;
+      btnEx.className = `py-2 rounded-xl text-sm font-bold transition ${type === 'expense' ? 'bg-rose-600 text-white shadow-xs' : 'text-slate-600'}`;
+
+      const catSelect = document.getElementById('txCategory');
+      const cats = type === 'income' ? state.incomeCategories : Array.from(new Set([...state.expenseCategories, ...state.budgets.map(b => b.name)]));
+      catSelect.innerHTML = (cats.length ? cats : ['أخرى']).map(c => `<option value="${escapeHtml(c)}">${escapeHtml(c)}</option>`).join('');
+    }
+
+    function toggleQuickCatRow() {
+      const row = document.getElementById('quickCatRow');
+      row.classList.toggle('hidden');
+      if (!row.classList.contains('hidden')) document.getElementById('quickCatInput').focus();
+    }
+
+    function saveQuickCat() {
+      const val = document.getElementById('quickCatInput').value.trim();
+      if (!val) return;
+      const type = document.getElementById('txType').value;
+      const targetList = type === 'income' ? state.incomeCategories : state.expenseCategories;
+      if (!targetList.includes(val)) {
+        targetList.push(val);
+        saveState();
+      }
+      setTxType(type);
+      document.getElementById('txCategory').value = val;
+      document.getElementById('quickCatInput').value = '';
+      document.getElementById('quickCatRow').classList.add('hidden');
+      showToast(`تمت إضافة التصنيف: ${val}`);
+    }
+
     function openTxModal(type = 'expense') {
       document.getElementById('txForm').reset();
       document.getElementById('editTxId').value = '';
@@ -3196,7 +3260,7 @@
       showToast(type === 'income' ? 'تم تسجيل المدخول' : 'تم تسجيل المصروف');
     });
 
-    // ==================== BACKUP, IMPORT, CSV, PROTECTED RESET ====================
+    // ==================== BACKUP, IMPORT, CSV & PROTECTED RESET ====================
     document.getElementById('btnExportJson').addEventListener('click', () => {
       const blob = new Blob([JSON.stringify(state, null, 2)], { type: 'application/json' });
       const a = document.createElement('a');
@@ -3299,10 +3363,7 @@
       showToast('تمت استعادة البيانات التجريبية');
     });
 
-    function escapeHtml(str) {
-      return String(str || '').replace(/[&<>"']/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[m]));
-    }
-
+    // ==================== MASTER RENDER ====================
     function renderAll() {
       renderAccountUI();
       populateCurrencySelects();
