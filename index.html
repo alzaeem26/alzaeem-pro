@@ -82,6 +82,12 @@
       to { opacity: 1; transform: translateY(0) scale(1); }
     }
     .animate-slide-up { animation: slideUp 0.22s cubic-bezier(0.22, 1, 0.36, 1); }
+    @media print {
+      body * { visibility: hidden; }
+      #personStatementModal, #personStatementModal * { visibility: visible; }
+      #personStatementModal { position: absolute; inset: 0; background: #fff !important; }
+      .no-print { display: none !important; }
+    }
   </style>
 </head>
 <body class="min-h-screen flex flex-col">
@@ -140,6 +146,20 @@
 
     <!-- ==================== TAB 1: DASHBOARD ==================== -->
     <section id="view-dashboard" class="tab-view space-y-5">
+      <!-- Daily Due & Overdue Reminder Banner -->
+      <div id="dailyAlertBanner" class="hidden glass-card border-2 border-amber-400/75 bg-amber-500/[0.10] p-3.5 sm:p-4 flex flex-wrap items-center justify-between gap-3">
+        <div class="flex items-center gap-2.5 min-w-0">
+          <span class="w-9 h-9 rounded-xl bg-amber-500 text-white flex items-center justify-center font-extrabold shrink-0">🔔</span>
+          <div class="min-w-0">
+            <p id="dailyAlertTitle" class="text-xs sm:text-sm font-extrabold text-amber-950"></p>
+            <p id="dailyAlertSub" class="text-[11px] text-amber-900 truncate"></p>
+          </div>
+        </div>
+        <div class="flex items-center gap-2 shrink-0">
+          <button type="button" onclick="switchTab('schedule')" class="ios-btn bg-amber-600 hover:bg-amber-700 text-white text-xs font-bold px-3.5 py-2 rounded-xl">عرض المواعيد</button>
+          <button type="button" onclick="document.getElementById('dailyAlertBanner').classList.add('hidden')" class="text-xs font-bold text-amber-900 px-2 py-1">إخفاء</button>
+        </div>
+      </div>
       <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-3">
         <div>
           <h2 class="text-xl font-extrabold text-slate-900">الملخص المالي العام</h2>
@@ -659,6 +679,7 @@
         <button type="button" onclick="closeModal('txModal')" class="w-8 h-8 rounded-full bg-slate-200/70 hover:bg-slate-200 text-slate-600 flex items-center justify-center text-sm font-bold">✕</button>
       </div>
       <form id="txForm" class="space-y-3.5">
+        <input type="hidden" id="editTxId" value="" />
         <div class="grid grid-cols-2 gap-2 bg-slate-200/60 p-1 rounded-2xl">
           <button type="button" id="btnTypeIncome" onclick="setTxType('income')" class="py-2 rounded-xl text-sm font-bold transition">مدخول (قبض)</button>
           <button type="button" id="btnTypeExpense" onclick="setTxType('expense')" class="py-2 rounded-xl text-sm font-bold transition">مصروف (صرف)</button>
@@ -670,11 +691,7 @@
             <label class="block text-xs font-bold text-slate-600 mb-1">المبلغ</label>
             <div class="flex items-center gap-1.5">
               <input id="txAmount" type="number" step="0.01" min="0.01" inputmode="decimal" required placeholder="0.00" class="ios-input w-full rounded-xl px-3.5 py-2.5 text-base font-bold focus:outline-none focus:ring-2 focus:ring-sky-500" />
-              <button type="button" id="btnToggleCalc" onclick="toggleTxCalculator()" class="ios-btn shrink-0 w-11 h-11 rounded-xl bg-sky-500/15 hover:bg-sky-500/25 text-sky-800 border border-sky-300/60 flex items-center justify-center" title="آلة حاسبة">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M9 7h6m-6 4h.01M12 11h.01M15 11h.01M9 15h.01M12 15h.01M15 15h.01M5 5a2 2 0 012-2h10a2 2 0 012 2v14a2 2 0 01-2 2H7a2 2 0 01-2-2V5z"/>
-                </svg>
-              </button>
+<button type="button" onclick="openCalculatorFor('txAmount')" class="ios-btn shrink-0 w-10 h-10 rounded-xl bg-sky-500/15 hover:bg-sky-500/25 text-sky-800 border border-sky-300/60 flex items-center justify-center" title="آلة حاسبة"><svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 7h6m-6 4h.01M12 11h.01M15 11h.01M9 15h.01M12 15h.01M15 15h.01M5 5a2 2 0 012-2h10a2 2 0 012 2v14a2 2 0 01-2 2H7a2 2 0 01-2-2V5z"/></svg></button>
             </div>
           </div>
           <div>
@@ -683,38 +700,15 @@
           </div>
         </div>
 
-        <!-- Inline iOS Glass Calculator -->
-        <div id="txCalcBox" class="hidden bg-white/75 border border-white rounded-2xl p-3 space-y-2 shadow-sm">
-          <div class="flex items-center justify-between gap-2 bg-slate-900/90 text-white rounded-xl px-3 py-2" dir="ltr">
-            <span id="calcDisplay" class="text-base font-extrabold tracking-wide truncate flex-1 text-left">0</span>
-            <button type="button" onclick="calcClear()" class="text-[11px] font-bold bg-rose-500/80 hover:bg-rose-500 px-2 py-0.5 rounded-lg">C</button>
+        <div id="txRateBox" class="hidden bg-emerald-500/10 border border-emerald-300/60 rounded-xl p-2.5 space-y-1">
+          <div class="flex items-center justify-between gap-2">
+            <label class="text-[11px] font-bold text-emerald-900">سعر التصريف إلى الدولار ($) — اختياري</label>
+            <span id="txRatePreview" class="text-[11px] font-extrabold text-emerald-700"></span>
           </div>
-          <div class="grid grid-cols-4 gap-1.5" dir="ltr">
-            <button type="button" onclick="calcPress('7')" class="ios-btn bg-white hover:bg-slate-50 font-bold py-2 rounded-xl text-sm shadow-2xs">7</button>
-            <button type="button" onclick="calcPress('8')" class="ios-btn bg-white hover:bg-slate-50 font-bold py-2 rounded-xl text-sm shadow-2xs">8</button>
-            <button type="button" onclick="calcPress('9')" class="ios-btn bg-white hover:bg-slate-50 font-bold py-2 rounded-xl text-sm shadow-2xs">9</button>
-            <button type="button" onclick="calcPress('/')" class="ios-btn bg-sky-500/15 hover:bg-sky-500/25 text-sky-800 font-extrabold py-2 rounded-xl text-sm">÷</button>
-
-            <button type="button" onclick="calcPress('4')" class="ios-btn bg-white hover:bg-slate-50 font-bold py-2 rounded-xl text-sm shadow-2xs">4</button>
-            <button type="button" onclick="calcPress('5')" class="ios-btn bg-white hover:bg-slate-50 font-bold py-2 rounded-xl text-sm shadow-2xs">5</button>
-            <button type="button" onclick="calcPress('6')" class="ios-btn bg-white hover:bg-slate-50 font-bold py-2 rounded-xl text-sm shadow-2xs">6</button>
-            <button type="button" onclick="calcPress('*')" class="ios-btn bg-sky-500/15 hover:bg-sky-500/25 text-sky-800 font-extrabold py-2 rounded-xl text-sm">×</button>
-
-            <button type="button" onclick="calcPress('1')" class="ios-btn bg-white hover:bg-slate-50 font-bold py-2 rounded-xl text-sm shadow-2xs">1</button>
-            <button type="button" onclick="calcPress('2')" class="ios-btn bg-white hover:bg-slate-50 font-bold py-2 rounded-xl text-sm shadow-2xs">2</button>
-            <button type="button" onclick="calcPress('3')" class="ios-btn bg-white hover:bg-slate-50 font-bold py-2 rounded-xl text-sm shadow-2xs">3</button>
-            <button type="button" onclick="calcPress('-')" class="ios-btn bg-sky-500/15 hover:bg-sky-500/25 text-sky-800 font-extrabold py-2 rounded-xl text-sm">−</button>
-
-            <button type="button" onclick="calcPress('0')" class="ios-btn bg-white hover:bg-slate-50 font-bold py-2 rounded-xl text-sm shadow-2xs">0</button>
-            <button type="button" onclick="calcPress('.')" class="ios-btn bg-white hover:bg-slate-50 font-bold py-2 rounded-xl text-sm shadow-2xs">.</button>
-            <button type="button" onclick="calcBackspace()" class="ios-btn bg-amber-500/15 hover:bg-amber-500/25 text-amber-800 font-bold py-2 rounded-xl text-sm">⌫</button>
-            <button type="button" onclick="calcPress('+')" class="ios-btn bg-sky-500/15 hover:bg-sky-500/25 text-sky-800 font-extrabold py-2 rounded-xl text-sm">+</button>
-          </div>
-          <div class="grid grid-cols-2 gap-1.5 pt-0.5">
-            <button type="button" onclick="calcEvaluate(false)" class="ios-btn bg-slate-200/80 hover:bg-slate-200 text-slate-800 text-xs font-bold py-2 rounded-xl">= حساب الناتج</button>
-            <button type="button" onclick="calcEvaluate(true)" class="ios-btn bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold py-2 rounded-xl">تطبيق المبلغ ✓</button>
-          </div>
+          <input id="txExchangeRate" type="number" step="0.0001" min="0.0001" inputmode="decimal" placeholder="مثال: 15000 (اتركه فارغاً للإبقاء بالعملة المختارة)" class="ios-input w-full rounded-lg px-3 py-1.5 text-xs font-bold focus:outline-none focus:ring-2 focus:ring-emerald-500" />
         </div>
+
+
 
         <div class="grid grid-cols-2 gap-3">
           <div>
@@ -781,7 +775,7 @@
         </div>
         <div>
           <label class="block text-xs font-bold text-slate-600 mb-1">المبلغ المقبوض فعلياً</label>
-          <input id="collectAmount" type="number" step="0.01" min="0.01" inputmode="decimal" required class="ios-input w-full rounded-xl px-3.5 py-2.5 text-base font-bold focus:outline-none focus:ring-2 focus:ring-emerald-500" />
+          <div class="flex items-center gap-1.5"><input id="collectAmount" type="number" step="0.01" min="0.01" inputmode="decimal" required class="ios-input w-full rounded-xl px-3.5 py-2.5 text-base font-bold focus:outline-none focus:ring-2 focus:ring-emerald-500" /><button type="button" onclick="openCalculatorFor('collectAmount')" class="ios-btn shrink-0 w-10 h-10 rounded-xl bg-sky-500/15 hover:bg-sky-500/25 text-sky-800 border border-sky-300/60 flex items-center justify-center" title="آلة حاسبة"><svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 7h6m-6 4h.01M12 11h.01M15 11h.01M9 15h.01M12 15h.01M15 15h.01M5 5a2 2 0 012-2h10a2 2 0 012 2v14a2 2 0 01-2 2H7a2 2 0 01-2-2V5z"/></svg></button></div>
         </div>
         <div>
           <label class="block text-xs font-bold text-slate-600 mb-1">تاريخ القبض</label>
@@ -810,7 +804,7 @@
         </div>
         <div>
           <label class="block text-xs font-bold text-slate-600 mb-1">الحد الأقصى الشهري</label>
-          <input id="budgetCatLimit" type="number" step="0.01" min="1" inputmode="decimal" required placeholder="500" class="ios-input w-full rounded-xl px-3.5 py-2.5 text-base font-bold focus:outline-none focus:ring-2 focus:ring-sky-500" />
+          <div class="flex items-center gap-1.5"><input id="budgetCatLimit" type="number" step="0.01" min="1" inputmode="decimal" required placeholder="500" class="ios-input w-full rounded-xl px-3.5 py-2.5 text-base font-bold focus:outline-none focus:ring-2 focus:ring-sky-500" /><button type="button" onclick="openCalculatorFor('budgetCatLimit')" class="ios-btn shrink-0 w-10 h-10 rounded-xl bg-sky-500/15 hover:bg-sky-500/25 text-sky-800 border border-sky-300/60 flex items-center justify-center" title="آلة حاسبة"><svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 7h6m-6 4h.01M12 11h.01M15 11h.01M9 15h.01M12 15h.01M15 15h.01M5 5a2 2 0 012-2h10a2 2 0 012 2v14a2 2 0 01-2 2H7a2 2 0 01-2-2V5z"/></svg></button></div>
         </div>
         <button type="submit" class="ios-btn w-full bg-gradient-to-br from-sky-500 to-teal-700 text-white font-bold py-3 rounded-2xl">حفظ الميزانية</button>
       </form>
@@ -825,6 +819,7 @@
         <button type="button" onclick="closeModal('debtModal')" class="w-8 h-8 rounded-full bg-slate-200/70 hover:bg-slate-200 text-slate-600 flex items-center justify-center text-sm font-bold">✕</button>
       </div>
       <form id="debtForm" class="space-y-3.5">
+        <input type="hidden" id="editDebtId" value="" />
         <div>
           <div class="flex items-center justify-between mb-1">
             <label class="text-xs font-bold text-slate-600">اختر شخصاً مسجلاً (أو أدخل اسماً جديداً)</label>
@@ -839,12 +834,19 @@
         <div class="grid grid-cols-3 gap-3">
           <div class="col-span-2">
             <label class="block text-xs font-bold text-slate-600 mb-1">المبلغ الإجمالي</label>
-            <input id="debtAmount" type="number" step="0.01" min="0.01" inputmode="decimal" required placeholder="0.00" class="ios-input w-full rounded-xl px-3.5 py-2.5 text-base font-bold focus:outline-none focus:ring-2 focus:ring-sky-500" />
+            <div class="flex items-center gap-1.5"><input id="debtAmount" type="number" step="0.01" min="0.01" inputmode="decimal" required placeholder="0.00" class="ios-input w-full rounded-xl px-3.5 py-2.5 text-base font-bold focus:outline-none focus:ring-2 focus:ring-sky-500" /><button type="button" onclick="openCalculatorFor('debtAmount')" class="ios-btn shrink-0 w-10 h-10 rounded-xl bg-sky-500/15 hover:bg-sky-500/25 text-sky-800 border border-sky-300/60 flex items-center justify-center" title="آلة حاسبة"><svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 7h6m-6 4h.01M12 11h.01M15 11h.01M9 15h.01M12 15h.01M15 15h.01M5 5a2 2 0 012-2h10a2 2 0 012 2v14a2 2 0 01-2 2H7a2 2 0 01-2-2V5z"/></svg></button></div>
           </div>
           <div>
             <label class="block text-xs font-bold text-slate-600 mb-1">العملة</label>
             <select id="debtCurrency" class="ios-input w-full rounded-xl px-2.5 py-2.5 text-sm font-bold focus:outline-none focus:ring-2 focus:ring-sky-500"></select>
           </div>
+        </div>
+        <div id="debtRateBox" class="hidden bg-emerald-500/10 border border-emerald-300/60 rounded-xl p-2.5 space-y-1">
+          <div class="flex items-center justify-between gap-2">
+            <label class="text-[11px] font-bold text-emerald-900">سعر التصريف إلى ($) — اختياري</label>
+            <span id="debtRatePreview" class="text-[11px] font-extrabold text-emerald-700"></span>
+          </div>
+          <input id="debtExchangeRate" type="number" step="0.0001" min="0.0001" inputmode="decimal" placeholder="اتركه فارغاً للإبقاء بالعملة المختارة" class="ios-input w-full rounded-lg px-3 py-1.5 text-xs font-bold focus:outline-none focus:ring-2 focus:ring-emerald-500" />
         </div>
         <div class="grid grid-cols-2 gap-3">
           <div>
@@ -907,7 +909,7 @@
         </div>
         <div>
           <label class="block text-xs font-bold text-slate-600 mb-1">مبلغ الدفعة المحصلة</label>
-          <input id="payAmount" type="number" step="0.01" min="0.01" inputmode="decimal" required class="ios-input w-full rounded-xl px-3.5 py-2.5 text-base font-bold focus:outline-none focus:ring-2 focus:ring-emerald-500" />
+          <div class="flex items-center gap-1.5"><input id="payAmount" type="number" step="0.01" min="0.01" inputmode="decimal" required class="ios-input w-full rounded-xl px-3.5 py-2.5 text-base font-bold focus:outline-none focus:ring-2 focus:ring-emerald-500" /><button type="button" onclick="openCalculatorFor('payAmount')" class="ios-btn shrink-0 w-10 h-10 rounded-xl bg-sky-500/15 hover:bg-sky-500/25 text-sky-800 border border-sky-300/60 flex items-center justify-center" title="آلة حاسبة"><svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 7h6m-6 4h.01M12 11h.01M15 11h.01M9 15h.01M12 15h.01M15 15h.01M5 5a2 2 0 012-2h10a2 2 0 012 2v14a2 2 0 01-2 2H7a2 2 0 01-2-2V5z"/></svg></button></div>
         </div>
         <div>
           <label class="block text-xs font-bold text-slate-600 mb-1">تاريخ القبض</label>
@@ -970,12 +972,19 @@
         <div class="grid grid-cols-3 gap-3">
           <div class="col-span-2">
             <label class="block text-xs font-bold text-slate-600 mb-1">المبلغ المتوقع</label>
-            <input id="schedAmount" type="number" step="0.01" min="0.01" inputmode="decimal" required placeholder="0.00" class="ios-input w-full rounded-xl px-3.5 py-2.5 text-base font-bold focus:outline-none focus:ring-2 focus:ring-sky-500" />
+            <div class="flex items-center gap-1.5"><input id="schedAmount" type="number" step="0.01" min="0.01" inputmode="decimal" required placeholder="0.00" class="ios-input w-full rounded-xl px-3.5 py-2.5 text-base font-bold focus:outline-none focus:ring-2 focus:ring-sky-500" /><button type="button" onclick="openCalculatorFor('schedAmount')" class="ios-btn shrink-0 w-10 h-10 rounded-xl bg-sky-500/15 hover:bg-sky-500/25 text-sky-800 border border-sky-300/60 flex items-center justify-center" title="آلة حاسبة"><svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 7h6m-6 4h.01M12 11h.01M15 11h.01M9 15h.01M12 15h.01M15 15h.01M5 5a2 2 0 012-2h10a2 2 0 012 2v14a2 2 0 01-2 2H7a2 2 0 01-2-2V5z"/></svg></button></div>
           </div>
           <div>
             <label class="block text-xs font-bold text-slate-600 mb-1">العملة</label>
             <select id="schedCurrency" class="ios-input w-full rounded-xl px-2.5 py-2.5 text-sm font-bold focus:outline-none focus:ring-2 focus:ring-sky-500"></select>
           </div>
+        </div>
+        <div id="schedRateBox" class="hidden bg-emerald-500/10 border border-emerald-300/60 rounded-xl p-2.5 space-y-1">
+          <div class="flex items-center justify-between gap-2">
+            <label class="text-[11px] font-bold text-emerald-900">سعر التصريف إلى ($) — اختياري</label>
+            <span id="schedRatePreview" class="text-[11px] font-extrabold text-emerald-700"></span>
+          </div>
+          <input id="schedExchangeRate" type="number" step="0.0001" min="0.0001" inputmode="decimal" placeholder="اتركه فارغاً للإبقاء بالعملة المختارة" class="ios-input w-full rounded-lg px-3 py-1.5 text-xs font-bold focus:outline-none focus:ring-2 focus:ring-emerald-500" />
         </div>
         <div class="grid grid-cols-2 gap-3">
           <div>
@@ -1039,6 +1048,64 @@
         <button type="button" id="btnConfirmEmpty" class="ios-btn w-full bg-rose-600 hover:bg-rose-700 text-white font-bold py-2.5 rounded-2xl text-sm">مسح الكل والبدء من الصفر</button>
         <button type="button" id="btnConfirmDemo" class="ios-btn w-full bg-gradient-to-br from-sky-500 to-teal-700 text-white font-bold py-2.5 rounded-2xl text-sm">استعادة البيانات التجريبية</button>
         <button type="button" onclick="closeModal('resetModal')" class="ios-btn w-full bg-slate-200/70 hover:bg-slate-200 text-slate-700 font-bold py-2.5 rounded-2xl text-sm">إلغاء</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Person Statement Modal (كشف حساب شخص) -->
+  <div id="personStatementModal" class="fixed inset-0 bg-slate-900/35 backdrop-blur-md z-50 hidden items-center justify-center p-4 overflow-y-auto">
+    <div class="ios-modal max-w-lg w-full p-6 animate-slide-up my-auto space-y-4">
+      <div class="flex items-center justify-between">
+        <div>
+          <h3 id="stmtPersonName" class="text-lg font-extrabold text-slate-900">كشف حساب</h3>
+          <p id="stmtPersonPhone" class="text-xs text-slate-500"></p>
+        </div>
+        <button type="button" onclick="closeModal('personStatementModal')" class="no-print w-8 h-8 rounded-full bg-slate-200/70 hover:bg-slate-200 text-slate-600 flex items-center justify-center text-sm font-bold">✕</button>
+      </div>
+      <div id="stmtSummaryBox" class="grid grid-cols-3 gap-2 text-center bg-white/70 border border-white rounded-2xl p-3 text-xs"></div>
+      <div id="stmtRowsList" class="max-h-64 overflow-y-auto space-y-2 text-xs"></div>
+      <div class="no-print flex flex-wrap items-center gap-2 pt-2 border-t border-white/60">
+        <button type="button" id="btnStmtWhatsapp" onclick="sendPersonStatementWhatsapp()" class="ios-btn flex-1 bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2.5 px-3 rounded-xl text-xs">إرسال الكشف واتساب</button>
+        <button type="button" onclick="window.print()" class="ios-btn flex-1 bg-gradient-to-br from-sky-500 to-teal-700 text-white font-bold py-2.5 px-3 rounded-xl text-xs">طباعة / حفظ PDF</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Universal Floating Calculator Modal -->
+  <div id="universalCalcModal" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-[60] hidden items-center justify-center p-4">
+    <div class="ios-modal max-w-xs w-full p-4 animate-slide-up space-y-3">
+      <div class="flex items-center justify-between">
+        <h3 class="text-sm font-extrabold text-slate-900">الآلة الحاسبة</h3>
+        <button type="button" onclick="closeModal('universalCalcModal')" class="w-7 h-7 rounded-full bg-slate-200/70 hover:bg-slate-200 text-slate-600 flex items-center justify-center text-xs font-bold">✕</button>
+      </div>
+      <div class="flex items-center justify-between gap-2 bg-slate-900/90 text-white rounded-xl px-3 py-2.5" dir="ltr">
+        <span id="calcDisplay" class="text-lg font-extrabold tracking-wide truncate flex-1 text-left">0</span>
+        <button type="button" onclick="calcClear()" class="text-xs font-bold bg-rose-500/80 hover:bg-rose-500 px-2.5 py-1 rounded-lg">C</button>
+      </div>
+      <div class="grid grid-cols-4 gap-1.5" dir="ltr">
+        <button type="button" onclick="calcPress('7')" class="ios-btn bg-white hover:bg-slate-50 font-bold py-2.5 rounded-xl text-sm shadow-2xs">7</button>
+        <button type="button" onclick="calcPress('8')" class="ios-btn bg-white hover:bg-slate-50 font-bold py-2.5 rounded-xl text-sm shadow-2xs">8</button>
+        <button type="button" onclick="calcPress('9')" class="ios-btn bg-white hover:bg-slate-50 font-bold py-2.5 rounded-xl text-sm shadow-2xs">9</button>
+        <button type="button" onclick="calcPress('/')" class="ios-btn bg-sky-500/15 hover:bg-sky-500/25 text-sky-800 font-extrabold py-2.5 rounded-xl text-sm">÷</button>
+
+        <button type="button" onclick="calcPress('4')" class="ios-btn bg-white hover:bg-slate-50 font-bold py-2.5 rounded-xl text-sm shadow-2xs">4</button>
+        <button type="button" onclick="calcPress('5')" class="ios-btn bg-white hover:bg-slate-50 font-bold py-2.5 rounded-xl text-sm shadow-2xs">5</button>
+        <button type="button" onclick="calcPress('6')" class="ios-btn bg-white hover:bg-slate-50 font-bold py-2.5 rounded-xl text-sm shadow-2xs">6</button>
+        <button type="button" onclick="calcPress('*')" class="ios-btn bg-sky-500/15 hover:bg-sky-500/25 text-sky-800 font-extrabold py-2.5 rounded-xl text-sm">×</button>
+
+        <button type="button" onclick="calcPress('1')" class="ios-btn bg-white hover:bg-slate-50 font-bold py-2.5 rounded-xl text-sm shadow-2xs">1</button>
+        <button type="button" onclick="calcPress('2')" class="ios-btn bg-white hover:bg-slate-50 font-bold py-2.5 rounded-xl text-sm shadow-2xs">2</button>
+        <button type="button" onclick="calcPress('3')" class="ios-btn bg-white hover:bg-slate-50 font-bold py-2.5 rounded-xl text-sm shadow-2xs">3</button>
+        <button type="button" onclick="calcPress('-')" class="ios-btn bg-sky-500/15 hover:bg-sky-500/25 text-sky-800 font-extrabold py-2.5 rounded-xl text-sm">−</button>
+
+        <button type="button" onclick="calcPress('0')" class="ios-btn bg-white hover:bg-slate-50 font-bold py-2.5 rounded-xl text-sm shadow-2xs">0</button>
+        <button type="button" onclick="calcPress('.')" class="ios-btn bg-white hover:bg-slate-50 font-bold py-2.5 rounded-xl text-sm shadow-2xs">.</button>
+        <button type="button" onclick="calcBackspace()" class="ios-btn bg-amber-500/15 hover:bg-amber-500/25 text-amber-800 font-bold py-2.5 rounded-xl text-sm">⌫</button>
+        <button type="button" onclick="calcPress('+')" class="ios-btn bg-sky-500/15 hover:bg-sky-500/25 text-sky-800 font-extrabold py-2.5 rounded-xl text-sm">+</button>
+      </div>
+      <div class="grid grid-cols-2 gap-2">
+        <button type="button" onclick="calcEvaluate(false)" class="ios-btn bg-slate-200/80 hover:bg-slate-200 text-slate-800 text-xs font-bold py-2.5 rounded-xl">= حساب الناتج</button>
+        <button type="button" onclick="calcEvaluate(true)" class="ios-btn bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold py-2.5 rounded-xl">تطبيق المبلغ ✓</button>
       </div>
     </div>
   </div>
@@ -1357,12 +1424,12 @@
     let expensePieChartInstance = null;
 
     const CURRENCY_PALETTE = [
-      { badge: 'bg-emerald-500/15 text-emerald-800 border-emerald-400/50', row: 'border-r-4 border-r-emerald-500 bg-emerald-500/[0.03]' },
-      { badge: 'bg-sky-500/15 text-sky-800 border-sky-400/50', row: 'border-r-4 border-r-sky-500 bg-sky-500/[0.03]' },
-      { badge: 'bg-rose-500/15 text-rose-800 border-rose-400/50', row: 'border-r-4 border-r-rose-500 bg-rose-500/[0.03]' },
-      { badge: 'bg-amber-500/20 text-amber-900 border-amber-400/60', row: 'border-r-4 border-r-amber-500 bg-amber-500/[0.04]' },
-      { badge: 'bg-violet-500/15 text-violet-800 border-violet-400/50', row: 'border-r-4 border-r-violet-500 bg-violet-500/[0.03]' },
-      { badge: 'bg-cyan-500/15 text-cyan-800 border-cyan-400/50', row: 'border-r-4 border-r-cyan-500 bg-cyan-500/[0.03]' }
+      { badge: 'bg-emerald-500/20 text-emerald-900 border-emerald-400', row: 'border-2 border-emerald-400/75 bg-emerald-500/[0.08]' },
+      { badge: 'bg-sky-500/20 text-sky-900 border-sky-400', row: 'border-2 border-sky-400/75 bg-sky-500/[0.08]' },
+      { badge: 'bg-rose-500/20 text-rose-900 border-rose-400', row: 'border-2 border-rose-400/75 bg-rose-500/[0.08]' },
+      { badge: 'bg-amber-500/25 text-amber-900 border-amber-400', row: 'border-2 border-amber-400/80 bg-amber-500/[0.09]' },
+      { badge: 'bg-violet-500/20 text-violet-900 border-violet-400', row: 'border-2 border-violet-400/75 bg-violet-500/[0.08]' },
+      { badge: 'bg-cyan-500/20 text-cyan-900 border-cyan-400', row: 'border-2 border-cyan-400/75 bg-cyan-500/[0.08]' }
     ];
 
     function getCurrencyStyle(currCode) {
@@ -1654,7 +1721,10 @@
             </div>
             <div class="flex items-center justify-between gap-2 pt-2 border-t border-white/60">
               <span class="text-[11px] text-slate-600">المتبقي: <strong class="text-amber-700">${remText}</strong></span>
-              <button type="button" onclick="openDebtForPerson('${p.id}')" class="ios-btn bg-amber-500/15 hover:bg-amber-500/25 text-amber-800 text-[11px] font-bold px-2.5 py-1 rounded-lg">+ دين / دفعة</button>
+              <div class="flex items-center gap-1">
+                <button type="button" onclick="openPersonStatementModal('${p.id}')" class="ios-btn bg-sky-500/15 hover:bg-sky-500/25 text-sky-800 text-[11px] font-bold px-2 py-1 rounded-lg">كشف حساب</button>
+                <button type="button" onclick="openDebtForPerson('${p.id}')" class="ios-btn bg-amber-500/15 hover:bg-amber-500/25 text-amber-800 text-[11px] font-bold px-2 py-1 rounded-lg">+ دين</button>
+              </div>
             </div>
           </div>
         `;
@@ -1770,6 +1840,18 @@
 
       const overdueCount = state.schedules.filter(s => s.status === 'pending' && s.date < today).length;
       const todayCount = state.schedules.filter(s => s.status === 'pending' && s.date === today).length;
+
+      const banner = document.getElementById('dailyAlertBanner');
+      if (banner) {
+        if (overdueCount + todayCount > 0) {
+          banner.classList.remove('hidden');
+          document.getElementById('dailyAlertTitle').textContent = `تذكير اليوم: لديك ${todayCount} موعد قبض اليوم و ${overdueCount} موعد متأخر`;
+          const dueItems = state.schedules.filter(s => s.status === 'pending' && s.date <= today);
+          document.getElementById('dailyAlertSub').textContent = `إجمالي المبالغ المستحقة الآن: ${fmtMulti(dueItems, x => x.amount)}`;
+        } else {
+          banner.classList.add('hidden');
+        }
+      }
 
       document.getElementById('kpiBalance').textContent = balanceText;
       document.getElementById('kpiBalance').className = `text-base sm:text-2xl font-extrabold leading-snug break-words ${primaryNet >= 0 ? 'text-slate-900' : 'text-rose-600'}`;
@@ -1973,8 +2055,9 @@
               <span class="text-[10px] font-bold px-2 py-0.5 rounded-full border ${cs.badge}">${escapeHtml(t.currency || state.currency)}</span>
             </div>
           </td>
-          <td class="px-4 py-3 text-center">
-            <button type="button" onclick="deleteTx('${t.id}')" class="text-xs text-rose-600 hover:text-rose-800 font-bold px-2.5 py-1 rounded-xl hover:bg-rose-500/10">حذف</button>
+          <td class="px-4 py-3 text-center whitespace-nowrap">
+            <button type="button" onclick="editTx('${t.id}')" class="text-xs text-sky-700 hover:text-sky-900 font-bold px-2 py-1 rounded-xl hover:bg-sky-500/10">تعديل</button>
+            <button type="button" onclick="deleteTx('${t.id}')" class="text-xs text-rose-600 hover:text-rose-800 font-bold px-2 py-1 rounded-xl hover:bg-rose-500/10">حذف</button>
           </td>
         </tr>
       `;
@@ -2142,8 +2225,9 @@
             ? `<span class="text-xs font-bold bg-amber-500/20 text-amber-800 px-2.5 py-0.5 rounded-full">قريب من الحد (${rawPct}%)</span>`
             : `<span class="text-xs font-bold bg-emerald-500/15 text-emerald-700 px-2.5 py-0.5 rounded-full">${rawPct}% مستهلك</span>`;
 
+        const dcs = getCurrencyStyle(dCurr);
         return `
-          <div class="glass-card p-5 space-y-3">
+          <div class="glass-card ${dcs.row} p-5 space-y-3">
             <div class="flex items-center justify-between gap-2">
               <h4 class="font-extrabold text-slate-900">${escapeHtml(b.name)}</h4>
               ${statusBadge}
@@ -2281,7 +2365,10 @@
                 ${!isPaid ? `<button type="button" onclick="openDebtPayModal('${d.id}')" class="ios-btn bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold px-3.5 py-2 rounded-xl shadow-xs">تسجيل دفعة قبض</button>` : `<span class="text-xs font-bold text-emerald-600">✓ تم التحصيل</span>`}
                 ${!isPaid ? `<button type="button" onclick="openInstallmentPlanModal('${d.id}')" class="ios-btn bg-sky-500/15 hover:bg-sky-500/25 text-sky-800 text-xs font-bold px-3 py-2 rounded-xl">تقسيط</button>` : ''}
               </div>
-              <button type="button" onclick="deleteDebt('${d.id}')" class="text-xs font-bold text-rose-600 hover:underline">حذف</button>
+              <div class="flex items-center gap-2.5">
+                <button type="button" onclick="editDebt('${d.id}')" class="text-xs font-bold text-sky-700 hover:underline">تعديل</button>
+                <button type="button" onclick="deleteDebt('${d.id}')" class="text-xs font-bold text-rose-600 hover:underline">حذف</button>
+              </div>
             </div>
           </div>
         `;
@@ -2337,6 +2424,7 @@
 
     function openDebtModal() {
       document.getElementById('debtForm').reset();
+      document.getElementById('editDebtId').value = '';
       document.getElementById('debtDueDate').value = todayISO(7);
       document.getElementById('debtIsInstallment').checked = false;
       document.getElementById('debtInstallmentBox').classList.add('hidden');
@@ -2344,25 +2432,60 @@
       populateCurrencySelects();
       populatePeopleSelects();
       updateDebtInstallmentPreview();
+      updateRateBox('debtCurrency', 'debtRateBox', 'debtAmount', 'debtExchangeRate', 'debtRatePreview');
       openModal('debtModal');
+    }
+
+    function editDebt(debtId) {
+      const d = state.debts.find(x => x.id === debtId);
+      if (!d) return;
+      openDebtModal();
+      document.getElementById('editDebtId').value = d.id;
+      document.getElementById('debtName').value = d.name;
+      document.getElementById('debtAmount').value = d.totalAmount;
+      document.getElementById('debtCurrency').value = d.currency || state.currency;
+      document.getElementById('debtDueDate').value = d.dueDate;
+      document.getElementById('debtPhone').value = d.phone || '';
+      document.getElementById('debtNote').value = d.note || '';
+      document.getElementById('debtAutoSchedule').checked = false;
+      updateRateBox('debtCurrency', 'debtRateBox', 'debtAmount', 'debtExchangeRate', 'debtRatePreview');
     }
 
     document.getElementById('debtForm').addEventListener('submit', e => {
       e.preventDefault();
+      const editId = document.getElementById('editDebtId').value;
       const name = document.getElementById('debtName').value.trim();
-      const amount = parseFloat(document.getElementById('debtAmount').value);
-      const currency = document.getElementById('debtCurrency').value || state.currency;
+      const rawAmount = parseFloat(document.getElementById('debtAmount').value);
+      const rawCurrency = document.getElementById('debtCurrency').value || state.currency;
+      const rateVal = document.getElementById('debtExchangeRate').value;
       const dueDate = document.getElementById('debtDueDate').value;
       const phone = document.getElementById('debtPhone').value.trim();
-      const note = document.getElementById('debtNote').value.trim();
+      const rawNote = document.getElementById('debtNote').value.trim();
       const isInst = document.getElementById('debtIsInstallment').checked;
       const instCount = parseInt(document.getElementById('debtInstallmentCount').value, 10) || 3;
       const instFreq = document.getElementById('debtInstallmentFreq').value;
       const autoSched = document.getElementById('debtAutoSchedule').checked;
-      if (!name || isNaN(amount) || amount <= 0 || !dueDate) return;
+      if (!name || isNaN(rawAmount) || rawAmount <= 0 || !dueDate) return;
+
+      const conv = applyUsdConversion(rawAmount, rawCurrency, rateVal, rawNote);
+      const amount = conv.amount;
+      const currency = conv.currency;
+      const note = conv.details;
 
       if (!state.people.some(p => p.name === name)) {
         state.people.push({ id: 'per_' + Date.now(), name, phone, note: '' });
+      }
+
+      if (editId) {
+        const existing = state.debts.find(x => x.id === editId);
+        if (existing) {
+          Object.assign(existing, { name, phone, totalAmount: amount, currency, dueDate, note });
+          saveState();
+          closeModal('debtModal');
+          renderAll();
+          showToast('تم تعديل سجل الدين');
+          return;
+        }
       }
 
       const debtId = 'debt_' + Date.now();
@@ -2638,8 +2761,9 @@
               ? `<span class="bg-amber-500/20 text-amber-800 text-xs font-bold px-2.5 py-0.5 rounded-full">اليوم</span>`
               : `<span class="bg-sky-500/15 text-sky-800 text-xs font-bold px-2.5 py-0.5 rounded-full">قادم</span>`;
 
+        const scs = getCurrencyStyle(s.currency);
         return `
-          <div class="p-4 rounded-2xl border ${isDone ? 'bg-white/40 border-white/60 opacity-75' : isOverdue ? 'bg-rose-500/5 border-rose-300/60' : 'bg-white/60 border-white/85'} flex flex-wrap items-center justify-between gap-3">
+          <div class="p-4 rounded-2xl ${isDone ? 'border border-white/60 bg-white/40 opacity-75' : scs.row} flex flex-wrap items-center justify-between gap-3">
             <div class="min-w-0">
               <div class="flex items-center gap-2 flex-wrap">
                 <h4 class="font-extrabold text-sm text-slate-900">${escapeHtml(s.title)}</h4>
@@ -2658,12 +2782,58 @@
       }).join('');
     }
 
+    let currentStmtPersonId = '';
+
+    function openPersonStatementModal(personId) {
+      const p = state.people.find(x => x.id === personId);
+      if (!p) return;
+      currentStmtPersonId = personId;
+      document.getElementById('stmtPersonName').textContent = `كشف حساب: ${p.name}`;
+      document.getElementById('stmtPersonPhone').textContent = p.phone ? `📞 ${p.phone}` : 'بدون رقم هاتف';
+
+      const pDebts = state.debts.filter(d => d.name === p.name);
+      const pTxs = state.transactions.filter(t => t.personName === p.name);
+      const totD = fmtMulti(pDebts, d => d.totalAmount);
+      const totP = fmtMulti(pDebts, d => d.paidAmount);
+      const totR = fmtMulti(pDebts, d => Math.max(0, Number(d.totalAmount) - Number(d.paidAmount)));
+
+      document.getElementById('stmtSummaryBox').innerHTML = `
+        <div><span class="text-slate-500 block">إجمالي الديون</span><strong class="text-slate-900">${totD}</strong></div>
+        <div><span class="text-slate-500 block">المحصل</span><strong class="text-emerald-600">${totP}</strong></div>
+        <div><span class="text-slate-500 block">المتبقي</span><strong class="text-amber-700">${totR}</strong></div>
+      `;
+
+      const rows = [
+        ...pDebts.map(d => `<div class="p-2.5 rounded-xl bg-amber-500/10 border border-amber-300/60 flex justify-between"><span><strong>دين:</strong> ${escapeHtml(d.note || d.dueDate)} (${d.dueDate})</span><strong class="text-amber-800">${fmt(d.totalAmount, d.currency)}</strong></div>`),
+        ...pTxs.map(t => `<div class="p-2.5 rounded-xl bg-white/70 border border-white flex justify-between"><span><strong>${t.type === 'income' ? 'دفعة/مدخول' : 'مصروف'}:</strong> ${escapeHtml(t.note)} (${t.date})</span><strong class="${t.type === 'income' ? 'text-emerald-600' : 'text-rose-600'}">${fmt(t.amount, t.currency)}</strong></div>`)
+      ];
+      document.getElementById('stmtRowsList').innerHTML = rows.length ? rows.join('') : '<p class="text-center text-slate-400 py-4">لا توجد حركات مسجلة لهذا الشخص</p>';
+      openModal('personStatementModal');
+    }
+
+    function sendPersonStatementWhatsapp() {
+      const p = state.people.find(x => x.id === currentStmtPersonId);
+      if (!p) return;
+      const waPhone = formatWaPhone(p.phone);
+      if (!waPhone) {
+        showToast('أضف رقم هاتف لهذا الشخص أولاً');
+        return;
+      }
+      const pDebts = state.debts.filter(d => d.name === p.name);
+      const totD = fmtMulti(pDebts, d => d.totalAmount);
+      const totP = fmtMulti(pDebts, d => d.paidAmount);
+      const totR = fmtMulti(pDebts, d => Math.max(0, Number(d.totalAmount) - Number(d.paidAmount)));
+      const msg = `السلام عليكم ${p.name}، إليكم ملخص كشف الحساب من الزعيم برو:%0Aإجمالي الديون: ${totD}%0Aالمدفوع: ${totP}%0Aالمتبقي: ${totR}`;
+      window.open(`https://wa.me/${waPhone}?text=${msg}`, '_blank', 'noopener');
+    }
+
     function openScheduleModal() {
       document.getElementById('scheduleForm').reset();
       document.getElementById('schedDate').value = todayISO();
       document.getElementById('schedSendWhatsapp').checked = true;
       populateCurrencySelects();
       populatePeopleSelects();
+      updateRateBox('schedCurrency', 'schedRateBox', 'schedAmount', 'schedExchangeRate', 'schedRatePreview');
       const debtSel = document.getElementById('schedLinkedDebt');
       const openDebts = state.debts.filter(d => Number(d.totalAmount) > Number(d.paidAmount));
       debtSel.innerHTML = `<option value="">بدون ربط</option>` + openDebts.map(d => `<option value="${d.id}">${escapeHtml(d.name)} (${fmt(d.totalAmount - d.paidAmount, d.currency)})</option>`).join('');
@@ -2698,8 +2868,9 @@
     document.getElementById('scheduleForm').addEventListener('submit', e => {
       e.preventDefault();
       const title = document.getElementById('schedTitle').value.trim();
-      const amount = parseFloat(document.getElementById('schedAmount').value);
-      const currency = document.getElementById('schedCurrency').value || state.currency;
+      const rawAmount = parseFloat(document.getElementById('schedAmount').value);
+      const rawCurrency = document.getElementById('schedCurrency').value || state.currency;
+      const rateVal = document.getElementById('schedExchangeRate').value;
       const date = document.getElementById('schedDate').value;
       const recurrence = document.getElementById('schedRecurrence').value;
       const debtId = document.getElementById('schedLinkedDebt').value;
@@ -2707,12 +2878,13 @@
       const personId = document.getElementById('schedPersonSelect').value;
       const personObj = state.people.find(x => x.id === personId);
       const personName = personObj ? personObj.name : '';
-      const note = document.getElementById('schedNote').value.trim();
+      const rawNote = document.getElementById('schedNote').value.trim();
       const sendWa = document.getElementById('schedSendWhatsapp').checked;
-      if (!title || isNaN(amount) || amount <= 0 || !date) return;
+      if (!title || isNaN(rawAmount) || rawAmount <= 0 || !date) return;
 
+      const conv = applyUsdConversion(rawAmount, rawCurrency, rateVal, rawNote);
       const schId = 'sch_' + Date.now();
-      state.schedules.push({ id: schId, title, amount, currency, date, recurrence, debtId, personName, phone, status: 'pending', note });
+      state.schedules.push({ id: schId, title, amount: conv.amount, currency: conv.currency, date, recurrence, debtId, personName, phone, status: 'pending', note: conv.details });
       saveState();
       closeModal('scheduleModal');
       renderAll();
@@ -2832,15 +3004,14 @@
     }
 
     let calcExpr = '';
+    let calcTargetId = 'txAmount';
 
-    function toggleTxCalculator() {
-      const box = document.getElementById('txCalcBox');
-      box.classList.toggle('hidden');
-      if (!box.classList.contains('hidden')) {
-        const cur = document.getElementById('txAmount').value;
-        calcExpr = cur ? String(cur) : '';
-        document.getElementById('calcDisplay').textContent = calcExpr || '0';
-      }
+    function openCalculatorFor(targetId) {
+      calcTargetId = targetId || 'txAmount';
+      const el = document.getElementById(calcTargetId);
+      calcExpr = el && el.value ? String(el.value) : '';
+      document.getElementById('calcDisplay').textContent = calcExpr || '0';
+      openModal('universalCalcModal');
     }
 
     function calcPress(ch) {
@@ -2906,38 +3077,119 @@
       calcExpr = String(res);
       document.getElementById('calcDisplay').textContent = calcExpr;
       if (applyToInput) {
-        document.getElementById('txAmount').value = res;
-        document.getElementById('txCalcBox').classList.add('hidden');
+        const target = document.getElementById(calcTargetId);
+        if (target) {
+          target.value = res;
+          target.dispatchEvent(new Event('input', { bubbles: true }));
+        }
+        closeModal('universalCalcModal');
         showToast(`تم اعتماد المبلغ: ${res}`);
       }
     }
 
+    function updateRateBox(currSelId, boxId, amtId, rateId, prevId) {
+      const curr = document.getElementById(currSelId).value;
+      const box = document.getElementById(boxId);
+      if (!box) return;
+      if (curr === '$') {
+        box.classList.add('hidden');
+        return;
+      }
+      box.classList.remove('hidden');
+      const amt = parseFloat(document.getElementById(amtId).value) || 0;
+      const rate = parseFloat(document.getElementById(rateId).value) || 0;
+      const prevEl = document.getElementById(prevId);
+      if (amt > 0 && rate > 0) {
+        prevEl.textContent = `المعادل: ${fmt(amt / rate, '$')}`;
+      } else {
+        prevEl.textContent = `تبقى بـ ${curr}`;
+      }
+    }
+
+    function applyUsdConversion(amount, currency, rateVal, extraDetails) {
+      const rate = parseFloat(rateVal);
+      if (currency !== '$' && !isNaN(rate) && rate > 0) {
+        const usd = Number((amount / rate).toFixed(2));
+        const convNote = `تصريف من ${fmt(amount, currency)} (سعر ${rate})`;
+        return {
+          amount: usd,
+          currency: '$',
+          details: extraDetails ? `${extraDetails} | ${convNote}` : convNote
+        };
+      }
+      return { amount, currency, details: extraDetails };
+    }
+
+    ['txCurrency', 'txAmount', 'txExchangeRate'].forEach(id => {
+      document.getElementById(id).addEventListener('input', () => updateRateBox('txCurrency', 'txRateBox', 'txAmount', 'txExchangeRate', 'txRatePreview'));
+    });
+    ['debtCurrency', 'debtAmount', 'debtExchangeRate'].forEach(id => {
+      document.getElementById(id).addEventListener('input', () => updateRateBox('debtCurrency', 'debtRateBox', 'debtAmount', 'debtExchangeRate', 'debtRatePreview'));
+    });
+    ['schedCurrency', 'schedAmount', 'schedExchangeRate'].forEach(id => {
+      document.getElementById(id).addEventListener('input', () => updateRateBox('schedCurrency', 'schedRateBox', 'schedAmount', 'schedExchangeRate', 'schedRatePreview'));
+    });
+
     function openTxModal(type = 'expense') {
       document.getElementById('txForm').reset();
+      document.getElementById('editTxId').value = '';
+      document.getElementById('txModalTitle').textContent = 'إضافة حركة مالية';
       document.getElementById('txDate').value = todayISO();
       document.getElementById('quickCatRow').classList.add('hidden');
-      document.getElementById('txCalcBox').classList.add('hidden');
       calcExpr = '';
       populateCurrencySelects();
       populatePeopleSelects();
       setTxType(type);
+      updateRateBox('txCurrency', 'txRateBox', 'txAmount', 'txExchangeRate', 'txRatePreview');
       openModal('txModal');
+    }
+
+    function editTx(txId) {
+      const t = state.transactions.find(x => x.id === txId);
+      if (!t) return;
+      openTxModal(t.type);
+      document.getElementById('editTxId').value = t.id;
+      document.getElementById('txModalTitle').textContent = 'تعديل حركة مالية';
+      document.getElementById('txAmount').value = t.amount;
+      document.getElementById('txCurrency').value = t.currency || state.currency;
+      document.getElementById('txCategory').value = t.category;
+      document.getElementById('txDate').value = t.date;
+      document.getElementById('txPerson').value = t.personName || '';
+      document.getElementById('txMethod').value = t.method || 'نقدي';
+      document.getElementById('txNote').value = t.note || '';
+      document.getElementById('txDetails').value = t.details || '';
+      updateRateBox('txCurrency', 'txRateBox', 'txAmount', 'txExchangeRate', 'txRatePreview');
     }
 
     document.getElementById('txForm').addEventListener('submit', e => {
       e.preventDefault();
+      const editId = document.getElementById('editTxId').value;
       const type = document.getElementById('txType').value;
-      const amount = parseFloat(document.getElementById('txAmount').value);
-      const currency = document.getElementById('txCurrency').value || state.currency;
+      const rawAmount = parseFloat(document.getElementById('txAmount').value);
+      const rawCurrency = document.getElementById('txCurrency').value || state.currency;
+      const rateVal = document.getElementById('txExchangeRate').value;
       const category = document.getElementById('txCategory').value;
       const date = document.getElementById('txDate').value;
       const personName = document.getElementById('txPerson').value || '';
       const method = document.getElementById('txMethod').value;
       const note = document.getElementById('txNote').value.trim();
-      const details = document.getElementById('txDetails').value.trim();
-      if (isNaN(amount) || amount <= 0 || !date || !note) return;
+      const rawDetails = document.getElementById('txDetails').value.trim();
+      if (isNaN(rawAmount) || rawAmount <= 0 || !date || !note) return;
 
-      state.transactions.push({ id: 'tx_' + Date.now(), type, amount, currency, category, date, personName, method, note, details });
+      const conv = applyUsdConversion(rawAmount, rawCurrency, rateVal, rawDetails);
+      if (editId) {
+        const existing = state.transactions.find(x => x.id === editId);
+        if (existing) {
+          Object.assign(existing, { type, amount: conv.amount, currency: conv.currency, category, date, personName, method, note, details: conv.details });
+          saveState();
+          closeModal('txModal');
+          renderAll();
+          showToast('تم تعديل الحركة المالية');
+          return;
+        }
+      }
+
+      state.transactions.push({ id: 'tx_' + Date.now(), type, amount: conv.amount, currency: conv.currency, category, date, personName, method, note, details: conv.details });
       saveState();
       closeModal('txModal');
       renderAll();
