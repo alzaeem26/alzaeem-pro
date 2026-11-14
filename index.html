@@ -668,11 +668,51 @@
         <div class="grid grid-cols-3 gap-3">
           <div class="col-span-2">
             <label class="block text-xs font-bold text-slate-600 mb-1">المبلغ</label>
-            <input id="txAmount" type="number" step="0.01" min="0.01" inputmode="decimal" required placeholder="0.00" class="ios-input w-full rounded-xl px-3.5 py-2.5 text-base font-bold focus:outline-none focus:ring-2 focus:ring-sky-500" />
+            <div class="flex items-center gap-1.5">
+              <input id="txAmount" type="number" step="0.01" min="0.01" inputmode="decimal" required placeholder="0.00" class="ios-input w-full rounded-xl px-3.5 py-2.5 text-base font-bold focus:outline-none focus:ring-2 focus:ring-sky-500" />
+              <button type="button" id="btnToggleCalc" onclick="toggleTxCalculator()" class="ios-btn shrink-0 w-11 h-11 rounded-xl bg-sky-500/15 hover:bg-sky-500/25 text-sky-800 border border-sky-300/60 flex items-center justify-center" title="آلة حاسبة">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M9 7h6m-6 4h.01M12 11h.01M15 11h.01M9 15h.01M12 15h.01M15 15h.01M5 5a2 2 0 012-2h10a2 2 0 012 2v14a2 2 0 01-2 2H7a2 2 0 01-2-2V5z"/>
+                </svg>
+              </button>
+            </div>
           </div>
           <div>
             <label class="block text-xs font-bold text-slate-600 mb-1">العملة</label>
             <select id="txCurrency" class="ios-input w-full rounded-xl px-2.5 py-2.5 text-sm font-bold focus:outline-none focus:ring-2 focus:ring-sky-500"></select>
+          </div>
+        </div>
+
+        <!-- Inline iOS Glass Calculator -->
+        <div id="txCalcBox" class="hidden bg-white/75 border border-white rounded-2xl p-3 space-y-2 shadow-sm">
+          <div class="flex items-center justify-between gap-2 bg-slate-900/90 text-white rounded-xl px-3 py-2" dir="ltr">
+            <span id="calcDisplay" class="text-base font-extrabold tracking-wide truncate flex-1 text-left">0</span>
+            <button type="button" onclick="calcClear()" class="text-[11px] font-bold bg-rose-500/80 hover:bg-rose-500 px-2 py-0.5 rounded-lg">C</button>
+          </div>
+          <div class="grid grid-cols-4 gap-1.5" dir="ltr">
+            <button type="button" onclick="calcPress('7')" class="ios-btn bg-white hover:bg-slate-50 font-bold py-2 rounded-xl text-sm shadow-2xs">7</button>
+            <button type="button" onclick="calcPress('8')" class="ios-btn bg-white hover:bg-slate-50 font-bold py-2 rounded-xl text-sm shadow-2xs">8</button>
+            <button type="button" onclick="calcPress('9')" class="ios-btn bg-white hover:bg-slate-50 font-bold py-2 rounded-xl text-sm shadow-2xs">9</button>
+            <button type="button" onclick="calcPress('/')" class="ios-btn bg-sky-500/15 hover:bg-sky-500/25 text-sky-800 font-extrabold py-2 rounded-xl text-sm">÷</button>
+
+            <button type="button" onclick="calcPress('4')" class="ios-btn bg-white hover:bg-slate-50 font-bold py-2 rounded-xl text-sm shadow-2xs">4</button>
+            <button type="button" onclick="calcPress('5')" class="ios-btn bg-white hover:bg-slate-50 font-bold py-2 rounded-xl text-sm shadow-2xs">5</button>
+            <button type="button" onclick="calcPress('6')" class="ios-btn bg-white hover:bg-slate-50 font-bold py-2 rounded-xl text-sm shadow-2xs">6</button>
+            <button type="button" onclick="calcPress('*')" class="ios-btn bg-sky-500/15 hover:bg-sky-500/25 text-sky-800 font-extrabold py-2 rounded-xl text-sm">×</button>
+
+            <button type="button" onclick="calcPress('1')" class="ios-btn bg-white hover:bg-slate-50 font-bold py-2 rounded-xl text-sm shadow-2xs">1</button>
+            <button type="button" onclick="calcPress('2')" class="ios-btn bg-white hover:bg-slate-50 font-bold py-2 rounded-xl text-sm shadow-2xs">2</button>
+            <button type="button" onclick="calcPress('3')" class="ios-btn bg-white hover:bg-slate-50 font-bold py-2 rounded-xl text-sm shadow-2xs">3</button>
+            <button type="button" onclick="calcPress('-')" class="ios-btn bg-sky-500/15 hover:bg-sky-500/25 text-sky-800 font-extrabold py-2 rounded-xl text-sm">−</button>
+
+            <button type="button" onclick="calcPress('0')" class="ios-btn bg-white hover:bg-slate-50 font-bold py-2 rounded-xl text-sm shadow-2xs">0</button>
+            <button type="button" onclick="calcPress('.')" class="ios-btn bg-white hover:bg-slate-50 font-bold py-2 rounded-xl text-sm shadow-2xs">.</button>
+            <button type="button" onclick="calcBackspace()" class="ios-btn bg-amber-500/15 hover:bg-amber-500/25 text-amber-800 font-bold py-2 rounded-xl text-sm">⌫</button>
+            <button type="button" onclick="calcPress('+')" class="ios-btn bg-sky-500/15 hover:bg-sky-500/25 text-sky-800 font-extrabold py-2 rounded-xl text-sm">+</button>
+          </div>
+          <div class="grid grid-cols-2 gap-1.5 pt-0.5">
+            <button type="button" onclick="calcEvaluate(false)" class="ios-btn bg-slate-200/80 hover:bg-slate-200 text-slate-800 text-xs font-bold py-2 rounded-xl">= حساب الناتج</button>
+            <button type="button" onclick="calcEvaluate(true)" class="ios-btn bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold py-2 rounded-xl">تطبيق المبلغ ✓</button>
           </div>
         </div>
 
@@ -1316,6 +1356,24 @@
     let cashflowChartInstance = null;
     let expensePieChartInstance = null;
 
+    const CURRENCY_PALETTE = [
+      { badge: 'bg-emerald-500/15 text-emerald-800 border-emerald-400/50', row: 'border-r-4 border-r-emerald-500 bg-emerald-500/[0.03]' },
+      { badge: 'bg-sky-500/15 text-sky-800 border-sky-400/50', row: 'border-r-4 border-r-sky-500 bg-sky-500/[0.03]' },
+      { badge: 'bg-rose-500/15 text-rose-800 border-rose-400/50', row: 'border-r-4 border-r-rose-500 bg-rose-500/[0.03]' },
+      { badge: 'bg-amber-500/20 text-amber-900 border-amber-400/60', row: 'border-r-4 border-r-amber-500 bg-amber-500/[0.04]' },
+      { badge: 'bg-violet-500/15 text-violet-800 border-violet-400/50', row: 'border-r-4 border-r-violet-500 bg-violet-500/[0.03]' },
+      { badge: 'bg-cyan-500/15 text-cyan-800 border-cyan-400/50', row: 'border-r-4 border-r-cyan-500 bg-cyan-500/[0.03]' }
+    ];
+
+    function getCurrencyStyle(currCode) {
+      const code = currCode || state.currency;
+      const idx = state.currencies.findIndex(c => c.code === code);
+      if (idx >= 0) return CURRENCY_PALETTE[idx % CURRENCY_PALETTE.length];
+      let hash = 0;
+      for (let i = 0; i < code.length; i++) hash = (hash * 31 + code.charCodeAt(i)) >>> 0;
+      return CURRENCY_PALETTE[hash % CURRENCY_PALETTE.length];
+    }
+
     function fmt(num, curr = state.currency) {
       const val = Number(num || 0);
       return `${val.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 2 })} ${curr || state.currency}`;
@@ -1772,8 +1830,10 @@
       if (recentTxs.length === 0) {
         recentEl.innerHTML = `<p class="text-sm text-slate-400 text-center py-6">لا توجد حركات مالية مسجلة</p>`;
       } else {
-        recentEl.innerHTML = recentTxs.map(t => `
-          <div class="flex items-center justify-between gap-3 p-2.5 rounded-2xl hover:bg-white/55 transition">
+        recentEl.innerHTML = recentTxs.map(t => {
+          const cs = getCurrencyStyle(t.currency);
+          return `
+          <div class="flex items-center justify-between gap-3 p-2.5 rounded-2xl ${cs.row} hover:bg-white/55 transition">
             <div class="flex items-center gap-3 min-w-0">
               <div class="w-9 h-9 rounded-xl flex items-center justify-center font-bold text-sm shrink-0 ${t.type === 'income' ? 'bg-emerald-500/15 text-emerald-700' : 'bg-rose-500/15 text-rose-700'}">
                 ${t.type === 'income' ? '↑' : '↓'}
@@ -1783,11 +1843,15 @@
                 <p class="text-xs text-slate-500 truncate">${escapeHtml(t.category)} • ${t.date}${t.personName ? ` • ${escapeHtml(t.personName)}` : ''}</p>
               </div>
             </div>
-            <span class="font-extrabold text-sm shrink-0 ${t.type === 'income' ? 'text-emerald-600' : 'text-rose-600'}">
-              ${t.type === 'income' ? '+' : '−'}${fmt(t.amount, t.currency)}
-            </span>
+            <div class="flex flex-col items-end shrink-0 gap-0.5">
+              <span class="font-extrabold text-sm ${t.type === 'income' ? 'text-emerald-600' : 'text-rose-600'}">
+                ${t.type === 'income' ? '+' : '−'}${fmt(t.amount, t.currency)}
+              </span>
+              <span class="text-[10px] font-bold px-2 py-0.5 rounded-full border ${cs.badge}">${escapeHtml(t.currency || state.currency)}</span>
+            </div>
           </div>
-        `).join('');
+        `;
+        }).join('');
       }
 
       renderCharts();
@@ -1887,8 +1951,10 @@
         return;
       }
 
-      tbody.innerHTML = filtered.map(t => `
-        <tr class="hover:bg-white/50 transition">
+      tbody.innerHTML = filtered.map(t => {
+        const cs = getCurrencyStyle(t.currency);
+        return `
+        <tr class="${cs.row} hover:bg-white/50 transition">
           <td class="px-4 py-3 text-slate-600 whitespace-nowrap">${t.date}</td>
           <td class="px-4 py-3 whitespace-nowrap">
             <span class="px-2.5 py-1 rounded-full text-xs font-bold ${t.type === 'income' ? 'bg-emerald-500/15 text-emerald-700' : 'bg-rose-500/15 text-rose-700'}">
@@ -1901,14 +1967,18 @@
             ${t.details ? `<div class="text-xs text-slate-500 mt-0.5">${escapeHtml(t.details)}</div>` : ''}
           </td>
           <td class="px-4 py-3 text-slate-600 text-xs">${escapeHtml(t.method || 'نقدي')}</td>
-          <td class="px-4 py-3 font-extrabold whitespace-nowrap ${t.type === 'income' ? 'text-emerald-600' : 'text-rose-600'}">
-            ${t.type === 'income' ? '+' : '−'}${fmt(t.amount, t.currency)}
+          <td class="px-4 py-3 font-extrabold whitespace-nowrap">
+            <div class="flex items-center gap-1.5">
+              <span class="${t.type === 'income' ? 'text-emerald-600' : 'text-rose-600'}">${t.type === 'income' ? '+' : '−'}${fmt(t.amount, t.currency)}</span>
+              <span class="text-[10px] font-bold px-2 py-0.5 rounded-full border ${cs.badge}">${escapeHtml(t.currency || state.currency)}</span>
+            </div>
           </td>
           <td class="px-4 py-3 text-center">
             <button type="button" onclick="deleteTx('${t.id}')" class="text-xs text-rose-600 hover:text-rose-800 font-bold px-2.5 py-1 rounded-xl hover:bg-rose-500/10">حذف</button>
           </td>
         </tr>
-      `).join('');
+      `;
+      }).join('');
     }
 
     ['txSearch', 'txFilterType', 'txFilterCategory', 'txFilterCurrency', 'txFilterMonth'].forEach(id => {
@@ -2014,8 +2084,10 @@
         return;
       }
 
-      tbody.innerHTML = filtered.map(e => `
-        <tr class="hover:bg-white/50 transition">
+      tbody.innerHTML = filtered.map(e => {
+        const cs = getCurrencyStyle(e.currency);
+        return `
+        <tr class="${cs.row} hover:bg-white/50 transition">
           <td class="px-4 py-3 text-slate-600 whitespace-nowrap">${e.date}</td>
           <td class="px-4 py-3 whitespace-nowrap">
             <span class="px-2.5 py-1 rounded-full text-xs font-bold ${e.badgeClass}">${e.kindLabel}</span>
@@ -2026,9 +2098,15 @@
             ${e.details ? `<div class="text-xs text-slate-500 mt-0.5">${escapeHtml(e.details)}</div>` : ''}
           </td>
           <td class="px-4 py-3 text-xs font-bold text-slate-600 whitespace-nowrap">${e.status}</td>
-          <td class="px-4 py-3 font-extrabold whitespace-nowrap ${e.amountClass}">${e.amountText}</td>
+          <td class="px-4 py-3 font-extrabold whitespace-nowrap">
+            <div class="flex items-center gap-1.5">
+              <span class="${e.amountClass}">${e.amountText}</span>
+              <span class="text-[10px] font-bold px-2 py-0.5 rounded-full border ${cs.badge}">${escapeHtml(e.currency)}</span>
+            </div>
+          </td>
         </tr>
-      `).join('');
+      `;
+      }).join('');
     }
 
     ['fullLogSearch', 'fullLogType', 'fullLogCurrency', 'fullLogPerson'].forEach(id => {
@@ -2753,10 +2831,93 @@
       showToast(`تمت إضافة التصنيف: ${val}`);
     }
 
+    let calcExpr = '';
+
+    function toggleTxCalculator() {
+      const box = document.getElementById('txCalcBox');
+      box.classList.toggle('hidden');
+      if (!box.classList.contains('hidden')) {
+        const cur = document.getElementById('txAmount').value;
+        calcExpr = cur ? String(cur) : '';
+        document.getElementById('calcDisplay').textContent = calcExpr || '0';
+      }
+    }
+
+    function calcPress(ch) {
+      if (calcExpr === '0' && ch !== '.') calcExpr = '';
+      calcExpr += ch;
+      document.getElementById('calcDisplay').textContent = calcExpr || '0';
+    }
+
+    function calcBackspace() {
+      calcExpr = calcExpr.slice(0, -1);
+      document.getElementById('calcDisplay').textContent = calcExpr || '0';
+    }
+
+    function calcClear() {
+      calcExpr = '';
+      document.getElementById('calcDisplay').textContent = '0';
+    }
+
+    function safeEvalArithmetic(expr) {
+      const clean = String(expr || '').replace(/[^0-9+\-*/.()]/g, '');
+      if (!clean) return NaN;
+      const tokens = clean.match(/(\d+\.?\d*|\.\d+|[+\-*/])/g);
+      if (!tokens) return NaN;
+      // Shunting-yard / two-pass (*,/ then +,-)
+      const vals = [];
+      const ops = [];
+      for (let i = 0; i < tokens.length; i++) {
+        const tk = tokens[i];
+        if (!isNaN(tk)) {
+          vals.push(parseFloat(tk));
+        } else if ('+-*/'.includes(tk)) {
+          ops.push(tk);
+        }
+      }
+      if (!vals.length || vals.length !== ops.length + 1) return NaN;
+      // First pass: * and /
+      let v2 = [vals[0]];
+      let o2 = [];
+      for (let i = 0; i < ops.length; i++) {
+        if (ops[i] === '*' || ops[i] === '/') {
+          const prev = v2.pop();
+          const next = vals[i + 1];
+          if (ops[i] === '/' && next === 0) return NaN;
+          v2.push(ops[i] === '*' ? prev * next : prev / next);
+        } else {
+          v2.push(vals[i + 1]);
+          o2.push(ops[i]);
+        }
+      }
+      let res = v2[0];
+      for (let i = 0; i < o2.length; i++) {
+        res = o2[i] === '+' ? res + v2[i + 1] : res - v2[i + 1];
+      }
+      return Math.round(res * 100) / 100;
+    }
+
+    function calcEvaluate(applyToInput) {
+      const res = safeEvalArithmetic(calcExpr);
+      if (isNaN(res) || !isFinite(res) || res <= 0) {
+        showToast('تعبير حسابي غير صالح');
+        return;
+      }
+      calcExpr = String(res);
+      document.getElementById('calcDisplay').textContent = calcExpr;
+      if (applyToInput) {
+        document.getElementById('txAmount').value = res;
+        document.getElementById('txCalcBox').classList.add('hidden');
+        showToast(`تم اعتماد المبلغ: ${res}`);
+      }
+    }
+
     function openTxModal(type = 'expense') {
       document.getElementById('txForm').reset();
       document.getElementById('txDate').value = todayISO();
       document.getElementById('quickCatRow').classList.add('hidden');
+      document.getElementById('txCalcBox').classList.add('hidden');
+      calcExpr = '';
       populateCurrencySelects();
       populatePeopleSelects();
       setTxType(type);
