@@ -1837,6 +1837,47 @@
       }
     }
 
+    function toggleDarkMode() {
+      const next = !document.body.classList.contains('dark-mode');
+      applyDarkMode(next);
+      try { localStorage.setItem(DARK_MODE_KEY, next ? '1' : '0'); } catch (e) {}
+    }
+
+    function initThemeAndLock() {
+      let savedDark = null;
+      try { savedDark = localStorage.getItem(DARK_MODE_KEY); } catch (e) {}
+      if (savedDark === '1') {
+        applyDarkMode(true);
+      } else if (savedDark === null && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        applyDarkMode(true);
+      } else {
+        applyDarkMode(false);
+      }
+
+      let savedPin = '';
+      try { savedPin = localStorage.getItem(APP_PIN_KEY) || ''; } catch (e) {}
+      if (savedPin) {
+        lockAppNow();
+      }
+    }
+
+    function renderPinLockUI() {
+      let savedPin = '';
+      try { savedPin = localStorage.getItem(APP_PIN_KEY) || ''; } catch (e) {}
+      const statusEl = document.getElementById('appPinStatusText');
+      const disableBtn = document.getElementById('btnDisableAppPin');
+      const quickLockBtn = document.getElementById('btnQuickLockApp');
+      if (savedPin) {
+        if (statusEl) statusEl.textContent = 'قفل التطبيق مفعّل ومحمِي برمز PIN حالياً.';
+        if (disableBtn) disableBtn.classList.remove('hidden');
+        if (quickLockBtn) quickLockBtn.classList.remove('hidden');
+      } else {
+        if (statusEl) statusEl.textContent = 'القفل غير مفعّل حالياً — فعّله لحماية بياناتك عند فتح التطبيق.';
+        if (disableBtn) disableBtn.classList.add('hidden');
+        if (quickLockBtn) quickLockBtn.classList.add('hidden');
+      }
+    }
+
     document.getElementById('appPinSetupForm').addEventListener('submit', e => {
       e.preventDefault();
       const val = document.getElementById('newAppPinInput').value.trim();
@@ -3761,14 +3802,14 @@
       }
     });
 
-    document.getElementById('schedLinkedDebt').addEventListener('change', e => {
+      document.getElementById('schedLinkedDebt').addEventListener('change', e => {
       const d = state.debts.find(x => x.id === e.target.value);
       if (d) {
         const rem = Math.max(0, Number(d.totalAmount) - Number(d.paidAmount));
         if (rem > 0) document.getElementById('schedAmount').value = rem;
         document.getElementById('schedCurrency').value = d.currency || state.currency;
         if (!document.getElementById('schedTitle').value.trim()) {
-          document.getElementById('schedTitle').value = `تحصيل دين: ${d.name}`;
+          document.getElementById('schedTitle').value = `${d.direction === 'payable' ? 'سداد التزام' : 'تحصيل دين'}: ${d.name}`;
         }
         const p = state.people.find(x => x.name === d.name);
         if (p) document.getElementById('schedPersonSelect').value = p.id;
@@ -4287,6 +4328,7 @@
     }
 
     window.addEventListener('DOMContentLoaded', () => {
+      initThemeAndLock();
       processDueRecurringExpenses();
       renderAll();
     });
