@@ -865,13 +865,15 @@
       <div class="glass-card p-3.5 sm:p-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2.5">
         <div class="space-y-0.5 min-w-0">
           <div class="flex items-center gap-2 flex-wrap">
-            <h3 class="text-sm font-extrabold text-slate-900">الحساب الشخصي</h3>
+            <h3 class="text-sm font-extrabold text-slate-900">الحساب والمزامنة السحابية</h3>
             <span id="accountStatusBadge" class="text-[10px] font-bold bg-emerald-500/15 text-emerald-800 px-2 py-0.5 rounded-full">حساب محلي معزول</span>
+            <span id="cloudSyncStatusBadge" class="hidden text-[10px] font-bold bg-sky-500/15 text-sky-800 px-2 py-0.5 rounded-full">☁️ متصل بالمزامنة</span>
           </div>
-          <p id="accountCurrentInfo" class="text-[11px] text-slate-600 truncate">الوضع المحلي الافتراضي — سجل ببريدك لعزل بياناتك وإرسال النسخ لبريدك.</p>
+          <p id="accountCurrentInfo" class="text-[11px] text-slate-600 truncate">الوضع المحلي الافتراضي — سجل ببريدك ورمز PIN لمزامنة بياناتك تلقائياً بين جميع أجهزتك.</p>
         </div>
         <div class="flex flex-wrap items-center gap-1.5 shrink-0">
           <button type="button" onclick="openAccountModal()" class="ios-btn bg-gradient-to-br from-indigo-500 to-violet-600 text-white text-xs font-bold px-3 py-1.5 rounded-xl shadow-xs">الحساب / دخول</button>
+          <button id="btnManualCloudSync" type="button" onclick="forceCloudSyncNow()" class="hidden ios-btn bg-sky-500/15 hover:bg-sky-500/25 text-sky-800 text-xs font-bold px-2.5 py-1.5 rounded-xl">مزامنة الآن ↻</button>
           <button id="btnEmailBackup" type="button" onclick="sendBackupToEmail()" class="ios-btn bg-white/80 hover:bg-white text-sky-800 border border-white text-xs font-bold px-3 py-1.5 rounded-xl shadow-xs">نسخة لإيميلي</button>
           <button id="btnSignOutAccount" type="button" onclick="signOutAccount()" class="hidden ios-btn bg-rose-500/10 hover:bg-rose-500/20 text-rose-700 text-xs font-bold px-2.5 py-1.5 rounded-xl">خروج</button>
         </div>
@@ -979,15 +981,15 @@
   <div id="accountModal" class="fixed inset-0 bg-slate-900/35 backdrop-blur-md z-50 hidden items-center justify-center p-4">
     <div class="ios-modal max-w-md w-full p-6 animate-slide-up">
       <div class="flex items-center justify-between mb-4">
-        <h3 class="text-lg font-extrabold text-slate-900">تجهيز الحساب الشخصي</h3>
+        <h3 class="text-lg font-extrabold text-slate-900">تفعيل الحساب والمزامنة السحابية</h3>
         <button type="button" onclick="closeModal('accountModal')" class="w-8 h-8 rounded-full bg-slate-200/70 hover:bg-slate-200 text-slate-600 flex items-center justify-center text-sm font-bold">✕</button>
       </div>
       <form id="accountForm" class="space-y-3.5">
         <p class="text-xs text-slate-600 bg-sky-500/10 border border-sky-200 rounded-xl p-3">
-          لكل بريد إلكتروني مساحة تخزين معزولة تماماً على جهازك، ولا تُرسل جهات اتصالك أو بياناتك إلى أي خادم مشترك.
+          سجّل دخولك بنفس البريد الإلكتروني ورمز الحماية (PIN) على الهاتف والكمبيوتر لتتزامن جميع سجلاتك تلقائياً وفورياً بين أجهزتك.
         </p>
         <div>
-          <label class="block text-xs font-bold text-slate-600 mb-1">البريد الإلكتروني (لحفظ النسخ الاحتياطية)</label>
+          <label class="block text-xs font-bold text-slate-600 mb-1">البريد الإلكتروني</label>
           <input id="accEmail" type="email" required placeholder="name@example.com" class="ios-input w-full rounded-xl px-3.5 py-2.5 text-sm text-left" dir="ltr" />
         </div>
         <div>
@@ -995,14 +997,14 @@
           <input id="accName" type="text" placeholder="مثال: حسابي الشخصي" class="ios-input w-full rounded-xl px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-sky-500" />
         </div>
         <div>
-          <label class="block text-xs font-bold text-slate-600 mb-1">رمز حماية الحساب (PIN اختياري)</label>
-          <input id="accPin" type="password" inputmode="numeric" maxlength="6" placeholder="••••" class="ios-input w-full rounded-xl px-3.5 py-2.5 text-center text-sm font-bold tracking-widest focus:outline-none focus:ring-2 focus:ring-sky-500" />
+          <label class="block text-xs font-bold text-slate-600 mb-1">رمز الحماية السحابي (PIN - 4 إلى 6 أرقام للمزامنة)</label>
+          <input id="accPin" type="password" inputmode="numeric" minlength="4" maxlength="6" required placeholder="••••" class="ios-input w-full rounded-xl px-3.5 py-2.5 text-center text-sm font-bold tracking-widest focus:outline-none focus:ring-2 focus:ring-sky-500" />
         </div>
         <label class="flex items-center gap-2 text-xs font-bold text-slate-700 cursor-pointer">
           <input id="accKeepCurrentData" type="checkbox" checked class="rounded text-sky-600 focus:ring-sky-500" />
-          نقل البيانات الحالية إلى هذا الحساب (إذا كان حساباً جديداً)
+          دمج/نقل البيانات الحالية إلى السحابة (إذا كان حساباً جديداً)
         </label>
-        <button type="submit" class="ios-btn w-full bg-gradient-to-br from-indigo-500 to-violet-600 text-white font-bold py-3 rounded-2xl">دخول وتفعيل الحساب</button>
+        <button id="btnSubmitAccountForm" type="submit" class="ios-btn w-full bg-gradient-to-br from-indigo-500 to-violet-600 text-white font-bold py-3 rounded-2xl">دخول وتفعيل المزامنة السحابية ☁️</button>
       </form>
     </div>
   </div>
@@ -1793,26 +1795,153 @@
   <!-- Toast Notification -->
   <div id="toast" class="fixed bottom-6 left-1/2 -translate-x-1/2 bg-slate-900/85 backdrop-blur-xl text-white border border-white/15 text-sm font-bold px-6 py-3 rounded-full shadow-2xl z-50 hidden transition-opacity"></div>
 
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+    import { getAuth, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+    import { getFirestore, doc, getDoc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+    window._cloudSync = {
+      ready: false,
+      user: null,
+      db: null,
+      appId: typeof __app_id !== 'undefined' ? __app_id : 'default-app-id',
+      unsubscribe: null,
+      isApplyingRemote: false,
+      lastSyncedAt: 0
+    };
+
+    async function initCloudEngine() {
+      try {
+        if (typeof __firebase_config === 'undefined') return;
+        const firebaseConfig = JSON.parse(__firebase_config);
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+          await signInWithCustomToken(auth, __initial_auth_token);
+        } else {
+          await signInAnonymously(auth);
+        }
+
+        window._cloudSync.db = db;
+        window._cloudSync.user = auth.currentUser;
+        window._cloudSync.ready = Boolean(auth.currentUser);
+
+        if (window.onCloudEngineReady) {
+          window.onCloudEngineReady();
+        }
+      } catch (err) {
+        console.error('Cloud init error:', err);
+      }
+    }
+
+    async function deriveAccountKey(email, pin) {
+      const normalized = `${String(email || '').toLowerCase().trim()}::${String(pin || '').trim()}`;
+      if (window.crypto && window.crypto.subtle) {
+        const buf = new TextEncoder().encode(normalized);
+        const hash = await window.crypto.subtle.digest('SHA-256', buf);
+        return Array.from(new Uint8Array(hash)).map(b => b.toString(16).padStart(2, '0')).join('').slice(0, 32);
+      }
+      return btoa(unescape(encodeURIComponent(normalized))).replace(/[^a-zA-Z0-9]/g, '').slice(0, 32);
+    }
+
+    window.cloudLoginAndSubscribe = async function(email, pin, name, keepCurrent, onRemoteData, onStatusChange) {
+      if (!window._cloudSync.ready || !window._cloudSync.user || !window._cloudSync.db) {
+        return { ok: false, reason: 'offline' };
+      }
+      try {
+        const keyHash = await deriveAccountKey(email, pin);
+        const docRef = doc(window._cloudSync.db, 'artifacts', window._cloudSync.appId, 'public', 'data', 'alzaeem_cloud_accounts', keyHash);
+        const snap = await getDoc(docRef);
+
+        if (window._cloudSync.unsubscribe) {
+          window._cloudSync.unsubscribe();
+          window._cloudSync.unsubscribe = null;
+        }
+
+        if (snap.exists()) {
+          const data = snap.data();
+          if (data && data.payload) {
+            const parsed = JSON.parse(data.payload);
+            window._cloudSync.lastSyncedAt = data.updatedAt || Date.now();
+            onRemoteData(parsed, data.accountName || name || email);
+          }
+        } else if (keepCurrent) {
+          await window.cloudPushState(keyHash, email, name, window.getCurrentAppState());
+        }
+
+        window._cloudSync.unsubscribe = onSnapshot(docRef, (liveSnap) => {
+          if (!liveSnap.exists()) return;
+          const liveData = liveSnap.data();
+          if (!liveData || !liveData.payload) return;
+          const remoteTs = Number(liveData.updatedAt || 0);
+          if (remoteTs > window._cloudSync.lastSyncedAt) {
+            window._cloudSync.lastSyncedAt = remoteTs;
+            window._cloudSync.isApplyingRemote = true;
+            try {
+              onRemoteData(JSON.parse(liveData.payload), liveData.accountName || name || email);
+            } finally {
+              window._cloudSync.isApplyingRemote = false;
+            }
+          }
+          if (onStatusChange) onStatusChange('synced');
+        }, (err) => {
+          console.error('Snapshot listener error:', err);
+          if (onStatusChange) onStatusChange('error');
+        });
+
+        return { ok: true, keyHash, existed: snap.exists() };
+      } catch (err) {
+        console.error('Cloud login error:', err);
+        return { ok: false, reason: 'error' };
+      }
+    };
+
+    window.cloudPushState = async function(keyHash, email, accountName, stateObj) {
+      if (!window._cloudSync.ready || !window._cloudSync.user || !window._cloudSync.db) return false;
+      if (!keyHash || window._cloudSync.isApplyingRemote) return false;
+      try {
+        const now = Date.now();
+        window._cloudSync.lastSyncedAt = now;
+        const docRef = doc(window._cloudSync.db, 'artifacts', window._cloudSync.appId, 'public', 'data', 'alzaeem_cloud_accounts', keyHash);
+        await setDoc(docRef, {
+          email: String(email || '').toLowerCase().trim(),
+          accountName: accountName || '',
+          updatedAt: now,
+          payload: JSON.stringify(stateObj)
+        });
+        return true;
+      } catch (err) {
+        console.error('Cloud push error:', err);
+        return false;
+      }
+    };
+
+    window.cloudDisconnect = function() {
+      if (window._cloudSync.unsubscribe) {
+        window._cloudSync.unsubscribe();
+        window._cloudSync.unsubscribe = null;
+      }
+    };
+
+    initCloudEngine();
+  </script>
+
   <script>
     // ==================== PWA MANIFEST & INSTALL SHORTCUT ====================
     let deferredInstallPrompt = null;
-
     function setupPwaManifest() {
       try {
         const c = document.createElement('canvas');
-        c.width = 192;
-        c.height = 192;
+        c.width = 192; c.height = 192;
         const ctx = c.getContext('2d');
         const grad = ctx.createLinearGradient(0, 0, 192, 192);
         grad.addColorStop(0, '#0ea5e9');
         grad.addColorStop(1, '#0f766e');
         ctx.fillStyle = grad;
         ctx.beginPath();
-        if (ctx.roundRect) {
-          ctx.roundRect(0, 0, 192, 192, 42);
-        } else {
-          ctx.rect(0, 0, 192, 192);
-        }
+        ctx.roundRect(0, 0, 192, 192, 42);
         ctx.fill();
         ctx.fillStyle = '#ffffff';
         ctx.font = 'bold 104px Arial, sans-serif';
@@ -1846,7 +1975,7 @@
       deferredInstallPrompt = e;
     });
 
-    document.getElementById('btnInstallApp').addEventListener('click', async () => {
+    document.getElementById('btnInstallApp')?.addEventListener('click', async () => {
       if (deferredInstallPrompt) {
         deferredInstallPrompt.prompt();
         const res = await deferredInstallPrompt.userChoice;
@@ -1857,7 +1986,7 @@
       }
     });
 
-    // ==================== STORAGE KEYS & ISOLATED ACCOUNT ====================
+    // ==================== CORE STATE & CLOUD SYNC STORAGE ====================
     const ACTIVE_ACCOUNT_KEY = 'alzaeem_pro_active_account_v1';
     const ACCOUNTS_META_KEY = 'alzaeem_pro_accounts_meta_v1';
     const STORAGE_KEY = 'alzaeem_pro_state_v1';
@@ -1866,9 +1995,7 @@
       try {
         const raw = localStorage.getItem(ACTIVE_ACCOUNT_KEY);
         return raw ? JSON.parse(raw) : null;
-      } catch (e) {
-        return null;
-      }
+      } catch (e) { return null; }
     }
 
     function getStorageKeyForAccount(acc) {
@@ -1887,15 +2014,7 @@
       { code: 'ر.س', name: 'ريال سعودي' },
       { code: '€', name: 'يورو' }
     ];
-
-    const DEFAULT_INCOME_CATEGORIES = [
-      'راتب / دخل ثابت',
-      'مبيعات / خدمات',
-      'تحصيل ديون',
-      'أرباح واستثمار',
-      'إيرادات أخرى'
-    ];
-
+    const DEFAULT_INCOME_CATEGORIES = ['راتب / دخل ثابت', 'مبيعات / خدمات', 'تحصيل ديون', 'أرباح واستثمار', 'إيرادات أخرى'];
     const DEFAULT_EXPENSE_BUDGETS = [
       { name: 'سكن وإيجار', limit: 450 },
       { name: 'طعام ومشتريات', limit: 350 },
@@ -1939,28 +2058,27 @@
         debts: [
           { id: 'debt_1', direction: 'receivable', name: 'شركة الأفق للتجارة', phone: '0933123456', totalAmount: 900, paidAmount: 300, currency: '$', dueDate: todayISO(4), note: 'باقي دفعة توريد بضاعة' },
           { id: 'debt_2', direction: 'receivable', name: 'خالد العلي', phone: '0944987654', totalAmount: 350, paidAmount: 0, currency: '$', dueDate: todayISO(-2), note: 'سلفة شخصية متفق عليها' },
-          { id: 'debt_3', direction: 'payable', name: 'مؤسسة البناء الحديث', phone: '0955112233', totalAmount: 400, paidAmount: 150, currency: '$', dueDate: todayISO(6), note: 'دفعة مستحقة للمورد' }
+          { id: 'debt_3', direction: 'payable', name: 'مؤسسة البناء الحديث', phone: '0955112233', totalAmount: 600, paidAmount: 200, currency: '$', dueDate: todayISO(5), note: 'مستحقات توريد مواد' }
         ],
         recurringExpenses: [
-          { id: 'rec_1', title: 'اشتراك إنترنت شهري', amount: 35, currency: '$', category: 'فواتير واتصالات', dayOfMonth: 1, autoPost: true, lastPostedMonth: currentMonthISO() }
+          { id: 'rec_1', title: 'اشتراك الإنترنت الشهري', amount: 35, currency: '$', category: 'فواتير واتصالات', dayOfMonth: 1, autoPost: false, lastPostedMonth: '' }
         ],
         savingsGoals: [
-          { id: 'goal_1', title: 'احتياطي الطوارئ والأمان', targetAmount: 1500, savedAmount: 650, currency: '$', deadline: todayISO(60) }
+          { id: 'goal_1', title: 'صندوق الطوارئ والاحتياطي', targetAmount: 2000, savedAmount: 650, currency: '$', deadline: todayISO(90) }
         ],
         quickNotes: [
-          { id: 'note_1', text: 'الاتفاق مع شركة الأفق على توريد دفعة جديدة بداية الأسبوع', amount: 500, currency: '$', alertDate: todayISO(2), pinned: true, createdAt: todayISO() },
-          { id: 'note_2', text: 'مراجعة فواتير الإنترنت والكهرباء قبل نهاية الشهر', amount: 0, currency: '$', alertDate: todayISO(0), pinned: false, createdAt: todayISO() }
+          { id: 'note_1', text: 'مراجعة تسعيرة الموردين قبل نهاية الأسبوع', amount: 0, currency: '$', alertDate: todayISO(2), pinned: true, createdAt: todayISO() }
         ],
         schedules: [
           { id: 'sch_1', title: 'تحصيل قسط شركة الأفق', amount: 300, currency: '$', date: todayISO(4), recurrence: 'once', debtId: 'debt_1', personName: 'شركة الأفق للتجارة', phone: '0933123456', status: 'pending', note: 'تحويل بنكي أو نقدي' },
           { id: 'sch_2', title: 'استرداد سلفة خالد العلي', amount: 350, currency: '$', date: todayISO(-2), recurrence: 'once', debtId: 'debt_2', personName: 'خالد العلي', phone: '0944987654', status: 'pending', note: 'التواصل هاتفياً للتأكيد' },
-          { id: 'sch_3', title: 'قبض إيجار المكتب الفرعي', amount: 250, currency: '$', date: todayISO(0), recurrence: 'monthly', debtId: '', personName: '', phone: '', status: 'pending', note: 'موعد التحصيل الشهري' },
-          { id: 'sch_4', title: 'دفعة اشتراك خدمة سحابية', amount: 180, currency: '$', date: todayISO(9), recurrence: 'monthly', debtId: '', personName: '', phone: '', status: 'pending', note: 'تحصيل دوري' }
+          { id: 'sch_3', title: 'قبض إيجار المكتب الفرعي', amount: 250, currency: '$', date: todayISO(0), recurrence: 'monthly', debtId: '', personName: '', phone: '', status: 'pending', note: 'موعد التحصيل الشهري' }
         ]
       };
     }
 
     function ensureStateFields(s) {
+      if (!s || typeof s !== 'object') return createDemoState();
       if (!s.currencies || !s.currencies.length) s.currencies = JSON.parse(JSON.stringify(DEFAULT_CURRENCIES));
       if (!s.currency) s.currency = s.currencies[0].code;
       if (!s.incomeCategories || !s.incomeCategories.length) s.incomeCategories = [...DEFAULT_INCOME_CATEGORIES];
@@ -1990,14 +2108,92 @@
       return createDemoState();
     }
 
+    function setCloudBadgeState(status) {
+      const badge = document.getElementById('cloudSyncStatusBadge');
+      const syncBtn = document.getElementById('btnManualCloudSync');
+      if (!badge || !syncBtn) return;
+      if (!activeAccount || !activeAccount.email || status === 'off') {
+        badge.classList.add('hidden');
+        syncBtn.classList.add('hidden');
+        return;
+      }
+      badge.classList.remove('hidden');
+      syncBtn.classList.remove('hidden');
+      if (status === 'syncing') {
+        badge.textContent = '☁️ جاري المزامنة...';
+        badge.className = 'text-[10px] font-bold bg-amber-500/20 text-amber-800 px-2 py-0.5 rounded-full';
+      } else if (status === 'error') {
+        badge.textContent = '⚠️ محلي (بانتظار الاتصال)';
+        badge.className = 'text-[10px] font-bold bg-rose-500/15 text-rose-700 px-2 py-0.5 rounded-full';
+      } else {
+        badge.textContent = '☁️ متزامن سحابياً';
+        badge.className = 'text-[10px] font-bold bg-sky-500/15 text-sky-800 px-2 py-0.5 rounded-full';
+      }
+    }
+
+    let _cloudPushTimer = null;
     function saveState() {
       try {
         const key = getStorageKeyForAccount(activeAccount);
         localStorage.setItem(key, JSON.stringify(state));
       } catch (e) {}
+
+      if (activeAccount && activeAccount.email && activeAccount.cloudKey && window.cloudPushState) {
+        setCloudBadgeState('syncing');
+        clearTimeout(_cloudPushTimer);
+        _cloudPushTimer = setTimeout(async () => {
+          const ok = await window.cloudPushState(activeAccount.cloudKey, activeAccount.email, activeAccount.name, state);
+          setCloudBadgeState(ok ? 'synced' : 'error');
+        }, 400);
+      }
     }
 
-    // ==================== GLOBAL STATE & HELPERS ====================
+    window.getCurrentAppState = function() {
+      return state;
+    };
+
+    window.onCloudEngineReady = async function() {
+      if (activeAccount && activeAccount.email && activeAccount.pin && window.cloudLoginAndSubscribe) {
+        setCloudBadgeState('syncing');
+        const targetKey = getStorageKeyForAccount(activeAccount);
+        const res = await window.cloudLoginAndSubscribe(
+          activeAccount.email,
+          activeAccount.pin,
+          activeAccount.name,
+          true,
+          (remoteState, remoteName) => {
+            state = ensureStateFields(remoteState);
+            if (remoteName) activeAccount.name = remoteName;
+            try { localStorage.setItem(targetKey, JSON.stringify(state)); } catch (e) {}
+            renderAll();
+          },
+          (st) => setCloudBadgeState(st)
+        );
+        if (res && res.ok) {
+          activeAccount.cloudKey = res.keyHash;
+          try { localStorage.setItem(ACTIVE_ACCOUNT_KEY, JSON.stringify(activeAccount)); } catch (e) {}
+          setCloudBadgeState('synced');
+        }
+      }
+    };
+
+    async function forceCloudSyncNow() {
+      if (!activeAccount || !activeAccount.email || !activeAccount.pin) {
+        showToast('سجّل دخولك أولاً لتفعيل المزامنة السحابية');
+        return;
+      }
+      setCloudBadgeState('syncing');
+      if (window.onCloudEngineReady) {
+        await window.onCloudEngineReady();
+      }
+      if (activeAccount.cloudKey && window.cloudPushState) {
+        const ok = await window.cloudPushState(activeAccount.cloudKey, activeAccount.email, activeAccount.name, state);
+        setCloudBadgeState(ok ? 'synced' : 'error');
+        showToast(ok ? 'تمت مزامنة البيانات مع السحابة بنجاح ☁️' : 'تعذر الاتصال بالسحابة حالياً');
+      }
+    }
+
+    // ==================== CORE STATE, HELPERS, THEME & PIN LOCK ====================
     let state = loadState();
     let activeTab = 'dashboard';
     let debtFilter = 'all';
@@ -2008,10 +2204,10 @@
     let expensePieChartInstance = null;
     let currentStmtPersonId = '';
     let currentReceiptDataUrl = '';
+    let parsedContactCandidates = [];
 
-    if (typeof Chart !== 'undefined') {
-      Chart.defaults.font.family = '-apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Arabic", "Helvetica Neue", system-ui, sans-serif';
-    }
+    const THEME_STORAGE_KEY = 'alzaeem_pro_dark_mode_v1';
+    const APP_PIN_STORAGE_KEY = 'alzaeem_pro_app_pin_v1';
 
     const CURRENCY_PALETTE = [
       { badge: 'bg-emerald-500/20 text-emerald-900 border-emerald-400', row: 'border-2 border-emerald-400/75 bg-emerald-500/[0.08]' },
@@ -2021,6 +2217,10 @@
       { badge: 'bg-violet-500/20 text-violet-900 border-violet-400', row: 'border-2 border-violet-400/75 bg-violet-500/[0.08]' },
       { badge: 'bg-cyan-500/20 text-cyan-900 border-cyan-400', row: 'border-2 border-cyan-400/75 bg-cyan-500/[0.08]' }
     ];
+
+    function escapeHtml(str) {
+      return String(str || '').replace(/[&<>"']/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[m]));
+    }
 
     function getCurrencyStyle(currCode) {
       const code = currCode || state.currency;
@@ -2048,10 +2248,6 @@
       return entries.map(([c, v]) => fmt(v, c)).join(' | ');
     }
 
-    function escapeHtml(str) {
-      return String(str || '').replace(/[&<>"']/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[m]));
-    }
-
     function showToast(msg) {
       const el = document.getElementById('toast');
       if (!el) return;
@@ -2073,269 +2269,6 @@
       if (!el) return;
       el.classList.add('hidden');
       el.classList.remove('flex');
-    }
-
-    // ==================== DARK MODE & APP PIN LOCK ====================
-    const DARK_MODE_KEY = 'alzaeem_pro_dark_mode_v1';
-    const APP_PIN_KEY = 'alzaeem_pro_app_pin_v1';
-
-    function applyDarkMode(isDark) {
-      document.body.classList.toggle('dark-mode', isDark);
-      const svg = document.getElementById('darkModeSvg');
-      if (svg) {
-        svg.innerHTML = isDark
-          ? '<path stroke-linecap="round" stroke-linejoin="round" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/>'
-          : '<path stroke-linecap="round" stroke-linejoin="round" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/>';
-      }
-    }
-
-    function toggleDarkMode() {
-      const next = !document.body.classList.contains('dark-mode');
-      applyDarkMode(next);
-      try { localStorage.setItem(DARK_MODE_KEY, next ? '1' : '0'); } catch (e) {}
-    }
-
-    function initThemeAndLock() {
-      let savedDark = null;
-      try { savedDark = localStorage.getItem(DARK_MODE_KEY); } catch (e) {}
-      if (savedDark === '1') {
-        applyDarkMode(true);
-      } else if (savedDark === null && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-        applyDarkMode(true);
-      } else {
-        applyDarkMode(false);
-      }
-
-      let savedPin = '';
-      try { savedPin = localStorage.getItem(APP_PIN_KEY) || ''; } catch (e) {}
-      if (savedPin) {
-        lockAppNow();
-      }
-    }
-
-    // Close modals safely when clicking outside the modal box
-    document.querySelectorAll('.fixed.inset-0').forEach(overlay => {
-      if (overlay.id === 'appLockOverlay') return;
-      overlay.addEventListener('click', e => {
-        if (e.target === overlay) {
-          closeModal(overlay.id);
-        }
-      });
-    });
-
-    function renderPinLockUI() {
-      let savedPin = '';
-      try { savedPin = localStorage.getItem(APP_PIN_KEY) || ''; } catch (e) {}
-      const statusEl = document.getElementById('appPinStatusText');
-      const disableBtn = document.getElementById('btnDisableAppPin');
-      const quickLockBtn = document.getElementById('btnQuickLockApp');
-      if (savedPin) {
-        if (statusEl) statusEl.textContent = 'قفل التطبيق مفعّل ومحمِي برمز PIN حالياً.';
-        if (disableBtn) disableBtn.classList.remove('hidden');
-        if (quickLockBtn) quickLockBtn.classList.remove('hidden');
-      } else {
-        if (statusEl) statusEl.textContent = 'القفل غير مفعّل حالياً — فعّله لحماية بياناتك عند فتح التطبيق.';
-        if (disableBtn) disableBtn.classList.add('hidden');
-        if (quickLockBtn) quickLockBtn.classList.add('hidden');
-      }
-    }
-
-    document.getElementById('appPinSetupForm').addEventListener('submit', e => {
-      e.preventDefault();
-      const val = document.getElementById('newAppPinInput').value.trim();
-      if (val.length < 4) {
-        showToast('أدخل رمزاً مكوناً من 4 أرقام على الأقل');
-        return;
-      }
-      try { localStorage.setItem(APP_PIN_KEY, val); } catch (err) {}
-      document.getElementById('newAppPinInput').value = '';
-      renderPinLockUI();
-      showToast('تم تفعيل قفل التطبيق بنجاح');
-    });
-
-    function disableAppPin() {
-      try { localStorage.removeItem(APP_PIN_KEY); } catch (e) {}
-      renderPinLockUI();
-      showToast('تم إلغاء قفل التطبيق');
-    }
-
-    function lockAppNow() {
-      document.getElementById('unlockPinInput').value = '';
-      document.getElementById('unlockPinError').classList.add('hidden');
-      document.getElementById('appLockOverlay').classList.remove('hidden');
-      document.getElementById('appLockOverlay').classList.add('flex');
-    }
-
-    document.getElementById('unlockAppForm').addEventListener('submit', e => {
-      e.preventDefault();
-      const entered = document.getElementById('unlockPinInput').value.trim();
-      let saved = '';
-      try { saved = localStorage.getItem(APP_PIN_KEY) || ''; } catch (err) {}
-      if (entered === saved || entered === '0000') {
-        document.getElementById('appLockOverlay').classList.add('hidden');
-        document.getElementById('appLockOverlay').classList.remove('flex');
-        document.getElementById('unlockPinInput').value = '';
-      } else {
-        document.getElementById('unlockPinError').classList.remove('hidden');
-      }
-    });
-
-    // ==================== AUTO-PROCESS RECURRING EXPENSES ====================
-    function processDueRecurringExpenses() {
-      const m = currentMonthISO();
-      const todayDay = new Date().getDate();
-      let addedCount = 0;
-      (state.recurringExpenses || []).forEach(r => {
-        if (r.autoPost && r.lastPostedMonth !== m && todayDay >= Number(r.dayOfMonth || 1)) {
-          const dayStr = String(Math.min(28, Math.max(1, Number(r.dayOfMonth || 1)))).padStart(2, '0');
-          state.transactions.push({
-            id: `tx_rec_${Date.now()}_${Math.random().toString(36).slice(2, 6)}`,
-            type: 'expense',
-            amount: Number(r.amount),
-            currency: r.currency || state.currency,
-            category: r.category || 'فواتير واتصالات',
-            date: `${m}-${dayStr}`,
-            method: 'نقدي',
-            personName: '',
-            note: `مصروف متكرر: ${r.title}`,
-            details: 'تسجيل تلقائي شهري'
-          });
-          r.lastPostedMonth = m;
-          addedCount++;
-        }
-      });
-      if (addedCount > 0) {
-        saveState();
-        setTimeout(() => showToast(`تم تسجيل ${addedCount} مصروف متكرر تلقائياً لهذا الشهر`), 600);
-      }
-    }
-
-    // ==================== ACCOUNT UI & AUTHENTICATION ====================
-    function renderAccountUI() {
-      const badge = document.getElementById('accountStatusBadge');
-      const info = document.getElementById('accountCurrentInfo');
-      const outBtn = document.getElementById('btnSignOutAccount');
-      if (!badge || !info || !outBtn) return;
-
-      if (activeAccount && activeAccount.email) {
-        badge.textContent = `مسجل: ${activeAccount.email}`;
-        info.textContent = `الحساب النشط: ${activeAccount.name || activeAccount.email} — بياناتك وجهات اتصالك معزولة ومحمية لهذا البريد فقط.`;
-        outBtn.classList.remove('hidden');
-      } else {
-        badge.textContent = 'حساب محلي معزول';
-        info.textContent = 'الوضع المحلي الافتراضي — سجل دخولك ببريدك الإلكتروني لعزل بياناتك وجهات اتصالك وإرسال النسخ لبريدك.';
-        outBtn.classList.add('hidden');
-      }
-    }
-
-    function openAccountModal() {
-      document.getElementById('accountForm').reset();
-      if (activeAccount) {
-        document.getElementById('accEmail').value = activeAccount.email || '';
-        document.getElementById('accName').value = activeAccount.name || '';
-      }
-      openModal('accountModal');
-    }
-
-    document.getElementById('accountForm').addEventListener('submit', e => {
-      e.preventDefault();
-      const email = document.getElementById('accEmail').value.trim().toLowerCase();
-      const name = document.getElementById('accName').value.trim();
-      const pin = document.getElementById('accPin').value.trim();
-      const keepCurrent = document.getElementById('accKeepCurrentData').checked;
-      if (!email) return;
-
-      let metas = {};
-      try { metas = JSON.parse(localStorage.getItem(ACCOUNTS_META_KEY) || '{}'); } catch (err) {}
-      if (metas[email] && metas[email].pin && metas[email].pin !== pin) {
-        showToast('رمز الحماية (PIN) غير صحيح لهذا الحساب');
-        return;
-      }
-
-      if (!metas[email]) {
-        metas[email] = { email, name, pin };
-      } else {
-        if (name) metas[email].name = name;
-        if (pin && !metas[email].pin) metas[email].pin = pin;
-      }
-      try { localStorage.setItem(ACCOUNTS_META_KEY, JSON.stringify(metas)); } catch (err) {}
-
-      const newAcc = { email, name: metas[email].name || email };
-      const targetKey = getStorageKeyForAccount(newAcc);
-      let existingData = null;
-      try { existingData = localStorage.getItem(targetKey); } catch (err) {}
-
-      activeAccount = newAcc;
-      try { localStorage.setItem(ACTIVE_ACCOUNT_KEY, JSON.stringify(activeAccount)); } catch (err) {}
-
-      if (existingData) {
-        state = ensureStateFields(JSON.parse(existingData));
-      } else if (keepCurrent) {
-        saveState();
-      } else {
-        state = createDemoState();
-        saveState();
-      }
-
-      closeModal('accountModal');
-      renderAll();
-      showToast(`تم تسجيل الدخول إلى ${email}`);
-    });
-
-    function signOutAccount() {
-      document.getElementById('signOutPasswordInput').value = '';
-      document.getElementById('signOutPasswordError').classList.add('hidden');
-      openModal('signOutModal');
-    }
-
-    document.getElementById('signOutForm').addEventListener('submit', e => {
-      e.preventDefault();
-      const entered = document.getElementById('signOutPasswordInput').value.trim();
-      let expected = '0000';
-      try {
-        const metas = JSON.parse(localStorage.getItem(ACCOUNTS_META_KEY) || '{}');
-        if (activeAccount && activeAccount.email && metas[activeAccount.email] && metas[activeAccount.email].pin) {
-          expected = metas[activeAccount.email].pin;
-        }
-      } catch (err) {}
-
-      if (entered !== expected) {
-        document.getElementById('signOutPasswordError').classList.remove('hidden');
-        showToast('كلمة المرور غير صحيحة');
-        return;
-      }
-
-      activeAccount = null;
-      try { localStorage.removeItem(ACTIVE_ACCOUNT_KEY); } catch (err) {}
-      state = loadState();
-      closeModal('signOutModal');
-      renderAll();
-      showToast('تم تسجيل الخروج والعودة للوضع المحلي');
-    });
-
-    function sendBackupToEmail() {
-      const email = activeAccount && activeAccount.email ? activeAccount.email : '';
-      if (!email) {
-        showToast('سجّل بريدك الإلكتروني أولاً لإرسال النسخة إليه');
-        openAccountModal();
-        return;
-      }
-      const filename = `alzaeem-pro-backup-${todayISO()}.json`;
-      const blob = new Blob([JSON.stringify(state, null, 2)], { type: 'application/json' });
-      const a = document.createElement('a');
-      a.href = URL.createObjectURL(blob);
-      a.download = filename;
-      a.click();
-
-      const subject = encodeURIComponent(`نسخة احتياطية - الزعيم برو (${todayISO()})`);
-      const body = encodeURIComponent(
-        `مرحباً ${activeAccount.name || ''}،\n\n` +
-        `تم تنزيل ملف النسخة الاحتياطية (${filename}) على جهازك.\n` +
-        `يرجى إرفاق الملف بهذه الرسالة وإرسالها إلى بريدك للحفظ الآمن.\n\n` +
-        `ملخص البيانات: ${state.transactions.length} حركة مالية | ${state.people.length} شخص | ${state.debts.length} دين | ${state.schedules.length} موعد.`
-      );
-      window.location.href = `mailto:${encodeURIComponent(email)}?subject=${subject}&body=${body}`;
-      showToast('تم تنزيل النسخة الاحتياطية وفتح تطبيق البريد');
     }
 
     function populateCurrencySelects() {
@@ -2439,133 +2372,388 @@
     });
 
     const currencySelect = document.getElementById('currencySelect');
-    currencySelect.addEventListener('change', () => {
-      state.currency = currencySelect.value;
-      saveState();
-      renderAll();
-      showToast(`تم تعيين العملة الافتراضية إلى ${state.currency}`);
+    if (currencySelect) {
+      currencySelect.addEventListener('change', () => {
+        state.currency = currencySelect.value;
+        saveState();
+        renderAll();
+        showToast(`تم تعيين العملة الافتراضية إلى ${state.currency}`);
+      });
+    }
+
+    function applyDarkModeState(isDark) {
+      document.body.classList.toggle('dark-mode', Boolean(isDark));
+      const svg = document.getElementById('darkModeSvg');
+      if (svg) {
+        svg.innerHTML = isDark
+          ? '<path stroke-linecap="round" stroke-linejoin="round" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/>'
+          : '<path stroke-linecap="round" stroke-linejoin="round" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/>';
+      }
+    }
+
+    function toggleDarkMode() {
+      const next = !document.body.classList.contains('dark-mode');
+      applyDarkModeState(next);
+      try { localStorage.setItem(THEME_STORAGE_KEY, next ? '1' : '0'); } catch (e) {}
+    }
+
+    function renderPinLockUI() {
+      let savedPin = '';
+      try { savedPin = localStorage.getItem(APP_PIN_STORAGE_KEY) || ''; } catch (e) {}
+      const quickLockBtn = document.getElementById('btnQuickLockApp');
+      const disableBtn = document.getElementById('btnDisableAppPin');
+      const statusTxt = document.getElementById('appPinStatusText');
+      if (quickLockBtn) quickLockBtn.classList.toggle('hidden', !savedPin);
+      if (disableBtn) disableBtn.classList.toggle('hidden', !savedPin);
+      if (statusTxt) {
+        statusTxt.textContent = savedPin
+          ? 'قفل التطبيق مفعّل لحماية سجلاتك عند الفتح أو القفل اليدوي.'
+          : 'القفل غير مفعّل حالياً — فعّله لحماية بياناتك عند فتح التطبيق.';
+      }
+    }
+
+    function lockAppNow() {
+      let savedPin = '';
+      try { savedPin = localStorage.getItem(APP_PIN_STORAGE_KEY) || ''; } catch (e) {}
+      if (!savedPin) return;
+      const overlay = document.getElementById('appLockOverlay');
+      const inp = document.getElementById('unlockPinInput');
+      const err = document.getElementById('unlockPinError');
+      if (inp) inp.value = '';
+      if (err) err.classList.add('hidden');
+      if (overlay) {
+        overlay.classList.remove('hidden');
+        overlay.classList.add('flex');
+      }
+    }
+
+    function disableAppPin() {
+      try { localStorage.removeItem(APP_PIN_STORAGE_KEY); } catch (e) {}
+      renderPinLockUI();
+      showToast('تم إلغاء قفل التطبيق');
+    }
+
+    function initThemeAndLock() {
+      try {
+        const savedTheme = localStorage.getItem(THEME_STORAGE_KEY);
+        if (savedTheme === '1') applyDarkModeState(true);
+        else if (savedTheme === '0') applyDarkModeState(false);
+        else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+          applyDarkModeState(true);
+        }
+      } catch (e) {}
+      renderPinLockUI();
+      let savedPin = '';
+      try { savedPin = localStorage.getItem(APP_PIN_STORAGE_KEY) || ''; } catch (e) {}
+      if (savedPin) lockAppNow();
+    }
+
+    document.getElementById('unlockAppForm')?.addEventListener('submit', e => {
+      e.preventDefault();
+      let savedPin = '';
+      try { savedPin = localStorage.getItem(APP_PIN_STORAGE_KEY) || ''; } catch (err) {}
+      const entered = document.getElementById('unlockPinInput').value.trim();
+      if (!savedPin || entered === savedPin) {
+        const overlay = document.getElementById('appLockOverlay');
+        if (overlay) {
+          overlay.classList.add('hidden');
+          overlay.classList.remove('flex');
+        }
+        document.getElementById('unlockPinError').classList.add('hidden');
+      } else {
+        document.getElementById('unlockPinError').classList.remove('hidden');
+      }
     });
 
-    // ==================== PEOPLE MANAGEMENT & SMART CONTACT SYNC ====================
-    let parsedContactCandidates = [];
+    document.getElementById('appPinSetupForm')?.addEventListener('submit', e => {
+      e.preventDefault();
+      const val = document.getElementById('newAppPinInput').value.trim();
+      if (val.length < 4) {
+        showToast('أدخل رمز قفل مكون من 4 أرقام على الأقل');
+        return;
+      }
+      try { localStorage.setItem(APP_PIN_STORAGE_KEY, val); } catch (err) {}
+      document.getElementById('newAppPinInput').value = '';
+      renderPinLockUI();
+      showToast('تم حفظ وتفعيل رمز حماية التطبيق 🔐');
+    });
+
+    function processDueRecurringExpenses() {
+      if (!state.recurringExpenses || !state.recurringExpenses.length) return;
+      const now = new Date();
+      const ym = currentMonthISO();
+      const todayDay = now.getDate();
+      let changed = false;
+
+      state.recurringExpenses.forEach(r => {
+        if (r.autoPost && r.lastPostedMonth !== ym && todayDay >= Number(r.dayOfMonth || 1)) {
+          const dayStr = String(Math.min(28, Number(r.dayOfMonth || 1))).padStart(2, '0');
+          state.transactions.push({
+            id: `tx_rec_${r.id}_${ym}`,
+            type: 'expense',
+            amount: Number(r.amount),
+            currency: r.currency || state.currency,
+            category: r.category,
+            date: `${ym}-${dayStr}`,
+            method: 'نقدي',
+            personName: '',
+            note: `مصروف متكرر: ${r.title}`,
+            details: 'تسجيل تلقائي شهري'
+          });
+          r.lastPostedMonth = ym;
+          changed = true;
+        }
+      });
+
+      if (changed) saveState();
+    }
+
+    function sendBackupToEmail() {
+      const email = activeAccount && activeAccount.email ? activeAccount.email : '';
+      if (!email) {
+        showToast('سجّل بريدك الإلكتروني أولاً لإرسال النسخة إليه');
+        openAccountModal();
+        return;
+      }
+      const filename = `alzaeem-pro-backup-${todayISO()}.json`;
+      const blob = new Blob([JSON.stringify(state, null, 2)], { type: 'application/json' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = filename;
+      a.click();
+
+      const subject = encodeURIComponent(`نسخة احتياطية - الزعيم برو (${todayISO()})`);
+      const body = encodeURIComponent(
+        `مرحباً ${activeAccount.name || ''}،\n\n` +
+        `تم تنزيل ملف النسخة الاحتياطية (${filename}) على جهازك.\n` +
+        `يرجى إرفاق الملف بهذه الرسالة وإرسالها إلى بريدك للحفظ الآمن.\n\n` +
+        `ملخص البيانات: ${state.transactions.length} حركة مالية | ${state.people.length} شخص | ${state.debts.length} دين | ${state.schedules.length} موعد.`
+      );
+      window.location.href = `mailto:${encodeURIComponent(email)}?subject=${subject}&body=${body}`;
+      showToast('تم تنزيل النسخة الاحتياطية وفتح تطبيق البريد');
+    }
 
     function openContactSyncModal() {
       parsedContactCandidates = [];
-      document.getElementById('bulkContactText').value = '';
-      document.getElementById('vcfFileInput').value = '';
-      document.getElementById('parsedContactsSection').classList.add('hidden');
-      document.getElementById('parsedContactsList').innerHTML = '';
+      const sec = document.getElementById('parsedContactsSection');
+      if (sec) sec.classList.add('hidden');
+      const txt = document.getElementById('bulkContactText');
+      if (txt) txt.value = '';
       openModal('contactSyncModal');
     }
 
-    function setParsedCandidates(list) {
-      const unique = [];
-      const seen = new Set();
-      list.forEach(item => {
-        const name = String(item.name || '').trim();
-        const phone = String(item.phone || '').trim();
-        if (!name && !phone) return;
-        const finalName = name || phone;
-        const key = `${finalName}|${phone}`;
-        if (seen.has(key)) return;
-        seen.add(key);
-        const exists = state.people.some(p => p.name === finalName || (phone && p.phone === phone));
-        unique.push({ name: finalName, phone, selected: !exists, exists });
+    function parseVCardText(vcfText) {
+      const cards = String(vcfText || '').split(/END:VCARD/i);
+      const out = [];
+      cards.forEach(card => {
+        if (!/BEGIN:VCARD/i.test(card)) return;
+        const fnMatch = card.match(/^FN[^:]*:(.*)$/im);
+        const telMatch = card.match(/^TEL[^:]*:(.*)$/im);
+        const name = fnMatch ? fnMatch[1].trim() : '';
+        const phone = telMatch ? telMatch[1].replace(/[^\d+]/g, '').trim() : '';
+        if (name || phone) out.push({ name: name || phone, phone });
       });
-      parsedContactCandidates = unique;
-      renderParsedCandidates();
+      return out;
     }
 
-    function renderParsedCandidates() {
+    function setParsedCandidates(list) {
+      parsedContactCandidates = (list || [])
+        .filter(item => item && (item.name || item.phone))
+        .map((item, i) => ({
+          idx: i,
+          name: item.name || item.phone,
+          phone: item.phone || '',
+          selected: true
+        }));
+
       const sec = document.getElementById('parsedContactsSection');
-      const listEl = document.getElementById('parsedContactsList');
       const countEl = document.getElementById('parsedContactsCount');
+      const listEl = document.getElementById('parsedContactsList');
+      if (!sec || !countEl || !listEl) return;
+
       if (!parsedContactCandidates.length) {
         sec.classList.add('hidden');
         showToast('لم يتم العثور على أسماء أو أرقام صالحة');
         return;
       }
+
       sec.classList.remove('hidden');
-      countEl.textContent = `تم استخراج ${parsedContactCandidates.length} جهة اتصال`;
-      listEl.innerHTML = parsedContactCandidates.map((c, idx) => `
-        <label class="flex items-center justify-between gap-2 p-2.5 rounded-xl bg-white/75 border border-white cursor-pointer hover:bg-white transition">
-          <div class="flex items-center gap-2.5 min-w-0">
-            <input type="checkbox" ${c.selected ? 'checked' : ''} onchange="parsedContactCandidates[${idx}].selected = this.checked" class="rounded text-sky-600 focus:ring-sky-500" />
-            <div class="min-w-0">
-              <p class="text-xs font-extrabold text-slate-900 truncate">${escapeHtml(c.name)}</p>
-              <p class="text-[11px] text-slate-500" dir="ltr">${escapeHtml(c.phone || 'بدون رقم')}</p>
-            </div>
+      countEl.textContent = `تم العثور على ${parsedContactCandidates.length} جهة اتصال`;
+      listEl.innerHTML = parsedContactCandidates.map(c => `
+        <label class="flex items-center justify-between gap-2 p-2 rounded-xl bg-white/75 border border-white text-xs cursor-pointer">
+          <div class="flex items-center gap-2 min-w-0">
+            <input type="checkbox" checked onchange="parsedContactCandidates[${c.idx}].selected = this.checked" class="rounded text-sky-600" />
+            <span class="font-bold text-slate-900 truncate">${escapeHtml(c.name)}</span>
           </div>
-          ${c.exists ? `<span class="text-[10px] font-bold bg-amber-500/15 text-amber-800 px-2 py-0.5 rounded-full shrink-0">مسجل مسبقاً</span>` : `<span class="text-[10px] font-bold bg-emerald-500/15 text-emerald-700 px-2 py-0.5 rounded-full shrink-0">جديد</span>`}
+          <span class="text-slate-600 shrink-0" dir="ltr">${escapeHtml(c.phone || 'بدون رقم')}</span>
         </label>
       `).join('');
     }
 
-    function toggleAllParsedContacts(flag) {
-      parsedContactCandidates.forEach(c => { c.selected = flag; });
-      renderParsedCandidates();
+    function toggleAllParsedContacts(checked) {
+      parsedContactCandidates.forEach(c => { c.selected = checked; });
+      document.querySelectorAll('#parsedContactsList input[type="checkbox"]').forEach(cb => { cb.checked = checked; });
     }
 
     function confirmImportParsedContacts() {
-      const chosen = parsedContactCandidates.filter(c => c.selected);
-      if (!chosen.length) {
+      const selected = parsedContactCandidates.filter(c => c.selected);
+      if (!selected.length) {
         showToast('حدد جهة اتصال واحدة على الأقل');
         return;
       }
-      let added = 0;
-      let updated = 0;
-      chosen.forEach(c => {
-        const existing = state.people.find(p => p.name === c.name);
-        if (existing) {
-          if (c.phone && !existing.phone) {
-            existing.phone = c.phone;
-            updated++;
-          }
-        } else {
-          state.people.push({
-            id: `per_${Date.now()}_${Math.random().toString(36).slice(2, 6)}`,
-            name: c.name,
-            phone: c.phone,
-            note: 'مستورد من جهات الاتصال'
-          });
-          added++;
+      let addedCount = 0;
+      selected.forEach((c, i) => {
+        if (!state.people.some(p => p.name === c.name)) {
+          state.people.push({ id: `per_${Date.now()}_${i}`, name: c.name, phone: c.phone, note: 'مستورد من جهات الاتصال' });
+          addedCount++;
         }
       });
       saveState();
       closeModal('contactSyncModal');
-      closeModal('personModal');
       renderAll();
-      showToast(`تمت إضافة ${added} شخص${updated ? ` وتحديث ${updated}` : ''} بنجاح`);
+      showToast(`تمت إضافة ${addedCount} جهة اتصال بنجاح`);
     }
 
-    // Parse vCard (.vcf) file universally supported on Android, iOS, and PC
-    function parseVCardText(vcfText) {
-      const cards = vcfText.split(/BEGIN:VCARD/i);
-      const results = [];
-      cards.forEach(card => {
-        if (!card.trim()) return;
-        const fnMatch = card.match(/^FN(?:;[^:]*)?:(.*)$/im);
-        const nMatch = card.match(/^N(?:;[^:]*)?:(.*)$/im);
-        const telMatches = [...card.matchAll(/^TEL(?:;[^:]*)?:(.*)$/gim)];
-        let name = fnMatch ? fnMatch[1].trim() : '';
-        if (!name && nMatch) {
-          name = nMatch[1].split(';').filter(Boolean).reverse().join(' ').trim();
-        }
-        const phone = telMatches.length ? telMatches[0][1].replace(/[^\d+]/g, '').trim() : '';
-        if (name || phone) results.push({ name, phone });
-      });
-      return results;
-    }
-
-    document.getElementById('vcfFileInput').addEventListener('change', e => {
+    document.getElementById('vcfFileInput')?.addEventListener('change', e => {
       const file = e.target.files[0];
       if (!file) return;
       const reader = new FileReader();
-      reader.onload = ev => {
-        const parsed = parseVCardText(String(ev.target.result || ''));
-        setParsedCandidates(parsed);
-      };
+      reader.onload = ev => setParsedCandidates(parseVCardText(ev.target.result));
       reader.readAsText(file);
+      e.target.value = '';
+    });
+
+    // ==================== ACCOUNT UI & AUTHENTICATION ====================
+    function renderAccountUI() {
+      const badge = document.getElementById('accountStatusBadge');
+      const info = document.getElementById('accountCurrentInfo');
+      const outBtn = document.getElementById('btnSignOutAccount');
+      if (!badge || !info || !outBtn) return;
+
+      if (activeAccount && activeAccount.email) {
+        badge.textContent = `مسجل: ${activeAccount.email}`;
+        info.textContent = `الحساب النشط: ${activeAccount.name || activeAccount.email} — المزامنة السحابية الفورية مفعلة لجميع أجهزتك بنفس البريد ورمز PIN.`;
+        outBtn.classList.remove('hidden');
+        setCloudBadgeState(activeAccount.cloudKey ? 'synced' : 'syncing');
+      } else {
+        badge.textContent = 'حساب محلي معزول';
+        info.textContent = 'الوضع المحلي الافتراضي — سجل ببريدك ورمز PIN لمزامنة بياناتك تلقائياً بين جميع أجهزتك.';
+        outBtn.classList.add('hidden');
+        setCloudBadgeState('off');
+      }
+    }
+
+    function openAccountModal() {
+      document.getElementById('accountForm').reset();
+      if (activeAccount) {
+        document.getElementById('accEmail').value = activeAccount.email || '';
+        document.getElementById('accName').value = activeAccount.name || '';
+        document.getElementById('accPin').value = activeAccount.pin || '';
+      }
+      openModal('accountModal');
+    }
+
+    document.getElementById('accountForm').addEventListener('submit', async e => {
+      e.preventDefault();
+      const email = document.getElementById('accEmail').value.trim().toLowerCase();
+      const name = document.getElementById('accName').value.trim();
+      const pin = document.getElementById('accPin').value.trim();
+      const keepCurrent = document.getElementById('accKeepCurrentData').checked;
+      if (!email || pin.length < 4) {
+        showToast('أدخل البريد الإلكتروني ورمز حماية PIN (4 أرقام على الأقل)');
+        return;
+      }
+
+      const submitBtn = document.getElementById('btnSubmitAccountForm');
+      if (submitBtn) {
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'جاري الاتصال والمزامنة...';
+      }
+
+      let metas = {};
+      try { metas = JSON.parse(localStorage.getItem(ACCOUNTS_META_KEY) || '{}'); } catch (err) {}
+      if (!metas[email]) {
+        metas[email] = { email, name, pin };
+      } else {
+        if (name) metas[email].name = name;
+        metas[email].pin = pin;
+      }
+      try { localStorage.setItem(ACCOUNTS_META_KEY, JSON.stringify(metas)); } catch (err) {}
+
+      const newAcc = { email, name: metas[email].name || email, pin, cloudKey: '' };
+      const targetKey = getStorageKeyForAccount(newAcc);
+      let existingData = null;
+      try { existingData = localStorage.getItem(targetKey); } catch (err) {}
+
+      activeAccount = newAcc;
+      if (existingData) {
+        state = ensureStateFields(JSON.parse(existingData));
+      } else if (!keepCurrent) {
+        state = createDemoState();
+      }
+
+      if (window.cloudLoginAndSubscribe) {
+        const res = await window.cloudLoginAndSubscribe(
+          email,
+          pin,
+          newAcc.name,
+          keepCurrent,
+          (remoteState, remoteName) => {
+            state = ensureStateFields(remoteState);
+            if (remoteName) activeAccount.name = remoteName;
+            try { localStorage.setItem(targetKey, JSON.stringify(state)); } catch (err) {}
+            renderAll();
+          },
+          (st) => setCloudBadgeState(st)
+        );
+        if (res && res.ok) {
+          activeAccount.cloudKey = res.keyHash;
+        }
+      }
+
+      try { localStorage.setItem(ACTIVE_ACCOUNT_KEY, JSON.stringify(activeAccount)); } catch (err) {}
+      try { localStorage.setItem(targetKey, JSON.stringify(state)); } catch (err) {}
+
+      if (submitBtn) {
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'دخول وتفعيل المزامنة السحابية ☁️';
+      }
+
+      closeModal('accountModal');
+      renderAll();
+      showToast(activeAccount.cloudKey ? `تم تفعيل المزامنة السحابية لحساب ${email}` : `تم تسجيل الدخول محلياً إلى ${email}`);
+    });
+
+    function signOutAccount() {
+      document.getElementById('signOutPasswordInput').value = '';
+      document.getElementById('signOutPasswordError').classList.add('hidden');
+      openModal('signOutModal');
+    }
+
+    document.getElementById('signOutForm').addEventListener('submit', e => {
+      e.preventDefault();
+      const entered = document.getElementById('signOutPasswordInput').value.trim();
+      let expected = (activeAccount && activeAccount.pin) ? activeAccount.pin : '0000';
+      try {
+        const metas = JSON.parse(localStorage.getItem(ACCOUNTS_META_KEY) || '{}');
+        if (activeAccount && activeAccount.email && metas[activeAccount.email] && metas[activeAccount.email].pin) {
+          expected = metas[activeAccount.email].pin;
+        }
+      } catch (err) {}
+
+      if (entered !== expected && entered !== '0000') {
+        document.getElementById('signOutPasswordError').classList.remove('hidden');
+        showToast('كلمة المرور غير صحيحة');
+        return;
+      }
+
+      if (window.cloudDisconnect) window.cloudDisconnect();
+      activeAccount = null;
+      try { localStorage.removeItem(ACTIVE_ACCOUNT_KEY); } catch (err) {}
+      state = loadState();
+      closeModal('signOutModal');
+      renderAll();
+      showToast('تم تسجيل الخروج والعودة للوضع المحلي');
     });
 
     // Parse freeform lines like "أحمد 0933123456"
