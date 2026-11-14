@@ -873,6 +873,7 @@
         </div>
         <div class="flex flex-wrap items-center gap-1.5 shrink-0">
           <button type="button" onclick="openAccountModal()" class="ios-btn bg-gradient-to-br from-indigo-500 to-violet-600 text-white text-xs font-bold px-3 py-1.5 rounded-xl shadow-xs">الحساب / دخول</button>
+          <button type="button" onclick="openCustomFirebaseModal()" class="ios-btn bg-amber-500/15 hover:bg-amber-500/25 text-amber-900 border border-amber-300/60 text-xs font-bold px-2.5 py-1.5 rounded-xl">ربط سحابة خارجية ⚙️</button>
           <button id="btnManualCloudSync" type="button" onclick="forceCloudSyncNow()" class="hidden ios-btn bg-sky-500/15 hover:bg-sky-500/25 text-sky-800 text-xs font-bold px-2.5 py-1.5 rounded-xl">مزامنة الآن ↻</button>
           <button id="btnEmailBackup" type="button" onclick="sendBackupToEmail()" class="ios-btn bg-white/80 hover:bg-white text-sky-800 border border-white text-xs font-bold px-3 py-1.5 rounded-xl shadow-xs">نسخة لإيميلي</button>
           <button id="btnSignOutAccount" type="button" onclick="signOutAccount()" class="hidden ios-btn bg-rose-500/10 hover:bg-rose-500/20 text-rose-700 text-xs font-bold px-2.5 py-1.5 rounded-xl">خروج</button>
@@ -1014,13 +1015,43 @@
     <div class="ios-modal max-w-sm w-full p-6 animate-slide-up text-center space-y-4">
       <div class="w-12 h-12 rounded-full bg-rose-500/15 text-rose-600 flex items-center justify-center mx-auto text-xl font-bold">🔒</div>
       <h3 class="text-lg font-extrabold text-slate-900">تأكيد الخروج من الحساب</h3>
-      <p class="text-xs text-slate-600">أدخل رمز الحماية الخاص بالحساب (أو <strong class="text-slate-800">0000</strong> إذا لم تحدد رمزاً) لتأكيد الخروج.</p>
+      <p class="text-xs text-slate-600">أدخل رمز الحماية الخاص بالحساب (أو <strong class="text-slate-800">0000</strong>) لتأكيد الخروج.</p>
       <form id="signOutForm" class="space-y-3">
         <input id="signOutPasswordInput" type="password" inputmode="numeric" maxlength="10" required placeholder="••••" class="ios-input w-full rounded-xl px-3.5 py-2.5 text-center text-base font-extrabold tracking-widest focus:outline-none focus:ring-2 focus:ring-rose-500" />
         <p id="signOutPasswordError" class="hidden text-xs font-bold text-rose-600">كلمة المرور غير صحيحة!</p>
         <div class="flex gap-2">
           <button type="submit" class="ios-btn flex-1 bg-rose-600 hover:bg-rose-700 text-white font-bold py-2.5 rounded-2xl text-sm">تأكيد الخروج</button>
           <button type="button" onclick="closeModal('signOutModal')" class="ios-btn flex-1 bg-slate-200/70 hover:bg-slate-200 text-slate-700 font-bold py-2.5 rounded-2xl text-sm">إلغاء</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Custom External Firebase Configuration Modal -->
+  <div id="customFirebaseModal" class="fixed inset-0 bg-slate-900/40 backdrop-blur-md z-50 hidden items-center justify-center p-4 overflow-y-auto">
+    <div class="ios-modal max-w-md w-full p-5 sm:p-6 animate-slide-up my-auto space-y-3.5">
+      <div class="flex items-center justify-between">
+        <div>
+          <h3 class="text-base sm:text-lg font-extrabold text-slate-900">ربط مشروع Firebase سحابي خارجي</h3>
+          <p class="text-[11px] text-slate-600">للمزامنة التلقائية عبر الإنترنت عند فتح التطبيق على GitHub أو أي استضافة</p>
+        </div>
+        <button type="button" onclick="closeModal('customFirebaseModal')" class="w-8 h-8 rounded-full bg-slate-200/70 hover:bg-slate-200 text-slate-600 flex items-center justify-center text-sm font-bold">✕</button>
+      </div>
+
+      <div class="bg-sky-500/10 border border-sky-300/60 rounded-2xl p-3 text-[11px] text-slate-700 space-y-1 leading-relaxed">
+        <p class="font-extrabold text-sky-900">خطوات الربط المجاني (مرة واحدة):</p>
+        <p>1. أنشئ مشروعاً مجانياً في <strong>Firebase Console</strong> وفعّل <strong>Firestore Database</strong> و <strong>Anonymous Auth</strong>.</p>
+        <p>2. انسخ كائن إعدادات التطبيق (<code>firebaseConfig</code> بصيغة JSON أو كود JS) والصقه بالأسفل.</p>
+      </div>
+
+      <form id="customFirebaseForm" class="space-y-3">
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">إعدادات Firebase (JSON أو كود const firebaseConfig)</label>
+          <textarea id="customFirebaseConfigInput" rows="5" dir="ltr" placeholder='{"apiKey": "AIza...", "authDomain": "...", "projectId": "...", "appId": "..."}' class="ios-input w-full rounded-xl px-3 py-2 text-xs font-mono text-left focus:outline-none focus:ring-2 focus:ring-sky-500"></textarea>
+        </div>
+        <div class="grid grid-cols-2 gap-2">
+          <button type="submit" class="ios-btn bg-gradient-to-br from-sky-500 to-teal-700 text-white text-xs font-bold py-2.5 rounded-xl shadow-sm">حفظ وتفعيل الاتصال ✓</button>
+          <button type="button" onclick="clearCustomFirebaseConfig()" class="ios-btn bg-rose-500/15 hover:bg-rose-500/25 text-rose-700 text-xs font-bold py-2.5 rounded-xl">إزالة الربط الخارجي</button>
         </div>
       </form>
     </div>
@@ -1796,13 +1827,16 @@
   <div id="toast" class="fixed bottom-6 left-1/2 -translate-x-1/2 bg-slate-900/85 backdrop-blur-xl text-white border border-white/15 text-sm font-bold px-6 py-3 rounded-full shadow-2xl z-50 hidden transition-opacity"></div>
 
   <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+    import { initializeApp, getApps, deleteApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
     import { getAuth, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
     import { getFirestore, doc, getDoc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+    const CUSTOM_FB_STORAGE_KEY = 'alzaeem_pro_custom_firebase_cfg_v1';
 
     window._cloudSync = {
       ready: false,
       failed: false,
+      isCustom: false,
       user: null,
       db: null,
       appId: typeof __app_id !== 'undefined' ? __app_id : 'alzaeem-pro-global-sync-v1',
@@ -1811,19 +1845,51 @@
       lastSyncedAt: 0
     };
 
-    async function initCloudEngine() {
+    function getResolvedFirebaseConfig() {
       try {
-        if (typeof __firebase_config === 'undefined' || !__firebase_config) {
+        const customRaw = localStorage.getItem(CUSTOM_FB_STORAGE_KEY);
+        if (customRaw) {
+          const parsed = JSON.parse(customRaw);
+          if (parsed && parsed.apiKey && parsed.projectId) {
+            return { config: parsed, isCustom: true };
+          }
+        }
+      } catch (e) {}
+      if (typeof __firebase_config !== 'undefined' && __firebase_config) {
+        try {
+          return { config: JSON.parse(__firebase_config), isCustom: false };
+        } catch (e) {}
+      }
+      return null;
+    }
+
+    window.reinitCloudEngine = async function() {
+      try {
+        if (window._cloudSync.unsubscribe) {
+          window._cloudSync.unsubscribe();
+          window._cloudSync.unsubscribe = null;
+        }
+        window._cloudSync.ready = false;
+        window._cloudSync.failed = false;
+
+        const resolved = getResolvedFirebaseConfig();
+        if (!resolved || !resolved.config) {
           window._cloudSync.failed = true;
+          window._cloudSync.isCustom = false;
           if (window.onCloudEngineReady) window.onCloudEngineReady();
           return;
         }
-        const firebaseConfig = JSON.parse(__firebase_config);
-        const app = initializeApp(firebaseConfig);
+
+        const existingApps = getApps();
+        for (const a of existingApps) {
+          try { await deleteApp(a); } catch (e) {}
+        }
+
+        const app = initializeApp(resolved.config);
         const auth = getAuth(app);
         const db = getFirestore(app);
 
-        if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+        if (!resolved.isCustom && typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
           await signInWithCustomToken(auth, __initial_auth_token);
         } else {
           await signInAnonymously(auth);
@@ -1831,6 +1897,10 @@
 
         window._cloudSync.db = db;
         window._cloudSync.user = auth.currentUser;
+        window._cloudSync.isCustom = resolved.isCustom;
+        window._cloudSync.appId = resolved.isCustom
+          ? (resolved.config.projectId || 'alzaeem-custom-cloud')
+          : (typeof __app_id !== 'undefined' ? __app_id : 'alzaeem-pro-global-sync-v1');
         window._cloudSync.ready = Boolean(auth.currentUser);
         window._cloudSync.failed = !window._cloudSync.ready;
 
@@ -1839,10 +1909,11 @@
         }
       } catch (err) {
         console.error('Cloud init error:', err);
+        window._cloudSync.ready = false;
         window._cloudSync.failed = true;
         if (window.onCloudEngineReady) window.onCloudEngineReady();
       }
-    }
+    };
 
     async function deriveAccountKey(email, pin) {
       const normalized = `${String(email || '').toLowerCase().trim()}::${String(pin || '').trim()}`;
@@ -1936,7 +2007,7 @@
       }
     };
 
-    initCloudEngine();
+    window.reinitCloudEngine();
   </script>
 
   <script>
@@ -2134,15 +2205,76 @@
         badge.textContent = '☁️ جاري المزامنة...';
         badge.className = 'text-[10px] font-bold bg-amber-500/20 text-amber-800 px-2 py-0.5 rounded-full';
       } else if (status === 'offline_external') {
-        badge.textContent = '📱 محفوظ محلياً (استخدم نسخة لإيميلي للنقل)';
+        badge.textContent = '📱 محفوظ محلياً (اضغط "ربط سحابة خارجية" للمزامنة الحية)';
         badge.className = 'text-[10px] font-bold bg-indigo-500/15 text-indigo-800 px-2 py-0.5 rounded-full';
       } else if (status === 'error') {
-        badge.textContent = '⚠️ محلي (بانتظار الاتصال)';
+        badge.textContent = '⚠️ محلي (تحقق من إعدادات Firebase)';
         badge.className = 'text-[10px] font-bold bg-rose-500/15 text-rose-700 px-2 py-0.5 rounded-full';
       } else {
-        badge.textContent = '☁️ متزامن سحابياً';
+        badge.textContent = (window._cloudSync && window._cloudSync.isCustom) ? '☁️ متزامن عبر سحابتك الخاصة' : '☁️ متزامن سحابياً';
         badge.className = 'text-[10px] font-bold bg-sky-500/15 text-sky-800 px-2 py-0.5 rounded-full';
       }
+    }
+
+    function openCustomFirebaseModal() {
+      const inp = document.getElementById('customFirebaseConfigInput');
+      if (inp) {
+        try {
+          const saved = localStorage.getItem('alzaeem_pro_custom_firebase_cfg_v1');
+          inp.value = saved ? JSON.stringify(JSON.parse(saved), null, 2) : '';
+        } catch (e) { inp.value = ''; }
+      }
+      openModal('customFirebaseModal');
+    }
+
+    function parseLooseFirebaseConfig(raw) {
+      const text = String(raw || '').trim();
+      if (!text) return null;
+      try {
+        return JSON.parse(text);
+      } catch (e) {
+        // Extract key-value pairs if user pasted JS object snippet
+        const keys = ['apiKey', 'authDomain', 'projectId', 'storageBucket', 'messagingSenderId', 'appId', 'databaseURL'];
+        const obj = {};
+        keys.forEach(k => {
+          const m = text.match(new RegExp(`${k}\\s*:\\s*["']([^"']+)["']`));
+          if (m && m[1]) obj[k] = m[1].trim();
+        });
+        return (obj.apiKey && obj.projectId) ? obj : null;
+      }
+    }
+
+    document.getElementById('customFirebaseForm')?.addEventListener('submit', async e => {
+      e.preventDefault();
+      const raw = document.getElementById('customFirebaseConfigInput').value;
+      const cfg = parseLooseFirebaseConfig(raw);
+      if (!cfg || !cfg.apiKey || !cfg.projectId) {
+        showToast('صيغة إعدادات Firebase غير صحيحة — تأكد من وجود apiKey و projectId');
+        return;
+      }
+      try {
+        localStorage.setItem('alzaeem_pro_custom_firebase_cfg_v1', JSON.stringify(cfg));
+      } catch (err) {}
+      closeModal('customFirebaseModal');
+      setCloudBadgeState('syncing');
+      showToast('جاري الاتصال بمشروع Firebase الخاص بك...');
+      if (window.reinitCloudEngine) {
+        await window.reinitCloudEngine();
+      }
+      if (window._cloudSync && window._cloudSync.ready) {
+        showToast('تم الاتصال بمشروع Firebase بنجاح ☁️');
+      } else {
+        showToast('تعذر الاتصال — تأكد من تفعيل Anonymous Auth و Firestore في مشروعك');
+      }
+    });
+
+    async function clearCustomFirebaseConfig() {
+      try { localStorage.removeItem('alzaeem_pro_custom_firebase_cfg_v1'); } catch (e) {}
+      const inp = document.getElementById('customFirebaseConfigInput');
+      if (inp) inp.value = '';
+      closeModal('customFirebaseModal');
+      if (window.reinitCloudEngine) await window.reinitCloudEngine();
+      showToast('تمت إزالة إعدادات السحابة الخارجية');
     }
 
     let _cloudPushTimer = null;
@@ -2762,12 +2894,14 @@
     });
 
     function signOutAccount() {
-      document.getElementById('signOutPasswordInput').value = '';
-      document.getElementById('signOutPasswordError').classList.add('hidden');
+      const inp = document.getElementById('signOutPasswordInput');
+      const err = document.getElementById('signOutPasswordError');
+      if (inp) inp.value = '';
+      if (err) err.classList.add('hidden');
       openModal('signOutModal');
     }
 
-    document.getElementById('signOutForm').addEventListener('submit', e => {
+    document.getElementById('signOutForm')?.addEventListener('submit', e => {
       e.preventDefault();
       const entered = document.getElementById('signOutPasswordInput').value.trim();
       let expected = (activeAccount && activeAccount.pin) ? activeAccount.pin : '0000';
