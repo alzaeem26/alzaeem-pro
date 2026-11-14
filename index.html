@@ -155,44 +155,6 @@
     }
     .ios-btn:active {
       transform: scale(0.95) translateY(0);
-      box-shadow: 0 0 22px rgba(56, 189, 248, 0.52), inset 0 0 12px rgba(255, 255, 255, 0.65);
-    }
-
-    /* Interactive Touch / Click Specular Gleam & Sparkle */
-    .touch-gleam-wave {
-      position: fixed;
-      width: 110px;
-      height: 110px;
-      margin-left: -55px;
-      margin-top: -55px;
-      border-radius: 9999px;
-      pointer-events: none;
-      z-index: 9999;
-      background: radial-gradient(circle, rgba(255, 255, 255, 0.92) 0%, rgba(125, 211, 252, 0.55) 35%, rgba(45, 212, 191, 0.18) 62%, transparent 75%);
-      box-shadow: 0 0 24px rgba(255, 255, 255, 0.85), 0 0 42px rgba(56, 189, 248, 0.45);
-      animation: touchGleamAnim 0.62s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-    }
-    .touch-gleam-star {
-      position: fixed;
-      width: 18px;
-      height: 18px;
-      margin-left: -9px;
-      margin-top: -9px;
-      pointer-events: none;
-      z-index: 10000;
-      background: radial-gradient(circle, #ffffff 15%, rgba(186, 230, 253, 0.8) 55%, transparent 75%);
-      clip-path: polygon(50% 0%, 62% 38%, 100% 50%, 62% 62%, 50% 100%, 38% 62%, 0% 50%, 38% 38%);
-      animation: touchStarAnim 0.58s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-    }
-    @keyframes touchGleamAnim {
-      0% { transform: scale(0.18); opacity: 0.95; }
-      55% { opacity: 0.72; }
-      100% { transform: scale(1.45); opacity: 0; }
-    }
-    @keyframes touchStarAnim {
-      0% { transform: scale(0.3) rotate(0deg); opacity: 1; }
-      60% { transform: scale(1.35) rotate(45deg); opacity: 0.95; }
-      100% { transform: scale(0.2) rotate(90deg); opacity: 0; }
     }
 
     /* Glossy Icon Badge Containers */
@@ -829,12 +791,12 @@
 
     <!-- ==================== TAB 6: FULL LOG ==================== -->
     <section id="view-fullLog" class="tab-view hidden space-y-5">
-      <div class="flex flex-wrap items-center justify-between gap-3">
-        <div>
-          <h2 class="text-xl font-extrabold text-slate-900">السجل الكامل الشامل</h2>
-          <p class="text-sm text-slate-600">عرض موحد ومرتب زمنياً لجميع الحركات المالية والديون ومواعيد القبض والتحصيل</p>
+      <div class="space-y-1">
+        <div class="flex items-center justify-between gap-2">
+          <h2 class="text-lg sm:text-xl font-extrabold text-slate-900 truncate">السجل الكامل الشامل</h2>
+          <span id="fullLogTotalCount" class="shrink-0 text-xs font-extrabold bg-white/75 border border-white px-3 py-1.5 rounded-full text-slate-700">0 سجل</span>
         </div>
-        <span id="fullLogTotalCount" class="text-xs font-extrabold bg-white/75 border border-white px-3.5 py-2 rounded-full text-slate-700">0 سجل</span>
+        <p class="text-xs sm:text-sm text-slate-600">عرض موحد ومرتب زمنياً لجميع الحركات المالية والديون ومواعيد القبض والتحصيل</p>
       </div>
 
       <!-- Search + 3 Filter Criteria in 1 Single Row -->
@@ -905,19 +867,15 @@
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-3.5">
         <!-- Currencies Card -->
         <div class="glass-card p-3.5 sm:p-4 space-y-2.5">
-          <div class="flex items-center justify-between gap-2">
-            <h3 class="text-sm font-extrabold text-slate-900">العملات</h3>
-            <div class="flex items-center gap-1.5">
-              <label class="text-[11px] font-bold text-slate-600">الافتراضية:</label>
-              <select id="currencySelect" aria-label="العملة الافتراضية" class="ios-input text-xs rounded-lg px-2 py-1 font-bold text-slate-800 focus:outline-none focus:ring-2 focus:ring-sky-500"></select>
+          <div class="flex items-center justify-between gap-1.5">
+            <h3 class="text-sm font-extrabold text-slate-900 shrink-0">العملات</h3>
+            <div class="flex items-center gap-1 min-w-0">
+              <label class="text-[11px] font-bold text-slate-600 shrink-0 hidden xs:inline sm:inline">الافتراضية:</label>
+              <select id="currencySelect" aria-label="العملة الافتراضية" class="ios-input text-xs rounded-lg px-2 py-1 font-bold text-slate-800 max-w-[135px] sm:max-w-[165px] truncate focus:outline-none focus:ring-2 focus:ring-sky-500"></select>
             </div>
+            <button type="button" onclick="openWorldCurrenciesModal()" class="ios-btn shrink-0 bg-gradient-to-br from-sky-500 to-teal-700 text-white text-xs font-bold px-2.5 py-1 rounded-lg">+ إضافة</button>
           </div>
-          <form id="addCurrencyForm" class="grid grid-cols-3 gap-1.5">
-            <input id="newCurrName" type="text" required placeholder="اسم العملة" class="ios-input rounded-lg px-2.5 py-1.5 text-xs focus:outline-none focus:ring-2 focus:ring-sky-500" />
-            <input id="newCurrCode" type="text" required placeholder="الرمز" class="ios-input rounded-lg px-2.5 py-1.5 text-xs focus:outline-none focus:ring-2 focus:ring-sky-500" />
-            <button type="submit" class="ios-btn bg-gradient-to-br from-sky-500 to-teal-700 text-white text-xs font-bold py-1.5 rounded-lg">+ إضافة</button>
-          </form>
-          <div id="currenciesList" class="flex flex-wrap gap-1.5"></div>
+          <div id="currenciesList" class="grid grid-cols-3 gap-1.5"></div>
         </div>
 
         <!-- Backup, Import & Reset Card -->
@@ -977,6 +935,32 @@
   </main>
 
   <!-- ==================== MODALS ==================== -->
+
+  <!-- World Currencies Picker Modal -->
+  <div id="worldCurrenciesModal" class="fixed inset-0 bg-slate-900/35 backdrop-blur-md z-50 hidden items-center justify-center p-4 overflow-y-auto">
+    <div class="ios-modal max-w-md w-full p-5 sm:p-6 animate-slide-up my-auto space-y-3.5">
+      <div class="flex items-center justify-between">
+        <div>
+          <h3 class="text-base sm:text-lg font-extrabold text-slate-900">إضافة من العملات العالمية</h3>
+          <p class="text-[11px] text-slate-600">اختر عملة لإضافتها فوراً أو أدخل عملة مخصصة</p>
+        </div>
+        <button type="button" onclick="closeModal('worldCurrenciesModal')" class="w-8 h-8 rounded-full bg-slate-200/70 hover:bg-slate-200 text-slate-600 flex items-center justify-center text-sm font-bold">✕</button>
+      </div>
+
+      <input id="worldCurrSearch" type="text" placeholder="ابحث باسم العملة أو الرمز (دولار، يورو، دينار، درهم...)" class="ios-input w-full rounded-xl px-3.5 py-2 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-sky-500" />
+
+      <div id="worldCurrenciesGrid" class="max-h-56 overflow-y-auto grid grid-cols-2 gap-1.5 pr-0.5"></div>
+
+      <form id="addCurrencyForm" class="pt-2.5 border-t border-white/70 space-y-2">
+        <p class="text-[11px] font-bold text-slate-600">أو أضف عملة مخصصة يدوياً:</p>
+        <div class="grid grid-cols-3 gap-1.5">
+          <input id="newCurrName" type="text" required placeholder="اسم العملة" class="ios-input rounded-lg px-2.5 py-1.5 text-xs focus:outline-none focus:ring-2 focus:ring-sky-500" />
+          <input id="newCurrCode" type="text" required placeholder="الرمز" class="ios-input rounded-lg px-2.5 py-1.5 text-xs focus:outline-none focus:ring-2 focus:ring-sky-500" />
+          <button type="submit" class="ios-btn bg-gradient-to-br from-sky-500 to-teal-700 text-white text-xs font-bold py-1.5 rounded-lg">إضافة</button>
+        </div>
+      </form>
+    </div>
+  </div>
 
   <!-- Account Sign-In Modal -->
   <div id="accountModal" class="fixed inset-0 bg-slate-900/35 backdrop-blur-md z-50 hidden items-center justify-center p-4">
@@ -2699,11 +2683,82 @@
     }
 
     // ==================== SETTINGS TAB: CURRENCIES & CATEGORIES ====================
+    const WORLD_CURRENCIES_CATALOG = [
+      { code: '$', name: 'دولار أمريكي (USD)' },
+      { code: '€', name: 'يورو أوروبي (EUR)' },
+      { code: '£', name: 'جنيه إسترليني (GBP)' },
+      { code: 'ل.س', name: 'ليرة سورية (SYP)' },
+      { code: '₺', name: 'ليرة تركية (TRY)' },
+      { code: 'ر.س', name: 'ريال سعودي (SAR)' },
+      { code: 'د.إ', name: 'درهم إماراتي (AED)' },
+      { code: 'د.ك', name: 'دينار كويتي (KWD)' },
+      { code: 'ر.ق', name: 'ريال قطري (QAR)' },
+      { code: 'د.ب', name: 'دينار بحريني (BHD)' },
+      { code: 'ر.ع', name: 'ريال عماني (OMR)' },
+      { code: 'د.أ', name: 'دينار أردني (JOD)' },
+      { code: 'ل.ل', name: 'ليرة لبنانية (LBP)' },
+      { code: 'د.ع', name: 'دينار عراقي (IQD)' },
+      { code: 'ج.م', name: 'جنيه مصري (EGP)' },
+      { code: 'د.م', name: 'درهم مغربي (MAD)' },
+      { code: 'د.ت', name: 'دينار تونسي (TND)' },
+      { code: 'د.ج', name: 'دينار جزائري (DZD)' },
+      { code: 'د.ل', name: 'دينار ليبي (LYD)' },
+      { code: 'ج.س', name: 'جنيه سوداني (SDG)' },
+      { code: 'ر.ي', name: 'ريال يمني (YER)' },
+      { code: 'CHF', name: 'فرنك سويسري (CHF)' },
+      { code: 'C$', name: 'دولار كندي (CAD)' },
+      { code: 'A$', name: 'دولار أسترالي (AUD)' },
+      { code: '¥', name: 'ين ياباني (JPY)' },
+      { code: 'CN¥', name: 'يوان صيني (CNY)' },
+      { code: '₽', name: 'روبل روسي (RUB)' },
+      { code: '₹', name: 'روبية هندية (INR)' }
+    ];
+
+    function openWorldCurrenciesModal() {
+      const searchEl = document.getElementById('worldCurrSearch');
+      if (searchEl) searchEl.value = '';
+      renderWorldCurrenciesList();
+      openModal('worldCurrenciesModal');
+    }
+
+    function renderWorldCurrenciesList() {
+      const grid = document.getElementById('worldCurrenciesGrid');
+      if (!grid) return;
+      const q = (document.getElementById('worldCurrSearch')?.value || '').trim().toLowerCase();
+      const list = WORLD_CURRENCIES_CATALOG.filter(c =>
+        !q || c.name.toLowerCase().includes(q) || c.code.toLowerCase().includes(q)
+      );
+      if (!list.length) {
+        grid.innerHTML = `<p class="col-span-2 text-center text-xs text-slate-400 py-4">لا توجد عملة مطابقة — يمكنك إضافتها يدوياً بالأسفل</p>`;
+        return;
+      }
+      grid.innerHTML = list.map(c => {
+        const added = state.currencies.some(sc => sc.code === c.code);
+        return `
+          <button type="button" onclick="addPresetWorldCurrency('${escapeHtml(c.code)}', '${escapeHtml(c.name)}')" ${added ? 'disabled' : ''} class="p-2 rounded-xl border text-right flex items-center justify-between gap-1.5 transition ${added ? 'bg-emerald-500/15 border-emerald-300 text-emerald-900 opacity-75 cursor-default' : 'bg-white/75 hover:bg-white border-white text-slate-800 shadow-2xs'}">
+            <span class="text-[11px] font-bold truncate">${escapeHtml(c.name)}</span>
+            <span class="text-[10px] font-extrabold px-1.5 py-0.5 rounded-md ${added ? 'bg-emerald-600 text-white' : 'bg-sky-500/15 text-sky-800'} shrink-0">${added ? '✓' : escapeHtml(c.code)}</span>
+          </button>
+        `;
+      }).join('');
+    }
+
+    document.getElementById('worldCurrSearch').addEventListener('input', renderWorldCurrenciesList);
+
+    function addPresetWorldCurrency(code, name) {
+      if (!code || state.currencies.some(c => c.code === code)) return;
+      state.currencies.push({ code, name });
+      saveState();
+      renderAll();
+      renderWorldCurrenciesList();
+      showToast(`تمت إضافة العملة: ${name}`);
+    }
+
     function renderSettingsLists() {
       document.getElementById('currenciesList').innerHTML = state.currencies.map((c, i) => `
-        <span class="inline-flex items-center gap-1.5 bg-white/80 border border-white text-slate-800 text-xs font-bold px-3 py-1.5 rounded-full shadow-xs">
-          ${escapeHtml(c.name)} (${escapeHtml(c.code)})
-          ${state.currencies.length > 1 ? `<button type="button" onclick="removeCurrency(${i})" class="text-rose-600 hover:text-rose-800 font-extrabold">×</button>` : ''}
+        <span class="inline-flex items-center justify-between gap-1 bg-white/80 border border-white text-slate-800 text-[11px] font-bold px-2 py-1.5 rounded-xl shadow-xs min-w-0">
+          <span class="truncate">${escapeHtml(c.name)} (${escapeHtml(c.code)})</span>
+          ${state.currencies.length > 1 ? `<button type="button" onclick="removeCurrency(${i})" class="text-rose-600 hover:text-rose-800 font-extrabold shrink-0">×</button>` : ''}
         </span>
       `).join('');
 
@@ -2755,6 +2810,8 @@
       document.getElementById('addCurrencyForm').reset();
       saveState();
       renderAll();
+      renderWorldCurrenciesList();
+      closeModal('worldCurrenciesModal');
       showToast(`تمت إضافة العملة: ${name}`);
     });
 
@@ -4497,33 +4554,6 @@
       processDueRecurringExpenses();
       renderAll();
     });
-
-    // Interactive Touch & Pointer Specular Gleam Effect
-    function spawnTouchGleam(x, y) {
-      const wave = document.createElement('span');
-      wave.className = 'touch-gleam-wave';
-      wave.style.left = x + 'px';
-      wave.style.top = y + 'px';
-
-      const star = document.createElement('span');
-      star.className = 'touch-gleam-star';
-      star.style.left = x + 'px';
-      star.style.top = y + 'px';
-
-      document.body.appendChild(wave);
-      document.body.appendChild(star);
-
-      setTimeout(() => {
-        wave.remove();
-        star.remove();
-      }, 650);
-    }
-
-    document.addEventListener('pointerdown', e => {
-      if (typeof e.clientX === 'number' && typeof e.clientY === 'number') {
-        spawnTouchGleam(e.clientX, e.clientY);
-      }
-    }, { passive: true });
   </script>
 </body>
 </html>
