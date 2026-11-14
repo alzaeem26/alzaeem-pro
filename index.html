@@ -358,8 +358,9 @@
     @media print {
       body * { visibility: hidden; }
       #personStatementModal, #personStatementModal *,
-      #pnlReportModal, #pnlReportModal * { visibility: visible; }
-      #personStatementModal, #pnlReportModal { position: absolute; inset: 0; background: #fff !important; color: #000 !important; }
+      #pnlReportModal, #pnlReportModal *,
+      #voucherModal, #voucherModal * { visibility: visible; }
+      #personStatementModal, #pnlReportModal, #voucherModal { position: absolute; inset: 0; background: #fff !important; color: #000 !important; }
       .no-print { display: none !important; }
     }
   </style>
@@ -648,6 +649,7 @@
         <div class="flex flex-wrap items-center gap-2">
           <input id="budgetMonthPicker" type="month" class="ios-input rounded-xl px-3 py-2 text-xs sm:text-sm font-bold text-slate-700 focus:outline-none focus:ring-2 focus:ring-sky-500" />
           <button type="button" onclick="openPnlReportModal()" class="ios-btn bg-white/75 hover:bg-white text-sky-800 border border-white text-xs sm:text-sm font-bold px-3 py-2.5 rounded-2xl">📊 الأرباح والخسائر</button>
+          <button type="button" onclick="openSavingsGoalModal()" class="ios-btn bg-gradient-to-br from-teal-500 to-emerald-600 text-white text-xs sm:text-sm font-bold px-3.5 py-2.5 rounded-2xl shadow-sm">🎯 هدف ادخار</button>
           <button type="button" onclick="openRecurringModal()" class="ios-btn bg-gradient-to-br from-indigo-500 to-violet-600 text-white text-xs sm:text-sm font-bold px-3.5 py-2.5 rounded-2xl shadow-sm">+ مصروف متكرر</button>
           <button type="button" onclick="openBudgetModal()" class="ios-btn bg-gradient-to-br from-sky-500 to-teal-700 text-white text-xs sm:text-sm font-bold px-3.5 py-2.5 rounded-2xl shadow-sm">+ فئة ميزانية</button>
         </div>
@@ -679,6 +681,18 @@
           <button type="button" onclick="openRecurringModal()" class="text-xs font-bold text-indigo-700 hover:underline">+ إضافة اشتراك</button>
         </div>
         <div id="recurringExpensesGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3"></div>
+      </div>
+
+      <!-- Savings Goals (حصالة الأهداف) Section -->
+      <div class="glass-card p-4 sm:p-5 space-y-3">
+        <div class="flex items-center justify-between gap-2">
+          <div>
+            <h3 class="text-sm sm:text-base font-extrabold text-slate-900">أهداف الادخار (حصالة الأهداف) 🎯</h3>
+            <p class="text-[11px] text-slate-600">خصص أهدافك المالية وتابع نسبة الإنجاز والرصيد المدخر لكل هدف</p>
+          </div>
+          <button type="button" onclick="openSavingsGoalModal()" class="text-xs font-bold text-teal-700 hover:underline">+ هدف جديد</button>
+        </div>
+        <div id="savingsGoalsGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3"></div>
       </div>
 
       <div id="budgetCardsGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
@@ -794,7 +808,10 @@
       <div class="space-y-1">
         <div class="flex items-center justify-between gap-2">
           <h2 class="text-lg sm:text-xl font-extrabold text-slate-900 truncate">السجل الكامل الشامل</h2>
-          <span id="fullLogTotalCount" class="shrink-0 text-xs font-extrabold bg-white/75 border border-white px-3 py-1.5 rounded-full text-slate-700">0 سجل</span>
+          <div class="flex items-center gap-1.5 shrink-0">
+            <span id="fullLogTotalCount" class="text-xs font-extrabold bg-white/75 border border-white px-3 py-1.5 rounded-full text-slate-700">0 سجل</span>
+            <button type="button" onclick="exportFullLogCsv()" class="ios-btn bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold px-3 py-1.5 rounded-xl shadow-xs">تصدير إكسل</button>
+          </div>
         </div>
         <p class="text-xs sm:text-sm text-slate-600">عرض موحد ومرتب زمنياً لجميع الحركات المالية والديون ومواعيد القبض والتحصيل</p>
       </div>
@@ -1469,10 +1486,11 @@
   <div id="scheduleModal" class="fixed inset-0 bg-slate-900/35 backdrop-blur-md z-50 hidden items-center justify-center p-4 overflow-y-auto">
     <div class="ios-modal max-w-md w-full p-6 animate-slide-up my-auto">
       <div class="flex items-center justify-between mb-4">
-        <h3 class="text-lg font-extrabold text-slate-900">تحديد موعد قبض / تحصيل</h3>
+        <h3 id="scheduleModalTitle" class="text-lg font-extrabold text-slate-900">تحديد موعد قبض / تحصيل</h3>
         <button type="button" onclick="closeModal('scheduleModal')" class="w-8 h-8 rounded-full bg-slate-200/70 hover:bg-slate-200 text-slate-600 flex items-center justify-center text-sm font-bold">✕</button>
       </div>
       <form id="scheduleForm" class="space-y-3.5">
+        <input type="hidden" id="editSchedId" value="" />
         <div>
           <label class="block text-xs font-bold text-slate-600 mb-1">عنوان الموعد / الجهة</label>
           <input id="schedTitle" type="text" required placeholder="مثال: قبض إيجار، تحصيل قسط عميل..." class="ios-input w-full rounded-xl px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-sky-500" />
@@ -1544,6 +1562,163 @@
     </div>
   </div>
 
+  <!-- Digital Receipt / Payment Voucher Modal -->
+  <div id="voucherModal" class="fixed inset-0 bg-slate-900/40 backdrop-blur-md z-[65] hidden items-center justify-center p-4 overflow-y-auto">
+    <div class="ios-modal max-w-md w-full p-6 animate-slide-up my-auto space-y-4">
+      <div class="flex items-center justify-between">
+        <span class="text-xs font-extrabold bg-sky-500/15 text-sky-800 px-3 py-1 rounded-full">سند مالي رقمي موثّق</span>
+        <button type="button" onclick="closeModal('voucherModal')" class="no-print w-8 h-8 rounded-full bg-slate-200/70 hover:bg-slate-200 text-slate-600 flex items-center justify-center text-sm font-bold">✕</button>
+      </div>
+      <div id="voucherCardBody" class="bg-white/85 border-2 border-sky-500/30 rounded-2xl p-4 space-y-3 text-right shadow-inner"></div>
+      <div class="no-print grid grid-cols-3 gap-2 pt-1">
+        <button type="button" onclick="shareVoucherWhatsapp()" class="ios-btn bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2.5 rounded-xl text-xs">إرسال واتساب</button>
+        <button type="button" onclick="copyVoucherText()" class="ios-btn bg-sky-500/15 hover:bg-sky-500/25 text-sky-900 font-bold py-2.5 rounded-xl text-xs">نسخ السند</button>
+        <button type="button" onclick="window.print()" class="ios-btn bg-gradient-to-br from-sky-500 to-teal-700 text-white font-bold py-2.5 rounded-xl text-xs">طباعة / PDF</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Savings Goal Modal -->
+  <div id="savingsGoalModal" class="fixed inset-0 bg-slate-900/35 backdrop-blur-md z-50 hidden items-center justify-center p-4">
+    <div class="ios-modal max-w-md w-full p-6 animate-slide-up">
+      <div class="flex items-center justify-between mb-4">
+        <h3 class="text-lg font-extrabold text-slate-900">إضافة هدف ادخار جديد 🎯</h3>
+        <button type="button" onclick="closeModal('savingsGoalModal')" class="w-8 h-8 rounded-full bg-slate-200/70 hover:bg-slate-200 text-slate-600 flex items-center justify-center text-sm font-bold">✕</button>
+      </div>
+      <form id="savingsGoalForm" class="space-y-3.5">
+        <div>
+          <label class="block text-xs font-bold text-slate-600 mb-1">اسم الهدف</label>
+          <input id="goalTitle" type="text" required placeholder="مثال: احتياطي طوارئ، شراء سيارة، توسعة عمل..." class="ios-input w-full rounded-xl px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-teal-500" />
+        </div>
+        <div class="grid grid-cols-3 gap-3">
+          <div class="col-span-2">
+            <label class="block text-xs font-bold text-slate-600 mb-1">المبلغ المستهدف</label>
+            <div class="flex items-center gap-1.5">
+              <input id="goalTargetAmount" type="number" step="0.01" min="1" inputmode="decimal" required placeholder="1000" class="ios-input w-full rounded-xl px-3.5 py-2.5 text-base font-bold focus:outline-none focus:ring-2 focus:ring-teal-500" />
+              <button type="button" onclick="openCalculatorFor('goalTargetAmount')" class="ios-btn shrink-0 w-10 h-10 rounded-xl bg-sky-500/15 text-sky-800 border border-sky-300/60 flex items-center justify-center" title="آلة حاسبة">🧮</button>
+            </div>
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-600 mb-1">العملة</label>
+            <select id="goalCurrency" class="ios-input w-full rounded-xl px-2.5 py-2.5 text-sm font-bold focus:outline-none focus:ring-2 focus:ring-teal-500"></select>
+          </div>
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-bold text-slate-600 mb-1">المبلغ المدخر حالياً</label>
+            <input id="goalSavedAmount" type="number" step="0.01" min="0" value="0" inputmode="decimal" class="ios-input w-full rounded-xl px-3.5 py-2.5 text-sm font-bold focus:outline-none focus:ring-2 focus:ring-teal-500" />
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-600 mb-1">الموعد المستهدف</label>
+            <input id="goalDeadline" type="date" class="ios-input w-full rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-teal-500" />
+          </div>
+        </div>
+        <button type="submit" class="ios-btn w-full bg-gradient-to-br from-teal-500 to-emerald-600 text-white font-bold py-3 rounded-2xl">حفظ هدف الادخار</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Savings Goal Deposit Modal -->
+  <div id="goalDepositModal" class="fixed inset-0 bg-slate-900/35 backdrop-blur-md z-50 hidden items-center justify-center p-4">
+    <div class="ios-modal max-w-sm w-full p-6 animate-slide-up">
+      <div class="flex items-center justify-between mb-4">
+        <h3 class="text-lg font-extrabold text-slate-900">إيداع في هدف الادخار</h3>
+        <button type="button" onclick="closeModal('goalDepositModal')" class="w-8 h-8 rounded-full bg-slate-200/70 hover:bg-slate-200 text-slate-600 flex items-center justify-center text-sm font-bold">✕</button>
+      </div>
+      <form id="goalDepositForm" class="space-y-4">
+        <input type="hidden" id="depositGoalId" />
+        <div class="bg-teal-500/10 border border-teal-300/60 rounded-2xl p-3 text-sm">
+          <p class="font-bold text-slate-900" id="depositGoalTitle"></p>
+          <p class="text-xs text-teal-900 mt-0.5">المتبقي لإكمال الهدف: <span id="depositGoalRemaining" class="font-extrabold"></span></p>
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-slate-600 mb-1">مبلغ الإيداع</label>
+          <div class="flex items-center gap-1.5">
+            <input id="depositGoalAmount" type="number" step="0.01" min="0.01" inputmode="decimal" required class="ios-input w-full rounded-xl px-3.5 py-2.5 text-base font-bold focus:outline-none focus:ring-2 focus:ring-teal-500" />
+            <button type="button" onclick="openCalculatorFor('depositGoalAmount')" class="ios-btn shrink-0 w-10 h-10 rounded-xl bg-sky-500/15 text-sky-800 border border-sky-300/60 flex items-center justify-center" title="آلة حاسبة">🧮</button>
+          </div>
+        </div>
+        <button type="submit" class="ios-btn w-full bg-gradient-to-br from-teal-500 to-emerald-600 text-white font-bold py-3 rounded-2xl">إضافة إلى الحصالة ✓</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Recurring Expense Modal -->
+  <div id="recurringModal" class="fixed inset-0 bg-slate-900/35 backdrop-blur-md z-50 hidden items-center justify-center p-4">
+    <div class="ios-modal max-w-md w-full p-6 animate-slide-up">
+      <div class="flex items-center justify-between mb-4">
+        <h3 class="text-lg font-extrabold text-slate-900">إضافة مصروف متكرر شهرياً</h3>
+        <button type="button" onclick="closeModal('recurringModal')" class="w-8 h-8 rounded-full bg-slate-200/70 hover:bg-slate-200 text-slate-600 flex items-center justify-center text-sm font-bold">✕</button>
+      </div>
+      <form id="recurringForm" class="space-y-3.5">
+        <div>
+          <label class="block text-xs font-bold text-slate-600 mb-1">اسم الاشتراك / المصروف</label>
+          <input id="recTitle" type="text" required placeholder="مثال: اشتراك إنترنت، إيجار، راتب موظف..." class="ios-input w-full rounded-xl px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+        </div>
+        <div class="grid grid-cols-3 gap-3">
+          <div class="col-span-2">
+            <label class="block text-xs font-bold text-slate-600 mb-1">المبلغ الشهري</label>
+            <input id="recAmount" type="number" step="0.01" min="0.01" inputmode="decimal" required placeholder="0.00" class="ios-input w-full rounded-xl px-3.5 py-2.5 text-base font-bold focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-600 mb-1">العملة</label>
+            <select id="recCurrency" class="ios-input w-full rounded-xl px-2.5 py-2.5 text-sm font-bold focus:outline-none focus:ring-2 focus:ring-indigo-500"></select>
+          </div>
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-bold text-slate-600 mb-1">التصنيف</label>
+            <select id="recCategory" class="ios-input w-full rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"></select>
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-600 mb-1">يوم الاستحقاق بالشهر</label>
+            <input id="recDayOfMonth" type="number" min="1" max="28" value="1" inputmode="numeric" required class="ios-input w-full rounded-xl px-3 py-2.5 text-sm font-bold focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+          </div>
+        </div>
+        <label class="flex items-center gap-2 text-xs font-bold text-slate-700 cursor-pointer">
+          <input id="recAutoPost" type="checkbox" checked class="rounded text-indigo-600 focus:ring-indigo-500" />
+          تسجيل المصروف تلقائياً في السجل عند حلول اليوم المحدد
+        </label>
+        <button type="submit" class="ios-btn w-full bg-gradient-to-br from-indigo-500 to-violet-600 text-white font-bold py-3 rounded-2xl">حفظ المصروف المتكرر</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Monthly Profit & Loss Report Modal -->
+  <div id="pnlReportModal" class="fixed inset-0 bg-slate-900/35 backdrop-blur-md z-50 hidden items-center justify-center p-4 overflow-y-auto">
+    <div class="ios-modal max-w-md w-full p-6 animate-slide-up my-auto space-y-4">
+      <div class="flex items-center justify-between">
+        <h3 class="text-lg font-extrabold text-slate-900">تقرير الأرباح والخسائر الشهري</h3>
+        <button type="button" onclick="closeModal('pnlReportModal')" class="no-print w-8 h-8 rounded-full bg-slate-200/70 hover:bg-slate-200 text-slate-600 flex items-center justify-center text-sm font-bold">✕</button>
+      </div>
+      <div class="flex items-center justify-between gap-2">
+        <label class="text-xs font-bold text-slate-600">اختر الشهر:</label>
+        <input id="pnlMonthPicker" type="month" class="ios-input rounded-xl px-3 py-1.5 text-xs font-bold focus:outline-none focus:ring-2 focus:ring-sky-500" />
+      </div>
+      <div id="pnlReportContent" class="space-y-3"></div>
+      <button type="button" onclick="window.print()" class="no-print ios-btn w-full bg-gradient-to-br from-sky-500 to-teal-700 text-white font-bold py-2.5 rounded-2xl text-xs">طباعة التقرير / حفظ PDF</button>
+    </div>
+  </div>
+
+  <!-- Person Statement Modal -->
+  <div id="personStatementModal" class="fixed inset-0 bg-slate-900/35 backdrop-blur-md z-50 hidden items-center justify-center p-4 overflow-y-auto">
+    <div class="ios-modal max-w-lg w-full p-6 animate-slide-up my-auto space-y-4">
+      <div class="flex items-center justify-between">
+        <div>
+          <h3 id="stmtPersonName" class="text-lg font-extrabold text-slate-900">كشف حساب</h3>
+          <p id="stmtPersonPhone" class="text-xs text-slate-500"></p>
+        </div>
+        <button type="button" onclick="closeModal('personStatementModal')" class="no-print w-8 h-8 rounded-full bg-slate-200/70 hover:bg-slate-200 text-slate-600 flex items-center justify-center text-sm font-bold">✕</button>
+      </div>
+      <div id="stmtSummaryBox" class="grid grid-cols-3 gap-2 text-center bg-white/70 border border-white rounded-2xl p-3 text-xs"></div>
+      <div id="stmtRowsList" class="max-h-64 overflow-y-auto space-y-2 text-xs"></div>
+      <div class="no-print flex flex-wrap items-center gap-2 pt-2 border-t border-white/60">
+        <button type="button" onclick="sendPersonStatementWhatsapp()" class="ios-btn flex-1 bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2.5 px-3 rounded-xl text-xs">إرسال الكشف واتساب</button>
+        <button type="button" onclick="window.print()" class="ios-btn flex-1 bg-gradient-to-br from-sky-500 to-teal-700 text-white font-bold py-2.5 px-3 rounded-xl text-xs">طباعة / حفظ PDF</button>
+      </div>
+    </div>
+  </div>
+
   <!-- Confirm Reset Modal with Warning & Password (0000) -->
   <div id="resetModal" class="fixed inset-0 bg-slate-900/35 backdrop-blur-md z-50 hidden items-center justify-center p-4">
     <div class="ios-modal max-w-sm w-full p-6 animate-slide-up text-center space-y-4">
@@ -1562,91 +1737,6 @@
         <button type="button" id="btnConfirmDemo" class="ios-btn w-full bg-gradient-to-br from-sky-500 to-teal-700 text-white font-bold py-2.5 rounded-2xl text-sm">استعادة البيانات التجريبية</button>
         <button type="button" onclick="closeModal('resetModal')" class="ios-btn w-full bg-slate-200/70 hover:bg-slate-200 text-slate-700 font-bold py-2.5 rounded-2xl text-sm">إلغاء</button>
       </div>
-    </div>
-  </div>
-
-  <!-- Person Statement Modal -->
-  <div id="personStatementModal" class="fixed inset-0 bg-slate-900/35 backdrop-blur-md z-50 hidden items-center justify-center p-4 overflow-y-auto">
-    <div class="ios-modal max-w-lg w-full p-6 animate-slide-up my-auto space-y-4">
-      <div class="flex items-center justify-between">
-        <div>
-          <h3 id="stmtPersonName" class="text-lg font-extrabold text-slate-900">كشف حساب</h3>
-          <p id="stmtPersonPhone" class="text-xs text-slate-500"></p>
-        </div>
-        <button type="button" onclick="closeModal('personStatementModal')" class="no-print w-8 h-8 rounded-full bg-slate-200/70 hover:bg-slate-200 text-slate-600 flex items-center justify-center text-sm font-bold">✕</button>
-      </div>
-      <div id="stmtSummaryBox" class="grid grid-cols-3 gap-2 text-center bg-white/70 border border-white rounded-2xl p-3 text-xs"></div>
-      <div id="stmtRowsList" class="max-h-64 overflow-y-auto space-y-2 text-xs"></div>
-      <div class="no-print flex flex-wrap items-center gap-2 pt-2 border-t border-white/60">
-        <button type="button" id="btnStmtWhatsapp" onclick="sendPersonStatementWhatsapp()" class="ios-btn flex-1 bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2.5 px-3 rounded-xl text-xs">إرسال الكشف واتساب</button>
-        <button type="button" onclick="window.print()" class="ios-btn flex-1 bg-gradient-to-br from-sky-500 to-teal-700 text-white font-bold py-2.5 px-3 rounded-xl text-xs">طباعة / حفظ PDF</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- Monthly Profit & Loss (P&L) Report Modal -->
-  <div id="pnlReportModal" class="fixed inset-0 bg-slate-900/35 backdrop-blur-md z-50 hidden items-center justify-center p-4 overflow-y-auto">
-    <div class="ios-modal max-w-lg w-full p-6 animate-slide-up my-auto space-y-4">
-      <div class="flex items-center justify-between gap-2">
-        <div>
-          <h3 class="text-lg font-extrabold text-slate-900">التقرير الشهري والأرباح والخسائر</h3>
-          <p class="text-xs text-slate-500">ملخص الأداء المالي ونسبة الادخار للشهر المختار</p>
-        </div>
-        <button type="button" onclick="closeModal('pnlReportModal')" class="no-print w-8 h-8 rounded-full bg-slate-200/70 hover:bg-slate-200 text-slate-600 flex items-center justify-center text-sm font-bold">✕</button>
-      </div>
-      <div class="no-print flex items-center gap-2">
-        <label class="text-xs font-bold text-slate-600">اختر الشهر:</label>
-        <input id="pnlMonthPicker" type="month" class="ios-input flex-1 rounded-xl px-3 py-2 text-sm font-bold focus:outline-none focus:ring-2 focus:ring-sky-500" />
-      </div>
-      <div id="pnlReportContent" class="space-y-3"></div>
-      <div class="no-print flex gap-2 pt-2 border-t border-white/60">
-        <button type="button" onclick="window.print()" class="ios-btn flex-1 bg-gradient-to-br from-sky-500 to-teal-700 text-white font-bold py-2.5 rounded-xl text-xs">طباعة التقرير / PDF</button>
-        <button type="button" onclick="closeModal('pnlReportModal')" class="ios-btn px-4 bg-slate-200/70 text-slate-700 font-bold py-2.5 rounded-xl text-xs">إغلاق</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- Recurring Expense Modal -->
-  <div id="recurringModal" class="fixed inset-0 bg-slate-900/35 backdrop-blur-md z-50 hidden items-center justify-center p-4">
-    <div class="ios-modal max-w-md w-full p-6 animate-slide-up">
-      <div class="flex items-center justify-between mb-4">
-        <h3 class="text-lg font-extrabold text-slate-900">إضافة مصروف متكرر شهري</h3>
-        <button type="button" onclick="closeModal('recurringModal')" class="w-8 h-8 rounded-full bg-slate-200/70 hover:bg-slate-200 text-slate-600 flex items-center justify-center text-sm font-bold">✕</button>
-      </div>
-      <form id="recurringForm" class="space-y-3.5">
-        <div>
-          <label class="block text-xs font-bold text-slate-600 mb-1">اسم الاشتراك أو المصروف الثابت</label>
-          <input id="recTitle" type="text" required placeholder="مثال: اشتراك إنترنت، إيجار محل، راتب موظف..." class="ios-input w-full rounded-xl px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-sky-500" />
-        </div>
-        <div class="grid grid-cols-3 gap-3">
-          <div class="col-span-2">
-            <label class="block text-xs font-bold text-slate-600 mb-1">المبلغ الشهري</label>
-            <div class="flex items-center gap-1.5">
-              <input id="recAmount" type="number" step="0.01" min="0.01" inputmode="decimal" required placeholder="0.00" class="ios-input w-full rounded-xl px-3.5 py-2.5 text-base font-bold focus:outline-none focus:ring-2 focus:ring-sky-500" />
-              <button type="button" onclick="openCalculatorFor('recAmount')" class="ios-btn shrink-0 w-10 h-10 rounded-xl bg-sky-500/15 text-sky-800 border border-sky-300/60 flex items-center justify-center" title="آلة حاسبة">🧮</button>
-            </div>
-          </div>
-          <div>
-            <label class="block text-xs font-bold text-slate-600 mb-1">العملة</label>
-            <select id="recCurrency" class="ios-input w-full rounded-xl px-2.5 py-2.5 text-sm font-bold focus:outline-none focus:ring-2 focus:ring-sky-500"></select>
-          </div>
-        </div>
-        <div class="grid grid-cols-2 gap-3">
-          <div>
-            <label class="block text-xs font-bold text-slate-600 mb-1">التصنيف</label>
-            <select id="recCategory" class="ios-input w-full rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-sky-500"></select>
-          </div>
-          <div>
-            <label class="block text-xs font-bold text-slate-600 mb-1">يوم الاستحقاق بالشهر (1-28)</label>
-            <input id="recDayOfMonth" type="number" min="1" max="28" value="1" required class="ios-input w-full rounded-xl px-3 py-2.5 text-sm font-bold focus:outline-none focus:ring-2 focus:ring-sky-500" />
-          </div>
-        </div>
-        <label class="flex items-center gap-2 text-xs font-bold text-slate-700 cursor-pointer">
-          <input id="recAutoPost" type="checkbox" checked class="rounded text-sky-600 focus:ring-sky-500" />
-          تسجيل المصروف تلقائياً في السجل عند حلول موعده الشهري
-        </label>
-        <button type="submit" class="ios-btn w-full bg-gradient-to-br from-indigo-500 to-violet-600 text-white font-bold py-3 rounded-2xl">حفظ المصروف المتكرر</button>
-      </form>
     </div>
   </div>
 
@@ -1854,6 +1944,9 @@
         recurringExpenses: [
           { id: 'rec_1', title: 'اشتراك إنترنت شهري', amount: 35, currency: '$', category: 'فواتير واتصالات', dayOfMonth: 1, autoPost: true, lastPostedMonth: currentMonthISO() }
         ],
+        savingsGoals: [
+          { id: 'goal_1', title: 'احتياطي الطوارئ والأمان', targetAmount: 1500, savedAmount: 650, currency: '$', deadline: todayISO(60) }
+        ],
         schedules: [
           { id: 'sch_1', title: 'تحصيل قسط شركة الأفق', amount: 300, currency: '$', date: todayISO(4), recurrence: 'once', debtId: 'debt_1', personName: 'شركة الأفق للتجارة', phone: '0933123456', status: 'pending', note: 'تحويل بنكي أو نقدي' },
           { id: 'sch_2', title: 'استرداد سلفة خالد العلي', amount: 350, currency: '$', date: todayISO(-2), recurrence: 'once', debtId: 'debt_2', personName: 'خالد العلي', phone: '0944987654', status: 'pending', note: 'التواصل هاتفياً للتأكيد' },
@@ -1878,6 +1971,7 @@
       if (!s.debts) s.debts = [];
       s.debts.forEach(d => { if (!d.direction) d.direction = 'receivable'; });
       if (!s.recurringExpenses) s.recurringExpenses = [];
+      if (!s.savingsGoals) s.savingsGoals = [];
       if (!s.schedules) s.schedules = [];
       return s;
     }
@@ -2238,7 +2332,7 @@
         mainSel.value = state.currency;
       }
 
-      ['txCurrency', 'debtCurrency', 'schedCurrency', 'recCurrency'].forEach(id => {
+      ['txCurrency', 'debtCurrency', 'schedCurrency', 'recCurrency', 'goalCurrency'].forEach(id => {
         const el = document.getElementById(id);
         if (el) {
           const prev = el.value;
@@ -3088,6 +3182,7 @@
               </div>
             </td>
             <td class="px-4 py-3 text-center whitespace-nowrap">
+              <button type="button" onclick="openVoucherForTx('${t.id}')" class="text-xs text-emerald-700 hover:text-emerald-900 font-bold px-2 py-1 rounded-xl hover:bg-emerald-500/10">سند</button>
               <button type="button" onclick="editTx('${t.id}')" class="text-xs text-sky-700 hover:text-sky-900 font-bold px-2 py-1 rounded-xl hover:bg-sky-500/10">تعديل</button>
               <button type="button" onclick="deleteTx('${t.id}')" class="text-xs text-rose-600 hover:text-rose-800 font-bold px-2 py-1 rounded-xl hover:bg-rose-500/10">حذف</button>
             </td>
@@ -3229,56 +3324,95 @@
       document.getElementById(id).addEventListener('input', renderFullLog);
     });
 
-    // ==================== RENDER BUDGET ====================
-    const budgetMonthPicker = document.getElementById('budgetMonthPicker');
-    budgetMonthPicker.value = currentMonthISO();
-    budgetMonthPicker.addEventListener('change', renderBudget);
+    function exportFullLogCsv() {
+      const today = todayISO();
+      const entries = [];
+      state.transactions.forEach(t => {
+        entries.push({
+          date: t.date,
+          kindLabel: t.type === 'income' ? 'مدخول' : 'مصروف',
+          partyOrCat: t.personName ? `${t.personName} • ${t.category}` : t.category,
+          personName: t.personName || '',
+          kind: t.type,
+          title: t.note,
+          details: t.details || t.method || '',
+          status: 'مكتمل',
+          amount: t.amount,
+          currency: t.currency || state.currency
+        });
+      });
+      state.debts.forEach(d => {
+        const rem = Math.max(0, Number(d.totalAmount) - Number(d.paidAmount));
+        const dCurr = d.currency || state.currency;
+        const isPayable = d.direction === 'payable';
+        entries.push({
+          date: d.dueDate,
+          kindLabel: isPayable ? 'دين عَلَيْك' : 'دين لَك',
+          partyOrCat: d.name,
+          personName: d.name,
+          kind: 'debt',
+          title: `${isPayable ? 'التزام لـ' : 'دين على'}: ${d.name}`,
+          details: `${d.note || ''} (${isPayable ? 'مسدد' : 'محصل'}: ${fmt(d.paidAmount, dCurr)} | متبقي: ${fmt(rem, dCurr)})`,
+          status: rem <= 0 ? 'مكتمل' : (d.dueDate < today ? 'متأخر' : 'نشط'),
+          amount: d.totalAmount,
+          currency: dCurr
+        });
+      });
+      state.schedules.forEach(s => {
+        entries.push({
+          date: s.date,
+          kindLabel: 'موعد قبض',
+          partyOrCat: s.personName || 'جدول المواعيد',
+          personName: s.personName || '',
+          kind: 'schedule',
+          title: s.title,
+          details: s.note || '',
+          status: s.status === 'completed' ? 'تم القبض' : (s.date < today ? 'متأخر' : 'مجدول'),
+          amount: s.amount,
+          currency: s.currency || state.currency
+        });
+      });
 
-    function renderBudget() {
-      const m = budgetMonthPicker.value || currentMonthISO();
-      const totalLimit = state.budgets.reduce((s, b) => s + Number(b.limit), 0);
-      const monthExpenses = state.transactions.filter(t => t.type === 'expense' && t.date.startsWith(m) && (t.currency || state.currency) === state.currency);
-      const totalSpent = monthExpenses.reduce((s, t) => s + Number(t.amount), 0);
-      const remaining = totalLimit - totalSpent;
+      const search = document.getElementById('fullLogSearch').value.trim().toLowerCase();
+      const typeF = document.getElementById('fullLogType').value;
+      const currF = document.getElementById('fullLogCurrency').value;
+      const perF = document.getElementById('fullLogPerson').value;
 
-      document.getElementById('budgetTotalLimit').textContent = fmt(totalLimit);
-      document.getElementById('budgetTotalSpent').textContent = fmt(totalSpent);
-      document.getElementById('budgetTotalRemaining').textContent = fmt(remaining);
-      document.getElementById('budgetTotalRemaining').className = `text-sm sm:text-2xl font-extrabold mt-1 break-words ${remaining >= 0 ? 'text-emerald-600' : 'text-rose-600'}`;
+      const filtered = entries.filter(e => {
+        if (typeF !== 'all' && e.kind !== typeF) return false;
+        if (currF !== 'all' && e.currency !== currF) return false;
+        if (perF !== 'all' && e.personName !== perF && !e.partyOrCat.includes(perF)) return false;
+        if (search) {
+          const hay = `${e.title} ${e.details} ${e.partyOrCat} ${e.status}`.toLowerCase();
+          if (!hay.includes(search)) return false;
+        }
+        return true;
+      }).sort((a, b) => b.date.localeCompare(a.date));
 
-      const grid = document.getElementById('budgetCardsGrid');
-      const bcs = getCurrencyStyle(state.currency);
-      grid.innerHTML = state.budgets.map((b, idx) => {
-        const spent = monthExpenses.filter(t => t.category === b.name).reduce((s, t) => s + Number(t.amount), 0);
-        const pct = b.limit > 0 ? Math.min(100, Math.round((spent / b.limit) * 100)) : 0;
-        const rawPct = b.limit > 0 ? Math.round((spent / b.limit) * 100) : 0;
-        const barColor = rawPct >= 100 ? 'bg-rose-500' : rawPct >= 80 ? 'bg-amber-500' : 'bg-gradient-to-l from-sky-500 to-teal-600';
-        const statusBadge = rawPct >= 100
-          ? `<span class="text-xs font-bold bg-rose-500/15 text-rose-700 px-2.5 py-0.5 rounded-full">تجاوز الحد (${rawPct}%)</span>`
-          : rawPct >= 80
-            ? `<span class="text-xs font-bold bg-amber-500/20 text-amber-800 px-2.5 py-0.5 rounded-full">قريب من الحد (${rawPct}%)</span>`
-            : `<span class="text-xs font-bold bg-emerald-500/15 text-emerald-700 px-2.5 py-0.5 rounded-full">${rawPct}% مستهلك</span>`;
+      if (!filtered.length) {
+        showToast('لا توجد سجلات ظاهرة للتصدير');
+        return;
+      }
 
-        return `
-          <div class="glass-card ${bcs.row} p-5 space-y-3">
-            <div class="flex items-center justify-between gap-2">
-              <h4 class="font-extrabold text-slate-900">${escapeHtml(b.name)}</h4>
-              ${statusBadge}
-            </div>
-            <div class="w-full bg-white/70 h-2.5 rounded-full overflow-hidden border border-white/80">
-              <div class="${barColor} h-full rounded-full transition-all" style="width: ${pct}%"></div>
-            </div>
-            <div class="flex items-center justify-between text-xs text-slate-600">
-              <span>المصروف: <strong class="text-slate-900">${fmt(spent)}</strong></span>
-              <span>المخصص: <strong class="text-slate-900">${fmt(b.limit)}</strong></span>
-            </div>
-            <div class="pt-2 border-t border-white/60 flex items-center justify-between gap-2">
-              <button type="button" onclick="editBudgetLimit(${idx})" class="text-xs font-bold text-sky-700 hover:underline">تعديل السقف</button>
-              <button type="button" onclick="deleteBudgetCat(${idx})" class="text-xs font-bold text-rose-600 hover:underline">حذف الفئة</button>
-            </div>
-          </div>
-        `;
-      }).join('');
+      const header = ['التاريخ', 'نوع السجل', 'الشخص / التصنيف', 'العنوان', 'التفاصيل', 'الحالة', 'المبلغ', 'العملة'];
+      const rows = filtered.map(e => [
+        e.date,
+        `"${e.kindLabel}"`,
+        `"${(e.partyOrCat || '').replace(/"/g, '""')}"`,
+        `"${(e.title || '').replace(/"/g, '""')}"`,
+        `"${(e.details || '').replace(/"/g, '""')}"`,
+        `"${e.status}"`,
+        e.amount,
+        `"${(e.currency || state.currency).replace(/"/g, '""')}"`
+      ].join(','));
+
+      const csv = '\uFEFF' + [header.join(','), ...rows].join('\n');
+      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = `alzaeem-full-log-${todayISO()}.csv`;
+      a.click();
+      showToast('تم تصدير السجل الكامل كملف إكسل (CSV)');
     }
 
     function openBudgetModal(catName = '', limit = '') {
@@ -3416,9 +3550,163 @@
       showToast('تم حذف المصروف المتكرر');
     }
 
+    // ==================== SAVINGS GOALS (حصالة الأهداف) ====================
+    function renderSavingsGoals() {
+      const grid = document.getElementById('savingsGoalsGrid');
+      if (!grid) return;
+      if (!state.savingsGoals || !state.savingsGoals.length) {
+        grid.innerHTML = `<p class="col-span-full text-xs text-slate-400 text-center py-3">لا توجد أهداف ادخار حالياً — أضف هدفك الأول وابدأ التوفير</p>`;
+        return;
+      }
+      grid.innerHTML = state.savingsGoals.map(g => {
+        const gCurr = g.currency || state.currency;
+        const gcs = getCurrencyStyle(gCurr);
+        const pct = g.targetAmount > 0 ? Math.min(100, Math.round((Number(g.savedAmount) / Number(g.targetAmount)) * 100)) : 0;
+        const isDone = Number(g.savedAmount) >= Number(g.targetAmount);
+        return `
+          <div class="p-3.5 rounded-2xl ${gcs.row} flex flex-col justify-between gap-2.5">
+            <div class="flex items-start justify-between gap-2">
+              <div class="min-w-0">
+                <h4 class="font-extrabold text-sm text-slate-900 truncate">${escapeHtml(g.title)}</h4>
+                <p class="text-[11px] text-slate-600">${g.deadline ? `الموعد: ${g.deadline}` : 'هدف مفتوح'} • الإنجاز: <strong>${pct}%</strong></p>
+              </div>
+              <span class="text-xs font-extrabold ${isDone ? 'text-emerald-700' : 'text-teal-800'} shrink-0">${isDone ? '✓ مكتمل' : `${pct}%`}</span>
+            </div>
+            <div class="w-full bg-white/75 h-2 rounded-full overflow-hidden border border-white">
+              <div class="bg-gradient-to-l from-teal-500 to-emerald-600 h-full rounded-full transition-all" style="width: ${pct}%"></div>
+            </div>
+            <div class="flex items-center justify-between text-[11px] text-slate-700">
+              <span>المدخر: <strong>${fmt(g.savedAmount, gCurr)}</strong></span>
+              <span>الهدف: <strong>${fmt(g.targetAmount, gCurr)}</strong></span>
+            </div>
+            <div class="flex items-center justify-between gap-2 pt-2 border-t border-white/60 text-[11px]">
+              ${!isDone ? `<button type="button" onclick="openGoalDepositModal('${g.id}')" class="ios-btn bg-teal-600 hover:bg-teal-700 text-white font-bold px-2.5 py-1 rounded-lg">+ إيداع مبلغ</button>` : `<span class="text-emerald-700 font-bold">تم تحقيق الهدف 🎉</span>`}
+              <button type="button" onclick="deleteSavingsGoal('${g.id}')" class="text-rose-600 font-bold hover:underline">حذف</button>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function openSavingsGoalModal() {
+      document.getElementById('savingsGoalForm').reset();
+      populateCurrencySelects();
+      openModal('savingsGoalModal');
+    }
+
+    document.getElementById('savingsGoalForm').addEventListener('submit', e => {
+      e.preventDefault();
+      const title = document.getElementById('goalTitle').value.trim();
+      const targetAmount = parseFloat(document.getElementById('goalTargetAmount').value);
+      const savedAmount = parseFloat(document.getElementById('goalSavedAmount').value) || 0;
+      const currency = document.getElementById('goalCurrency').value || state.currency;
+      const deadline = document.getElementById('goalDeadline').value || '';
+      if (!title || isNaN(targetAmount) || targetAmount <= 0) return;
+
+      state.savingsGoals.push({
+        id: 'goal_' + Date.now(),
+        title,
+        targetAmount,
+        savedAmount,
+        currency,
+        deadline
+      });
+      saveState();
+      closeModal('savingsGoalModal');
+      renderAll();
+      showToast('تم إنشاء هدف الادخار بنجاح');
+    });
+
+    function openGoalDepositModal(goalId) {
+      const g = state.savingsGoals.find(x => x.id === goalId);
+      if (!g) return;
+      const gCurr = g.currency || state.currency;
+      const rem = Math.max(0, Number(g.targetAmount) - Number(g.savedAmount));
+      document.getElementById('depositGoalId').value = goalId;
+      document.getElementById('depositGoalTitle').textContent = g.title;
+      document.getElementById('depositGoalRemaining').textContent = fmt(rem, gCurr);
+      document.getElementById('depositGoalAmount').value = '';
+      openModal('goalDepositModal');
+    }
+
+    document.getElementById('goalDepositForm').addEventListener('submit', e => {
+      e.preventDefault();
+      const goalId = document.getElementById('depositGoalId').value;
+      const amt = parseFloat(document.getElementById('depositGoalAmount').value);
+      const g = state.savingsGoals.find(x => x.id === goalId);
+      if (!g || isNaN(amt) || amt <= 0) return;
+
+      g.savedAmount = Number(g.savedAmount) + amt;
+      saveState();
+      closeModal('goalDepositModal');
+      renderAll();
+      showToast(`تم إيداع ${fmt(amt, g.currency || state.currency)} في ${g.title}`);
+    });
+
+    function deleteSavingsGoal(goalId) {
+      state.savingsGoals = state.savingsGoals.filter(x => x.id !== goalId);
+      saveState();
+      renderAll();
+      showToast('تم حذف هدف الادخار');
+    }
+
+    const budgetMonthPicker = document.getElementById('budgetMonthPicker');
+    if (budgetMonthPicker) {
+      budgetMonthPicker.value = currentMonthISO();
+      budgetMonthPicker.addEventListener('change', renderBudget);
+    }
+
+    function renderBudget() {
+      const m = (budgetMonthPicker && budgetMonthPicker.value) || currentMonthISO();
+      const totalLimit = state.budgets.reduce((s, b) => s + Number(b.limit), 0);
+      const monthExpenses = state.transactions.filter(t => t.type === 'expense' && t.date.startsWith(m) && (t.currency || state.currency) === state.currency);
+      const totalSpent = monthExpenses.reduce((s, t) => s + Number(t.amount), 0);
+      const remaining = totalLimit - totalSpent;
+
+      document.getElementById('budgetTotalLimit').textContent = fmt(totalLimit);
+      document.getElementById('budgetTotalSpent').textContent = fmt(totalSpent);
+      document.getElementById('budgetTotalRemaining').textContent = fmt(remaining);
+      document.getElementById('budgetTotalRemaining').className = `text-sm sm:text-2xl font-extrabold mt-1 break-words ${remaining >= 0 ? 'text-emerald-600' : 'text-rose-600'}`;
+
+      const grid = document.getElementById('budgetCardsGrid');
+      if (!grid) return;
+      const bcs = getCurrencyStyle(state.currency);
+      grid.innerHTML = state.budgets.map((b, idx) => {
+        const spent = monthExpenses.filter(t => t.category === b.name).reduce((s, t) => s + Number(t.amount), 0);
+        const pct = b.limit > 0 ? Math.min(100, Math.round((spent / b.limit) * 100)) : 0;
+        const rawPct = b.limit > 0 ? Math.round((spent / b.limit) * 100) : 0;
+        const barColor = rawPct >= 100 ? 'bg-rose-500' : rawPct >= 80 ? 'bg-amber-500' : 'bg-gradient-to-l from-sky-500 to-teal-600';
+        const statusBadge = rawPct >= 100
+          ? `<span class="text-xs font-bold bg-rose-500/15 text-rose-700 px-2.5 py-0.5 rounded-full">تجاوز الحد (${rawPct}%)</span>`
+          : rawPct >= 80
+            ? `<span class="text-xs font-bold bg-amber-500/20 text-amber-800 px-2.5 py-0.5 rounded-full">قريب من الحد (${rawPct}%)</span>`
+            : `<span class="text-xs font-bold bg-emerald-500/15 text-emerald-700 px-2.5 py-0.5 rounded-full">${rawPct}% مستهلك</span>`;
+
+        return `
+          <div class="glass-card ${bcs.row} p-5 space-y-3">
+            <div class="flex items-center justify-between gap-2">
+              <h4 class="font-extrabold text-slate-900">${escapeHtml(b.name)}</h4>
+              ${statusBadge}
+            </div>
+            <div class="w-full bg-white/70 h-2.5 rounded-full overflow-hidden border border-white/80">
+              <div class="${barColor} h-full rounded-full transition-all" style="width: ${pct}%"></div>
+            </div>
+            <div class="flex items-center justify-between text-xs text-slate-600">
+              <span>المصروف: <strong class="text-slate-900">${fmt(spent)}</strong></span>
+              <span>المخصص: <strong class="text-slate-900">${fmt(b.limit)}</strong></span>
+            </div>
+            <div class="pt-2 border-t border-white/60 flex items-center justify-between gap-2">
+              <button type="button" onclick="editBudgetLimit(${idx})" class="text-xs font-bold text-sky-700 hover:underline">تعديل السقف</button>
+              <button type="button" onclick="deleteBudgetCat(${idx})" class="text-xs font-bold text-rose-600 hover:underline">حذف الفئة</button>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
     function openPnlReportModal() {
       const picker = document.getElementById('pnlMonthPicker');
-      if (!picker.value) picker.value = currentMonthISO();
+      if (picker && !picker.value) picker.value = currentMonthISO();
       renderPnlReport();
       openModal('pnlReportModal');
     }
@@ -3994,7 +4282,8 @@
             <div class="flex items-center gap-2">
               ${!isDone && getSchedulePhone(s) ? `<button type="button" onclick="sendWhatsappReminder('${s.id}')" class="ios-btn bg-emerald-500/15 hover:bg-emerald-500/25 text-emerald-800 text-xs font-bold px-3 py-2 rounded-xl">واتساب</button>` : ''}
               ${!isDone ? `<button type="button" onclick="openScheduleCollectModal('${s.id}')" class="ios-btn bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold px-3.5 py-2 rounded-xl shadow-xs">قبض</button>` : ''}
-              <button type="button" onclick="deleteSchedule('${s.id}')" class="text-xs font-bold text-rose-600 hover:underline px-2">حذف</button>
+              <button type="button" onclick="editSchedule('${s.id}')" class="text-xs font-bold text-sky-700 hover:underline px-1.5">تعديل</button>
+              <button type="button" onclick="deleteSchedule('${s.id}')" class="text-xs font-bold text-rose-600 hover:underline px-1.5">حذف</button>
             </div>
           </div>
         `;
@@ -4003,6 +4292,8 @@
 
     function openScheduleModal() {
       document.getElementById('scheduleForm').reset();
+      document.getElementById('editSchedId').value = '';
+      document.getElementById('scheduleModalTitle').textContent = 'تحديد موعد قبض / تحصيل';
       document.getElementById('schedDate').value = todayISO();
       document.getElementById('schedSendWhatsapp').checked = true;
       populateCurrencySelects();
@@ -4012,6 +4303,35 @@
       const openDebts = state.debts.filter(d => Number(d.totalAmount) > Number(d.paidAmount));
       debtSel.innerHTML = `<option value="">بدون ربط</option>` + openDebts.map(d => `<option value="${d.id}">${escapeHtml(d.name)} (${fmt(d.totalAmount - d.paidAmount, d.currency)})</option>`).join('');
       openModal('scheduleModal');
+    }
+
+    function deleteSchedule(id) {
+      state.schedules = state.schedules.filter(s => s.id !== id);
+      saveState();
+      renderAll();
+      showToast('تم حذف الموعد');
+    }
+
+    function editSchedule(schedId) {
+      const s = state.schedules.find(x => x.id === schedId);
+      if (!s) return;
+      openScheduleModal();
+      document.getElementById('editSchedId').value = s.id;
+      document.getElementById('scheduleModalTitle').textContent = 'تعديل موعد القبض / التحصيل';
+      document.getElementById('schedTitle').value = s.title;
+      document.getElementById('schedAmount').value = s.amount;
+      document.getElementById('schedCurrency').value = s.currency || state.currency;
+      document.getElementById('schedDate').value = s.date;
+      document.getElementById('schedRecurrence').value = s.recurrence || 'once';
+      document.getElementById('schedPhone').value = s.phone || '';
+      document.getElementById('schedLinkedDebt').value = s.debtId || '';
+      document.getElementById('schedNote').value = s.note || '';
+      document.getElementById('schedSendWhatsapp').checked = false;
+      if (s.personName) {
+        const p = state.people.find(x => x.name === s.personName);
+        if (p) document.getElementById('schedPersonSelect').value = p.id;
+      }
+      updateRateBox('schedCurrency', 'schedRateBox', 'schedAmount', 'schedExchangeRate', 'schedRatePreview');
     }
 
     document.getElementById('schedPersonSelect').addEventListener('change', e => {
@@ -4042,6 +4362,7 @@
 
     document.getElementById('scheduleForm').addEventListener('submit', e => {
       e.preventDefault();
+      const editId = document.getElementById('editSchedId').value;
       const title = document.getElementById('schedTitle').value.trim();
       const rawAmount = parseFloat(document.getElementById('schedAmount').value);
       const rawCurrency = document.getElementById('schedCurrency').value || state.currency;
@@ -4058,6 +4379,19 @@
       if (!title || isNaN(rawAmount) || rawAmount <= 0 || !date) return;
 
       const conv = applyUsdConversion(rawAmount, rawCurrency, rateVal, rawNote);
+      if (editId) {
+        const existing = state.schedules.find(x => x.id === editId);
+        if (existing) {
+          Object.assign(existing, { title, amount: conv.amount, currency: conv.currency, date, recurrence, debtId, personName, phone, note: conv.details });
+          saveState();
+          closeModal('scheduleModal');
+          renderAll();
+          showToast('تم تعديل موعد القبض بنجاح');
+          if (sendWa && formatWaPhone(phone)) sendWhatsappReminder(editId);
+          return;
+        }
+      }
+
       const schId = 'sch_' + Date.now();
       state.schedules.push({ id: schId, title, amount: conv.amount, currency: conv.currency, date, recurrence, debtId, personName, phone, status: 'pending', note: conv.details });
       saveState();
@@ -4136,11 +4470,81 @@
       showToast(`تم تسجيل قبض ${fmt(receivedAmt, sCurr)} وإضافته للمدخول`);
     });
 
-    function deleteSchedule(id) {
-      state.schedules = state.schedules.filter(s => s.id !== id);
-      saveState();
-      renderAll();
-      showToast('تم حذف الموعد');
+    // ==================== DIGITAL RECEIPT / PAYMENT VOUCHER ====================
+    let currentVoucherData = null;
+
+    function openVoucherForTx(txId) {
+      const t = state.transactions.find(x => x.id === txId);
+      if (!t) return;
+      const isIncome = t.type === 'income';
+      const voucherNo = 'VCH-' + String(t.id).replace(/\D/g, '').slice(-6).padStart(6, '0');
+      const personObj = t.personName ? state.people.find(p => p.name === t.personName) : null;
+      currentVoucherData = {
+        no: voucherNo,
+        typeLabel: isIncome ? 'سند قبض مالي' : 'سند صرف مالي',
+        isIncome,
+        date: t.date,
+        personName: t.personName || 'غير محدد',
+        phone: personObj ? personObj.phone : '',
+        amountText: fmt(t.amount, t.currency),
+        method: t.method || 'نقدي',
+        category: t.category,
+        note: t.note,
+        details: t.details || ''
+      };
+
+      document.getElementById('voucherCardBody').innerHTML = `
+        <div class="flex items-center justify-between border-b border-slate-200 pb-2.5">
+          <div>
+            <h4 class="text-base font-extrabold ${isIncome ? 'text-emerald-700' : 'text-rose-700'}">${currentVoucherData.typeLabel}</h4>
+            <p class="text-[11px] text-slate-500">تطبيق الزعيم برو للإدارة المالية</p>
+          </div>
+          <div class="text-left" dir="ltr">
+            <span class="text-xs font-extrabold text-slate-800 block">${voucherNo}</span>
+            <span class="text-[11px] text-slate-500">${t.date}</span>
+          </div>
+        </div>
+        <div class="bg-slate-50 rounded-xl p-3 text-center">
+          <span class="text-[11px] text-slate-500 block">المبلغ المعتمد</span>
+          <strong class="text-xl font-extrabold ${isIncome ? 'text-emerald-700' : 'text-rose-700'}">${currentVoucherData.amountText}</strong>
+        </div>
+        <div class="space-y-1.5 text-xs text-slate-700">
+          <div class="flex justify-between"><span class="text-slate-500">${isIncome ? 'استلمنا من:' : 'صُرف إلى:'}</span><strong>${escapeHtml(currentVoucherData.personName)}</strong></div>
+          <div class="flex justify-between"><span class="text-slate-500">البند / التصنيف:</span><strong>${escapeHtml(t.category)}</strong></div>
+          <div class="flex justify-between"><span class="text-slate-500">طريقة الدفع:</span><strong>${escapeHtml(t.method || 'نقدي')}</strong></div>
+          <div class="flex justify-between"><span class="text-slate-500">البيان:</span><strong>${escapeHtml(t.note)}</strong></div>
+          ${t.details ? `<div class="pt-1 border-t border-slate-200/70 text-[11px] text-slate-600">ملاحظات: ${escapeHtml(t.details)}</div>` : ''}
+        </div>
+      `;
+      openModal('voucherModal');
+    }
+
+    function buildVoucherPlainText() {
+      if (!currentVoucherData) return '';
+      const v = currentVoucherData;
+      return `${v.typeLabel} (${v.no})\nالتاريخ: ${v.date}\n${v.isIncome ? 'استلمنا من' : 'صرفنا إلى'}: ${v.personName}\nالمبلغ: ${v.amountText}\nطريقة الدفع: ${v.method}\nالبيان: ${v.note}${v.details ? `\nالتفاصيل: ${v.details}` : ''}\n— الزعيم برو`;
+    }
+
+    function shareVoucherWhatsapp() {
+      if (!currentVoucherData) return;
+      const text = buildVoucherPlainText();
+      const waPhone = formatWaPhone(currentVoucherData.phone);
+      const url = waPhone
+        ? `https://wa.me/${waPhone}?text=${encodeURIComponent(text)}`
+        : `https://wa.me/?text=${encodeURIComponent(text)}`;
+      window.open(url, '_blank', 'noopener');
+    }
+
+    function copyVoucherText() {
+      const text = buildVoucherPlainText();
+      if (!text) return;
+      const ta = document.createElement('textarea');
+      ta.value = text;
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand('copy');
+      document.body.removeChild(ta);
+      showToast('تم نسخ نص السند للحافظة');
     }
 
     // ==================== TRANSACTION MODAL, CALCULATOR, RATE & RECEIPT ====================
@@ -4542,6 +4946,7 @@
       renderDashboard();
       renderTransactions();
       renderRecurringExpenses();
+      renderSavingsGoals();
       renderBudget();
       renderPeople();
       renderDebts();
