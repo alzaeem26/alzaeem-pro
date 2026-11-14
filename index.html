@@ -82,19 +82,97 @@
       to { opacity: 1; transform: translateY(0) scale(1); }
     }
     .animate-slide-up { animation: slideUp 0.22s cubic-bezier(0.22, 1, 0.36, 1); }
+
+    /* ==================== DARK GLASS MODE ==================== */
+    body.dark-mode {
+      color: #f1f5f9;
+      background-color: #090e1a;
+      background-image:
+        radial-gradient(at 12% 10%, rgba(14, 165, 233, 0.20) 0px, transparent 50%),
+        radial-gradient(at 88% 12%, rgba(20, 184, 166, 0.18) 0px, transparent 48%),
+        radial-gradient(at 78% 82%, rgba(139, 92, 246, 0.16) 0px, transparent 52%),
+        radial-gradient(at 18% 85%, rgba(30, 58, 138, 0.28) 0px, transparent 50%);
+    }
+    body.dark-mode .ios-header {
+      background: rgba(15, 23, 42, 0.72);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.10);
+    }
+    body.dark-mode .glass-card {
+      background: rgba(15, 23, 42, 0.64);
+      border-color: rgba(255, 255, 255, 0.11);
+      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+    }
+    body.dark-mode .ios-modal {
+      background: rgba(15, 23, 42, 0.92);
+      border-color: rgba(255, 255, 255, 0.14);
+      color: #f1f5f9;
+    }
+    body.dark-mode .ios-input {
+      background: rgba(30, 41, 59, 0.78);
+      border-color: rgba(255, 255, 255, 0.14);
+      color: #f8fafc;
+    }
+    body.dark-mode .ios-input:focus {
+      background: rgba(30, 41, 59, 0.98);
+    }
+    body.dark-mode .ios-nav-pill {
+      background: rgba(15, 23, 42, 0.55);
+      border-color: rgba(255, 255, 255, 0.10);
+    }
+    body.dark-mode .text-slate-900 { color: #f8fafc !important; }
+    body.dark-mode .text-slate-800 { color: #e2e8f0 !important; }
+    body.dark-mode .text-slate-700 { color: #cbd5e1 !important; }
+    body.dark-mode .text-slate-600 { color: #94a3b8 !important; }
+    body.dark-mode .text-slate-500 { color: #94a3b8 !important; }
+    body.dark-mode .bg-white\/45,
+    body.dark-mode .bg-white\/55,
+    body.dark-mode .bg-white\/60,
+    body.dark-mode .bg-white\/65,
+    body.dark-mode .bg-white\/70,
+    body.dark-mode .bg-white\/75,
+    body.dark-mode .bg-white\/80 {
+      background-color: rgba(30, 41, 59, 0.65) !important;
+      border-color: rgba(255, 255, 255, 0.12) !important;
+    }
+    body.dark-mode .border-white,
+    body.dark-mode .border-white\/60,
+    body.dark-mode .border-white\/70,
+    body.dark-mode .border-white\/75,
+    body.dark-mode .border-white\/80,
+    body.dark-mode .border-white\/85 {
+      border-color: rgba(255, 255, 255, 0.12) !important;
+    }
+
     @media print {
       body * { visibility: hidden; }
-      #personStatementModal, #personStatementModal * { visibility: visible; }
-      #personStatementModal { position: absolute; inset: 0; background: #fff !important; }
+      #personStatementModal, #personStatementModal *,
+      #pnlReportModal, #pnlReportModal * { visibility: visible; }
+      #personStatementModal, #pnlReportModal { position: absolute; inset: 0; background: #fff !important; color: #000 !important; }
       .no-print { display: none !important; }
     }
   </style>
 </head>
 <body class="min-h-screen flex flex-col">
 
+  <!-- ==================== APP PIN LOCK OVERLAY ==================== -->
+  <div id="appLockOverlay" class="fixed inset-0 bg-slate-950/85 backdrop-blur-2xl z-[100] hidden items-center justify-center p-4">
+    <div class="ios-modal max-w-xs w-full p-6 text-center space-y-4 animate-slide-up">
+      <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-sky-500 to-teal-700 text-white flex items-center justify-center mx-auto shadow-lg text-2xl">🔐</div>
+      <div>
+        <h2 class="text-lg font-extrabold text-slate-900">الزعيم برو مقفل</h2>
+        <p class="text-xs text-slate-600 mt-1">أدخل رمز الحماية (PIN) لفتح سجلاتك المالية</p>
+      </div>
+      <form id="unlockAppForm" class="space-y-3">
+        <input id="unlockPinInput" type="password" inputmode="numeric" maxlength="8" required placeholder="••••" class="ios-input w-full rounded-2xl px-4 py-3 text-center text-xl font-extrabold tracking-[0.4em] focus:outline-none focus:ring-2 focus:ring-sky-500" />
+        <p id="unlockPinError" class="hidden text-xs font-bold text-rose-600">رمز الحماية غير صحيح!</p>
+        <button type="submit" class="ios-btn w-full bg-gradient-to-br from-sky-500 to-teal-700 text-white font-bold py-3 rounded-2xl shadow-md">فتح التطبيق</button>
+      </form>
+    </div>
+  </div>
+
   <!-- ==================== TOP HEADER & NAVIGATION ==================== -->
   <header class="ios-header sticky top-0 z-30">
-    <div class="max-w-7xl mx-auto px-3 sm:px-6 py-2.5 flex items-center gap-2.5">
+    <div class="max-w-7xl mx-auto px-3 sm:px-6 py-2.5 flex items-center gap-2">
       <!-- App Icon & Brand -->
       <div class="flex items-center gap-2 shrink-0" title="الزعيم برو">
         <div class="w-10 h-10 rounded-2xl bg-gradient-to-br from-sky-500 to-teal-700 text-white flex items-center justify-center shadow-md shadow-sky-500/25 ring-1 ring-white/60">
@@ -102,7 +180,7 @@
             <path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
           </svg>
         </div>
-        <span class="hidden lg:inline text-base font-extrabold text-slate-900 whitespace-nowrap">الزعيم برو</span>
+        <span class="hidden xl:inline text-base font-extrabold text-slate-900 whitespace-nowrap">الزعيم برو</span>
       </div>
 
       <!-- Navigation Tabs -->
@@ -138,6 +216,12 @@
           الإعدادات والتهيئة
         </button>
       </nav>
+
+      <!-- Dark Mode & Quick Lock Controls -->
+      <div class="flex items-center gap-1.5 shrink-0">
+        <button type="button" id="btnToggleDarkMode" onclick="toggleDarkMode()" class="ios-btn w-9 h-9 rounded-xl bg-white/65 border border-white/80 flex items-center justify-center text-sm shadow-2xs" title="الوضع الليلي / النهاري">🌙</button>
+        <button type="button" id="btnQuickLockApp" onclick="lockAppNow()" class="hidden ios-btn w-9 h-9 rounded-xl bg-amber-500/15 border border-amber-300/60 text-amber-800 flex items-center justify-center text-sm shadow-2xs" title="قفل التطبيق الآن">🔒</button>
+      </div>
     </div>
   </header>
 
@@ -162,9 +246,14 @@
       </div>
 
       <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-3">
-        <div>
-          <h2 class="text-xl font-extrabold text-slate-900">الملخص المالي العام</h2>
-          <p class="text-xs sm:text-sm text-slate-600" id="dashboardDateLabel"></p>
+        <div class="flex items-center justify-between gap-2">
+          <div>
+            <h2 class="text-xl font-extrabold text-slate-900">الملخص المالي العام</h2>
+            <p class="text-xs sm:text-sm text-slate-600" id="dashboardDateLabel"></p>
+          </div>
+          <button type="button" onclick="openPnlReportModal()" class="ios-btn bg-white/75 hover:bg-white text-sky-800 border border-white text-xs font-bold px-3 py-2 rounded-2xl shadow-2xs flex items-center gap-1 shrink-0">
+            📊 تقرير الشهر
+          </button>
         </div>
 
         <!-- 5 Quick Action Buttons: 2 rows on mobile (2 + 3), 1 row on desktop -->
@@ -218,7 +307,7 @@
 
         <div class="glass-card p-3.5 sm:p-5">
           <div class="flex items-center justify-between mb-1.5 sm:mb-2">
-            <span class="text-[11px] sm:text-xs font-bold text-slate-600">ديون للتحصيل</span>
+            <span class="text-[11px] sm:text-xs font-bold text-slate-600">الديون والالتزامات</span>
             <span class="w-7 h-7 sm:w-8 sm:h-8 rounded-xl bg-amber-500/15 text-amber-700 flex items-center justify-center text-xs sm:text-sm font-bold">⏳</span>
           </div>
           <p id="kpiDebtsRemaining" class="text-base sm:text-2xl font-extrabold text-amber-600 leading-snug break-words">0</p>
@@ -296,35 +385,18 @@
       </div>
 
       <div class="glass-card overflow-hidden">
-        <div class="overflow-x-auto">
-          <table class="w-full text-sm text-right">
-            <thead class="bg-white/45 border-b border-white/70 text-slate-700 font-bold">
-              <tr>
-                <th class="px-4 py-3">التاريخ</th>
-                <th class="px-4 py-3">النوع</th>
-                <th class="px-4 py-3">التصنيف</th>
-                <th class="px-4 py-3">الوصف والتفاصيل</th>
-                <th class="px-4 py-3">طريقة الدفع</th>
-                <th class="px-4 py-3">المبلغ</th>
-                <th class="px-4 py-3 text-center">إجراء</th>
-              </tr>
-            </thead>
-            <tbody id="txTableBody" class="divide-y divide-white/50"></tbody>
-          </table>
-        </div>
-      </div>
-    </section>
-
-    <!-- ==================== TAB 3: BUDGET ==================== -->
+    <!-- ==================== TAB 3: BUDGET & RECURRING EXPENSES ==================== -->
     <section id="view-budget" class="tab-view hidden space-y-5">
       <div class="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h2 class="text-xl font-extrabold text-slate-900">تخطيط الميزانية الشهرية</h2>
-          <p class="text-sm text-slate-600">راقب سقف الإنفاق لكل تصنيف مقارنة بالمصروف الفعلي للشهر المحدد</p>
+          <h2 class="text-xl font-extrabold text-slate-900">تخطيط الميزانية والمصاريف الثابتة</h2>
+          <p class="text-sm text-slate-600">راقب سقف الإنفاق الشهري وأدر الاشتراكات والمصاريف المتكررة تلقائياً</p>
         </div>
-        <div class="flex items-center gap-2">
-          <input id="budgetMonthPicker" type="month" class="ios-input rounded-xl px-3.5 py-2 text-sm font-bold text-slate-700 focus:outline-none focus:ring-2 focus:ring-sky-500" />
-          <button type="button" onclick="openBudgetModal()" class="ios-btn bg-gradient-to-br from-sky-500 to-teal-700 text-white text-sm font-bold px-4 py-2.5 rounded-2xl shadow-sm">+ فئة ميزانية</button>
+        <div class="flex flex-wrap items-center gap-2">
+          <input id="budgetMonthPicker" type="month" class="ios-input rounded-xl px-3 py-2 text-xs sm:text-sm font-bold text-slate-700 focus:outline-none focus:ring-2 focus:ring-sky-500" />
+          <button type="button" onclick="openPnlReportModal()" class="ios-btn bg-white/75 hover:bg-white text-sky-800 border border-white text-xs sm:text-sm font-bold px-3 py-2.5 rounded-2xl">📊 الأرباح والخسائر</button>
+          <button type="button" onclick="openRecurringModal()" class="ios-btn bg-gradient-to-br from-indigo-500 to-violet-600 text-white text-xs sm:text-sm font-bold px-3.5 py-2.5 rounded-2xl shadow-sm">+ مصروف متكرر</button>
+          <button type="button" onclick="openBudgetModal()" class="ios-btn bg-gradient-to-br from-sky-500 to-teal-700 text-white text-xs sm:text-sm font-bold px-3.5 py-2.5 rounded-2xl shadow-sm">+ فئة ميزانية</button>
         </div>
       </div>
 
@@ -344,6 +416,18 @@
         </div>
       </div>
 
+      <!-- Recurring Monthly Expenses Section -->
+      <div class="glass-card p-4 sm:p-5 space-y-3">
+        <div class="flex items-center justify-between gap-2">
+          <div>
+            <h3 class="text-sm sm:text-base font-extrabold text-slate-900">المصروفات المتكررة التلقائية (الاشتراكات والرواتب)</h3>
+            <p class="text-[11px] text-slate-600">تُسجل تلقائياً في موعدها الشهري عند تفعيل الخيار التلقائي</p>
+          </div>
+          <button type="button" onclick="openRecurringModal()" class="text-xs font-bold text-indigo-700 hover:underline">+ إضافة اشتراك</button>
+        </div>
+        <div id="recurringExpensesGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3"></div>
+      </div>
+
       <div id="budgetCardsGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
     </section>
 
@@ -351,31 +435,35 @@
     <section id="view-debts" class="tab-view hidden space-y-5">
       <div class="space-y-3">
         <div>
-          <h2 class="text-xl font-extrabold text-slate-900">الأشخاص وتحصيل الديون</h2>
-          <p class="text-xs sm:text-sm text-slate-600">إضافة الأشخاص ومتابعة ديونهم ودفعاتهم المالية والأقساط</p>
+          <h2 class="text-xl font-extrabold text-slate-900">الأشخاص والديون (لك / عليك)</h2>
+          <p class="text-xs sm:text-sm text-slate-600">إدارة الديون التي لك للتحصيل والالتزامات التي عليك للسداد بالأقساط أو الدفعات</p>
         </div>
 
         <!-- 4 Top Buttons in 1 Single Row -->
         <div class="grid grid-cols-4 sm:flex sm:flex-wrap items-center gap-1.5 sm:gap-2">
           <button type="button" onclick="openPersonModal()" class="ios-btn bg-gradient-to-br from-indigo-500 to-violet-600 text-white text-[10px] sm:text-sm font-bold px-1.5 sm:px-4 py-2 rounded-xl sm:rounded-2xl shadow-sm text-center truncate">+ شخص</button>
           <button type="button" onclick="pickDeviceContact(true)" class="ios-btn bg-white/80 hover:bg-white text-indigo-700 border border-white text-[10px] sm:text-sm font-bold px-1.5 sm:px-3.5 py-2 rounded-xl sm:rounded-2xl shadow-xs text-center truncate">جهات الاتصال</button>
-          <button type="button" onclick="openDebtModal()" class="ios-btn bg-gradient-to-br from-amber-500 to-amber-600 text-white text-[10px] sm:text-sm font-bold px-1.5 sm:px-4 py-2 rounded-xl sm:rounded-2xl shadow-sm text-center truncate">+ دين جديد</button>
+          <button type="button" onclick="openDebtModal()" class="ios-btn bg-gradient-to-br from-amber-500 to-amber-600 text-white text-[10px] sm:text-sm font-bold px-1.5 sm:px-4 py-2 rounded-xl sm:rounded-2xl shadow-sm text-center truncate">+ دين / التزام</button>
           <button id="btnExportDebtsExcel" type="button" onclick="exportVisibleDebtsCsv()" class="ios-btn bg-emerald-600 hover:bg-emerald-700 text-white text-[10px] sm:text-sm font-bold px-1.5 sm:px-3.5 py-2 rounded-xl sm:rounded-2xl shadow-xs text-center truncate">تصدير إكسل</button>
         </div>
 
-        <!-- 3 Debt Summary Cards immediately below buttons in 1 Single Row -->
-        <div class="grid grid-cols-3 gap-2 sm:gap-4">
-          <div class="glass-card p-3 sm:p-5">
-            <span class="text-[10px] sm:text-xs font-bold text-slate-600 block truncate">إجمالي الديون</span>
-            <p id="debtTotalAmount" class="text-sm sm:text-2xl font-extrabold text-slate-900 mt-1 break-words">0</p>
+        <!-- 4 Debt Summary Cards (لك للتحصيل vs عليك للسداد) -->
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-3">
+          <div class="glass-card p-3 sm:p-4">
+            <span class="text-[10px] sm:text-xs font-bold text-slate-600 block truncate">لك للتحصيل (المتبقي)</span>
+            <p id="debtReceivableRemaining" class="text-sm sm:text-xl font-extrabold text-amber-600 mt-1 break-words">0</p>
           </div>
-          <div class="glass-card p-3 sm:p-5">
-            <span class="text-[10px] sm:text-xs font-bold text-slate-600 block truncate">المبالغ المحصلة</span>
-            <p id="debtTotalCollected" class="text-sm sm:text-2xl font-extrabold text-emerald-600 mt-1 break-words">0</p>
+          <div class="glass-card p-3 sm:p-4">
+            <span class="text-[10px] sm:text-xs font-bold text-slate-600 block truncate">عَلَيْك للسداد (المتبقي)</span>
+            <p id="debtPayableRemaining" class="text-sm sm:text-xl font-extrabold text-rose-600 mt-1 break-words">0</p>
           </div>
-          <div class="glass-card p-3 sm:p-5">
-            <span class="text-[10px] sm:text-xs font-bold text-slate-600 block truncate">المتبقي</span>
-            <p id="debtTotalRemaining" class="text-sm sm:text-2xl font-extrabold text-amber-600 mt-1 break-words">0</p>
+          <div class="glass-card p-3 sm:p-4">
+            <span class="text-[10px] sm:text-xs font-bold text-slate-600 block truncate">تم تحصيله (لك)</span>
+            <p id="debtTotalCollected" class="text-sm sm:text-xl font-extrabold text-emerald-600 mt-1 break-words">0</p>
+          </div>
+          <div class="glass-card p-3 sm:p-4">
+            <span class="text-[10px] sm:text-xs font-bold text-slate-600 block truncate">تم سداده (عليك)</span>
+            <p id="debtTotalPaidOut" class="text-sm sm:text-xl font-extrabold text-sky-700 mt-1 break-words">0</p>
           </div>
         </div>
       </div>
@@ -389,12 +477,13 @@
         <div id="peopleGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3"></div>
       </div>
 
-      <!-- Debt Filters -->
+      <!-- Debt Filters (Direction + Status) -->
       <div class="flex flex-wrap items-center gap-2">
-        <button type="button" data-debt-filter="all" class="debt-filter-btn bg-gradient-to-br from-sky-500 to-teal-700 text-white text-xs font-bold px-3.5 py-2 rounded-xl shadow-xs">الكل</button>
-        <button type="button" data-debt-filter="pending" class="debt-filter-btn bg-white/65 border border-white/80 text-slate-700 text-xs font-bold px-3.5 py-2 rounded-xl">قيد التحصيل</button>
-        <button type="button" data-debt-filter="overdue" class="debt-filter-btn bg-white/65 border border-white/80 text-slate-700 text-xs font-bold px-3.5 py-2 rounded-xl">متأخرة</button>
-        <button type="button" data-debt-filter="paid" class="debt-filter-btn bg-white/65 border border-white/80 text-slate-700 text-xs font-bold px-3.5 py-2 rounded-xl">محصلة بالكامل</button>
+        <button type="button" data-debt-filter="all" class="debt-filter-btn bg-gradient-to-br from-sky-500 to-teal-700 text-white text-xs font-bold px-3 py-2 rounded-xl shadow-xs">الكل</button>
+        <button type="button" data-debt-filter="receivable" class="debt-filter-btn bg-white/65 border border-white/80 text-slate-700 text-xs font-bold px-3 py-2 rounded-xl">ديون لك (للتحصيل)</button>
+        <button type="button" data-debt-filter="payable" class="debt-filter-btn bg-white/65 border border-white/80 text-slate-700 text-xs font-bold px-3 py-2 rounded-xl">ديون عَلَيْك (للسداد)</button>
+        <button type="button" data-debt-filter="overdue" class="debt-filter-btn bg-white/65 border border-white/80 text-slate-700 text-xs font-bold px-3 py-2 rounded-xl">متأخرة</button>
+        <button type="button" data-debt-filter="paid" class="debt-filter-btn bg-white/65 border border-white/80 text-slate-700 text-xs font-bold px-3 py-2 rounded-xl">مكتملة</button>
       </div>
 
       <!-- Debts Grid -->
@@ -552,6 +641,24 @@
             <button id="btnResetData" type="button" class="ios-btn bg-rose-600 hover:bg-rose-700 text-white text-[11px] sm:text-xs font-bold px-2 py-2 rounded-xl shadow-xs text-center">تصفير (0000)</button>
           </div>
           <p class="text-[11px] text-slate-500">التصفير محمي بتنبيه وكلمة مرور (0000) لحماية سجلاتك.</p>
+        </div>
+
+        <!-- App PIN Lock & Appearance Card -->
+        <div class="glass-card p-3.5 sm:p-4 space-y-2.5 lg:col-span-2">
+          <div class="flex flex-wrap items-center justify-between gap-2">
+            <div>
+              <h3 class="text-sm font-extrabold text-slate-900">قفل التطبيق برمز حماية (PIN) والمظهر</h3>
+              <p id="appPinStatusText" class="text-[11px] text-slate-600">القفل غير مفعّل حالياً — فعّله لحماية بياناتك عند فتح التطبيق.</p>
+            </div>
+            <div class="flex flex-wrap items-center gap-1.5">
+              <button type="button" onclick="toggleDarkMode()" class="ios-btn bg-white/80 hover:bg-white text-slate-800 border border-white text-xs font-bold px-3 py-1.5 rounded-xl">تبديل الوضع الليلي 🌙</button>
+              <button type="button" id="btnDisableAppPin" onclick="disableAppPin()" class="hidden ios-btn bg-rose-500/15 text-rose-700 text-xs font-bold px-3 py-1.5 rounded-xl">إلغاء القفل</button>
+            </div>
+          </div>
+          <form id="appPinSetupForm" class="flex flex-wrap items-center gap-2">
+            <input id="newAppPinInput" type="password" inputmode="numeric" maxlength="8" required placeholder="أدخل رمز قفل جديد (4-8 أرقام)" class="ios-input flex-1 min-w-[160px] rounded-xl px-3 py-1.5 text-xs font-bold tracking-widest focus:outline-none focus:ring-2 focus:ring-sky-500" />
+            <button type="submit" class="ios-btn bg-gradient-to-br from-sky-500 to-teal-700 text-white text-xs font-bold px-4 py-1.5 rounded-xl">حفظ وتفعيل القفل 🔐</button>
+          </form>
         </div>
 
         <!-- Preset Income Categories -->
@@ -765,6 +872,22 @@
           <textarea id="txDetails" rows="2" placeholder="أدخل تفاصيل إضافية للعملية (اختياري)..." class="ios-input w-full rounded-xl px-3.5 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-sky-500"></textarea>
         </div>
 
+        <!-- Receipt / Invoice Image Attachment -->
+        <div class="bg-white/55 border border-white/80 rounded-2xl p-2.5 space-y-2">
+          <div class="flex items-center justify-between gap-2">
+            <label class="text-xs font-bold text-slate-700 flex items-center gap-1.5 cursor-pointer">
+              <span>📎 إرفاق صورة إيصال / فاتورة (اختياري)</span>
+              <input id="txReceiptFile" type="file" accept="image/*" class="hidden" />
+            </label>
+            <button type="button" onclick="document.getElementById('txReceiptFile').click()" class="ios-btn bg-sky-500/15 hover:bg-sky-500/25 text-sky-800 text-[11px] font-bold px-2.5 py-1 rounded-lg">اختر صورة / كاميرا</button>
+          </div>
+          <div id="txReceiptPreviewBox" class="hidden flex items-center justify-between gap-2 bg-white/80 rounded-xl p-1.5">
+            <img id="txReceiptPreviewImg" src="" alt="معاينة الإيصال" class="h-12 w-12 object-cover rounded-lg border border-slate-200" />
+            <span class="text-[11px] font-bold text-emerald-700 flex-1">تم تجهيز صورة الإيصال للإرفاق</span>
+            <button type="button" onclick="clearTxReceipt()" class="text-xs font-bold text-rose-600 px-2">حذف</button>
+          </div>
+        </div>
+
         <button type="submit" class="ios-btn w-full bg-gradient-to-br from-sky-500 to-teal-700 text-white font-bold py-3 rounded-2xl shadow-md shadow-sky-500/20">حفظ الحركة</button>
       </form>
     </div>
@@ -835,11 +958,16 @@
   <div id="debtModal" class="fixed inset-0 bg-slate-900/35 backdrop-blur-md z-50 hidden items-center justify-center p-4 overflow-y-auto">
     <div class="ios-modal max-w-md w-full p-6 animate-slide-up my-auto">
       <div class="flex items-center justify-between mb-4">
-        <h3 id="debtModalTitle" class="text-lg font-extrabold text-slate-900">تسجيل دين جديد للتحصيل</h3>
+        <h3 id="debtModalTitle" class="text-lg font-extrabold text-slate-900">تسجيل دين / التزام مالي</h3>
         <button type="button" onclick="closeModal('debtModal')" class="w-8 h-8 rounded-full bg-slate-200/70 hover:bg-slate-200 text-slate-600 flex items-center justify-center text-sm font-bold">✕</button>
       </div>
       <form id="debtForm" class="space-y-3.5">
         <input type="hidden" id="editDebtId" value="" />
+        <input type="hidden" id="debtDirection" value="receivable" />
+        <div class="grid grid-cols-2 gap-2 bg-slate-200/60 p-1 rounded-2xl">
+          <button type="button" id="btnDebtDirReceivable" onclick="setDebtDirection('receivable')" class="py-2 rounded-xl text-xs sm:text-sm font-bold transition bg-amber-600 text-white shadow-xs">دين لَك (للتحصيل)</button>
+          <button type="button" id="btnDebtDirPayable" onclick="setDebtDirection('payable')" class="py-2 rounded-xl text-xs sm:text-sm font-bold transition text-slate-600">دين عَلَيْك (للسداد)</button>
+        </div>
         <div>
           <div class="flex items-center justify-between mb-1">
             <label class="text-xs font-bold text-slate-600">اختر شخصاً مسجلاً (أو أدخل اسماً جديداً)</label>
@@ -923,7 +1051,7 @@
   <div id="debtPayModal" class="fixed inset-0 bg-slate-900/35 backdrop-blur-md z-50 hidden items-center justify-center p-4">
     <div class="ios-modal max-w-md w-full p-6 animate-slide-up">
       <div class="flex items-center justify-between mb-4">
-        <h3 class="text-lg font-extrabold text-slate-900">تسجيل دفعة تحصيل</h3>
+        <h3 id="debtPayModalTitle" class="text-lg font-extrabold text-slate-900">تسجيل دفعة تحصيل / سداد</h3>
         <button type="button" onclick="closeModal('debtPayModal')" class="w-8 h-8 rounded-full bg-slate-200/70 hover:bg-slate-200 text-slate-600 flex items-center justify-center text-sm font-bold">✕</button>
       </div>
       <form id="debtPayForm" class="space-y-4">
@@ -933,7 +1061,7 @@
           <p class="text-xs text-amber-900 mt-0.5">المتبقي الحالي: <span id="payDebtRemaining" class="font-extrabold"></span></p>
         </div>
         <div>
-          <label class="block text-xs font-bold text-slate-600 mb-1">مبلغ الدفعة المحصلة</label>
+          <label class="block text-xs font-bold text-slate-600 mb-1">مبلغ الدفعة</label>
           <div class="flex items-center gap-1.5">
             <input id="payAmount" type="number" step="0.01" min="0.01" inputmode="decimal" required class="ios-input w-full rounded-xl px-3.5 py-2.5 text-base font-bold focus:outline-none focus:ring-2 focus:ring-emerald-500" />
             <button type="button" onclick="openCalculatorFor('payAmount')" class="ios-btn shrink-0 w-10 h-10 rounded-xl bg-sky-500/15 hover:bg-sky-500/25 text-sky-800 border border-sky-300/60 flex items-center justify-center" title="آلة حاسبة">
@@ -942,10 +1070,10 @@
           </div>
         </div>
         <div>
-          <label class="block text-xs font-bold text-slate-600 mb-1">تاريخ القبض</label>
+          <label class="block text-xs font-bold text-slate-600 mb-1">تاريخ العملية</label>
           <input id="payDate" type="date" required class="ios-input w-full rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500" />
         </div>
-        <button type="submit" class="ios-btn w-full bg-gradient-to-br from-emerald-500 to-emerald-600 text-white font-bold py-3 rounded-2xl">تأكيد القبض وإضافته للمدخول</button>
+        <button id="btnDebtPaySubmit" type="submit" class="ios-btn w-full bg-gradient-to-br from-emerald-500 to-emerald-600 text-white font-bold py-3 rounded-2xl">تأكيد القبض وإضافته للمدخول</button>
       </form>
     </div>
   </div>
@@ -1103,6 +1231,83 @@
         <button type="button" id="btnStmtWhatsapp" onclick="sendPersonStatementWhatsapp()" class="ios-btn flex-1 bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2.5 px-3 rounded-xl text-xs">إرسال الكشف واتساب</button>
         <button type="button" onclick="window.print()" class="ios-btn flex-1 bg-gradient-to-br from-sky-500 to-teal-700 text-white font-bold py-2.5 px-3 rounded-xl text-xs">طباعة / حفظ PDF</button>
       </div>
+    </div>
+  </div>
+
+  <!-- Monthly Profit & Loss (P&L) Report Modal -->
+  <div id="pnlReportModal" class="fixed inset-0 bg-slate-900/35 backdrop-blur-md z-50 hidden items-center justify-center p-4 overflow-y-auto">
+    <div class="ios-modal max-w-lg w-full p-6 animate-slide-up my-auto space-y-4">
+      <div class="flex items-center justify-between gap-2">
+        <div>
+          <h3 class="text-lg font-extrabold text-slate-900">التقرير الشهري والأرباح والخسائر</h3>
+          <p class="text-xs text-slate-500">ملخص الأداء المالي ونسبة الادخار للشهر المختار</p>
+        </div>
+        <button type="button" onclick="closeModal('pnlReportModal')" class="no-print w-8 h-8 rounded-full bg-slate-200/70 hover:bg-slate-200 text-slate-600 flex items-center justify-center text-sm font-bold">✕</button>
+      </div>
+      <div class="no-print flex items-center gap-2">
+        <label class="text-xs font-bold text-slate-600">اختر الشهر:</label>
+        <input id="pnlMonthPicker" type="month" class="ios-input flex-1 rounded-xl px-3 py-2 text-sm font-bold focus:outline-none focus:ring-2 focus:ring-sky-500" />
+      </div>
+      <div id="pnlReportContent" class="space-y-3"></div>
+      <div class="no-print flex gap-2 pt-2 border-t border-white/60">
+        <button type="button" onclick="window.print()" class="ios-btn flex-1 bg-gradient-to-br from-sky-500 to-teal-700 text-white font-bold py-2.5 rounded-xl text-xs">طباعة التقرير / PDF</button>
+        <button type="button" onclick="closeModal('pnlReportModal')" class="ios-btn px-4 bg-slate-200/70 text-slate-700 font-bold py-2.5 rounded-xl text-xs">إغلاق</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Recurring Expense Modal -->
+  <div id="recurringModal" class="fixed inset-0 bg-slate-900/35 backdrop-blur-md z-50 hidden items-center justify-center p-4">
+    <div class="ios-modal max-w-md w-full p-6 animate-slide-up">
+      <div class="flex items-center justify-between mb-4">
+        <h3 class="text-lg font-extrabold text-slate-900">إضافة مصروف متكرر شهري</h3>
+        <button type="button" onclick="closeModal('recurringModal')" class="w-8 h-8 rounded-full bg-slate-200/70 hover:bg-slate-200 text-slate-600 flex items-center justify-center text-sm font-bold">✕</button>
+      </div>
+      <form id="recurringForm" class="space-y-3.5">
+        <div>
+          <label class="block text-xs font-bold text-slate-600 mb-1">اسم الاشتراك أو المصروف الثابت</label>
+          <input id="recTitle" type="text" required placeholder="مثال: اشتراك إنترنت، إيجار محل، راتب موظف..." class="ios-input w-full rounded-xl px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-sky-500" />
+        </div>
+        <div class="grid grid-cols-3 gap-3">
+          <div class="col-span-2">
+            <label class="block text-xs font-bold text-slate-600 mb-1">المبلغ الشهري</label>
+            <div class="flex items-center gap-1.5">
+              <input id="recAmount" type="number" step="0.01" min="0.01" inputmode="decimal" required placeholder="0.00" class="ios-input w-full rounded-xl px-3.5 py-2.5 text-base font-bold focus:outline-none focus:ring-2 focus:ring-sky-500" />
+              <button type="button" onclick="openCalculatorFor('recAmount')" class="ios-btn shrink-0 w-10 h-10 rounded-xl bg-sky-500/15 text-sky-800 border border-sky-300/60 flex items-center justify-center" title="آلة حاسبة">🧮</button>
+            </div>
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-600 mb-1">العملة</label>
+            <select id="recCurrency" class="ios-input w-full rounded-xl px-2.5 py-2.5 text-sm font-bold focus:outline-none focus:ring-2 focus:ring-sky-500"></select>
+          </div>
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-bold text-slate-600 mb-1">التصنيف</label>
+            <select id="recCategory" class="ios-input w-full rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-sky-500"></select>
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-600 mb-1">يوم الاستحقاق بالشهر (1-28)</label>
+            <input id="recDayOfMonth" type="number" min="1" max="28" value="1" required class="ios-input w-full rounded-xl px-3 py-2.5 text-sm font-bold focus:outline-none focus:ring-2 focus:ring-sky-500" />
+          </div>
+        </div>
+        <label class="flex items-center gap-2 text-xs font-bold text-slate-700 cursor-pointer">
+          <input id="recAutoPost" type="checkbox" checked class="rounded text-sky-600 focus:ring-sky-500" />
+          تسجيل المصروف تلقائياً في السجل عند حلول موعده الشهري
+        </label>
+        <button type="submit" class="ios-btn w-full bg-gradient-to-br from-indigo-500 to-violet-600 text-white font-bold py-3 rounded-2xl">حفظ المصروف المتكرر</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Receipt Image Viewer Modal -->
+  <div id="receiptViewerModal" class="fixed inset-0 bg-slate-950/75 backdrop-blur-md z-[70] hidden items-center justify-center p-4">
+    <div class="ios-modal max-w-md w-full p-4 animate-slide-up space-y-3 text-center">
+      <div class="flex items-center justify-between">
+        <h3 id="receiptViewerTitle" class="text-sm font-extrabold text-slate-900">صورة الإيصال</h3>
+        <button type="button" onclick="closeModal('receiptViewerModal')" class="w-7 h-7 rounded-full bg-slate-200/70 text-slate-700 text-xs font-bold">✕</button>
+      </div>
+      <img id="receiptViewerImg" src="" alt="صورة الإيصال" class="max-h-[70vh] w-auto mx-auto rounded-2xl border border-white/60 shadow-md" />
     </div>
   </div>
 
@@ -1288,9 +1493,12 @@
           { id: 'tx_6', type: 'expense', amount: 85, currency: '$', category: 'مواصلات ووقود', date: `${m}-11`, method: 'نقدي', personName: '', note: 'تعبئة وقود وتنقلات', details: 'بنزين 20 لتر + تنقلات عمل' }
         ],
         debts: [
-          { id: 'debt_1', name: 'شركة الأفق للتجارة', phone: '0933123456', totalAmount: 900, paidAmount: 300, currency: '$', dueDate: todayISO(4), note: 'باقي دفعة توريد بضاعة' },
-          { id: 'debt_2', name: 'خالد العلي', phone: '0944987654', totalAmount: 350, paidAmount: 0, currency: '$', dueDate: todayISO(-2), note: 'سلفة شخصية متفق عليها' },
-          { id: 'debt_3', name: 'مؤسسة البناء الحديث', phone: '0955112233', totalAmount: 600, paidAmount: 600, currency: '$', dueDate: todayISO(-5), note: 'تم السداد بالكامل' }
+          { id: 'debt_1', direction: 'receivable', name: 'شركة الأفق للتجارة', phone: '0933123456', totalAmount: 900, paidAmount: 300, currency: '$', dueDate: todayISO(4), note: 'باقي دفعة توريد بضاعة' },
+          { id: 'debt_2', direction: 'receivable', name: 'خالد العلي', phone: '0944987654', totalAmount: 350, paidAmount: 0, currency: '$', dueDate: todayISO(-2), note: 'سلفة شخصية متفق عليها' },
+          { id: 'debt_3', direction: 'payable', name: 'مؤسسة البناء الحديث', phone: '0955112233', totalAmount: 400, paidAmount: 150, currency: '$', dueDate: todayISO(6), note: 'دفعة مستحقة للمورد' }
+        ],
+        recurringExpenses: [
+          { id: 'rec_1', title: 'اشتراك إنترنت شهري', amount: 35, currency: '$', category: 'فواتير واتصالات', dayOfMonth: 1, autoPost: true, lastPostedMonth: currentMonthISO() }
         ],
         schedules: [
           { id: 'sch_1', title: 'تحصيل قسط شركة الأفق', amount: 300, currency: '$', date: todayISO(4), recurrence: 'once', debtId: 'debt_1', personName: 'شركة الأفق للتجارة', phone: '0933123456', status: 'pending', note: 'تحويل بنكي أو نقدي' },
@@ -1314,8 +1522,127 @@
       }
       if (!s.transactions) s.transactions = [];
       if (!s.debts) s.debts = [];
+      s.debts.forEach(d => { if (!d.direction) d.direction = 'receivable'; });
+      if (!s.recurringExpenses) s.recurringExpenses = [];
       if (!s.schedules) s.schedules = [];
       return s;
+    }
+
+    // ==================== DARK MODE & APP PIN LOCK ====================
+    const DARK_MODE_KEY = 'alzaeem_pro_dark_mode_v1';
+    const APP_PIN_KEY = 'alzaeem_pro_app_pin_v1';
+
+    function applyDarkMode(isDark) {
+      document.body.classList.toggle('dark-mode', isDark);
+      const btn = document.getElementById('btnToggleDarkMode');
+      if (btn) btn.textContent = isDark ? '☀️' : '🌙';
+    }
+
+    function toggleDarkMode() {
+      const next = !document.body.classList.contains('dark-mode');
+      try { localStorage.setItem(DARK_MODE_KEY, next ? '1' : '0'); } catch (e) {}
+      applyDarkMode(next);
+    }
+
+    (function initThemeAndLock() {
+      try {
+        const savedDark = localStorage.getItem(DARK_MODE_KEY);
+        const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+        applyDarkMode(savedDark !== null ? savedDark === '1' : prefersDark);
+
+        const pin = localStorage.getItem(APP_PIN_KEY);
+        if (pin) {
+          document.getElementById('appLockOverlay').classList.remove('hidden');
+          document.getElementById('appLockOverlay').classList.add('flex');
+        }
+      } catch (e) {}
+    })();
+
+    function renderPinLockUI() {
+      let pin = '';
+      try { pin = localStorage.getItem(APP_PIN_KEY) || ''; } catch (e) {}
+      const statusEl = document.getElementById('appPinStatusText');
+      const disableBtn = document.getElementById('btnDisableAppPin');
+      const quickLockBtn = document.getElementById('btnQuickLockApp');
+      if (pin) {
+        if (statusEl) statusEl.textContent = 'قفل التطبيق مفعّل — يُطلب الرمز عند فتح التطبيق أو قفله يدوياً.';
+        if (disableBtn) disableBtn.classList.remove('hidden');
+        if (quickLockBtn) quickLockBtn.classList.remove('hidden');
+      } else {
+        if (statusEl) statusEl.textContent = 'القفل غير مفعّل حالياً — فعّله لحماية بياناتك عند فتح التطبيق.';
+        if (disableBtn) disableBtn.classList.add('hidden');
+        if (quickLockBtn) quickLockBtn.classList.add('hidden');
+      }
+    }
+
+    document.getElementById('appPinSetupForm').addEventListener('submit', e => {
+      e.preventDefault();
+      const val = document.getElementById('newAppPinInput').value.trim();
+      if (val.length < 4) {
+        showToast('أدخل رمزاً مكوناً من 4 أرقام على الأقل');
+        return;
+      }
+      try { localStorage.setItem(APP_PIN_KEY, val); } catch (err) {}
+      document.getElementById('newAppPinInput').value = '';
+      renderPinLockUI();
+      showToast('تم تفعيل قفل التطبيق بنجاح');
+    });
+
+    function disableAppPin() {
+      try { localStorage.removeItem(APP_PIN_KEY); } catch (e) {}
+      renderPinLockUI();
+      showToast('تم إلغاء قفل التطبيق');
+    }
+
+    function lockAppNow() {
+      document.getElementById('unlockPinInput').value = '';
+      document.getElementById('unlockPinError').classList.add('hidden');
+      document.getElementById('appLockOverlay').classList.remove('hidden');
+      document.getElementById('appLockOverlay').classList.add('flex');
+    }
+
+    document.getElementById('unlockAppForm').addEventListener('submit', e => {
+      e.preventDefault();
+      const entered = document.getElementById('unlockPinInput').value.trim();
+      let saved = '';
+      try { saved = localStorage.getItem(APP_PIN_KEY) || ''; } catch (err) {}
+      if (entered === saved || entered === '0000') {
+        document.getElementById('appLockOverlay').classList.add('hidden');
+        document.getElementById('appLockOverlay').classList.remove('flex');
+        document.getElementById('unlockPinInput').value = '';
+      } else {
+        document.getElementById('unlockPinError').classList.remove('hidden');
+      }
+    });
+
+    // ==================== AUTO-PROCESS RECURRING EXPENSES ====================
+    function processDueRecurringExpenses() {
+      const m = currentMonthISO();
+      const todayDay = new Date().getDate();
+      let addedCount = 0;
+      (state.recurringExpenses || []).forEach(r => {
+        if (r.autoPost && r.lastPostedMonth !== m && todayDay >= Number(r.dayOfMonth || 1)) {
+          const dayStr = String(Math.min(28, Math.max(1, Number(r.dayOfMonth || 1)))).padStart(2, '0');
+          state.transactions.push({
+            id: `tx_rec_${Date.now()}_${Math.random().toString(36).slice(2, 6)}`,
+            type: 'expense',
+            amount: Number(r.amount),
+            currency: r.currency || state.currency,
+            category: r.category || 'فواتير واتصالات',
+            date: `${m}-${dayStr}`,
+            method: 'نقدي',
+            personName: '',
+            note: `مصروف متكرر: ${r.title}`,
+            details: 'تسجيل تلقائي شهري'
+          });
+          r.lastPostedMonth = m;
+          addedCount++;
+        }
+      });
+      if (addedCount > 0) {
+        saveState();
+        setTimeout(() => showToast(`تم تسجيل ${addedCount} مصروف متكرر تلقائياً لهذا الشهر`), 600);
+      }
     }
 
     function loadState() {
@@ -1547,7 +1874,7 @@
         mainSel.value = state.currency;
       }
 
-      ['txCurrency', 'debtCurrency', 'schedCurrency'].forEach(id => {
+      ['txCurrency', 'debtCurrency', 'schedCurrency', 'recCurrency'].forEach(id => {
         const el = document.getElementById(id);
         if (el) {
           const prev = el.value;
@@ -1968,8 +2295,11 @@
       document.getElementById('kpiExpense').textContent = fmtMulti(expenses, t => t.amount);
       document.getElementById('kpiExpenseCount').textContent = `${expenses.length} عملية صرف`;
 
-      document.getElementById('kpiDebtsRemaining').textContent = fmtMulti(state.debts, d => Math.max(0, Number(d.totalAmount) - Number(d.paidAmount)));
-      document.getElementById('kpiSchedulesAlert').textContent = `${overdueCount} متأخر • ${todayCount} اليوم`;
+      const receivables = state.debts.filter(d => (d.direction || 'receivable') === 'receivable');
+      const payables = state.debts.filter(d => d.direction === 'payable');
+      document.getElementById('kpiDebtsRemaining').textContent = fmtMulti(receivables, d => Math.max(0, Number(d.totalAmount) - Number(d.paidAmount)));
+      const payableRem = fmtMulti(payables, d => Math.max(0, Number(d.totalAmount) - Number(d.paidAmount)));
+      document.getElementById('kpiSchedulesAlert').textContent = payables.length ? `عليك: ${payableRem}` : `${overdueCount} متأخر • ${todayCount} اليوم`;
 
       const pendingDebtsCount = state.debts.filter(d => Number(d.totalAmount) > Number(d.paidAmount)).length;
       const navDebtBadge = document.getElementById('navDebtBadge');
@@ -2151,7 +2481,11 @@
             </td>
             <td class="px-4 py-3 font-semibold text-slate-700">${escapeHtml(t.category)}</td>
             <td class="px-4 py-3 text-slate-800">
-              <div class="font-bold">${escapeHtml(t.note)} ${t.personName ? `<span class="text-xs font-semibold text-sky-700">(${escapeHtml(t.personName)})</span>` : ''}</div>
+              <div class="font-bold flex items-center gap-1.5 flex-wrap">
+                <span>${escapeHtml(t.note)}</span>
+                ${t.personName ? `<span class="text-xs font-semibold text-sky-700">(${escapeHtml(t.personName)})</span>` : ''}
+                ${t.receiptImg ? `<button type="button" onclick="openReceiptViewer('${t.id}')" class="text-[11px] font-bold bg-indigo-500/15 text-indigo-800 px-2 py-0.5 rounded-lg hover:bg-indigo-500/25">📎 الإيصال</button>` : ''}
+              </div>
               ${t.details ? `<div class="text-xs text-slate-500 mt-0.5">${escapeHtml(t.details)}</div>` : ''}
             </td>
             <td class="px-4 py-3 text-slate-600 text-xs">${escapeHtml(t.method || 'نقدي')}</td>
@@ -2216,18 +2550,19 @@
       state.debts.forEach(d => {
         const rem = Math.max(0, Number(d.totalAmount) - Number(d.paidAmount));
         const dCurr = d.currency || state.currency;
+        const isPayable = d.direction === 'payable';
         entries.push({
           date: d.dueDate,
           kind: 'debt',
-          kindLabel: 'دين للتحصيل',
-          badgeClass: 'bg-amber-500/20 text-amber-800',
+          kindLabel: isPayable ? 'دين عَلَيْك' : 'دين لَك',
+          badgeClass: isPayable ? 'bg-rose-500/20 text-rose-800' : 'bg-amber-500/20 text-amber-800',
           partyOrCat: d.name,
           personName: d.name,
-          title: `دين: ${d.name}`,
-          details: `${d.note || ''} (محصل: ${fmt(d.paidAmount, dCurr)} | متبقي: ${fmt(rem, dCurr)})`,
-          status: rem <= 0 ? 'محصل بالكامل' : (d.dueDate < today ? 'متأخر' : 'قيد التحصيل'),
+          title: `${isPayable ? 'التزام لـ' : 'دين على'}: ${d.name}`,
+          details: `${d.note || ''} (${isPayable ? 'مسدد' : 'محصل'}: ${fmt(d.paidAmount, dCurr)} | متبقي: ${fmt(rem, dCurr)})`,
+          status: rem <= 0 ? (isPayable ? 'مسدد بالكامل' : 'محصل بالكامل') : (d.dueDate < today ? 'متأخر' : (isPayable ? 'قيد السداد' : 'قيد التحصيل')),
           amountText: fmt(d.totalAmount, dCurr),
-          amountClass: 'text-amber-700',
+          amountClass: isPayable ? 'text-rose-700' : 'text-amber-700',
           currency: dCurr
         });
       });
@@ -2372,48 +2707,189 @@
       showToast('تم حذف فئة الميزانية');
     }
 
-    document.getElementById('budgetForm').addEventListener('submit', e => {
-      e.preventDefault();
-      const name = document.getElementById('budgetCatName').value.trim();
-      const limit = parseFloat(document.getElementById('budgetCatLimit').value);
-      if (!name || isNaN(limit) || limit <= 0) return;
+    // ==================== RECURRING EXPENSES & P&L REPORT ====================
+    function renderRecurringExpenses() {
+      const grid = document.getElementById('recurringExpensesGrid');
+      if (!grid) return;
+      if (!state.recurringExpenses || !state.recurringExpenses.length) {
+        grid.innerHTML = `<p class="col-span-full text-xs text-slate-400 text-center py-3">لا توجد مصروفات متكررة مجدولة — أضف اشتراكاتك الشهرية لتُسجل تلقائياً</p>`;
+        return;
+      }
+      grid.innerHTML = state.recurringExpenses.map(r => {
+        const rCurr = r.currency || state.currency;
+        const rcs = getCurrencyStyle(rCurr);
+        return `
+          <div class="p-3.5 rounded-2xl ${rcs.row} flex flex-col justify-between gap-2">
+            <div class="flex items-start justify-between gap-2">
+              <div>
+                <h4 class="font-extrabold text-sm text-slate-900">${escapeHtml(r.title)}</h4>
+                <p class="text-[11px] text-slate-600">${escapeHtml(r.category)} • يوم ${r.dayOfMonth} من كل شهر</p>
+              </div>
+              <span class="font-extrabold text-sm text-rose-600">${fmt(r.amount, rCurr)}</span>
+            </div>
+            <div class="flex items-center justify-between gap-2 pt-2 border-t border-white/60 text-[11px]">
+              <span class="font-bold ${r.autoPost ? 'text-emerald-700' : 'text-slate-500'}">${r.autoPost ? '✓ تلقائي شهرياً' : 'يدوي'}</span>
+              <div class="flex items-center gap-2">
+                <button type="button" onclick="postRecurringNow('${r.id}')" class="ios-btn bg-rose-600 text-white font-bold px-2.5 py-1 rounded-lg">صرف الآن</button>
+                <button type="button" onclick="deleteRecurring('${r.id}')" class="text-rose-600 font-bold hover:underline">حذف</button>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
 
-      const existing = state.budgets.find(b => b.name === name);
-      if (existing) {
-        existing.limit = limit;
-      } else {
-        state.budgets.push({ name, limit });
-      }
-      if (!state.expenseCategories.includes(name)) {
-        state.expenseCategories.push(name);
-      }
+    function openRecurringModal() {
+      document.getElementById('recurringForm').reset();
+      populateCurrencySelects();
+      const catSel = document.getElementById('recCategory');
+      const cats = Array.from(new Set([...state.expenseCategories, ...state.budgets.map(b => b.name)]));
+      catSel.innerHTML = cats.map(c => `<option value="${escapeHtml(c)}">${escapeHtml(c)}</option>`).join('');
+      openModal('recurringModal');
+    }
+
+    document.getElementById('recurringForm').addEventListener('submit', e => {
+      e.preventDefault();
+      const title = document.getElementById('recTitle').value.trim();
+      const amount = parseFloat(document.getElementById('recAmount').value);
+      const currency = document.getElementById('recCurrency').value || state.currency;
+      const category = document.getElementById('recCategory').value;
+      const dayOfMonth = Math.min(28, Math.max(1, parseInt(document.getElementById('recDayOfMonth').value, 10) || 1));
+      const autoPost = document.getElementById('recAutoPost').checked;
+      if (!title || isNaN(amount) || amount <= 0) return;
+
+      state.recurringExpenses.push({
+        id: 'rec_' + Date.now(),
+        title,
+        amount,
+        currency,
+        category,
+        dayOfMonth,
+        autoPost,
+        lastPostedMonth: ''
+      });
+      processDueRecurringExpenses();
       saveState();
-      closeModal('budgetModal');
+      closeModal('recurringModal');
       renderAll();
-      showToast('تم حفظ فئة الميزانية بنجاح');
+      showToast('تم حفظ المصروف المتكرر');
     });
 
-    // ==================== RENDER DEBTS & INSTALLMENTS ====================
+    function postRecurringNow(recId) {
+      const r = state.recurringExpenses.find(x => x.id === recId);
+      if (!r) return;
+      state.transactions.push({
+        id: 'tx_' + Date.now(),
+        type: 'expense',
+        amount: Number(r.amount),
+        currency: r.currency || state.currency,
+        category: r.category,
+        date: todayISO(),
+        method: 'نقدي',
+        personName: '',
+        note: `مصروف متكرر: ${r.title}`,
+        details: 'تسجيل فوري من المصاريف المتكررة'
+      });
+      r.lastPostedMonth = currentMonthISO();
+      saveState();
+      renderAll();
+      showToast(`تم تسجيل صرف ${r.title}`);
+    }
+
+    function deleteRecurring(recId) {
+      state.recurringExpenses = state.recurringExpenses.filter(x => x.id !== recId);
+      saveState();
+      renderAll();
+      showToast('تم حذف المصروف المتكرر');
+    }
+
+    function openPnlReportModal() {
+      const picker = document.getElementById('pnlMonthPicker');
+      if (!picker.value) picker.value = currentMonthISO();
+      renderPnlReport();
+      openModal('pnlReportModal');
+    }
+
+    document.getElementById('pnlMonthPicker').addEventListener('change', renderPnlReport);
+
+    function renderPnlReport() {
+      const m = document.getElementById('pnlMonthPicker').value || currentMonthISO();
+      const monthTxs = state.transactions.filter(t => t.date.startsWith(m));
+      const incomes = monthTxs.filter(t => t.type === 'income');
+      const expenses = monthTxs.filter(t => t.type === 'expense');
+
+      const primaryIn = incomes.filter(t => (t.currency || state.currency) === state.currency).reduce((s, t) => s + Number(t.amount), 0);
+      const primaryEx = expenses.filter(t => (t.currency || state.currency) === state.currency).reduce((s, t) => s + Number(t.amount), 0);
+      const net = primaryIn - primaryEx;
+      const savingsRate = primaryIn > 0 ? Math.round((net / primaryIn) * 100) : 0;
+
+      const expByCat = {};
+      expenses.forEach(t => { expByCat[t.category] = (expByCat[t.category] || 0) + Number(t.amount); });
+      const topExp = Object.entries(expByCat).sort((a, b) => b[1] - a[1])[0];
+
+      const incByCat = {};
+      incomes.forEach(t => { incByCat[t.category] = (incByCat[t.category] || 0) + Number(t.amount); });
+      const topInc = Object.entries(incByCat).sort((a, b) => b[1] - a[1])[0];
+
+      document.getElementById('pnlReportContent').innerHTML = `
+        <div class="grid grid-cols-3 gap-2 text-center">
+          <div class="p-3 rounded-2xl bg-emerald-500/10 border border-emerald-300/60">
+            <span class="text-[11px] text-slate-600 block">إجمالي الدخل</span>
+            <strong class="text-sm font-extrabold text-emerald-700">${fmtMulti(incomes, t => t.amount)}</strong>
+          </div>
+          <div class="p-3 rounded-2xl bg-rose-500/10 border border-rose-300/60">
+            <span class="text-[11px] text-slate-600 block">إجمالي المصروف</span>
+            <strong class="text-sm font-extrabold text-rose-700">${fmtMulti(expenses, t => t.amount)}</strong>
+          </div>
+          <div class="p-3 rounded-2xl ${net >= 0 ? 'bg-sky-500/10 border-sky-300/60' : 'bg-rose-500/15 border-rose-400'} border">
+            <span class="text-[11px] text-slate-600 block">صافي الربح / العجز</span>
+            <strong class="text-sm font-extrabold ${net >= 0 ? 'text-sky-800' : 'text-rose-700'}">${fmt(net, state.currency)}</strong>
+          </div>
+        </div>
+        <div class="bg-white/65 border border-white rounded-2xl p-3.5 space-y-2 text-xs">
+          <div class="flex justify-between"><span class="text-slate-600">معدل الادخار الشهري (${state.currency}):</span><strong class="${savingsRate >= 0 ? 'text-emerald-700' : 'text-rose-600'}">${savingsRate}%</strong></div>
+          <div class="flex justify-between"><span class="text-slate-600">أعلى بند مصروف:</span><strong class="text-rose-700">${topExp ? `${escapeHtml(topExp[0])} (${topExp[1]})` : 'لا يوجد'}</strong></div>
+          <div class="flex justify-between"><span class="text-slate-600">أعلى مصدر دخل:</span><strong class="text-emerald-700">${topInc ? `${escapeHtml(topInc[0])} (${topInc[1]})` : 'لا يوجد'}</strong></div>
+          <div class="flex justify-between"><span class="text-slate-600">عدد العمليات المنفذة:</span><strong class="text-slate-900">${monthTxs.length} عملية</strong></div>
+        </div>
+      `;
+    }
+
+    // ==================== RENDER DEBTS (RECEIVABLE & PAYABLE) ====================
     document.querySelectorAll('.debt-filter-btn').forEach(btn => {
       btn.addEventListener('click', () => {
         debtFilter = btn.dataset.debtFilter;
         document.querySelectorAll('.debt-filter-btn').forEach(b => {
           const active = b.dataset.debtFilter === debtFilter;
-          b.className = `debt-filter-btn text-xs font-bold px-3.5 py-2 rounded-xl ${active ? 'bg-gradient-to-br from-sky-500 to-teal-700 text-white shadow-xs' : 'bg-white/65 border border-white/80 text-slate-700'}`;
+          b.className = `debt-filter-btn text-xs font-bold px-3 py-2 rounded-xl ${active ? 'bg-gradient-to-br from-sky-500 to-teal-700 text-white shadow-xs' : 'bg-white/65 border border-white/80 text-slate-700'}`;
         });
         renderDebts();
       });
     });
 
+    function setDebtDirection(dir) {
+      document.getElementById('debtDirection').value = dir;
+      const btnRec = document.getElementById('btnDebtDirReceivable');
+      const btnPay = document.getElementById('btnDebtDirPayable');
+      btnRec.className = `py-2 rounded-xl text-xs sm:text-sm font-bold transition ${dir === 'receivable' ? 'bg-amber-600 text-white shadow-xs' : 'text-slate-600'}`;
+      btnPay.className = `py-2 rounded-xl text-xs sm:text-sm font-bold transition ${dir === 'payable' ? 'bg-rose-600 text-white shadow-xs' : 'text-slate-600'}`;
+    }
+
     function renderDebts() {
       const today = todayISO();
-      document.getElementById('debtTotalAmount').textContent = fmtMulti(state.debts, d => d.totalAmount);
-      document.getElementById('debtTotalCollected').textContent = fmtMulti(state.debts, d => d.paidAmount);
-      document.getElementById('debtTotalRemaining').textContent = fmtMulti(state.debts, d => Math.max(0, Number(d.totalAmount) - Number(d.paidAmount)));
+      const receivables = state.debts.filter(d => (d.direction || 'receivable') === 'receivable');
+      const payables = state.debts.filter(d => d.direction === 'payable');
+
+      document.getElementById('debtReceivableRemaining').textContent = fmtMulti(receivables, d => Math.max(0, Number(d.totalAmount) - Number(d.paidAmount)));
+      document.getElementById('debtPayableRemaining').textContent = fmtMulti(payables, d => Math.max(0, Number(d.totalAmount) - Number(d.paidAmount)));
+      document.getElementById('debtTotalCollected').textContent = fmtMulti(receivables, d => d.paidAmount);
+      document.getElementById('debtTotalPaidOut').textContent = fmtMulti(payables, d => d.paidAmount);
 
       const filtered = state.debts.filter(d => {
         const rem = Number(d.totalAmount) - Number(d.paidAmount);
-        if (debtFilter === 'pending') return rem > 0;
+        const dir = d.direction || 'receivable';
+        if (debtFilter === 'receivable') return dir === 'receivable';
+        if (debtFilter === 'payable') return dir === 'payable';
         if (debtFilter === 'overdue') return rem > 0 && d.dueDate < today;
         if (debtFilter === 'paid') return rem <= 0;
         return true;
@@ -2421,7 +2897,7 @@
 
       const grid = document.getElementById('debtsGrid');
       if (filtered.length === 0) {
-        grid.innerHTML = `<div class="col-span-full glass-card p-8 text-center text-slate-400 text-sm">لا توجد ديون ضمن هذا التصنيف</div>`;
+        grid.innerHTML = `<div class="col-span-full glass-card p-8 text-center text-slate-400 text-sm">لا توجد سجلات ضمن هذا التصنيف</div>`;
         return;
       }
 
@@ -2430,19 +2906,24 @@
         const pct = d.totalAmount > 0 ? Math.min(100, Math.round((d.paidAmount / d.totalAmount) * 100)) : 100;
         const isPaid = rem <= 0;
         const isOverdue = !isPaid && d.dueDate < today;
+        const isPayable = d.direction === 'payable';
         const dCurr = d.currency || state.currency;
         const dcs = getCurrencyStyle(dCurr);
 
+        const dirBadge = isPayable
+          ? `<span class="bg-rose-500/15 text-rose-800 text-[11px] font-extrabold px-2 py-0.5 rounded-full">عَلَيْك للسداد</span>`
+          : `<span class="bg-amber-500/20 text-amber-900 text-[11px] font-extrabold px-2 py-0.5 rounded-full">لَك للتحصيل</span>`;
+
         const badge = isPaid
-          ? `<span class="bg-emerald-500/15 text-emerald-700 text-xs font-bold px-2.5 py-1 rounded-full">محصل بالكامل</span>`
+          ? `<span class="bg-emerald-500/15 text-emerald-700 text-xs font-bold px-2.5 py-1 rounded-full">${isPayable ? 'مسدد بالكامل' : 'محصل بالكامل'}</span>`
           : isOverdue
             ? `<span class="bg-rose-500/15 text-rose-700 text-xs font-bold px-2.5 py-1 rounded-full">متأخر (${d.dueDate})</span>`
-            : `<span class="bg-amber-500/20 text-amber-800 text-xs font-bold px-2.5 py-1 rounded-full">يستحق: ${d.dueDate}</span>`;
+            : `<span class="bg-sky-500/15 text-sky-800 text-xs font-bold px-2.5 py-1 rounded-full">يستحق: ${d.dueDate}</span>`;
 
         const linkedInsts = state.schedules.filter(sc => sc.debtId === d.id);
         const instBanner = linkedInsts.length > 1
           ? `<div class="text-[11px] font-bold text-sky-800 bg-sky-500/10 rounded-xl px-3 py-1.5 flex items-center justify-between">
-               <span>نظام الأقساط: ${linkedInsts.filter(sc => sc.status === 'completed').length} من ${linkedInsts.length} قسط محصل</span>
+               <span>نظام الأقساط: ${linkedInsts.filter(sc => sc.status === 'completed').length} من ${linkedInsts.length} قسط مكتمل</span>
                <button type="button" onclick="switchTab('schedule')" class="underline">عرض الأقساط</button>
              </div>`
           : '';
@@ -2451,7 +2932,10 @@
           <div class="glass-card ${dcs.row} p-5 space-y-3">
             <div class="flex items-start justify-between gap-2">
               <div>
-                <h4 class="font-extrabold text-base text-slate-900">${escapeHtml(d.name)}</h4>
+                <div class="flex items-center gap-2 flex-wrap">
+                  <h4 class="font-extrabold text-base text-slate-900">${escapeHtml(d.name)}</h4>
+                  ${dirBadge}
+                </div>
                 <p class="text-xs text-slate-600 mt-0.5">${escapeHtml(d.note || 'بدون ملاحظات')} ${d.phone ? `• 📞 ${escapeHtml(d.phone)}` : ''}</p>
               </div>
               <div class="flex items-center gap-1.5 shrink-0">
@@ -2460,17 +2944,17 @@
               </div>
             </div>
             <div class="w-full bg-white/70 h-2.5 rounded-full overflow-hidden border border-white/80">
-              <div class="${isPaid ? 'bg-emerald-500' : 'bg-amber-500'} h-full rounded-full" style="width: ${pct}%"></div>
+              <div class="${isPaid ? 'bg-emerald-500' : isPayable ? 'bg-rose-500' : 'bg-amber-500'} h-full rounded-full" style="width: ${pct}%"></div>
             </div>
             <div class="grid grid-cols-3 gap-2 text-xs bg-white/55 border border-white/75 p-3 rounded-2xl">
               <div><span class="text-slate-500 block">الإجمالي</span><strong class="text-slate-900">${fmt(d.totalAmount, dCurr)}</strong></div>
-              <div><span class="text-slate-500 block">المحصل</span><strong class="text-emerald-600">${fmt(d.paidAmount, dCurr)}</strong></div>
-              <div><span class="text-slate-500 block">المتبقي</span><strong class="text-amber-700">${fmt(rem, dCurr)}</strong></div>
+              <div><span class="text-slate-500 block">${isPayable ? 'المسدد' : 'المحصل'}</span><strong class="text-emerald-600">${fmt(d.paidAmount, dCurr)}</strong></div>
+              <div><span class="text-slate-500 block">المتبقي</span><strong class="${isPayable ? 'text-rose-700' : 'text-amber-700'}">${fmt(rem, dCurr)}</strong></div>
             </div>
             ${instBanner}
             <div class="flex flex-wrap items-center justify-between gap-2 pt-1">
               <div class="flex items-center gap-2">
-                ${!isPaid ? `<button type="button" onclick="openDebtPayModal('${d.id}')" class="ios-btn bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold px-3.5 py-2 rounded-xl shadow-xs">تسجيل دفعة قبض</button>` : `<span class="text-xs font-bold text-emerald-600">✓ تم التحصيل</span>`}
+                ${!isPaid ? `<button type="button" onclick="openDebtPayModal('${d.id}')" class="ios-btn ${isPayable ? 'bg-rose-600 hover:bg-rose-700' : 'bg-emerald-600 hover:bg-emerald-700'} text-white text-xs font-bold px-3.5 py-2 rounded-xl shadow-xs">${isPayable ? 'تسجيل دفعة سداد' : 'تسجيل دفعة قبض'}</button>` : `<span class="text-xs font-bold text-emerald-600">✓ مكتمل</span>`}
                 ${!isPaid ? `<button type="button" onclick="openInstallmentPlanModal('${d.id}')" class="ios-btn bg-sky-500/15 hover:bg-sky-500/25 text-sky-800 text-xs font-bold px-3 py-2 rounded-xl">تقسيط</button>` : ''}
               </div>
               <div class="flex items-center gap-2.5">
@@ -2533,7 +3017,8 @@
     function openDebtModal() {
       document.getElementById('debtForm').reset();
       document.getElementById('editDebtId').value = '';
-      document.getElementById('debtModalTitle').textContent = 'تسجيل دين جديد للتحصيل';
+      setDebtDirection('receivable');
+      document.getElementById('debtModalTitle').textContent = 'تسجيل دين / التزام مالي';
       document.getElementById('debtDueDate').value = todayISO(7);
       document.getElementById('debtIsInstallment').checked = false;
       document.getElementById('debtInstallmentBox').classList.add('hidden');
@@ -2550,7 +3035,8 @@
       if (!d) return;
       openDebtModal();
       document.getElementById('editDebtId').value = d.id;
-      document.getElementById('debtModalTitle').textContent = 'تعديل سجل الدين';
+      setDebtDirection(d.direction || 'receivable');
+      document.getElementById('debtModalTitle').textContent = 'تعديل سجل الدين / الالتزام';
       document.getElementById('debtName').value = d.name;
       document.getElementById('debtAmount').value = d.totalAmount;
       document.getElementById('debtCurrency').value = d.currency || state.currency;
@@ -2564,6 +3050,7 @@
     document.getElementById('debtForm').addEventListener('submit', e => {
       e.preventDefault();
       const editId = document.getElementById('editDebtId').value;
+      const direction = document.getElementById('debtDirection').value || 'receivable';
       const name = document.getElementById('debtName').value.trim();
       const rawAmount = parseFloat(document.getElementById('debtAmount').value);
       const rawCurrency = document.getElementById('debtCurrency').value || state.currency;
@@ -2589,24 +3076,24 @@
       if (editId) {
         const existing = state.debts.find(x => x.id === editId);
         if (existing) {
-          Object.assign(existing, { name, phone, totalAmount: amount, currency, dueDate, note });
+          Object.assign(existing, { direction, name, phone, totalAmount: amount, currency, dueDate, note });
           saveState();
           closeModal('debtModal');
           renderAll();
-          showToast('تم تعديل سجل الدين');
+          showToast('تم تعديل السجل بنجاح');
           return;
         }
       }
 
       const debtId = 'debt_' + Date.now();
-      state.debts.push({ id: debtId, name, phone, totalAmount: amount, paidAmount: 0, currency, dueDate, note });
+      state.debts.push({ id: debtId, direction, name, phone, totalAmount: amount, paidAmount: 0, currency, dueDate, note });
 
       if (isInst) {
         generateInstallmentSchedules(debtId, name, amount, currency, dueDate, instCount, instFreq, phone, note);
       } else if (autoSched) {
         state.schedules.push({
           id: 'sch_' + Date.now(),
-          title: `تحصيل دين: ${name}`,
+          title: `${direction === 'payable' ? 'سداد التزام' : 'تحصيل دين'}: ${name}`,
           amount,
           currency,
           date: dueDate,
@@ -2615,8 +3102,15 @@
           personName: name,
           phone,
           status: 'pending',
-          note: note || 'موعد تحصيل مرتبط بالدين'
+          note: note || 'موعد مجدول تلقائياً'
         });
+      }
+
+      saveState();
+      closeModal('debtModal');
+      renderAll();
+      showToast(isInst ? `تم التسجيل وجدولة ${instCount} أقساط` : 'تم الحفظ بنجاح');
+    });
       }
 
       saveState();
@@ -2679,12 +3173,17 @@
       if (!d) return;
       const dCurr = d.currency || state.currency;
       const rem = Math.max(0, Number(d.totalAmount) - Number(d.paidAmount));
+      const isPayable = d.direction === 'payable';
       document.getElementById('payDebtId').value = debtId;
-      document.getElementById('payDebtLabel').textContent = `المدين: ${d.name}`;
+      document.getElementById('debtPayModalTitle').textContent = isPayable ? 'تسجيل دفعة سداد التزام' : 'تسجيل دفعة تحصيل دين';
+      document.getElementById('payDebtLabel').textContent = `${isPayable ? 'الدائن / المستفيد' : 'المدين'}: ${d.name}`;
       document.getElementById('payDebtRemaining').textContent = fmt(rem, dCurr);
       document.getElementById('payAmount').value = rem;
       document.getElementById('payAmount').max = rem;
       document.getElementById('payDate').value = todayISO();
+      const submitBtn = document.getElementById('btnDebtPaySubmit');
+      submitBtn.textContent = isPayable ? 'تأكيد السداد وخصمه من المصروف' : 'تأكيد القبض وإضافته للمدخول';
+      submitBtn.className = `ios-btn w-full ${isPayable ? 'bg-gradient-to-br from-rose-500 to-rose-600' : 'bg-gradient-to-br from-emerald-500 to-emerald-600'} text-white font-bold py-3 rounded-2xl`;
       openModal('debtPayModal');
     }
 
@@ -2697,19 +3196,30 @@
       if (!d || isNaN(payAmt) || payAmt <= 0) return;
 
       const dCurr = d.currency || state.currency;
+      const isPayable = d.direction === 'payable';
       d.paidAmount = Math.min(Number(d.totalAmount), Number(d.paidAmount) + payAmt);
       state.transactions.push({
         id: 'tx_' + Date.now(),
-        type: 'income',
+        type: isPayable ? 'expense' : 'income',
         amount: payAmt,
         currency: dCurr,
-        category: 'تحصيل ديون',
+        category: isPayable ? 'تشغيل وعمل' : 'تحصيل ديون',
         date: payDate,
         method: 'نقدي',
         personName: d.name,
-        note: `تحصيل دفعة من ${d.name}`,
-        details: d.note || 'دفعة تحصيل دين مسجل'
+        note: isPayable ? `سداد دفعة إلى ${d.name}` : `تحصيل دفعة من ${d.name}`,
+        details: d.note || (isPayable ? 'سداد التزام مالي' : 'دفعة تحصيل دين مسجل')
       });
+
+      if (d.paidAmount >= d.totalAmount) {
+        state.schedules.forEach(s => { if (s.debtId === d.id) s.status = 'completed'; });
+      }
+
+      saveState();
+      closeModal('debtPayModal');
+      renderAll();
+      showToast(isPayable ? 'تم تسجيل السداد وخصمه من المصروف' : 'تم تسجيل الدفعة وإضافتها للمدخول');
+    });
 
       if (d.paidAmount >= d.totalAmount) {
         state.schedules.forEach(s => { if (s.debtId === d.id) s.status = 'completed'; });
@@ -3140,58 +3650,55 @@
       if (currency !== '$' && !isNaN(rate) && rate > 0) {
         const usd = Number((amount / rate).toFixed(2));
         const convNote = `تصريف من ${fmt(amount, currency)} (سعر ${rate})`;
-        return {
-          amount: usd,
-          currency: '$',
-          details: extraDetails ? `${extraDetails} | ${convNote}` : convNote
+    let currentReceiptDataUrl = '';
+
+    function setTxReceiptPreview(dataUrl) {
+      currentReceiptDataUrl = dataUrl || '';
+      const box = document.getElementById('txReceiptPreviewBox');
+      const img = document.getElementById('txReceiptPreviewImg');
+      if (currentReceiptDataUrl) {
+        img.src = currentReceiptDataUrl;
+        box.classList.remove('hidden');
+      } else {
+        img.src = '';
+        box.classList.add('hidden');
+      }
+    }
+
+    function clearTxReceipt() {
+      document.getElementById('txReceiptFile').value = '';
+      setTxReceiptPreview('');
+    }
+
+    document.getElementById('txReceiptFile').addEventListener('change', e => {
+      const file = e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = ev => {
+        const img = new Image();
+        img.onload = () => {
+          const maxDim = 640;
+          let w = img.width, h = img.height;
+          if (w > maxDim || h > maxDim) {
+            if (w > h) { h = Math.round(h * (maxDim / w)); w = maxDim; }
+            else { w = Math.round(w * (maxDim / h)); h = maxDim; }
+          }
+          const canvas = document.createElement('canvas');
+          canvas.width = w; canvas.height = h;
+          canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+          setTxReceiptPreview(canvas.toDataURL('image/jpeg', 0.65));
         };
-      }
-      return { amount, currency, details: extraDetails };
-    }
-
-    ['txCurrency', 'txAmount', 'txExchangeRate'].forEach(id => {
-      document.getElementById(id).addEventListener('input', () => updateRateBox('txCurrency', 'txRateBox', 'txAmount', 'txExchangeRate', 'txRatePreview'));
-    });
-    ['debtCurrency', 'debtAmount', 'debtExchangeRate'].forEach(id => {
-      document.getElementById(id).addEventListener('input', () => updateRateBox('debtCurrency', 'debtRateBox', 'debtAmount', 'debtExchangeRate', 'debtRatePreview'));
-    });
-    ['schedCurrency', 'schedAmount', 'schedExchangeRate'].forEach(id => {
-      document.getElementById(id).addEventListener('input', () => updateRateBox('schedCurrency', 'schedRateBox', 'schedAmount', 'schedExchangeRate', 'schedRatePreview'));
+        img.src = ev.target.result;
+      };
+      reader.readAsDataURL(file);
     });
 
-    // ==================== TRANSACTION MODAL ====================
-    function setTxType(type) {
-      document.getElementById('txType').value = type;
-      const btnIn = document.getElementById('btnTypeIncome');
-      const btnEx = document.getElementById('btnTypeExpense');
-      btnIn.className = `py-2 rounded-xl text-sm font-bold transition ${type === 'income' ? 'bg-emerald-600 text-white shadow-xs' : 'text-slate-600'}`;
-      btnEx.className = `py-2 rounded-xl text-sm font-bold transition ${type === 'expense' ? 'bg-rose-600 text-white shadow-xs' : 'text-slate-600'}`;
-
-      const catSelect = document.getElementById('txCategory');
-      const cats = type === 'income' ? state.incomeCategories : Array.from(new Set([...state.expenseCategories, ...state.budgets.map(b => b.name)]));
-      catSelect.innerHTML = (cats.length ? cats : ['أخرى']).map(c => `<option value="${escapeHtml(c)}">${escapeHtml(c)}</option>`).join('');
-    }
-
-    function toggleQuickCatRow() {
-      const row = document.getElementById('quickCatRow');
-      row.classList.toggle('hidden');
-      if (!row.classList.contains('hidden')) document.getElementById('quickCatInput').focus();
-    }
-
-    function saveQuickCat() {
-      const val = document.getElementById('quickCatInput').value.trim();
-      if (!val) return;
-      const type = document.getElementById('txType').value;
-      const targetList = type === 'income' ? state.incomeCategories : state.expenseCategories;
-      if (!targetList.includes(val)) {
-        targetList.push(val);
-        saveState();
-      }
-      setTxType(type);
-      document.getElementById('txCategory').value = val;
-      document.getElementById('quickCatInput').value = '';
-      document.getElementById('quickCatRow').classList.add('hidden');
-      showToast(`تمت إضافة التصنيف: ${val}`);
+    function openReceiptViewer(txId) {
+      const t = state.transactions.find(x => x.id === txId);
+      if (!t || !t.receiptImg) return;
+      document.getElementById('receiptViewerTitle').textContent = `إيصال: ${t.note}`;
+      document.getElementById('receiptViewerImg').src = t.receiptImg;
+      openModal('receiptViewerModal');
     }
 
     function openTxModal(type = 'expense') {
@@ -3200,6 +3707,7 @@
       document.getElementById('txModalTitle').textContent = 'إضافة حركة مالية';
       document.getElementById('txDate').value = todayISO();
       document.getElementById('quickCatRow').classList.add('hidden');
+      clearTxReceipt();
       calcExpr = '';
       populateCurrencySelects();
       populatePeopleSelects();
@@ -3222,6 +3730,7 @@
       document.getElementById('txMethod').value = t.method || 'نقدي';
       document.getElementById('txNote').value = t.note || '';
       document.getElementById('txDetails').value = t.details || '';
+      setTxReceiptPreview(t.receiptImg || '');
       updateRateBox('txCurrency', 'txRateBox', 'txAmount', 'txExchangeRate', 'txRatePreview');
     }
 
@@ -3241,10 +3750,11 @@
       if (isNaN(rawAmount) || rawAmount <= 0 || !date || !note) return;
 
       const conv = applyUsdConversion(rawAmount, rawCurrency, rateVal, rawDetails);
+      const receiptImg = currentReceiptDataUrl || '';
       if (editId) {
         const existing = state.transactions.find(x => x.id === editId);
         if (existing) {
-          Object.assign(existing, { type, amount: conv.amount, currency: conv.currency, category, date, personName, method, note, details: conv.details });
+          Object.assign(existing, { type, amount: conv.amount, currency: conv.currency, category, date, personName, method, note, details: conv.details, receiptImg });
           saveState();
           closeModal('txModal');
           renderAll();
@@ -3253,7 +3763,7 @@
         }
       }
 
-      state.transactions.push({ id: 'tx_' + Date.now(), type, amount: conv.amount, currency: conv.currency, category, date, personName, method, note, details: conv.details });
+      state.transactions.push({ id: 'tx_' + Date.now(), type, amount: conv.amount, currency: conv.currency, category, date, personName, method, note, details: conv.details, receiptImg });
       saveState();
       closeModal('txModal');
       renderAll();
@@ -3365,12 +3875,14 @@
 
     // ==================== MASTER RENDER ====================
     function renderAll() {
+      renderPinLockUI();
       renderAccountUI();
       populateCurrencySelects();
       populatePeopleSelects();
       renderSettingsLists();
       renderDashboard();
       renderTransactions();
+      renderRecurringExpenses();
       renderBudget();
       renderPeople();
       renderDebts();
@@ -3378,7 +3890,10 @@
       renderFullLog();
     }
 
-    window.addEventListener('DOMContentLoaded', renderAll);
+    window.addEventListener('DOMContentLoaded', () => {
+      processDueRecurringExpenses();
+      renderAll();
+    });
   </script>
 </body>
 </html>
