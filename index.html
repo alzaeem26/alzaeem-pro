@@ -45,7 +45,7 @@
       border-radius: 22px;
     }
     .ios-modal {
-      background: rgba(255, 255, 255, 0.88);
+      background: rgba(255, 255, 255, 0.90);
       backdrop-filter: blur(30px) saturate(195%);
       -webkit-backdrop-filter: blur(30px) saturate(195%);
       border: 1px solid rgba(255, 255, 255, 0.94);
@@ -53,12 +53,12 @@
       border-radius: 26px;
     }
     .ios-input {
-      background: rgba(255, 255, 255, 0.72);
-      border: 1px solid rgba(255, 255, 255, 0.88);
+      background: rgba(255, 255, 255, 0.75);
+      border: 1px solid rgba(255, 255, 255, 0.90);
       box-shadow: inset 0 1px 2px rgba(15, 23, 42, 0.04);
     }
     .ios-input:focus {
-      background: rgba(255, 255, 255, 0.96);
+      background: rgba(255, 255, 255, 0.98);
     }
     .ios-nav-pill {
       background: rgba(255, 255, 255, 0.48);
@@ -94,21 +94,21 @@
         radial-gradient(at 18% 85%, rgba(30, 58, 138, 0.28) 0px, transparent 50%);
     }
     body.dark-mode .ios-header {
-      background: rgba(15, 23, 42, 0.72);
+      background: rgba(15, 23, 42, 0.75);
       border-bottom: 1px solid rgba(255, 255, 255, 0.10);
     }
     body.dark-mode .glass-card {
-      background: rgba(15, 23, 42, 0.64);
+      background: rgba(15, 23, 42, 0.65);
       border-color: rgba(255, 255, 255, 0.11);
       box-shadow: 0 12px 32px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.08);
     }
     body.dark-mode .ios-modal {
-      background: rgba(15, 23, 42, 0.92);
+      background: rgba(15, 23, 42, 0.94);
       border-color: rgba(255, 255, 255, 0.14);
       color: #f1f5f9;
     }
     body.dark-mode .ios-input {
-      background: rgba(30, 41, 59, 0.78);
+      background: rgba(30, 41, 59, 0.82);
       border-color: rgba(255, 255, 255, 0.14);
       color: #f8fafc;
     }
@@ -116,7 +116,7 @@
       background: rgba(30, 41, 59, 0.98);
     }
     body.dark-mode .ios-nav-pill {
-      background: rgba(15, 23, 42, 0.55);
+      background: rgba(15, 23, 42, 0.58);
       border-color: rgba(255, 255, 255, 0.10);
     }
     body.dark-mode .text-slate-900 { color: #f8fafc !important; }
@@ -385,6 +385,25 @@
       </div>
 
       <div class="glass-card overflow-hidden">
+        <div class="overflow-x-auto">
+          <table class="w-full text-sm text-right">
+            <thead class="bg-white/45 border-b border-white/70 text-slate-700 font-bold">
+              <tr>
+                <th class="px-4 py-3">التاريخ</th>
+                <th class="px-4 py-3">النوع</th>
+                <th class="px-4 py-3">التصنيف</th>
+                <th class="px-4 py-3">الوصف والتفاصيل</th>
+                <th class="px-4 py-3">طريقة الدفع</th>
+                <th class="px-4 py-3">المبلغ</th>
+                <th class="px-4 py-3 text-center">إجراء</th>
+              </tr>
+            </thead>
+            <tbody id="txTableBody" class="divide-y divide-white/50"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
     <!-- ==================== TAB 3: BUDGET & RECURRING EXPENSES ==================== -->
     <section id="view-budget" class="tab-view hidden space-y-5">
       <div class="flex flex-wrap items-center justify-between gap-3">
@@ -477,7 +496,7 @@
         <div id="peopleGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3"></div>
       </div>
 
-      <!-- Debt Filters (Direction + Status) -->
+      <!-- Debt Filters -->
       <div class="flex flex-wrap items-center gap-2">
         <button type="button" data-debt-filter="all" class="debt-filter-btn bg-gradient-to-br from-sky-500 to-teal-700 text-white text-xs font-bold px-3 py-2 rounded-xl shadow-xs">الكل</button>
         <button type="button" data-debt-filter="receivable" class="debt-filter-btn bg-white/65 border border-white/80 text-slate-700 text-xs font-bold px-3 py-2 rounded-xl">ديون لك (للتحصيل)</button>
@@ -595,7 +614,7 @@
         </button>
       </div>
 
-      <!-- Compact Account & Private Email Backup Card -->
+      <!-- Account & Private Email Backup Card -->
       <div class="glass-card p-3.5 sm:p-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2.5">
         <div class="space-y-0.5 min-w-0">
           <div class="flex items-center gap-2 flex-wrap">
@@ -1368,7 +1387,11 @@
         grad.addColorStop(1, '#0f766e');
         ctx.fillStyle = grad;
         ctx.beginPath();
-        ctx.roundRect(0, 0, 192, 192, 42);
+        if (ctx.roundRect) {
+          ctx.roundRect(0, 0, 192, 192, 42);
+        } else {
+          ctx.rect(0, 0, 192, 192);
+        }
         ctx.fill();
         ctx.fillStyle = '#ffffff';
         ctx.font = 'bold 104px Arial, sans-serif';
@@ -1528,6 +1551,96 @@
       return s;
     }
 
+    function loadState() {
+      try {
+        const key = getStorageKeyForAccount(activeAccount);
+        const raw = localStorage.getItem(key) || (!activeAccount ? localStorage.getItem('mizan_pro_state_v1') : null);
+        if (raw) return ensureStateFields(JSON.parse(raw));
+      } catch (e) {}
+      return createDemoState();
+    }
+
+    function saveState() {
+      try {
+        const key = getStorageKeyForAccount(activeAccount);
+        localStorage.setItem(key, JSON.stringify(state));
+      } catch (e) {}
+    }
+
+    // ==================== GLOBAL STATE & HELPERS ====================
+    let state = loadState();
+    let activeTab = 'dashboard';
+    let debtFilter = 'all';
+    let schedFilter = 'all';
+    let selectedCalDate = '';
+    let calViewDate = new Date();
+    let cashflowChartInstance = null;
+    let expensePieChartInstance = null;
+    let currentStmtPersonId = '';
+    let currentReceiptDataUrl = '';
+
+    const CURRENCY_PALETTE = [
+      { badge: 'bg-emerald-500/20 text-emerald-900 border-emerald-400', row: 'border-2 border-emerald-400/75 bg-emerald-500/[0.08]' },
+      { badge: 'bg-sky-500/20 text-sky-900 border-sky-400', row: 'border-2 border-sky-400/75 bg-sky-500/[0.08]' },
+      { badge: 'bg-rose-500/20 text-rose-900 border-rose-400', row: 'border-2 border-rose-400/75 bg-rose-500/[0.08]' },
+      { badge: 'bg-amber-500/25 text-amber-900 border-amber-400', row: 'border-2 border-amber-400/80 bg-amber-500/[0.09]' },
+      { badge: 'bg-violet-500/20 text-violet-900 border-violet-400', row: 'border-2 border-violet-400/75 bg-violet-500/[0.08]' },
+      { badge: 'bg-cyan-500/20 text-cyan-900 border-cyan-400', row: 'border-2 border-cyan-400/75 bg-cyan-500/[0.08]' }
+    ];
+
+    function getCurrencyStyle(currCode) {
+      const code = currCode || state.currency;
+      const idx = state.currencies.findIndex(c => c.code === code);
+      if (idx >= 0) return CURRENCY_PALETTE[idx % CURRENCY_PALETTE.length];
+      let hash = 0;
+      for (let i = 0; i < code.length; i++) hash = (hash * 31 + code.charCodeAt(i)) >>> 0;
+      return CURRENCY_PALETTE[hash % CURRENCY_PALETTE.length];
+    }
+
+    function fmt(num, curr = state.currency) {
+      const val = Number(num || 0);
+      return `${val.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 2 })} ${curr || state.currency}`;
+    }
+
+    function fmtMulti(items, valueFn) {
+      const totals = {};
+      items.forEach(item => {
+        const c = item.currency || state.currency;
+        const v = Number(valueFn(item) || 0);
+        totals[c] = (totals[c] || 0) + v;
+      });
+      const entries = Object.entries(totals).filter(([, v]) => Math.abs(v) > 0.0001);
+      if (entries.length === 0) return fmt(0, state.currency);
+      return entries.map(([c, v]) => fmt(v, c)).join(' | ');
+    }
+
+    function escapeHtml(str) {
+      return String(str || '').replace(/[&<>"']/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[m]));
+    }
+
+    function showToast(msg) {
+      const el = document.getElementById('toast');
+      if (!el) return;
+      el.textContent = msg;
+      el.classList.remove('hidden');
+      clearTimeout(el._timer);
+      el._timer = setTimeout(() => el.classList.add('hidden'), 2800);
+    }
+
+    function openModal(id) {
+      const el = document.getElementById(id);
+      if (!el) return;
+      el.classList.remove('hidden');
+      el.classList.add('flex');
+    }
+
+    function closeModal(id) {
+      const el = document.getElementById(id);
+      if (!el) return;
+      el.classList.add('hidden');
+      el.classList.remove('flex');
+    }
+
     // ==================== DARK MODE & APP PIN LOCK ====================
     const DARK_MODE_KEY = 'alzaeem_pro_dark_mode_v1';
     const APP_PIN_KEY = 'alzaeem_pro_app_pin_v1';
@@ -1643,22 +1756,6 @@
         saveState();
         setTimeout(() => showToast(`تم تسجيل ${addedCount} مصروف متكرر تلقائياً لهذا الشهر`), 600);
       }
-    }
-
-    function loadState() {
-      try {
-        const key = getStorageKeyForAccount(activeAccount);
-        const raw = localStorage.getItem(key) || (!activeAccount ? localStorage.getItem('mizan_pro_state_v1') : null);
-        if (raw) return ensureStateFields(JSON.parse(raw));
-      } catch (e) {}
-      return createDemoState();
-    }
-
-    function saveState() {
-      try {
-        const key = getStorageKeyForAccount(activeAccount);
-        localStorage.setItem(key, JSON.stringify(state));
-      } catch (e) {}
     }
 
     // ==================== ACCOUNT UI & AUTHENTICATION ====================
@@ -1789,78 +1886,7 @@
       showToast('تم تنزيل النسخة الاحتياطية وفتح تطبيق البريد');
     }
 
-    // ==================== GLOBAL STATE & HELPERS ====================
-    let state = loadState();
-    let activeTab = 'dashboard';
-    let debtFilter = 'all';
-    let schedFilter = 'all';
-    let selectedCalDate = '';
-    let calViewDate = new Date();
-    let cashflowChartInstance = null;
-    let expensePieChartInstance = null;
-    let currentStmtPersonId = '';
-
-    const CURRENCY_PALETTE = [
-      { badge: 'bg-emerald-500/20 text-emerald-900 border-emerald-400', row: 'border-2 border-emerald-400/75 bg-emerald-500/[0.08]' },
-      { badge: 'bg-sky-500/20 text-sky-900 border-sky-400', row: 'border-2 border-sky-400/75 bg-sky-500/[0.08]' },
-      { badge: 'bg-rose-500/20 text-rose-900 border-rose-400', row: 'border-2 border-rose-400/75 bg-rose-500/[0.08]' },
-      { badge: 'bg-amber-500/25 text-amber-900 border-amber-400', row: 'border-2 border-amber-400/80 bg-amber-500/[0.09]' },
-      { badge: 'bg-violet-500/20 text-violet-900 border-violet-400', row: 'border-2 border-violet-400/75 bg-violet-500/[0.08]' },
-      { badge: 'bg-cyan-500/20 text-cyan-900 border-cyan-400', row: 'border-2 border-cyan-400/75 bg-cyan-500/[0.08]' }
-    ];
-
-    function getCurrencyStyle(currCode) {
-      const code = currCode || state.currency;
-      const idx = state.currencies.findIndex(c => c.code === code);
-      if (idx >= 0) return CURRENCY_PALETTE[idx % CURRENCY_PALETTE.length];
-      let hash = 0;
-      for (let i = 0; i < code.length; i++) hash = (hash * 31 + code.charCodeAt(i)) >>> 0;
-      return CURRENCY_PALETTE[hash % CURRENCY_PALETTE.length];
-    }
-
-    function fmt(num, curr = state.currency) {
-      const val = Number(num || 0);
-      return `${val.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 2 })} ${curr || state.currency}`;
-    }
-
-    function fmtMulti(items, valueFn) {
-      const totals = {};
-      items.forEach(item => {
-        const c = item.currency || state.currency;
-        const v = Number(valueFn(item) || 0);
-        totals[c] = (totals[c] || 0) + v;
-      });
-      const entries = Object.entries(totals).filter(([, v]) => Math.abs(v) > 0.0001);
-      if (entries.length === 0) return fmt(0, state.currency);
-      return entries.map(([c, v]) => fmt(v, c)).join(' | ');
-    }
-
-    function escapeHtml(str) {
-      return String(str || '').replace(/[&<>"']/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[m]));
-    }
-
-    function showToast(msg) {
-      const el = document.getElementById('toast');
-      el.textContent = msg;
-      el.classList.remove('hidden');
-      clearTimeout(el._timer);
-      el._timer = setTimeout(() => el.classList.add('hidden'), 2800);
-    }
-
-    function openModal(id) {
-      const el = document.getElementById(id);
-      if (!el) return;
-      el.classList.remove('hidden');
-      el.classList.add('flex');
-    }
-
-    function closeModal(id) {
-      const el = document.getElementById(id);
-      if (!el) return;
-      el.classList.add('hidden');
-      el.classList.remove('flex');
-    }
-
+    // ==================== SELECTS & NAVIGATION ====================
     function populateCurrencySelects() {
       const opts = state.currencies.map(c => `<option value="${escapeHtml(c.code)}">${escapeHtml(c.name)} (${escapeHtml(c.code)})</option>`).join('');
       const shortOpts = state.currencies.map(c => `<option value="${escapeHtml(c.code)}">${escapeHtml(c.code)} - ${escapeHtml(c.name)}</option>`).join('');
@@ -2135,13 +2161,13 @@
 
       document.getElementById('stmtSummaryBox').innerHTML = `
         <div><span class="text-slate-500 block">إجمالي الديون</span><strong class="text-slate-900">${totD}</strong></div>
-        <div><span class="text-slate-500 block">المحصل</span><strong class="text-emerald-600">${totP}</strong></div>
+        <div><span class="text-slate-500 block">المدفوع/المحصل</span><strong class="text-emerald-600">${totP}</strong></div>
         <div><span class="text-slate-500 block">المتبقي</span><strong class="text-amber-700">${totR}</strong></div>
       `;
 
       const rows = [
-        ...pDebts.map(d => `<div class="p-2.5 rounded-xl bg-amber-500/10 border border-amber-300/60 flex justify-between"><span><strong>دين:</strong> ${escapeHtml(d.note || d.dueDate)} (${d.dueDate})</span><strong class="text-amber-800">${fmt(d.totalAmount, d.currency)}</strong></div>`),
-        ...pTxs.map(t => `<div class="p-2.5 rounded-xl bg-white/70 border border-white flex justify-between"><span><strong>${t.type === 'income' ? 'دفعة/مدخول' : 'مصروف'}:</strong> ${escapeHtml(t.note)} (${t.date})</span><strong class="${t.type === 'income' ? 'text-emerald-600' : 'text-rose-600'}">${fmt(t.amount, t.currency)}</strong></div>`)
+        ...pDebts.map(d => `<div class="p-2.5 rounded-xl bg-amber-500/10 border border-amber-300/60 flex justify-between"><span><strong>${d.direction === 'payable' ? 'دين عليك' : 'دين لك'}:</strong> ${escapeHtml(d.note || d.dueDate)} (${d.dueDate})</span><strong class="text-amber-800">${fmt(d.totalAmount, d.currency)}</strong></div>`),
+        ...pTxs.map(t => `<div class="p-2.5 rounded-xl bg-white/70 border border-white flex justify-between"><span><strong>${t.type === 'income' ? 'دفعة/مدخول' : 'مصروف/سداد'}:</strong> ${escapeHtml(t.note)} (${t.date})</span><strong class="${t.type === 'income' ? 'text-emerald-600' : 'text-rose-600'}">${fmt(t.amount, t.currency)}</strong></div>`)
       ];
       document.getElementById('stmtRowsList').innerHTML = rows.length ? rows.join('') : '<p class="text-center text-slate-400 py-4">لا توجد حركات مسجلة لهذا الشخص</p>';
       openModal('personStatementModal');
@@ -2707,6 +2733,27 @@
       showToast('تم حذف فئة الميزانية');
     }
 
+    document.getElementById('budgetForm').addEventListener('submit', e => {
+      e.preventDefault();
+      const name = document.getElementById('budgetCatName').value.trim();
+      const limit = parseFloat(document.getElementById('budgetCatLimit').value);
+      if (!name || isNaN(limit) || limit <= 0) return;
+
+      const existing = state.budgets.find(b => b.name === name);
+      if (existing) {
+        existing.limit = limit;
+      } else {
+        state.budgets.push({ name, limit });
+      }
+      if (!state.expenseCategories.includes(name)) {
+        state.expenseCategories.push(name);
+      }
+      saveState();
+      closeModal('budgetModal');
+      renderAll();
+      showToast('تم حفظ فئة الميزانية بنجاح');
+    });
+
     // ==================== RECURRING EXPENSES & P&L REPORT ====================
     function renderRecurringExpenses() {
       const grid = document.getElementById('recurringExpensesGrid');
@@ -3111,13 +3158,6 @@
       renderAll();
       showToast(isInst ? `تم التسجيل وجدولة ${instCount} أقساط` : 'تم الحفظ بنجاح');
     });
-      }
-
-      saveState();
-      closeModal('debtModal');
-      renderAll();
-      showToast(isInst ? `تم تسجيل الدين وجدولة ${instCount} أقساط` : 'تم تسجيل الدين بنجاح');
-    });
 
     function openInstallmentPlanModal(debtId) {
       const d = state.debts.find(x => x.id === debtId);
@@ -3126,7 +3166,7 @@
       if (rem <= 0) return;
       const dCurr = d.currency || state.currency;
       document.getElementById('instPlanDebtId').value = debtId;
-      document.getElementById('instPlanDebtLabel').textContent = `المدين: ${d.name}`;
+      document.getElementById('instPlanDebtLabel').textContent = `الجهة: ${d.name}`;
       document.getElementById('instPlanRemaining').textContent = fmt(rem, dCurr);
       document.getElementById('instPlanCount').value = 3;
       document.getElementById('instPlanStartDate').value = todayISO(7);
@@ -3221,34 +3261,28 @@
       showToast(isPayable ? 'تم تسجيل السداد وخصمه من المصروف' : 'تم تسجيل الدفعة وإضافتها للمدخول');
     });
 
-      if (d.paidAmount >= d.totalAmount) {
-        state.schedules.forEach(s => { if (s.debtId === d.id) s.status = 'completed'; });
-      }
-
-      saveState();
-      closeModal('debtPayModal');
-      renderAll();
-      showToast('تم تسجيل الدفعة وإضافتها للمدخول');
-    });
-
     function exportVisibleDebtsCsv() {
       const today = todayISO();
       const visible = state.debts.filter(d => {
         const rem = Number(d.totalAmount) - Number(d.paidAmount);
-        if (debtFilter === 'pending') return rem > 0;
+        const dir = d.direction || 'receivable';
+        if (debtFilter === 'receivable') return dir === 'receivable';
+        if (debtFilter === 'payable') return dir === 'payable';
         if (debtFilter === 'overdue') return rem > 0 && d.dueDate < today;
         if (debtFilter === 'paid') return rem <= 0;
         return true;
       });
       if (!visible.length) {
-        showToast('لا توجد ديون ظاهرة للتصدير');
+        showToast('لا توجد سجلات ظاهرة للتصدير');
         return;
       }
-      const header = ['المدين', 'الهاتف', 'المبلغ الإجمالي', 'المحصل', 'المتبقي', 'العملة', 'تاريخ الاستحقاق', 'الحالة', 'ملاحظات'];
+      const header = ['النوع', 'الاسم', 'الهاتف', 'المبلغ الإجمالي', 'المدفوع/المحصل', 'المتبقي', 'العملة', 'تاريخ الاستحقاق', 'الحالة', 'ملاحظات'];
       const rows = visible.map(d => {
         const rem = Math.max(0, Number(d.totalAmount) - Number(d.paidAmount));
-        const status = rem <= 0 ? 'محصل بالكامل' : (d.dueDate < today ? 'متأخر' : 'قيد التحصيل');
+        const dirLabel = d.direction === 'payable' ? 'عَلَيْك للسداد' : 'لَك للتحصيل';
+        const status = rem <= 0 ? 'مكتمل' : (d.dueDate < today ? 'متأخر' : 'نشط');
         return [
+          `"${dirLabel}"`,
           `"${(d.name || '').replace(/"/g, '""')}"`,
           `"${(d.phone || '').replace(/"/g, '""')}"`,
           d.totalAmount,
@@ -3543,7 +3577,41 @@
       showToast('تم حذف الموعد');
     }
 
-    // ==================== UNIVERSAL CALCULATOR & EXCHANGE RATE ====================
+    // ==================== TRANSACTION MODAL, CALCULATOR, RATE & RECEIPT ====================
+    function setTxType(type) {
+      document.getElementById('txType').value = type;
+      const btnIn = document.getElementById('btnTypeIncome');
+      const btnEx = document.getElementById('btnTypeExpense');
+      btnIn.className = `py-2 rounded-xl text-sm font-bold transition ${type === 'income' ? 'bg-emerald-600 text-white shadow-xs' : 'text-slate-600'}`;
+      btnEx.className = `py-2 rounded-xl text-sm font-bold transition ${type === 'expense' ? 'bg-rose-600 text-white shadow-xs' : 'text-slate-600'}`;
+
+      const catSelect = document.getElementById('txCategory');
+      const cats = type === 'income' ? state.incomeCategories : Array.from(new Set([...state.expenseCategories, ...state.budgets.map(b => b.name)]));
+      catSelect.innerHTML = (cats.length ? cats : ['أخرى']).map(c => `<option value="${escapeHtml(c)}">${escapeHtml(c)}</option>`).join('');
+    }
+
+    function toggleQuickCatRow() {
+      const row = document.getElementById('quickCatRow');
+      row.classList.toggle('hidden');
+      if (!row.classList.contains('hidden')) document.getElementById('quickCatInput').focus();
+    }
+
+    function saveQuickCat() {
+      const val = document.getElementById('quickCatInput').value.trim();
+      if (!val) return;
+      const type = document.getElementById('txType').value;
+      const targetList = type === 'income' ? state.incomeCategories : state.expenseCategories;
+      if (!targetList.includes(val)) {
+        targetList.push(val);
+        saveState();
+      }
+      setTxType(type);
+      document.getElementById('txCategory').value = val;
+      document.getElementById('quickCatInput').value = '';
+      document.getElementById('quickCatRow').classList.add('hidden');
+      showToast(`تمت إضافة التصنيف: ${val}`);
+    }
+
     let calcExpr = '';
     let calcTargetId = 'txAmount';
 
@@ -3650,7 +3718,24 @@
       if (currency !== '$' && !isNaN(rate) && rate > 0) {
         const usd = Number((amount / rate).toFixed(2));
         const convNote = `تصريف من ${fmt(amount, currency)} (سعر ${rate})`;
-    let currentReceiptDataUrl = '';
+        return {
+          amount: usd,
+          currency: '$',
+          details: extraDetails ? `${extraDetails} | ${convNote}` : convNote
+        };
+      }
+      return { amount, currency, details: extraDetails };
+    }
+
+    ['txCurrency', 'txAmount', 'txExchangeRate'].forEach(id => {
+      document.getElementById(id).addEventListener('input', () => updateRateBox('txCurrency', 'txRateBox', 'txAmount', 'txExchangeRate', 'txRatePreview'));
+    });
+    ['debtCurrency', 'debtAmount', 'debtExchangeRate'].forEach(id => {
+      document.getElementById(id).addEventListener('input', () => updateRateBox('debtCurrency', 'debtRateBox', 'debtAmount', 'debtExchangeRate', 'debtRatePreview'));
+    });
+    ['schedCurrency', 'schedAmount', 'schedExchangeRate'].forEach(id => {
+      document.getElementById(id).addEventListener('input', () => updateRateBox('schedCurrency', 'schedRateBox', 'schedAmount', 'schedExchangeRate', 'schedRatePreview'));
+    });
 
     function setTxReceiptPreview(dataUrl) {
       currentReceiptDataUrl = dataUrl || '';
@@ -3678,13 +3763,20 @@
         const img = new Image();
         img.onload = () => {
           const maxDim = 640;
-          let w = img.width, h = img.height;
+          let w = img.width;
+          let h = img.height;
           if (w > maxDim || h > maxDim) {
-            if (w > h) { h = Math.round(h * (maxDim / w)); w = maxDim; }
-            else { w = Math.round(w * (maxDim / h)); h = maxDim; }
+            if (w > h) {
+              h = Math.round(h * (maxDim / w));
+              w = maxDim;
+            } else {
+              w = Math.round(w * (maxDim / h));
+              h = maxDim;
+            }
           }
           const canvas = document.createElement('canvas');
-          canvas.width = w; canvas.height = h;
+          canvas.width = w;
+          canvas.height = h;
           canvas.getContext('2d').drawImage(img, 0, 0, w, h);
           setTxReceiptPreview(canvas.toDataURL('image/jpeg', 0.65));
         };
@@ -3855,6 +3947,7 @@
         people: [],
         transactions: [],
         debts: [],
+        recurringExpenses: [],
         schedules: []
       });
       saveState();
