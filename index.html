@@ -1802,9 +1802,10 @@
 
     window._cloudSync = {
       ready: false,
+      failed: false,
       user: null,
       db: null,
-      appId: typeof __app_id !== 'undefined' ? __app_id : 'default-app-id',
+      appId: typeof __app_id !== 'undefined' ? __app_id : 'alzaeem-pro-global-sync-v1',
       unsubscribe: null,
       isApplyingRemote: false,
       lastSyncedAt: 0
@@ -1812,7 +1813,11 @@
 
     async function initCloudEngine() {
       try {
-        if (typeof __firebase_config === 'undefined') return;
+        if (typeof __firebase_config === 'undefined' || !__firebase_config) {
+          window._cloudSync.failed = true;
+          if (window.onCloudEngineReady) window.onCloudEngineReady();
+          return;
+        }
         const firebaseConfig = JSON.parse(__firebase_config);
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
@@ -1827,12 +1832,15 @@
         window._cloudSync.db = db;
         window._cloudSync.user = auth.currentUser;
         window._cloudSync.ready = Boolean(auth.currentUser);
+        window._cloudSync.failed = !window._cloudSync.ready;
 
         if (window.onCloudEngineReady) {
           window.onCloudEngineReady();
         }
       } catch (err) {
         console.error('Cloud init error:', err);
+        window._cloudSync.failed = true;
+        if (window.onCloudEngineReady) window.onCloudEngineReady();
       }
     }
 
@@ -1848,6 +1856,7 @@
 
     window.cloudLoginAndSubscribe = async function(email, pin, name, keepCurrent, onRemoteData, onStatusChange) {
       if (!window._cloudSync.ready || !window._cloudSync.user || !window._cloudSync.db) {
+        if (onStatusChange) onStatusChange('offline_external');
         return { ok: false, reason: 'offline' };
       }
       try {
@@ -1891,9 +1900,11 @@
           if (onStatusChange) onStatusChange('error');
         });
 
+        if (onStatusChange) onStatusChange('synced');
         return { ok: true, keyHash, existed: snap.exists() };
       } catch (err) {
         console.error('Cloud login error:', err);
+        if (onStatusChange) onStatusChange('error');
         return { ok: false, reason: 'error' };
       }
     };
@@ -2122,6 +2133,9 @@
       if (status === 'syncing') {
         badge.textContent = '☁️ جاري المزامنة...';
         badge.className = 'text-[10px] font-bold bg-amber-500/20 text-amber-800 px-2 py-0.5 rounded-full';
+      } else if (status === 'offline_external') {
+        badge.textContent = '📱 محفوظ محلياً (استخدم نسخة لإيميلي للنقل)';
+        badge.className = 'text-[10px] font-bold bg-indigo-500/15 text-indigo-800 px-2 py-0.5 rounded-full';
       } else if (status === 'error') {
         badge.textContent = '⚠️ محلي (بانتظار الاتصال)';
         badge.className = 'text-[10px] font-bold bg-rose-500/15 text-rose-700 px-2 py-0.5 rounded-full';
@@ -2153,7 +2167,12 @@
     };
 
     window.onCloudEngineReady = async function() {
-      if (activeAccount && activeAccount.email && activeAccount.pin && window.cloudLoginAndSubscribe) {
+      if (!activeAccount || !activeAccount.email) return;
+      if (window._cloudSync && window._cloudSync.failed && !window._cloudSync.ready) {
+        setCloudBadgeState('offline_external');
+        return;
+      }
+      if (activeAccount.email && activeAccount.pin && window.cloudLoginAndSubscribe) {
         setCloudBadgeState('syncing');
         const targetKey = getStorageKeyForAccount(activeAccount);
         const res = await window.cloudLoginAndSubscribe(
@@ -2173,13 +2192,27 @@
           activeAccount.cloudKey = res.keyHash;
           try { localStorage.setItem(ACTIVE_ACCOUNT_KEY, JSON.stringify(activeAccount)); } catch (e) {}
           setCloudBadgeState('synced');
+        } else {
+          setCloudBadgeState('offline_external');
         }
       }
     };
 
+    // Fallback timeout so the badge never gets stuck on "جاري المزامنة..."
+    setTimeout(() => {
+      if (activeAccount && activeAccount.email && (!window._cloudSync || !window._cloudSync.ready)) {
+        setCloudBadgeState('offline_external');
+      }
+    }, 3500);
+
     async function forceCloudSyncNow() {
       if (!activeAccount || !activeAccount.email || !activeAccount.pin) {
         showToast('سجّل دخولك أولاً لتفعيل المزامنة السحابية');
+        return;
+      }
+      if (!window._cloudSync || !window._cloudSync.ready) {
+        setCloudBadgeState('offline_external');
+        showToast('المزامنة السحابية الفورية تعمل داخل بيئة التطبيق السحابية؛ يمكنك استخدام "نسخة لإيميلي" أو "تصدير JSON" للنقل بين المتصفحات');
         return;
       }
       setCloudBadgeState('syncing');
@@ -2632,9 +2665,13 @@
 
       if (activeAccount && activeAccount.email) {
         badge.textContent = `مسجل: ${activeAccount.email}`;
-        info.textContent = `الحساب النشط: ${activeAccount.name || activeAccount.email} — المزامنة السحابية الفورية مفعلة لجميع أجهزتك بنفس البريد ورمز PIN.`;
+        info.textContent = `الحساب النشط: ${activeAccount.name || activeAccount.email} — البيانات محفوظة ومعزولة لهذا الحساب.`;
         outBtn.classList.remove('hidden');
-        setCloudBadgeState(activeAccount.cloudKey ? 'synced' : 'syncing');
+        if (window._cloudSync && window._cloudSync.ready) {
+          setCloudBadgeState(activeAccount.cloudKey ? 'synced' : 'syncing');
+        } else if (window._cloudSync && window._cloudSync.failed) {
+          setCloudBadgeState('offline_external');
+        }
       } else {
         badge.textContent = 'حساب محلي معزول';
         info.textContent = 'الوضع المحلي الافتراضي — سجل ببريدك ورمز PIN لمزامنة بياناتك تلقائياً بين جميع أجهزتك.';
