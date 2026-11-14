@@ -17,6 +17,9 @@
     :root {
       --ios-font: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", "SF Arabic", "Helvetica Neue", "Geeza Pro", system-ui, sans-serif;
     }
+    html {
+      font-size: 17.5px;
+    }
     *, *::before, *::after, body, input, select, textarea, button {
       font-family: var(--ios-font);
       -webkit-font-smoothing: antialiased;
@@ -1168,16 +1171,20 @@
 
         <!-- Receipt / Invoice Image Attachment -->
         <div class="bg-white/55 border border-white/80 rounded-2xl p-2.5 space-y-2">
-          <div class="flex items-center justify-between gap-2">
-            <label class="text-xs font-bold text-slate-700 flex items-center gap-1.5 cursor-pointer">
+          <div class="flex flex-wrap items-center justify-between gap-2">
+            <span class="text-xs font-bold text-slate-700 flex items-center gap-1.5">
               <span>📎 إرفاق صورة إيصال / فاتورة (اختياري)</span>
+            </span>
+            <div class="flex items-center gap-1.5">
+              <input id="txReceiptCamera" type="file" accept="image/*" capture="environment" class="hidden" />
               <input id="txReceiptFile" type="file" accept="image/*" class="hidden" />
-            </label>
-            <button type="button" onclick="document.getElementById('txReceiptFile').click()" class="ios-btn bg-sky-500/15 hover:bg-sky-500/25 text-sky-800 text-[11px] font-bold px-2.5 py-1 rounded-lg">اختر صورة / كاميرا</button>
+              <button type="button" onclick="document.getElementById('txReceiptCamera').click()" class="ios-btn bg-emerald-500/15 hover:bg-emerald-500/25 text-emerald-800 text-xs font-bold px-2.5 py-1.5 rounded-lg flex items-center gap-1">📷 الكاميرا</button>
+              <button type="button" onclick="document.getElementById('txReceiptFile').click()" class="ios-btn bg-sky-500/15 hover:bg-sky-500/25 text-sky-800 text-xs font-bold px-2.5 py-1.5 rounded-lg flex items-center gap-1">🖼️ المعرض</button>
+            </div>
           </div>
           <div id="txReceiptPreviewBox" class="hidden flex items-center justify-between gap-2 bg-white/80 rounded-xl p-1.5">
             <img id="txReceiptPreviewImg" src="" alt="معاينة الإيصال" class="h-12 w-12 object-cover rounded-lg border border-slate-200" />
-            <span class="text-[11px] font-bold text-emerald-700 flex-1">تم تجهيز صورة الإيصال للإرفاق</span>
+            <span class="text-xs font-bold text-emerald-700 flex-1">تم تجهيز صورة الإيصال للإرفاق</span>
             <button type="button" onclick="clearTxReceipt()" class="text-xs font-bold text-rose-600 px-2">حذف</button>
           </div>
         </div>
@@ -4663,11 +4670,12 @@
 
     function clearTxReceipt() {
       document.getElementById('txReceiptFile').value = '';
+      const camEl = document.getElementById('txReceiptCamera');
+      if (camEl) camEl.value = '';
       setTxReceiptPreview('');
     }
 
-    document.getElementById('txReceiptFile').addEventListener('change', e => {
-      const file = e.target.files[0];
+    function handleReceiptImageSelection(file) {
       if (!file) return;
       const reader = new FileReader();
       reader.onload = ev => {
@@ -4694,6 +4702,14 @@
         img.src = ev.target.result;
       };
       reader.readAsDataURL(file);
+    }
+
+    document.getElementById('txReceiptFile').addEventListener('change', e => {
+      handleReceiptImageSelection(e.target.files[0]);
+    });
+
+    document.getElementById('txReceiptCamera').addEventListener('change', e => {
+      handleReceiptImageSelection(e.target.files[0]);
     });
 
     function openReceiptViewer(txId) {
