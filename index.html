@@ -21,103 +21,188 @@
     body {
       min-height: 100vh;
       color: #0f172a;
-      background-color: #eef4fb;
+      background-color: #e6effa;
       background-image:
-        radial-gradient(at 12% 10%, rgba(56, 189, 248, 0.30) 0px, transparent 48%),
-        radial-gradient(at 88% 12%, rgba(20, 184, 166, 0.26) 0px, transparent 46%),
-        radial-gradient(at 78% 82%, rgba(168, 85, 247, 0.18) 0px, transparent 50%),
-        radial-gradient(at 18% 85%, rgba(59, 130, 246, 0.22) 0px, transparent 48%);
+        radial-gradient(at 8% 8%, rgba(56, 189, 248, 0.36) 0px, transparent 50%),
+        radial-gradient(at 92% 10%, rgba(20, 184, 166, 0.32) 0px, transparent 48%),
+        radial-gradient(at 82% 85%, rgba(168, 85, 247, 0.24) 0px, transparent 52%),
+        radial-gradient(at 15% 88%, rgba(59, 130, 246, 0.28) 0px, transparent 50%),
+        radial-gradient(at 50% 45%, rgba(255, 255, 255, 0.55) 0px, transparent 65%);
       background-attachment: fixed;
+      overflow-x: hidden;
     }
+
+    /* Ambient Floating Glass Orbs */
+    .ambient-orb {
+      position: fixed;
+      border-radius: 9999px;
+      filter: blur(72px);
+      pointer-events: none;
+      z-index: 0;
+      opacity: 0.55;
+      animation: floatOrb 16s ease-in-out infinite alternate;
+    }
+    @keyframes floatOrb {
+      0% { transform: translate(0px, 0px) scale(1); }
+      50% { transform: translate(24px, -18px) scale(1.06); }
+      100% { transform: translate(-18px, 22px) scale(0.96); }
+    }
+
     .ios-header {
-      background: rgba(255, 255, 255, 0.62);
-      backdrop-filter: blur(26px) saturate(190%);
-      -webkit-backdrop-filter: blur(26px) saturate(190%);
-      border-bottom: 1px solid rgba(255, 255, 255, 0.78);
-      box-shadow: 0 4px 24px rgba(15, 23, 42, 0.04);
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.72) 0%, rgba(255, 255, 255, 0.52) 100%);
+      backdrop-filter: blur(32px) saturate(210%);
+      -webkit-backdrop-filter: blur(32px) saturate(210%);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.85);
+      box-shadow: 0 8px 32px rgba(15, 23, 42, 0.06), inset 0 -1px 0 rgba(255, 255, 255, 0.65);
     }
+
     .glass-card {
-      background: rgba(255, 255, 255, 0.56);
-      backdrop-filter: blur(22px) saturate(185%);
-      -webkit-backdrop-filter: blur(22px) saturate(185%);
-      border: 1px solid rgba(255, 255, 255, 0.78);
-      box-shadow: 0 10px 30px rgba(15, 23, 42, 0.06), inset 0 1px 0 rgba(255, 255, 255, 0.85);
-      border-radius: 22px;
+      position: relative;
+      background: linear-gradient(145deg, rgba(255, 255, 255, 0.68) 0%, rgba(255, 255, 255, 0.42) 100%);
+      backdrop-filter: blur(28px) saturate(200%);
+      -webkit-backdrop-filter: blur(28px) saturate(200%);
+      border: 1px solid rgba(255, 255, 255, 0.85);
+      box-shadow:
+        0 12px 36px -6px rgba(15, 23, 42, 0.08),
+        0 2px 6px rgba(15, 23, 42, 0.03),
+        inset 0 1.5px 1px rgba(255, 255, 255, 0.95),
+        inset 0 -1px 1px rgba(255, 255, 255, 0.35);
+      border-radius: 24px;
+      transition: transform 0.22s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.22s ease, border-color 0.22s ease;
     }
+    .glass-card:hover {
+      box-shadow:
+        0 18px 42px -8px rgba(14, 165, 233, 0.14),
+        0 4px 12px rgba(15, 23, 42, 0.05),
+        inset 0 1.5px 1px rgba(255, 255, 255, 1);
+    }
+
     .ios-modal {
-      background: rgba(255, 255, 255, 0.90);
-      backdrop-filter: blur(30px) saturate(195%);
-      -webkit-backdrop-filter: blur(30px) saturate(195%);
-      border: 1px solid rgba(255, 255, 255, 0.94);
-      box-shadow: 0 24px 60px rgba(15, 23, 42, 0.18), inset 0 1px 0 rgba(255, 255, 255, 0.95);
-      border-radius: 26px;
+      background: linear-gradient(155deg, rgba(255, 255, 255, 0.92) 0%, rgba(248, 250, 252, 0.84) 100%);
+      backdrop-filter: blur(36px) saturate(210%);
+      -webkit-backdrop-filter: blur(36px) saturate(210%);
+      border: 1px solid rgba(255, 255, 255, 0.96);
+      box-shadow:
+        0 28px 70px rgba(15, 23, 42, 0.22),
+        inset 0 1.5px 1px rgba(255, 255, 255, 1);
+      border-radius: 28px;
     }
+
     .ios-input {
-      background: rgba(255, 255, 255, 0.75);
-      border: 1px solid rgba(255, 255, 255, 0.90);
-      box-shadow: inset 0 1px 2px rgba(15, 23, 42, 0.04);
+      background: rgba(255, 255, 255, 0.72);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.92);
+      box-shadow: inset 0 1.5px 3px rgba(15, 23, 42, 0.05), 0 1px 0 rgba(255, 255, 255, 0.8);
+      transition: all 0.18s ease;
     }
     .ios-input:focus {
       background: rgba(255, 255, 255, 0.98);
+      box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.18), inset 0 1px 2px rgba(15, 23, 42, 0.03);
     }
+
     .ios-nav-pill {
-      background: rgba(255, 255, 255, 0.48);
-      backdrop-filter: blur(14px);
-      -webkit-backdrop-filter: blur(14px);
-      border: 1px solid rgba(255, 255, 255, 0.68);
+      background: rgba(255, 255, 255, 0.45);
+      backdrop-filter: blur(18px) saturate(180%);
+      -webkit-backdrop-filter: blur(18px) saturate(180%);
+      border: 1px solid rgba(255, 255, 255, 0.75);
+      box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.8);
     }
+
     .tab-btn.active {
-      background: linear-gradient(135deg, #0ea5e9 0%, #0f766e 100%);
+      background: linear-gradient(135deg, #0ea5e9 0%, #0d9488 100%);
       color: #ffffff;
-      box-shadow: 0 6px 16px -3px rgba(14, 165, 233, 0.42), inset 0 1px 0 rgba(255, 255, 255, 0.35);
+      box-shadow:
+        0 8px 20px -4px rgba(14, 165, 233, 0.48),
+        inset 0 1.5px 1px rgba(255, 255, 255, 0.45);
     }
+
     .ios-btn {
-      transition: transform 0.14s ease, box-shadow 0.18s ease, opacity 0.15s ease;
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.16s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.22s ease, filter 0.18s ease;
+      box-shadow: 0 4px 12px -2px rgba(15, 23, 42, 0.08), inset 0 1px 0.5px rgba(255, 255, 255, 0.45);
     }
-    .ios-btn:active { transform: scale(0.97); }
+    .ios-btn::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(120deg, rgba(255, 255, 255, 0) 25%, rgba(255, 255, 255, 0.32) 50%, rgba(255, 255, 255, 0) 75%);
+      transform: translateX(120%);
+      transition: transform 0.6s ease;
+      pointer-events: none;
+    }
+    .ios-btn:hover::after { transform: translateX(-120%); }
+    .ios-btn:hover {
+      filter: brightness(1.04);
+      transform: translateY(-1px);
+      box-shadow: 0 8px 20px -4px rgba(14, 165, 233, 0.22), inset 0 1px 0.5px rgba(255, 255, 255, 0.6);
+    }
+    .ios-btn:active { transform: scale(0.95) translateY(0); }
+
+    /* Glossy Icon Badge Containers */
+    .icon-badge-3d {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow:
+        0 6px 14px -3px rgba(15, 23, 42, 0.16),
+        inset 0 1.5px 1px rgba(255, 255, 255, 0.75),
+        inset 0 -1.5px 2px rgba(15, 23, 42, 0.12);
+      transition: transform 0.2s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .glass-card:hover .icon-badge-3d,
+    .ios-btn:hover .icon-badge-3d {
+      transform: scale(1.07) rotate(-2deg);
+    }
+
     .no-scrollbar::-webkit-scrollbar { display: none; }
     .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
     @keyframes slideUp {
-      from { opacity: 0; transform: translateY(14px) scale(0.98); }
+      from { opacity: 0; transform: translateY(16px) scale(0.97); }
       to { opacity: 1; transform: translateY(0) scale(1); }
     }
-    .animate-slide-up { animation: slideUp 0.22s cubic-bezier(0.22, 1, 0.36, 1); }
+    .animate-slide-up { animation: slideUp 0.24s cubic-bezier(0.22, 1, 0.36, 1); }
 
     /* ==================== DARK GLASS MODE ==================== */
     body.dark-mode {
       color: #f1f5f9;
-      background-color: #090e1a;
+      background-color: #070b14;
       background-image:
-        radial-gradient(at 12% 10%, rgba(14, 165, 233, 0.20) 0px, transparent 50%),
-        radial-gradient(at 88% 12%, rgba(20, 184, 166, 0.18) 0px, transparent 48%),
-        radial-gradient(at 78% 82%, rgba(139, 92, 246, 0.16) 0px, transparent 52%),
-        radial-gradient(at 18% 85%, rgba(30, 58, 138, 0.28) 0px, transparent 50%);
+        radial-gradient(at 10% 8%, rgba(14, 165, 233, 0.24) 0px, transparent 50%),
+        radial-gradient(at 90% 12%, rgba(20, 184, 166, 0.22) 0px, transparent 48%),
+        radial-gradient(at 80% 85%, rgba(139, 92, 246, 0.20) 0px, transparent 52%),
+        radial-gradient(at 16% 86%, rgba(30, 58, 138, 0.32) 0px, transparent 50%);
     }
+    body.dark-mode .ambient-orb { opacity: 0.32; }
     body.dark-mode .ios-header {
-      background: rgba(15, 23, 42, 0.75);
-      border-bottom: 1px solid rgba(255, 255, 255, 0.10);
+      background: linear-gradient(180deg, rgba(15, 23, 42, 0.80) 0%, rgba(15, 23, 42, 0.62) 100%);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.12);
     }
     body.dark-mode .glass-card {
-      background: rgba(15, 23, 42, 0.65);
-      border-color: rgba(255, 255, 255, 0.11);
-      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+      background: linear-gradient(145deg, rgba(30, 41, 59, 0.64) 0%, rgba(15, 23, 42, 0.52) 100%);
+      border-color: rgba(255, 255, 255, 0.13);
+      box-shadow:
+        0 14px 36px rgba(0, 0, 0, 0.42),
+        inset 0 1px 0 rgba(255, 255, 255, 0.12);
     }
     body.dark-mode .ios-modal {
-      background: rgba(15, 23, 42, 0.94);
-      border-color: rgba(255, 255, 255, 0.14);
+      background: linear-gradient(155deg, rgba(15, 23, 42, 0.94) 0%, rgba(15, 23, 42, 0.86) 100%);
+      border-color: rgba(255, 255, 255, 0.16);
       color: #f1f5f9;
     }
     body.dark-mode .ios-input {
       background: rgba(30, 41, 59, 0.82);
-      border-color: rgba(255, 255, 255, 0.14);
+      border-color: rgba(255, 255, 255, 0.15);
       color: #f8fafc;
     }
     body.dark-mode .ios-input:focus {
       background: rgba(30, 41, 59, 0.98);
     }
     body.dark-mode .ios-nav-pill {
-      background: rgba(15, 23, 42, 0.58);
-      border-color: rgba(255, 255, 255, 0.10);
+      background: rgba(15, 23, 42, 0.62);
+      border-color: rgba(255, 255, 255, 0.12);
     }
     body.dark-mode .text-slate-900 { color: #f8fafc !important; }
     body.dark-mode .text-slate-800 { color: #e2e8f0 !important; }
@@ -154,6 +239,11 @@
 </head>
 <body class="min-h-screen flex flex-col">
 
+  <!-- Ambient Liquid Glass Background Orbs -->
+  <div class="ambient-orb w-80 h-80 bg-sky-400 top-12 -right-20"></div>
+  <div class="ambient-orb w-96 h-96 bg-teal-300 top-1/3 -left-24" style="animation-delay: -5s;"></div>
+  <div class="ambient-orb w-72 h-72 bg-indigo-300 bottom-10 right-1/4" style="animation-delay: -10s;"></div>
+
   <!-- ==================== APP PIN LOCK OVERLAY ==================== -->
   <div id="appLockOverlay" class="fixed inset-0 bg-slate-950/85 backdrop-blur-2xl z-[100] hidden items-center justify-center p-4">
     <div class="ios-modal max-w-xs w-full p-6 text-center space-y-4 animate-slide-up">
@@ -174,59 +264,63 @@
   <header class="ios-header sticky top-0 z-30">
     <div class="max-w-7xl mx-auto px-3 sm:px-6 py-2.5 flex items-center gap-2">
       <!-- App Icon & Brand -->
-      <div class="flex items-center gap-2 shrink-0" title="الزعيم برو">
-        <div class="w-10 h-10 rounded-2xl bg-gradient-to-br from-sky-500 to-teal-700 text-white flex items-center justify-center shadow-md shadow-sky-500/25 ring-1 ring-white/60">
-          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+      <div class="flex items-center gap-2.5 shrink-0" title="الزعيم برو">
+        <div class="icon-badge-3d w-10 h-10 rounded-2xl bg-gradient-to-br from-sky-400 via-teal-500 to-emerald-700 text-white ring-1 ring-white/75">
+          <svg class="w-5 h-5 drop-shadow-xs" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M21 12V7H5a2 2 0 010-4h14v4M3 5v14a2 2 0 002 2h16v-5M18 12a2 2 0 100 4h4v-4h-4z"/>
           </svg>
         </div>
-        <span class="hidden xl:inline text-base font-extrabold text-slate-900 whitespace-nowrap">الزعيم برو</span>
+        <span class="hidden xl:inline text-base font-extrabold bg-gradient-to-l from-slate-900 to-teal-800 bg-clip-text text-transparent whitespace-nowrap">الزعيم برو</span>
       </div>
 
       <!-- Navigation Tabs -->
       <nav class="ios-nav-pill flex-1 min-w-0 rounded-2xl p-1 flex items-center gap-1 overflow-x-auto no-scrollbar" aria-label="التنقل الرئيسي">
         <button type="button" data-tab="dashboard" class="tab-btn ios-btn active whitespace-nowrap px-3.5 py-2 rounded-xl text-xs sm:text-sm font-bold flex items-center gap-1.5">
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+          <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2.1" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 5a1 1 0 011-1h4a1 1 0 011 1v5a1 1 0 01-1 1H5a1 1 0 01-1-1V5zm10 0a1 1 0 011-1h4a1 1 0 011 1v2a1 1 0 01-1 1h-4a1 1 0 01-1-1V5zM4 16a1 1 0 011-1h4a1 1 0 011 1v3a1 1 0 01-1 1H5a1 1 0 01-1-1v-3zm10-3a1 1 0 011-1h4a1 1 0 011 1v6a1 1 0 01-1 1h-4a1 1 0 01-1-1v-6z"/></svg>
           لوحة التحكم
         </button>
         <button type="button" data-tab="transactions" class="tab-btn ios-btn whitespace-nowrap px-3.5 py-2 rounded-xl text-xs sm:text-sm font-bold text-slate-600 hover:bg-white/60 flex items-center gap-1.5">
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"/></svg>
+          <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2.1" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4"/></svg>
           المدخول والمصروف
         </button>
         <button type="button" data-tab="budget" class="tab-btn ios-btn whitespace-nowrap px-3.5 py-2 rounded-xl text-xs sm:text-sm font-bold text-slate-600 hover:bg-white/60 flex items-center gap-1.5">
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M11 3.055A9.001 9.001 0 1020.945 13H11V3.055z"/><path stroke-linecap="round" stroke-linejoin="round" d="M20.488 9H15V3.512A9.025 9.025 0 0120.488 9z"/></svg>
+          <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2.1" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M11 3.055A9.001 9.001 0 1020.945 13H11V3.055z"/><path stroke-linecap="round" stroke-linejoin="round" d="M20.488 9H15V3.512A9.025 9.025 0 0120.488 9z"/></svg>
           الميزانية
         </button>
         <button type="button" data-tab="debts" class="tab-btn ios-btn whitespace-nowrap px-3.5 py-2 rounded-xl text-xs sm:text-sm font-bold text-slate-600 hover:bg-white/60 flex items-center gap-1.5">
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
+          <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2.1" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
           الأشخاص والديون
           <span id="navDebtBadge" class="hidden bg-amber-400/25 text-amber-900 text-xs px-1.5 py-0.5 rounded-full">0</span>
         </button>
         <button type="button" data-tab="schedule" class="tab-btn ios-btn whitespace-nowrap px-3.5 py-2 rounded-xl text-xs sm:text-sm font-bold text-slate-600 hover:bg-white/60 flex items-center gap-1.5">
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+          <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2.1" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
           مواعيد القبض والتحصيل
           <span id="navScheduleBadge" class="hidden bg-rose-500/20 text-rose-800 text-xs px-1.5 py-0.5 rounded-full">0</span>
         </button>
         <button type="button" data-tab="fullLog" class="tab-btn ios-btn whitespace-nowrap px-3.5 py-2 rounded-xl text-xs sm:text-sm font-bold text-slate-600 hover:bg-white/60 flex items-center gap-1.5">
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"/></svg>
+          <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2.1" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"/></svg>
           السجل الكامل
         </button>
         <button type="button" data-tab="settings" class="tab-btn ios-btn whitespace-nowrap px-3.5 py-2 rounded-xl text-xs sm:text-sm font-bold text-slate-600 hover:bg-white/60 flex items-center gap-1.5">
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"/></svg>
+          <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2.1" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
           الإعدادات والتهيئة
         </button>
       </nav>
 
       <!-- Dark Mode & Quick Lock Controls -->
       <div class="flex items-center gap-1.5 shrink-0">
-        <button type="button" id="btnToggleDarkMode" onclick="toggleDarkMode()" class="ios-btn w-9 h-9 rounded-xl bg-white/65 border border-white/80 flex items-center justify-center text-sm shadow-2xs" title="الوضع الليلي / النهاري">🌙</button>
-        <button type="button" id="btnQuickLockApp" onclick="lockAppNow()" class="hidden ios-btn w-9 h-9 rounded-xl bg-amber-500/15 border border-amber-300/60 text-amber-800 flex items-center justify-center text-sm shadow-2xs" title="قفل التطبيق الآن">🔒</button>
+        <button type="button" id="btnToggleDarkMode" onclick="toggleDarkMode()" class="ios-btn w-9 h-9 rounded-2xl bg-white/75 border border-white/90 text-slate-700 flex items-center justify-center shadow-xs" title="الوضع الليلي / النهاري">
+          <svg id="darkModeSvg" class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/></svg>
+        </button>
+        <button type="button" id="btnQuickLockApp" onclick="lockAppNow()" class="hidden ios-btn w-9 h-9 rounded-2xl bg-gradient-to-br from-amber-400/25 to-amber-500/20 border border-amber-300/70 text-amber-800 flex items-center justify-center shadow-xs" title="قفل التطبيق الآن">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+        </button>
       </div>
     </div>
   </header>
 
   <!-- ==================== MAIN CONTENT ==================== -->
-  <main class="flex-1 max-w-7xl w-full mx-auto px-3.5 sm:px-6 py-5 space-y-5">
+  <main class="relative z-10 flex-1 max-w-7xl w-full mx-auto px-3.5 sm:px-6 py-5 space-y-5">
 
     <!-- ==================== TAB 1: DASHBOARD ==================== -->
     <section id="view-dashboard" class="tab-view space-y-5">
@@ -258,20 +352,25 @@
 
         <!-- 5 Quick Action Buttons: 2 rows on mobile (2 + 3), 1 row on desktop -->
         <div class="grid grid-cols-6 sm:flex sm:flex-wrap items-center gap-2">
-          <button type="button" onclick="openTxModal('income')" class="col-span-3 sm:col-auto ios-btn bg-gradient-to-br from-emerald-500 to-emerald-600 text-white text-xs sm:text-sm font-bold px-3 sm:px-4 py-2.5 rounded-2xl shadow-md shadow-emerald-500/25 flex items-center justify-center gap-1">
-            <span>+</span> مدخول جديد
+          <button type="button" onclick="openTxModal('income')" class="col-span-3 sm:col-auto ios-btn bg-gradient-to-br from-emerald-400 via-emerald-500 to-teal-600 text-white text-xs sm:text-sm font-bold px-3 sm:px-4 py-2.5 rounded-2xl shadow-lg shadow-emerald-500/30 ring-1 ring-white/40 flex items-center justify-center gap-1.5">
+            <span class="w-5 h-5 rounded-lg bg-white/25 flex items-center justify-center"><svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.6" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg></span>
+            مدخول جديد
           </button>
-          <button type="button" onclick="openTxModal('expense')" class="col-span-3 sm:col-auto ios-btn bg-gradient-to-br from-rose-500 to-rose-600 text-white text-xs sm:text-sm font-bold px-3 sm:px-4 py-2.5 rounded-2xl shadow-md shadow-rose-500/25 flex items-center justify-center gap-1">
-            <span>−</span> مصروف جديد
+          <button type="button" onclick="openTxModal('expense')" class="col-span-3 sm:col-auto ios-btn bg-gradient-to-br from-rose-400 via-rose-500 to-pink-600 text-white text-xs sm:text-sm font-bold px-3 sm:px-4 py-2.5 rounded-2xl shadow-lg shadow-rose-500/30 ring-1 ring-white/40 flex items-center justify-center gap-1.5">
+            <span class="w-5 h-5 rounded-lg bg-white/25 flex items-center justify-center"><svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.6" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M20 12H4"/></svg></span>
+            مصروف جديد
           </button>
-          <button type="button" onclick="openDebtModal()" class="col-span-2 sm:col-auto ios-btn bg-gradient-to-br from-amber-500 to-amber-600 text-white text-xs sm:text-sm font-bold px-2 sm:px-4 py-2.5 rounded-2xl shadow-md shadow-amber-500/25 flex items-center justify-center gap-1">
-            <span>+</span> دين
+          <button type="button" onclick="openDebtModal()" class="col-span-2 sm:col-auto ios-btn bg-gradient-to-br from-amber-400 via-amber-500 to-orange-600 text-white text-xs sm:text-sm font-bold px-2 sm:px-4 py-2.5 rounded-2xl shadow-lg shadow-amber-500/30 ring-1 ring-white/40 flex items-center justify-center gap-1.5">
+            <span class="w-5 h-5 rounded-lg bg-white/25 flex items-center justify-center"><svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.4" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2z"/></svg></span>
+            دين
           </button>
-          <button type="button" onclick="openScheduleModal()" class="col-span-2 sm:col-auto ios-btn bg-gradient-to-br from-sky-500 to-teal-700 text-white text-xs sm:text-sm font-bold px-2 sm:px-4 py-2.5 rounded-2xl shadow-md shadow-sky-500/25 flex items-center justify-center gap-1">
-            <span>+</span> موعد قبض
+          <button type="button" onclick="openScheduleModal()" class="col-span-2 sm:col-auto ios-btn bg-gradient-to-br from-sky-400 via-sky-500 to-teal-600 text-white text-xs sm:text-sm font-bold px-2 sm:px-4 py-2.5 rounded-2xl shadow-lg shadow-sky-500/30 ring-1 ring-white/40 flex items-center justify-center gap-1.5">
+            <span class="w-5 h-5 rounded-lg bg-white/25 flex items-center justify-center"><svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.4" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg></span>
+            موعد قبض
           </button>
-          <button type="button" onclick="openPersonModal()" class="col-span-2 sm:col-auto ios-btn bg-gradient-to-br from-indigo-500 to-violet-600 text-white text-xs sm:text-sm font-bold px-2 sm:px-4 py-2.5 rounded-2xl shadow-md shadow-indigo-500/25 flex items-center justify-center gap-1">
-            <span>+</span> شخص
+          <button type="button" onclick="openPersonModal()" class="col-span-2 sm:col-auto ios-btn bg-gradient-to-br from-indigo-400 via-indigo-500 to-purple-600 text-white text-xs sm:text-sm font-bold px-2 sm:px-4 py-2.5 rounded-2xl shadow-lg shadow-indigo-500/30 ring-1 ring-white/40 flex items-center justify-center gap-1.5">
+            <span class="w-5 h-5 rounded-lg bg-white/25 flex items-center justify-center"><svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.4" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"/></svg></span>
+            شخص
           </button>
         </div>
       </div>
@@ -281,7 +380,9 @@
         <div class="glass-card p-3.5 sm:p-5">
           <div class="flex items-center justify-between mb-1.5 sm:mb-2">
             <span class="text-[11px] sm:text-xs font-bold text-slate-600">الرصيد الصافي</span>
-            <span class="w-7 h-7 sm:w-8 sm:h-8 rounded-xl bg-sky-500/15 text-sky-700 flex items-center justify-center text-xs sm:text-sm font-bold">Σ</span>
+            <span class="icon-badge-3d w-8 h-8 sm:w-9 sm:h-9 rounded-2xl bg-gradient-to-br from-sky-400 to-blue-600 text-white">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/></svg>
+            </span>
           </div>
           <p id="kpiBalance" class="text-base sm:text-2xl font-extrabold text-slate-900 leading-snug break-words">0</p>
           <p id="kpiBudgetStatus" class="text-[11px] sm:text-xs text-slate-600 mt-1"></p>
@@ -290,7 +391,9 @@
         <div class="glass-card p-3.5 sm:p-5">
           <div class="flex items-center justify-between mb-1.5 sm:mb-2">
             <span class="text-[11px] sm:text-xs font-bold text-slate-600">إجمالي المدخول</span>
-            <span class="w-7 h-7 sm:w-8 sm:h-8 rounded-xl bg-emerald-500/15 text-emerald-700 flex items-center justify-center text-xs sm:text-sm font-bold">↑</span>
+            <span class="icon-badge-3d w-8 h-8 sm:w-9 sm:h-9 rounded-2xl bg-gradient-to-br from-emerald-400 to-teal-600 text-white">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.4" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/></svg>
+            </span>
           </div>
           <p id="kpiIncome" class="text-base sm:text-2xl font-extrabold text-emerald-600 leading-snug break-words">0</p>
           <p id="kpiIncomeCount" class="text-[11px] sm:text-xs text-slate-600 mt-1"></p>
@@ -299,7 +402,9 @@
         <div class="glass-card p-3.5 sm:p-5">
           <div class="flex items-center justify-between mb-1.5 sm:mb-2">
             <span class="text-[11px] sm:text-xs font-bold text-slate-600">إجمالي المصروف</span>
-            <span class="w-7 h-7 sm:w-8 sm:h-8 rounded-xl bg-rose-500/15 text-rose-700 flex items-center justify-center text-xs sm:text-sm font-bold">↓</span>
+            <span class="icon-badge-3d w-8 h-8 sm:w-9 sm:h-9 rounded-2xl bg-gradient-to-br from-rose-400 to-pink-600 text-white">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.4" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 17h8m0 0V9m0 8l-8-8-4 4-6-6"/></svg>
+            </span>
           </div>
           <p id="kpiExpense" class="text-base sm:text-2xl font-extrabold text-rose-600 leading-snug break-words">0</p>
           <p id="kpiExpenseCount" class="text-[11px] sm:text-xs text-slate-600 mt-1"></p>
@@ -308,7 +413,9 @@
         <div class="glass-card p-3.5 sm:p-5">
           <div class="flex items-center justify-between mb-1.5 sm:mb-2">
             <span class="text-[11px] sm:text-xs font-bold text-slate-600">الديون والالتزامات</span>
-            <span class="w-7 h-7 sm:w-8 sm:h-8 rounded-xl bg-amber-500/15 text-amber-700 flex items-center justify-center text-xs sm:text-sm font-bold">⏳</span>
+            <span class="icon-badge-3d w-8 h-8 sm:w-9 sm:h-9 rounded-2xl bg-gradient-to-br from-amber-400 to-orange-600 text-white">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+            </span>
           </div>
           <p id="kpiDebtsRemaining" class="text-base sm:text-2xl font-extrabold text-amber-600 leading-snug break-words">0</p>
           <p id="kpiSchedulesAlert" class="text-[11px] sm:text-xs text-slate-600 mt-1"></p>
@@ -461,7 +568,7 @@
         <!-- 4 Top Buttons in 1 Single Row -->
         <div class="grid grid-cols-4 sm:flex sm:flex-wrap items-center gap-1.5 sm:gap-2">
           <button type="button" onclick="openPersonModal()" class="ios-btn bg-gradient-to-br from-indigo-500 to-violet-600 text-white text-[10px] sm:text-sm font-bold px-1.5 sm:px-4 py-2 rounded-xl sm:rounded-2xl shadow-sm text-center truncate">+ شخص</button>
-          <button type="button" onclick="pickDeviceContact(true)" class="ios-btn bg-white/80 hover:bg-white text-indigo-700 border border-white text-[10px] sm:text-sm font-bold px-1.5 sm:px-3.5 py-2 rounded-xl sm:rounded-2xl shadow-xs text-center truncate">جهات الاتصال</button>
+          <button type="button" onclick="openContactSyncModal()" class="ios-btn bg-white/80 hover:bg-white text-indigo-700 border border-white text-[10px] sm:text-sm font-bold px-1.5 sm:px-3.5 py-2 rounded-xl sm:rounded-2xl shadow-xs text-center truncate">استيراد جهات</button>
           <button type="button" onclick="openDebtModal()" class="ios-btn bg-gradient-to-br from-amber-500 to-amber-600 text-white text-[10px] sm:text-sm font-bold px-1.5 sm:px-4 py-2 rounded-xl sm:rounded-2xl shadow-sm text-center truncate">+ دين / التزام</button>
           <button id="btnExportDebtsExcel" type="button" onclick="exportVisibleDebtsCsv()" class="ios-btn bg-emerald-600 hover:bg-emerald-700 text-white text-[10px] sm:text-sm font-bold px-1.5 sm:px-3.5 py-2 rounded-xl sm:rounded-2xl shadow-xs text-center truncate">تصدير إكسل</button>
         </div>
@@ -785,9 +892,9 @@
       </div>
       <form id="personForm" class="space-y-4">
         <input type="hidden" id="editPersonId" value="" />
-        <button type="button" id="btnPickDeviceContact" onclick="pickDeviceContact(false)" class="ios-btn w-full bg-indigo-500/10 hover:bg-indigo-500/20 text-indigo-800 border border-indigo-200/70 text-xs font-bold py-2.5 px-3 rounded-xl flex items-center justify-center gap-2">
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
-          ربط / استيراد من جهات اتصال الجهاز
+        <button type="button" id="btnPickDeviceContact" onclick="openContactSyncModal()" class="ios-btn w-full bg-indigo-500/10 hover:bg-indigo-500/20 text-indigo-800 border border-indigo-200/70 text-xs font-bold py-2.5 px-3 rounded-xl flex items-center justify-center gap-2">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+          استيراد أو لصق من جهات اتصال الهاتف (دفعة واحدة أو فردي)
         </button>
         <div>
           <label class="block text-xs font-bold text-slate-600 mb-1">اسم الشخص أو الجهة</label>
@@ -803,6 +910,81 @@
         </div>
         <button type="submit" class="ios-btn w-full bg-gradient-to-br from-sky-500 to-teal-700 text-white font-bold py-3 rounded-2xl">حفظ الشخص</button>
       </form>
+    </div>
+  </div>
+
+  <!-- Smart Contact Sync & Import Modal -->
+  <div id="contactSyncModal" class="fixed inset-0 bg-slate-900/40 backdrop-blur-md z-50 hidden items-center justify-center p-4 overflow-y-auto">
+    <div class="ios-modal max-w-lg w-full p-5 sm:p-6 animate-slide-up my-auto space-y-4">
+      <div class="flex items-center justify-between">
+        <div>
+          <h3 class="text-lg font-extrabold text-slate-900">استيراد ومزامنة جهات الاتصال</h3>
+          <p class="text-[11px] text-slate-600">اختر الطريقة الأسهل والأسرع لجلب الأسماء والأرقام إلى التطبيق</p>
+        </div>
+        <button type="button" onclick="closeModal('contactSyncModal')" class="w-8 h-8 rounded-full bg-slate-200/70 hover:bg-slate-200 text-slate-600 flex items-center justify-center text-sm font-bold">✕</button>
+      </div>
+
+      <!-- 3 Practical Sync Methods -->
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
+        <!-- Method 1: vCard (.vcf) Universal Import -->
+        <label class="ios-btn cursor-pointer p-3 rounded-2xl bg-gradient-to-br from-sky-500/15 to-teal-500/15 border border-sky-300/70 text-right flex flex-col justify-between gap-1.5">
+          <div class="flex items-center justify-between">
+            <span class="text-lg">📇</span>
+            <span class="text-[10px] font-extrabold bg-sky-600 text-white px-2 py-0.5 rounded-full">الأشمل</span>
+          </div>
+          <div>
+            <p class="text-xs font-extrabold text-slate-900">ملف جهات اتصال (.vcf)</p>
+            <p class="text-[10px] text-slate-600 leading-tight mt-0.5">صدّر جهاتك من الهاتف واختر الملف هنا</p>
+          </div>
+          <input id="vcfFileInput" type="file" accept=".vcf,text/vcard,text/x-vcard" class="hidden" />
+        </label>
+
+        <!-- Method 2: Smart Paste from Clipboard / WhatsApp -->
+        <button type="button" onclick="pasteAndParseContacts()" class="ios-btn p-3 rounded-2xl bg-gradient-to-br from-emerald-500/15 to-teal-500/15 border border-emerald-300/70 text-right flex flex-col justify-between gap-1.5">
+          <div class="flex items-center justify-between">
+            <span class="text-lg">📋</span>
+            <span class="text-[10px] font-extrabold bg-emerald-600 text-white px-2 py-0.5 rounded-full">سريع</span>
+          </div>
+          <div>
+            <p class="text-xs font-extrabold text-slate-900">لصق ذكي من الحافظة</p>
+            <p class="text-[10px] text-slate-600 leading-tight mt-0.5">انسخ أي اسم ورقم من واتساب والصقه فوراً</p>
+          </div>
+        </button>
+
+        <!-- Method 3: Direct Mobile Picker (Multi-select) -->
+        <button type="button" onclick="runNativeMultiContactPicker()" class="ios-btn p-3 rounded-2xl bg-gradient-to-br from-indigo-500/15 to-violet-500/15 border border-indigo-300/70 text-right flex flex-col justify-between gap-1.5">
+          <div class="flex items-center justify-between">
+            <span class="text-lg">📱</span>
+            <span class="text-[10px] font-extrabold bg-indigo-600 text-white px-2 py-0.5 rounded-full">مباشر</span>
+          </div>
+          <div>
+            <p class="text-xs font-extrabold text-slate-900">اختيار من الهاتف</p>
+            <p class="text-[10px] text-slate-600 leading-tight mt-0.5">تحديد عدة أسماء من دليل هاتفك مباشرة</p>
+          </div>
+        </button>
+      </div>
+
+      <!-- Manual / Quick Paste Textarea -->
+      <div class="space-y-1.5">
+        <div class="flex items-center justify-between">
+          <label class="text-xs font-bold text-slate-700">أو اكتب / الصق قائمة أسماء وأرقام (كل شخص بسطر):</label>
+          <button type="button" onclick="parseContactTextArea()" class="text-[11px] font-extrabold text-sky-700 hover:underline">استخراج الأسماء ↵</button>
+        </div>
+        <textarea id="bulkContactText" rows="2" placeholder="مثال:&#10;أحمد المحمود 0933112233&#10;شركة النور - 0944556677" class="ios-input w-full rounded-xl px-3 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-sky-500"></textarea>
+      </div>
+
+      <!-- Extracted Contacts Preview & Selection List -->
+      <div id="parsedContactsSection" class="hidden space-y-2.5 pt-2 border-t border-white/70">
+        <div class="flex items-center justify-between">
+          <span id="parsedContactsCount" class="text-xs font-extrabold text-sky-800">تم العثور على 0 جهة اتصال</span>
+          <div class="flex items-center gap-2 text-[11px] font-bold">
+            <button type="button" onclick="toggleAllParsedContacts(true)" class="text-sky-700 hover:underline">تحديد الكل</button>
+            <button type="button" onclick="toggleAllParsedContacts(false)" class="text-slate-500 hover:underline">إلغاء التحديد</button>
+          </div>
+        </div>
+        <div id="parsedContactsList" class="max-h-48 overflow-y-auto space-y-1.5 pr-0.5"></div>
+        <button type="button" onclick="confirmImportParsedContacts()" class="ios-btn w-full bg-gradient-to-br from-sky-500 to-teal-700 text-white text-xs sm:text-sm font-bold py-2.5 rounded-2xl shadow-md">إضافة المحددين إلى قائمة الأشخاص ✓</button>
+      </div>
     </div>
   </div>
 
@@ -1647,44 +1829,11 @@
 
     function applyDarkMode(isDark) {
       document.body.classList.toggle('dark-mode', isDark);
-      const btn = document.getElementById('btnToggleDarkMode');
-      if (btn) btn.textContent = isDark ? '☀️' : '🌙';
-    }
-
-    function toggleDarkMode() {
-      const next = !document.body.classList.contains('dark-mode');
-      try { localStorage.setItem(DARK_MODE_KEY, next ? '1' : '0'); } catch (e) {}
-      applyDarkMode(next);
-    }
-
-    (function initThemeAndLock() {
-      try {
-        const savedDark = localStorage.getItem(DARK_MODE_KEY);
-        const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
-        applyDarkMode(savedDark !== null ? savedDark === '1' : prefersDark);
-
-        const pin = localStorage.getItem(APP_PIN_KEY);
-        if (pin) {
-          document.getElementById('appLockOverlay').classList.remove('hidden');
-          document.getElementById('appLockOverlay').classList.add('flex');
-        }
-      } catch (e) {}
-    })();
-
-    function renderPinLockUI() {
-      let pin = '';
-      try { pin = localStorage.getItem(APP_PIN_KEY) || ''; } catch (e) {}
-      const statusEl = document.getElementById('appPinStatusText');
-      const disableBtn = document.getElementById('btnDisableAppPin');
-      const quickLockBtn = document.getElementById('btnQuickLockApp');
-      if (pin) {
-        if (statusEl) statusEl.textContent = 'قفل التطبيق مفعّل — يُطلب الرمز عند فتح التطبيق أو قفله يدوياً.';
-        if (disableBtn) disableBtn.classList.remove('hidden');
-        if (quickLockBtn) quickLockBtn.classList.remove('hidden');
-      } else {
-        if (statusEl) statusEl.textContent = 'القفل غير مفعّل حالياً — فعّله لحماية بياناتك عند فتح التطبيق.';
-        if (disableBtn) disableBtn.classList.add('hidden');
-        if (quickLockBtn) quickLockBtn.classList.add('hidden');
+      const svg = document.getElementById('darkModeSvg');
+      if (svg) {
+        svg.innerHTML = isDark
+          ? '<path stroke-linecap="round" stroke-linejoin="round" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/>'
+          : '<path stroke-linecap="round" stroke-linejoin="round" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/>';
       }
     }
 
@@ -1886,7 +2035,6 @@
       showToast('تم تنزيل النسخة الاحتياطية وفتح تطبيق البريد');
     }
 
-    // ==================== SELECTS & NAVIGATION ====================
     function populateCurrencySelects() {
       const opts = state.currencies.map(c => `<option value="${escapeHtml(c.code)}">${escapeHtml(c.name)} (${escapeHtml(c.code)})</option>`).join('');
       const shortOpts = state.currencies.map(c => `<option value="${escapeHtml(c.code)}">${escapeHtml(c.code)} - ${escapeHtml(c.name)}</option>`).join('');
@@ -1995,26 +2143,181 @@
       showToast(`تم تعيين العملة الافتراضية إلى ${state.currency}`);
     });
 
-    // ==================== PEOPLE MANAGEMENT & STATEMENT ====================
-    async function pickDeviceContact(openAfter = false) {
+    // ==================== PEOPLE MANAGEMENT & SMART CONTACT SYNC ====================
+    let parsedContactCandidates = [];
+
+    function openContactSyncModal() {
+      parsedContactCandidates = [];
+      document.getElementById('bulkContactText').value = '';
+      document.getElementById('vcfFileInput').value = '';
+      document.getElementById('parsedContactsSection').classList.add('hidden');
+      document.getElementById('parsedContactsList').innerHTML = '';
+      openModal('contactSyncModal');
+    }
+
+    function setParsedCandidates(list) {
+      const unique = [];
+      const seen = new Set();
+      list.forEach(item => {
+        const name = String(item.name || '').trim();
+        const phone = String(item.phone || '').trim();
+        if (!name && !phone) return;
+        const finalName = name || phone;
+        const key = `${finalName}|${phone}`;
+        if (seen.has(key)) return;
+        seen.add(key);
+        const exists = state.people.some(p => p.name === finalName || (phone && p.phone === phone));
+        unique.push({ name: finalName, phone, selected: !exists, exists });
+      });
+      parsedContactCandidates = unique;
+      renderParsedCandidates();
+    }
+
+    function renderParsedCandidates() {
+      const sec = document.getElementById('parsedContactsSection');
+      const listEl = document.getElementById('parsedContactsList');
+      const countEl = document.getElementById('parsedContactsCount');
+      if (!parsedContactCandidates.length) {
+        sec.classList.add('hidden');
+        showToast('لم يتم العثور على أسماء أو أرقام صالحة');
+        return;
+      }
+      sec.classList.remove('hidden');
+      countEl.textContent = `تم استخراج ${parsedContactCandidates.length} جهة اتصال`;
+      listEl.innerHTML = parsedContactCandidates.map((c, idx) => `
+        <label class="flex items-center justify-between gap-2 p-2.5 rounded-xl bg-white/75 border border-white cursor-pointer hover:bg-white transition">
+          <div class="flex items-center gap-2.5 min-w-0">
+            <input type="checkbox" ${c.selected ? 'checked' : ''} onchange="parsedContactCandidates[${idx}].selected = this.checked" class="rounded text-sky-600 focus:ring-sky-500" />
+            <div class="min-w-0">
+              <p class="text-xs font-extrabold text-slate-900 truncate">${escapeHtml(c.name)}</p>
+              <p class="text-[11px] text-slate-500" dir="ltr">${escapeHtml(c.phone || 'بدون رقم')}</p>
+            </div>
+          </div>
+          ${c.exists ? `<span class="text-[10px] font-bold bg-amber-500/15 text-amber-800 px-2 py-0.5 rounded-full shrink-0">مسجل مسبقاً</span>` : `<span class="text-[10px] font-bold bg-emerald-500/15 text-emerald-700 px-2 py-0.5 rounded-full shrink-0">جديد</span>`}
+        </label>
+      `).join('');
+    }
+
+    function toggleAllParsedContacts(flag) {
+      parsedContactCandidates.forEach(c => { c.selected = flag; });
+      renderParsedCandidates();
+    }
+
+    function confirmImportParsedContacts() {
+      const chosen = parsedContactCandidates.filter(c => c.selected);
+      if (!chosen.length) {
+        showToast('حدد جهة اتصال واحدة على الأقل');
+        return;
+      }
+      let added = 0;
+      let updated = 0;
+      chosen.forEach(c => {
+        const existing = state.people.find(p => p.name === c.name);
+        if (existing) {
+          if (c.phone && !existing.phone) {
+            existing.phone = c.phone;
+            updated++;
+          }
+        } else {
+          state.people.push({
+            id: `per_${Date.now()}_${Math.random().toString(36).slice(2, 6)}`,
+            name: c.name,
+            phone: c.phone,
+            note: 'مستورد من جهات الاتصال'
+          });
+          added++;
+        }
+      });
+      saveState();
+      closeModal('contactSyncModal');
+      closeModal('personModal');
+      renderAll();
+      showToast(`تمت إضافة ${added} شخص${updated ? ` وتحديث ${updated}` : ''} بنجاح`);
+    }
+
+    // Parse vCard (.vcf) file universally supported on Android, iOS, and PC
+    function parseVCardText(vcfText) {
+      const cards = vcfText.split(/BEGIN:VCARD/i);
+      const results = [];
+      cards.forEach(card => {
+        if (!card.trim()) return;
+        const fnMatch = card.match(/^FN(?:;[^:]*)?:(.*)$/im);
+        const nMatch = card.match(/^N(?:;[^:]*)?:(.*)$/im);
+        const telMatches = [...card.matchAll(/^TEL(?:;[^:]*)?:(.*)$/gim)];
+        let name = fnMatch ? fnMatch[1].trim() : '';
+        if (!name && nMatch) {
+          name = nMatch[1].split(';').filter(Boolean).reverse().join(' ').trim();
+        }
+        const phone = telMatches.length ? telMatches[0][1].replace(/[^\d+]/g, '').trim() : '';
+        if (name || phone) results.push({ name, phone });
+      });
+      return results;
+    }
+
+    document.getElementById('vcfFileInput').addEventListener('change', e => {
+      const file = e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = ev => {
+        const parsed = parseVCardText(String(ev.target.result || ''));
+        setParsedCandidates(parsed);
+      };
+      reader.readAsText(file);
+    });
+
+    // Parse freeform lines like "أحمد 0933123456"
+    function extractContactsFromLines(text) {
+      const lines = String(text || '').split(/\r?\n/).map(l => l.trim()).filter(Boolean);
+      const results = [];
+      lines.forEach(line => {
+        const phoneMatch = line.match(/(\+?\d[\d\s\-()]{6,}\d)/);
+        const phone = phoneMatch ? phoneMatch[1].replace(/[\s\-()]/g, '') : '';
+        const name = phoneMatch ? line.replace(phoneMatch[0], '').replace(/^[\s\-:،]+|[\s\-:،]+$/g, '').trim() : line;
+        if (name || phone) results.push({ name, phone });
+      });
+      return results;
+    }
+
+    function parseContactTextArea() {
+      const txt = document.getElementById('bulkContactText').value;
+      if (!txt.trim()) {
+        showToast('اكتب أو الصق الأسماء والأرقام في المربع أولاً');
+        return;
+      }
+      setParsedCandidates(extractContactsFromLines(txt));
+    }
+
+    async function pasteAndParseContacts() {
+      try {
+        if (navigator.clipboard && navigator.clipboard.readText) {
+          const clipText = await navigator.clipboard.readText();
+          if (clipText && clipText.trim()) {
+            document.getElementById('bulkContactText').value = clipText.trim();
+            const isVcf = /BEGIN:VCARD/i.test(clipText);
+            setParsedCandidates(isVcf ? parseVCardText(clipText) : extractContactsFromLines(clipText));
+            return;
+          }
+        }
+      } catch (e) {}
+      document.getElementById('bulkContactText').focus();
+      showToast('الصق النص المنسوخ في المربع ثم اضغط "استخراج الأسماء"');
+    }
+
+    async function runNativeMultiContactPicker() {
       try {
         if (!('contacts' in navigator && 'ContactsManager' in window)) {
-          showToast('اختيار جهات الاتصال مدعوم على متصفح الموبايل (Chrome / Samsung Internet) — أدخل البيانات يدوياً');
-          if (openAfter) openPersonModal();
+          showToast('المتصفح الحالي لا يدعم الفتح المباشر — استخدم استيراد ملف (.vcf) أو اللصق السريع');
           return;
         }
-        const props = ['name', 'tel'];
-        const contacts = await navigator.contacts.select(props, { multiple: false });
+        const contacts = await navigator.contacts.select(['name', 'tel'], { multiple: true });
         if (!contacts || !contacts.length) return;
-        const c = contacts[0];
-        const cName = (c.name && c.name[0]) ? c.name[0].trim() : '';
-        const cTel = (c.tel && c.tel[0]) ? c.tel[0].trim() : '';
-        if (openAfter) openPersonModal();
-        if (cName) document.getElementById('personName').value = cName;
-        if (cTel) document.getElementById('personPhone').value = cTel;
-        showToast('تم جلب بيانات جهة الاتصال بنجاح');
+        const mapped = contacts.map(c => ({
+          name: (c.name && c.name[0]) ? c.name[0].trim() : '',
+          phone: (c.tel && c.tel[0]) ? c.tel[0].replace(/[^\d+]/g, '').trim() : ''
+        }));
+        setParsedCandidates(mapped);
       } catch (err) {
-        showToast('تعذر الوصول إلى جهات الاتصال أو تم الإلغاء');
+        showToast('تعذر الوصول المباشر لدليل الهاتف، جرب استيراد ملف (.vcf)');
       }
     }
 
