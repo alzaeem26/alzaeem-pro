@@ -771,6 +771,9 @@
         </div>
       </div>
 
+      <!-- Instant Person / Client Summary Banner -->
+      <div id="personQuickSummaryCard" class="hidden glass-card p-4 sm:p-5 border-2 border-sky-400/70 bg-sky-500/[0.07] space-y-3 animate-slide-up"></div>
+
       <div class="glass-card overflow-hidden">
         <div class="overflow-x-auto">
           <table class="w-full text-sm text-right">
@@ -2693,6 +2696,31 @@
       showToast('تم حذف الشخص من القائمة');
     }
 
+    function filterByPersonInstant(personName) {
+      if (!personName) return;
+      switchTab('fullLog');
+      const perSel = document.getElementById('fullLogPerson');
+      if (perSel) {
+        if (!Array.from(perSel.options).some(o => o.value === personName)) {
+          const opt = document.createElement('option');
+          opt.value = personName;
+          opt.textContent = personName;
+          perSel.appendChild(opt);
+        }
+        perSel.value = personName;
+        renderFullLog();
+      }
+      showToast(`تمت تصفية السجل وعرض ملخص: ${personName}`);
+    }
+
+    function clearPersonInstantFilter() {
+      const perSel = document.getElementById('fullLogPerson');
+      if (perSel) {
+        perSel.value = 'all';
+        renderFullLog();
+      }
+    }
+
     function openDebtForPerson(personId) {
       const p = state.people.find(x => x.id === personId);
       openDebtModal();
@@ -2729,7 +2757,7 @@
           <div class="p-3.5 rounded-2xl bg-white/60 border border-white/85 flex flex-col justify-between gap-2.5">
             <div class="flex items-start justify-between gap-2">
               <div class="min-w-0">
-                <h4 class="font-extrabold text-sm text-slate-900 truncate">${escapeHtml(p.name)}</h4>
+                <button type="button" onclick="filterByPersonInstant('${escapeHtml(p.name)}')" class="font-extrabold text-sm text-slate-900 hover:text-sky-700 hover:underline truncate text-right block">${escapeHtml(p.name)}</button>
                 <p class="text-[11px] text-slate-500 truncate">${p.phone ? `📞 ${escapeHtml(p.phone)}` : 'بدون رقم'} ${p.note ? `• ${escapeHtml(p.note)}` : ''}</p>
               </div>
               <div class="flex items-center gap-1.5 shrink-0">
@@ -2740,7 +2768,8 @@
             <div class="flex items-center justify-between gap-2 pt-2 border-t border-white/60">
               <span class="text-[11px] text-slate-600">المتبقي: <strong class="text-amber-700">${remText}</strong></span>
               <div class="flex items-center gap-1">
-                <button type="button" onclick="openPersonStatementModal('${p.id}')" class="ios-btn bg-sky-500/15 hover:bg-sky-500/25 text-sky-800 text-[11px] font-bold px-2 py-1 rounded-lg">كشف حساب</button>
+                <button type="button" onclick="filterByPersonInstant('${escapeHtml(p.name)}')" class="ios-btn bg-indigo-500/15 hover:bg-indigo-500/25 text-indigo-800 text-[11px] font-bold px-2 py-1 rounded-lg">ملخص فوري</button>
+                <button type="button" onclick="openPersonStatementModal('${p.id}')" class="ios-btn bg-sky-500/15 hover:bg-sky-500/25 text-sky-800 text-[11px] font-bold px-2 py-1 rounded-lg">كشف</button>
                 <button type="button" onclick="openDebtForPerson('${p.id}')" class="ios-btn bg-amber-500/15 hover:bg-amber-500/25 text-amber-800 text-[11px] font-bold px-2 py-1 rounded-lg">+ دين</button>
               </div>
             </div>
@@ -3185,7 +3214,7 @@
             <td class="px-4 py-3 text-slate-800">
               <div class="font-bold flex items-center gap-1.5 flex-wrap">
                 <span>${escapeHtml(t.note)}</span>
-                ${t.personName ? `<span class="text-xs font-semibold text-sky-700">(${escapeHtml(t.personName)})</span>` : ''}
+                ${t.personName ? `<button type="button" onclick="filterByPersonInstant('${escapeHtml(t.personName)}')" class="text-xs font-bold text-sky-700 hover:underline">(${escapeHtml(t.personName)})</button>` : ''}
                 ${t.receiptImg ? `<button type="button" onclick="openReceiptViewer('${t.id}')" class="text-[11px] font-bold bg-indigo-500/15 text-indigo-800 px-2 py-0.5 rounded-lg hover:bg-indigo-500/25">📎 الإيصال</button>` : ''}
               </div>
               ${t.details ? `<div class="text-xs text-slate-500 mt-0.5">${escapeHtml(t.details)}</div>` : ''}
@@ -3219,6 +3248,81 @@
     }
 
     // ==================== RENDER FULL LOG TAB ====================
+    function renderPersonQuickSummary(personName) {
+      const card = document.getElementById('personQuickSummaryCard');
+      if (!card) return;
+      if (!personName || personName === 'all') {
+        card.classList.add('hidden');
+        card.innerHTML = '';
+        return;
+      }
+
+      const today = todayISO();
+      const pObj = state.people.find(p => p.name === personName);
+      const pTxs = state.transactions.filter(t => t.personName === personName);
+      const pDebts = state.debts.filter(d => d.name === personName);
+      const pScheds = state.schedules.filter(s => s.personName === personName || (s.debtId && pDebts.some(d => d.id === s.debtId)));
+
+      const recDebts = pDebts.filter(d => (d.direction || 'receivable') === 'receivable');
+      const payDebts = pDebts.filter(d => d.direction === 'payable');
+
+      const recRemText = fmtMulti(recDebts, d => Math.max(0, Number(d.totalAmount) - Number(d.paidAmount)));
+      const payRemText = fmtMulti(payDebts, d => Math.max(0, Number(d.totalAmount) - Number(d.paidAmount)));
+      const inTxText = fmtMulti(pTxs.filter(t => t.type === 'income'), t => t.amount);
+      const outTxText = fmtMulti(pTxs.filter(t => t.type === 'expense'), t => t.amount);
+
+      const nextSched = pScheds
+        .filter(s => s.status === 'pending')
+        .sort((a, b) => a.date.localeCompare(b.date))[0];
+
+      const lastActivity = [
+        ...pTxs.map(t => ({ date: t.date, label: `${t.type === 'income' ? 'قبض' : 'صرف'}: ${t.note} (${fmt(t.amount, t.currency)})` })),
+        ...pDebts.map(d => ({ date: d.dueDate, label: `${d.direction === 'payable' ? 'دين عليك' : 'دين لك'}: ${fmt(d.totalAmount, d.currency)}` }))
+      ].sort((a, b) => b.date.localeCompare(a.date))[0];
+
+      card.classList.remove('hidden');
+      card.innerHTML = `
+        <div class="flex flex-wrap items-center justify-between gap-2">
+          <div class="flex items-center gap-2.5 min-w-0">
+            <span class="icon-badge-3d w-10 h-10 rounded-[14px] bg-gradient-to-b from-sky-400 to-teal-600 text-white font-extrabold text-base shrink-0">👤</span>
+            <div class="min-w-0">
+              <div class="flex items-center gap-2 flex-wrap">
+                <h3 class="text-base font-extrabold text-slate-900">ملخص العميل: ${escapeHtml(personName)}</h3>
+                ${pObj && pObj.phone ? `<span class="text-xs font-bold text-slate-600 bg-white/75 px-2.5 py-0.5 rounded-full">📞 ${escapeHtml(pObj.phone)}</span>` : ''}
+              </div>
+              <p class="text-[11px] text-slate-600 mt-0.5">
+                ${lastActivity ? `آخر معاملة: <strong>${escapeHtml(lastActivity.label)}</strong> (${lastActivity.date})` : 'لا توجد معاملات سابقة'}
+                ${nextSched ? ` • أقرب موعد: <strong class="${nextSched.date < today ? 'text-rose-600' : 'text-sky-800'}">${nextSched.date} (${fmt(nextSched.amount, nextSched.currency)})</strong>` : ''}
+              </p>
+            </div>
+          </div>
+          <div class="flex items-center gap-1.5 shrink-0">
+            ${pObj ? `<button type="button" onclick="openPersonStatementModal('${pObj.id}')" class="ios-btn bg-sky-600 hover:bg-sky-700 text-white text-xs font-bold px-3 py-1.5 rounded-xl">كشف حساب كامل</button>` : ''}
+            <button type="button" onclick="clearPersonInstantFilter()" class="ios-btn bg-white/80 hover:bg-white text-slate-700 border border-white text-xs font-bold px-3 py-1.5 rounded-xl">إلغاء التصفية ✕</button>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs">
+          <div class="p-2.5 rounded-xl bg-amber-500/10 border border-amber-300/60">
+            <span class="text-[11px] text-slate-600 block">لك عنده (متبقي)</span>
+            <strong class="text-sm font-extrabold text-amber-800">${recRemText}</strong>
+          </div>
+          <div class="p-2.5 rounded-xl bg-rose-500/10 border border-rose-300/60">
+            <span class="text-[11px] text-slate-600 block">له عندك (متبقي)</span>
+            <strong class="text-sm font-extrabold text-rose-800">${payRemText}</strong>
+          </div>
+          <div class="p-2.5 rounded-xl bg-emerald-500/10 border border-emerald-300/60">
+            <span class="text-[11px] text-slate-600 block">إجمالي المقبوض منه</span>
+            <strong class="text-sm font-extrabold text-emerald-700">${inTxText}</strong>
+          </div>
+          <div class="p-2.5 rounded-xl bg-sky-500/10 border border-sky-300/60">
+            <span class="text-[11px] text-slate-600 block">إجمالي المدفوع له</span>
+            <strong class="text-sm font-extrabold text-sky-800">${outTxText}</strong>
+          </div>
+        </div>
+      `;
+    }
+
     function renderFullLog() {
       const currSel = document.getElementById('fullLogCurrency');
       const prevCurr = currSel.value;
@@ -3227,8 +3331,15 @@
 
       const perSel = document.getElementById('fullLogPerson');
       const prevPer = perSel.value;
-      perSel.innerHTML = `<option value="all">جميع الأشخاص</option>` + state.people.map(p => `<option value="${escapeHtml(p.name)}">${escapeHtml(p.name)}</option>`).join('');
-      if (state.people.some(p => p.name === prevPer)) perSel.value = prevPer;
+      const allPersonNames = Array.from(new Set([
+        ...state.people.map(p => p.name),
+        ...state.transactions.map(t => t.personName).filter(Boolean),
+        ...state.debts.map(d => d.name).filter(Boolean)
+      ]));
+      perSel.innerHTML = `<option value="all">كل الأشخاص</option>` + allPersonNames.map(name => `<option value="${escapeHtml(name)}">${escapeHtml(name)}</option>`).join('');
+      if (allPersonNames.includes(prevPer)) perSel.value = prevPer;
+
+      renderPersonQuickSummary(perSel.value);
 
       const today = todayISO();
       const entries = [];
@@ -3319,7 +3430,9 @@
             <td class="px-4 py-3 whitespace-nowrap">
               <span class="px-2.5 py-1 rounded-full text-xs font-bold ${e.badgeClass}">${e.kindLabel}</span>
             </td>
-            <td class="px-4 py-3 font-semibold text-slate-700">${escapeHtml(e.partyOrCat)}</td>
+            <td class="px-4 py-3 font-semibold text-slate-700">
+              ${e.personName ? `<button type="button" onclick="filterByPersonInstant('${escapeHtml(e.personName)}')" class="text-sky-800 hover:underline font-extrabold text-right">${escapeHtml(e.partyOrCat)}</button>` : escapeHtml(e.partyOrCat)}
+            </td>
             <td class="px-4 py-3 text-slate-800">
               <div class="font-bold">${escapeHtml(e.title)}</div>
               ${e.details ? `<div class="text-xs text-slate-500 mt-0.5">${escapeHtml(e.details)}</div>` : ''}
