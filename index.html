@@ -359,6 +359,11 @@
           <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2.1" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"/></svg>
           السجل الكامل
         </button>
+        <button type="button" data-tab="quickNotes" class="tab-btn ios-btn whitespace-nowrap px-3.5 py-2 rounded-xl text-xs sm:text-sm font-bold text-slate-600 hover:bg-white/60 flex items-center gap-1.5">
+          <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2.1" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+          المفكرة والإدخال السريع
+          <span id="navNotesBadge" class="hidden bg-indigo-500/20 text-indigo-800 text-xs px-1.5 py-0.5 rounded-full">0</span>
+        </button>
         <button type="button" data-tab="settings" class="tab-btn ios-btn whitespace-nowrap px-3.5 py-2 rounded-xl text-xs sm:text-sm font-bold text-slate-600 hover:bg-white/60 flex items-center gap-1.5">
           <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2.1" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
           الإعدادات والتهيئة
@@ -782,6 +787,64 @@
             <tbody id="fullLogTableBody" class="divide-y divide-white/50"></tbody>
           </table>
         </div>
+      </div>
+    </section>
+
+    <!-- ==================== TAB 6.5: QUICK SMART ENTRY & FINANCIAL NOTES ==================== -->
+    <section id="view-quickNotes" class="tab-view hidden space-y-5">
+      <div class="flex flex-wrap items-center justify-between gap-3">
+        <div>
+          <h2 class="text-xl font-extrabold text-slate-900">المفكرة المالية والإدخال السريع ⚡</h2>
+          <p class="text-xs sm:text-sm text-slate-600">سجّل حركاتك المالية بجملة واحدة ذكية، واحفظ ملاحظاتك وتنبيهاتك المالية السريعة</p>
+        </div>
+      </div>
+
+      <!-- Smart One-Line Quick Entry Card -->
+      <div class="glass-card p-4 sm:p-5 space-y-3 border-2 border-sky-400/50">
+        <div class="flex items-center justify-between gap-2">
+          <h3 class="text-base font-extrabold text-slate-900 flex items-center gap-2">
+            <span class="icon-badge-3d w-8 h-8 rounded-[12px] bg-gradient-to-b from-sky-400 to-teal-600 text-white text-sm">⚡</span>
+            الإدخال السريع الذكي بسطر واحد
+          </h3>
+          <span class="text-[11px] font-bold text-sky-800 bg-sky-500/15 px-2.5 py-1 rounded-full">تحليل فوري</span>
+        </div>
+
+        <form id="smartQuickEntryForm" class="flex flex-col sm:flex-row gap-2">
+          <input id="smartQuickInput" type="text" required placeholder="اكتب جملة مثل: صرف 50 غداء عمل أو قبض 300 من خالد العلي أو دين 200 على أحمد..." class="ios-input flex-1 rounded-2xl px-4 py-3 text-sm font-bold focus:outline-none focus:ring-2 focus:ring-sky-500" />
+          <button type="submit" class="ios-btn bg-gradient-to-br from-sky-500 to-teal-700 text-white font-bold px-5 py-3 rounded-2xl shadow-md shrink-0">تسجيل فوري ✓</button>
+        </form>
+
+        <!-- Live Smart Preview -->
+        <div id="smartQuickPreview" class="hidden bg-white/75 border border-white rounded-2xl p-3 flex flex-wrap items-center justify-between gap-2 text-xs"></div>
+
+        <!-- Quick Example Chips -->
+        <div class="flex flex-wrap items-center gap-1.5 text-[11px]">
+          <span class="font-bold text-slate-500">أمثلة سريعة:</span>
+          <button type="button" onclick="fillSmartExample('صرف 25 وقود ومواصلات')" class="ios-btn bg-white/70 hover:bg-white text-slate-700 px-2.5 py-1 rounded-xl font-bold">صرف 25 وقود ومواصلات</button>
+          <button type="button" onclick="fillSmartExample('قبض 400 مبيعات من شركة الأفق')" class="ios-btn bg-white/70 hover:bg-white text-slate-700 px-2.5 py-1 rounded-xl font-bold">قبض 400 مبيعات من شركة الأفق</button>
+          <button type="button" onclick="fillSmartExample('دين لك 150 على خالد العلي')" class="ios-btn bg-white/70 hover:bg-white text-slate-700 px-2.5 py-1 rounded-xl font-bold">دين لك 150 على خالد العلي</button>
+          <button type="button" onclick="fillSmartExample('دين عليك 100 لـ مؤسسة البناء')" class="ios-btn bg-white/70 hover:bg-white text-slate-700 px-2.5 py-1 rounded-xl font-bold">دين عليك 100 لـ مؤسسة البناء</button>
+        </div>
+      </div>
+
+      <!-- Financial Notes & Alerts Board -->
+      <div class="glass-card p-4 sm:p-5 space-y-4">
+        <div class="flex flex-wrap items-center justify-between gap-2">
+          <div>
+            <h3 class="text-base font-extrabold text-slate-900">الملاحظات والتنبيهات المالية السريعة 📝</h3>
+            <p class="text-xs text-slate-600">دوّن الاتفاقات الشفهية أو التذكيرات وحوّلها لحركة مالية أو دين بضغطة زر</p>
+          </div>
+          <span id="notesTotalBadge" class="text-xs font-extrabold bg-indigo-500/15 text-indigo-800 px-3 py-1.5 rounded-full">0 ملاحظة</span>
+        </div>
+
+        <form id="quickNoteForm" class="grid grid-cols-1 sm:grid-cols-12 gap-2.5 bg-white/55 border border-white/80 p-3 rounded-2xl">
+          <input id="qNoteText" type="text" required placeholder="اكتب ملاحظة مالية أو تنبيه (مثال: مراجعة سعر الصرف، اتفاق توريد مع أحمد...)" class="ios-input sm:col-span-6 rounded-xl px-3.5 py-2.5 text-xs sm:text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+          <input id="qNoteAmount" type="number" step="0.01" min="0" inputmode="decimal" placeholder="مبلغ تقديري (اختياري)" class="ios-input sm:col-span-2 rounded-xl px-3 py-2.5 text-xs sm:text-sm font-bold focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+          <input id="qNoteDate" type="date" class="ios-input sm:col-span-2 rounded-xl px-2.5 py-2.5 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+          <button type="submit" class="ios-btn sm:col-span-2 bg-gradient-to-br from-indigo-500 to-violet-600 text-white text-xs sm:text-sm font-bold py-2.5 px-3 rounded-xl shadow-xs">+ حفظ الملاحظة</button>
+        </form>
+
+        <div id="quickNotesGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3.5"></div>
       </div>
     </section>
 
@@ -1881,6 +1944,10 @@
         savingsGoals: [
           { id: 'goal_1', title: 'احتياطي الطوارئ والأمان', targetAmount: 1500, savedAmount: 650, currency: '$', deadline: todayISO(60) }
         ],
+        quickNotes: [
+          { id: 'note_1', text: 'الاتفاق مع شركة الأفق على توريد دفعة جديدة بداية الأسبوع', amount: 500, currency: '$', alertDate: todayISO(2), pinned: true, createdAt: todayISO() },
+          { id: 'note_2', text: 'مراجعة فواتير الإنترنت والكهرباء قبل نهاية الشهر', amount: 0, currency: '$', alertDate: todayISO(0), pinned: false, createdAt: todayISO() }
+        ],
         schedules: [
           { id: 'sch_1', title: 'تحصيل قسط شركة الأفق', amount: 300, currency: '$', date: todayISO(4), recurrence: 'once', debtId: 'debt_1', personName: 'شركة الأفق للتجارة', phone: '0933123456', status: 'pending', note: 'تحويل بنكي أو نقدي' },
           { id: 'sch_2', title: 'استرداد سلفة خالد العلي', amount: 350, currency: '$', date: todayISO(-2), recurrence: 'once', debtId: 'debt_2', personName: 'خالد العلي', phone: '0944987654', status: 'pending', note: 'التواصل هاتفياً للتأكيد' },
@@ -1906,6 +1973,7 @@
       s.debts.forEach(d => { if (!d.direction) d.direction = 'receivable'; });
       if (!s.recurringExpenses) s.recurringExpenses = [];
       if (!s.savingsGoals) s.savingsGoals = [];
+      if (!s.quickNotes) s.quickNotes = [];
       if (!s.schedules) s.schedules = [];
       return s;
     }
@@ -4909,6 +4977,278 @@
       renderDebts();
       renderSchedule();
       renderFullLog();
+      renderQuickNotes();
+    }
+
+    // ==================== QUICK SMART ENTRY & NOTES MODULE ====================
+    function parseSmartQuickEntry(rawText) {
+      const text = String(rawText || '').trim();
+      if (!text) return null;
+
+      // Detect currency if mentioned in text
+      let currency = state.currency;
+      for (const c of state.currencies) {
+        if (text.includes(c.code) || text.includes(c.name)) {
+          currency = c.code;
+          break;
+        }
+      }
+      if (/دولار|usd/i.test(text) && state.currencies.some(c => c.code === '$')) currency = '$';
+      if (/سوري|ليرة سورية/i.test(text) && state.currencies.some(c => c.code === 'ل.س')) currency = 'ل.س';
+      if (/تركي|ليرة تركية/i.test(text) && state.currencies.some(c => c.code === '₺')) currency = '₺';
+      if (/ريال|سعودي/i.test(text) && state.currencies.some(c => c.code === 'ر.س')) currency = 'ر.س';
+      if (/يورو|eur/i.test(text) && state.currencies.some(c => c.code === '€')) currency = '€';
+
+      // Extract numeric amount
+      const numMatch = text.match(/(\d+(?:[.,]\d+)?)/);
+      const amount = numMatch ? parseFloat(numMatch[1].replace(',', '.')) : 0;
+
+      // Detect record kind: debt_receivable, debt_payable, income, or expense
+      let kind = 'expense';
+      if (/دين\s*(علي|عَلَيّ|عليك|علينا|لـ|ل)|سداد\s*دين|التزام/.test(text)) {
+        kind = 'debt_payable';
+      } else if (/دين|سلفة|قرض|ذمة/.test(text)) {
+        kind = 'debt_receivable';
+      } else if (/قبض|مدخول|دخل|استلام|استلمت|راتب|مبيعات|أرباح|ايراد|إيراد|تحصيل/.test(text)) {
+        kind = 'income';
+      } else if (/صرف|مصروف|دفع|دفعت|شراء|اشتريت|فاتورة|ايجار|إيجار|غداء|طعام|وقود|بنزين|مواصلات/.test(text)) {
+        kind = 'expense';
+      }
+
+      // Detect matching registered person
+      let personName = '';
+      for (const p of state.people) {
+        if (p.name && text.includes(p.name)) {
+          personName = p.name;
+          break;
+        }
+      }
+      if (!personName) {
+        const fromToMatch = text.match(/(?:من|إلى|الى|على|لـ)\s+([^\d]+)$/);
+        if (fromToMatch && fromToMatch[1]) {
+          personName = fromToMatch[1].trim();
+        }
+      }
+
+      // Detect matching category
+      let category = kind === 'income' ? (state.incomeCategories[0] || 'إيرادات أخرى') : (state.expenseCategories[0] || 'طوارئ وأخرى');
+      const allCats = kind === 'income' ? state.incomeCategories : state.expenseCategories;
+      for (const cat of allCats) {
+        const keywords = cat.split(/[\s/]+/).filter(w => w.length >= 3);
+        if (keywords.some(kw => text.includes(kw))) {
+          category = cat;
+          break;
+        }
+      }
+      if (/غداء|عشاء|فطور|طعام|أكل|سوبر|تموين/.test(text) && allCats.includes('طعام ومشتريات')) category = 'طعام ومشتريات';
+      if (/بنزين|وقود|تكسي|مواصلات|سفر/.test(text) && allCats.includes('مواصلات ووقود')) category = 'مواصلات ووقود';
+      if (/كهرباء|ماء|نت|انترنت|إنترنت|فاتورة|هاتف/.test(text) && allCats.includes('فواتير واتصالات')) category = 'فواتير واتصالات';
+      if (/ايجار|إيجار|سكن/.test(text) && allCats.includes('سكن وإيجار')) category = 'سكن وإيجار';
+
+      // Clean title/note
+      let note = text
+        .replace(/^(صرف|مصروف|دفع|دفعت|قبض|مدخول|استلام|استلمت|دين\s*لك|دين\s*عليك|دين\s*علي|دين)\s*/i, '')
+        .replace(numMatch ? numMatch[0] : '', '')
+        .replace(/\s+/g, ' ')
+        .trim();
+      if (!note) note = personName ? `${kind === 'income' ? 'قبض من' : 'حركة مع'} ${personName}` : category;
+
+      return { kind, amount, currency, category, personName, note };
+    }
+
+    function fillSmartExample(exampleText) {
+      const inp = document.getElementById('smartQuickInput');
+      if (!inp) return;
+      inp.value = exampleText;
+      inp.dispatchEvent(new Event('input'));
+      inp.focus();
+    }
+
+    document.getElementById('smartQuickInput').addEventListener('input', e => {
+      const prevEl = document.getElementById('smartQuickPreview');
+      const parsed = parseSmartQuickEntry(e.target.value);
+      if (!parsed || parsed.amount <= 0) {
+        prevEl.classList.add('hidden');
+        return;
+      }
+      const kindMap = {
+        income: { label: 'مدخول (قبض)', cls: 'bg-emerald-500/15 text-emerald-800' },
+        expense: { label: 'مصروف (صرف)', cls: 'bg-rose-500/15 text-rose-800' },
+        debt_receivable: { label: 'دين لَك (للتحصيل)', cls: 'bg-amber-500/20 text-amber-900' },
+        debt_payable: { label: 'دين عَلَيْك (للسداد)', cls: 'bg-rose-500/20 text-rose-900' }
+      };
+      const km = kindMap[parsed.kind];
+      prevEl.classList.remove('hidden');
+      prevEl.innerHTML = `
+        <div class="flex flex-wrap items-center gap-2">
+          <span class="px-2.5 py-1 rounded-full font-extrabold ${km.cls}">${km.label}</span>
+          <span>المبلغ: <strong class="text-slate-900">${fmt(parsed.amount, parsed.currency)}</strong></span>
+          <span>• البيان: <strong class="text-slate-900">${escapeHtml(parsed.note)}</strong></span>
+          ${parsed.personName ? `<span>• الشخص: <strong class="text-sky-800">${escapeHtml(parsed.personName)}</strong></span>` : ''}
+          ${parsed.kind === 'income' || parsed.kind === 'expense' ? `<span>• التصنيف: <strong class="text-slate-700">${escapeHtml(parsed.category)}</strong></span>` : ''}
+        </div>
+      `;
+    });
+
+    document.getElementById('smartQuickEntryForm').addEventListener('submit', e => {
+      e.preventDefault();
+      const inp = document.getElementById('smartQuickInput');
+      const parsed = parseSmartQuickEntry(inp.value);
+      if (!parsed || parsed.amount <= 0) {
+        showToast('يرجى كتابة المبلغ ضمن الجملة (مثال: صرف 50 غداء)');
+        return;
+      }
+
+      if (parsed.personName && !state.people.some(p => p.name === parsed.personName)) {
+        state.people.push({ id: 'per_' + Date.now(), name: parsed.personName, phone: '', note: 'أُضيف عبر الإدخال السريع' });
+      }
+
+      if (parsed.kind === 'debt_receivable' || parsed.kind === 'debt_payable') {
+        const direction = parsed.kind === 'debt_payable' ? 'payable' : 'receivable';
+        const targetPerson = parsed.personName || parsed.note;
+        state.debts.push({
+          id: 'debt_' + Date.now(),
+          direction,
+          name: targetPerson,
+          phone: '',
+          totalAmount: parsed.amount,
+          paidAmount: 0,
+          currency: parsed.currency,
+          dueDate: todayISO(7),
+          note: parsed.note
+        });
+        showToast(`تم تسجيل ${direction === 'payable' ? 'دين عليك' : 'دين لك'} بقيمة ${fmt(parsed.amount, parsed.currency)}`);
+      } else {
+        state.transactions.push({
+          id: 'tx_' + Date.now(),
+          type: parsed.kind,
+          amount: parsed.amount,
+          currency: parsed.currency,
+          category: parsed.category,
+          date: todayISO(),
+          method: 'نقدي',
+          personName: parsed.personName,
+          note: parsed.note,
+          details: 'إدخال سريع ذكي'
+        });
+        showToast(`تم تسجيل ${parsed.kind === 'income' ? 'مدخول' : 'مصروف'} ${fmt(parsed.amount, parsed.currency)}`);
+      }
+
+      inp.value = '';
+      document.getElementById('smartQuickPreview').classList.add('hidden');
+      saveState();
+      renderAll();
+    });
+
+    document.getElementById('quickNoteForm').addEventListener('submit', e => {
+      e.preventDefault();
+      const text = document.getElementById('qNoteText').value.trim();
+      const amount = parseFloat(document.getElementById('qNoteAmount').value) || 0;
+      const alertDate = document.getElementById('qNoteDate').value || '';
+      if (!text) return;
+
+      state.quickNotes.unshift({
+        id: 'note_' + Date.now(),
+        text,
+        amount,
+        currency: state.currency,
+        alertDate,
+        pinned: false,
+        createdAt: todayISO()
+      });
+      document.getElementById('quickNoteForm').reset();
+      saveState();
+      renderAll();
+      showToast('تم حفظ الملاحظة المالية');
+    });
+
+    function togglePinQuickNote(noteId) {
+      const n = state.quickNotes.find(x => x.id === noteId);
+      if (!n) return;
+      n.pinned = !n.pinned;
+      saveState();
+      renderQuickNotes();
+    }
+
+    function deleteQuickNote(noteId) {
+      state.quickNotes = state.quickNotes.filter(x => x.id !== noteId);
+      saveState();
+      renderQuickNotes();
+      showToast('تم حذف الملاحظة');
+    }
+
+    function convertNoteToTx(noteId, type) {
+      const n = state.quickNotes.find(x => x.id === noteId);
+      if (!n) return;
+      openTxModal(type);
+      document.getElementById('txNote').value = n.text;
+      if (n.amount > 0) document.getElementById('txAmount').value = n.amount;
+      if (n.currency) document.getElementById('txCurrency').value = n.currency;
+    }
+
+    function convertNoteToDebt(noteId) {
+      const n = state.quickNotes.find(x => x.id === noteId);
+      if (!n) return;
+      openDebtModal();
+      document.getElementById('debtNote').value = n.text;
+      if (n.amount > 0) document.getElementById('debtAmount').value = n.amount;
+      if (n.alertDate) document.getElementById('debtDueDate').value = n.alertDate;
+    }
+
+    function renderQuickNotes() {
+      const notes = state.quickNotes || [];
+      const badge = document.getElementById('notesTotalBadge');
+      const navBadge = document.getElementById('navNotesBadge');
+      if (badge) badge.textContent = `${notes.length} ملاحظة`;
+      if (navBadge) {
+        navBadge.textContent = notes.length;
+        navBadge.classList.toggle('hidden', notes.length === 0);
+      }
+
+      const grid = document.getElementById('quickNotesGrid');
+      if (!grid) return;
+      if (!notes.length) {
+        grid.innerHTML = `<p class="col-span-full text-xs text-slate-400 text-center py-6">لا توجد ملاحظات مالية حالياً — أضف أول ملاحظة أو تنبيه بالاعلى</p>`;
+        return;
+      }
+
+      const today = todayISO();
+      const sorted = [...notes].sort((a, b) => (b.pinned ? 1 : 0) - (a.pinned ? 1 : 0));
+
+      grid.innerHTML = sorted.map(n => {
+        const isDueToday = n.alertDate && n.alertDate === today;
+        const isOverdue = n.alertDate && n.alertDate < today;
+        const borderCls = n.pinned
+          ? 'border-2 border-indigo-400/80 bg-indigo-500/[0.08]'
+          : isOverdue
+            ? 'border-2 border-rose-400/75 bg-rose-500/[0.07]'
+            : isDueToday
+              ? 'border-2 border-amber-400/80 bg-amber-500/[0.08]'
+              : 'border border-white/85 bg-white/65';
+
+        return `
+          <div class="p-4 rounded-2xl ${borderCls} flex flex-col justify-between gap-3 shadow-xs">
+            <div class="space-y-1.5">
+              <div class="flex items-start justify-between gap-2">
+                <p class="text-sm font-extrabold text-slate-900 leading-relaxed">${escapeHtml(n.text)}</p>
+                <button type="button" onclick="togglePinQuickNote('${n.id}')" class="text-sm shrink-0 ${n.pinned ? 'opacity-100' : 'opacity-40 hover:opacity-80'}" title="تثبيت الملاحظة">📌</button>
+              </div>
+              <div class="flex flex-wrap items-center gap-1.5 text-[11px]">
+                ${n.amount > 0 ? `<span class="font-extrabold bg-sky-500/15 text-sky-800 px-2 py-0.5 rounded-lg">${fmt(n.amount, n.currency || state.currency)}</span>` : ''}
+                ${n.alertDate ? `<span class="font-bold px-2 py-0.5 rounded-lg ${isOverdue ? 'bg-rose-500/15 text-rose-700' : isDueToday ? 'bg-amber-500/20 text-amber-800' : 'bg-slate-200/70 text-slate-700'}">⏰ ${n.alertDate}</span>` : ''}
+              </div>
+            </div>
+            <div class="flex flex-wrap items-center justify-between gap-1.5 pt-2 border-t border-white/60 text-[11px]">
+              <div class="flex items-center gap-1">
+                <button type="button" onclick="convertNoteToTx('${n.id}', 'income')" class="ios-btn bg-emerald-500/15 hover:bg-emerald-500/25 text-emerald-800 font-bold px-2 py-1 rounded-lg">+ مدخول</button>
+                <button type="button" onclick="convertNoteToTx('${n.id}', 'expense')" class="ios-btn bg-rose-500/15 hover:bg-rose-500/25 text-rose-800 font-bold px-2 py-1 rounded-lg">− مصروف</button>
+                <button type="button" onclick="convertNoteToDebt('${n.id}')" class="ios-btn bg-amber-500/15 hover:bg-amber-500/25 text-amber-800 font-bold px-2 py-1 rounded-lg">دين</button>
+              </div>
+              <button type="button" onclick="deleteQuickNote('${n.id}')" class="text-rose-600 font-bold hover:underline px-1">حذف</button>
+            </div>
+          </div>
+        `;
+      }).join('');
     }
 
     window.addEventListener('DOMContentLoaded', () => {
