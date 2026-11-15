@@ -359,6 +359,11 @@
           <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2.1" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"/></svg>
           السجل الكامل
         </button>
+        <button type="button" data-tab="shop" class="tab-btn ios-btn whitespace-nowrap px-3.5 py-2 rounded-xl text-xs sm:text-sm font-bold text-slate-600 hover:bg-white/60 flex items-center gap-1.5">
+          <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2.1" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
+          إدارة المحل (POS)
+          <span id="navLowStockBadge" class="hidden bg-rose-500/20 text-rose-800 text-xs px-1.5 py-0.5 rounded-full">0</span>
+        </button>
         <button type="button" data-tab="quickNotes" class="tab-btn ios-btn whitespace-nowrap px-3.5 py-2 rounded-xl text-xs sm:text-sm font-bold text-slate-600 hover:bg-white/60 flex items-center gap-1.5">
           <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2.1" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
           المفكرة والإدخال السريع
@@ -788,6 +793,93 @@
               </tr>
             </thead>
             <tbody id="fullLogTableBody" class="divide-y divide-white/50"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== TAB 6.2: SHOP MANAGEMENT & POS ==================== -->
+    <section id="view-shop" class="tab-view hidden space-y-5">
+      <div class="flex flex-wrap items-center justify-between gap-3">
+        <div>
+          <h2 class="text-xl font-extrabold text-slate-900">إدارة المحل التجاري ونقطة البيع (POS) 🏪</h2>
+          <p class="text-xs sm:text-sm text-slate-600">إدارة المخزون، فواتير المبيعات النقدية والآجلة، المشتريات، وحساب صافي أرباح المحل الحقيقية</p>
+        </div>
+        <div class="flex flex-wrap items-center gap-2">
+          <button type="button" onclick="openPosInvoiceModal('sale')" class="ios-btn bg-gradient-to-br from-emerald-500 to-teal-700 text-white text-xs sm:text-sm font-bold px-3.5 py-2.5 rounded-2xl shadow-sm">🧾 فاتورة مبيع (كاشير)</button>
+          <button type="button" onclick="openPosInvoiceModal('purchase')" class="ios-btn bg-gradient-to-br from-amber-500 to-orange-600 text-white text-xs sm:text-sm font-bold px-3.5 py-2.5 rounded-2xl shadow-sm">📦 فاتورة شراء / توريد</button>
+          <button type="button" onclick="openShopProductModal()" class="ios-btn bg-gradient-to-br from-sky-500 to-indigo-600 text-white text-xs sm:text-sm font-bold px-3.5 py-2.5 rounded-2xl shadow-sm">+ صنف جديد</button>
+        </div>
+      </div>
+
+      <!-- Shop KPI Summary Cards -->
+      <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+        <div class="glass-card p-3.5 sm:p-4">
+          <span class="text-[11px] font-bold text-slate-600 block">قيمة رأس مال المخزون (بالتكلفة)</span>
+          <p id="shopStockCostTotal" class="text-base sm:text-xl font-extrabold text-slate-900 mt-1 break-words">0</p>
+          <p id="shopStockRetailTotal" class="text-[11px] text-sky-800 mt-0.5">القيمة البيعية: 0</p>
+        </div>
+        <div class="glass-card p-3.5 sm:p-4">
+          <span class="text-[11px] font-bold text-slate-600 block">إجمالي مبيعات المحل</span>
+          <p id="shopSalesTotal" class="text-base sm:text-xl font-extrabold text-emerald-600 mt-1 break-words">0</p>
+          <p id="shopSalesCount" class="text-[11px] text-slate-600 mt-0.5">0 فاتورة مبيع</p>
+        </div>
+        <div class="glass-card p-3.5 sm:p-4">
+          <span class="text-[11px] font-bold text-slate-600 block">صافي أرباح المبيعات الحقيقية</span>
+          <p id="shopNetProfitTotal" class="text-base sm:text-xl font-extrabold text-teal-700 mt-1 break-words">0</p>
+          <p class="text-[11px] text-slate-500 mt-0.5">(سعر المبيع − سعر التكلفة − الخصم)</p>
+        </div>
+        <div class="glass-card p-3.5 sm:p-4">
+          <span class="text-[11px] font-bold text-slate-600 block">تنبيهات المخزون والأصناف</span>
+          <p id="shopProductsCount" class="text-base sm:text-xl font-extrabold text-indigo-700 mt-1">0 صنف</p>
+          <p id="shopLowStockCount" class="text-[11px] font-bold text-rose-600 mt-0.5">0 صنف قارب على النفاد</p>
+        </div>
+      </div>
+
+      <!-- Shop Sub-Tabs (Inventory vs Invoices) -->
+      <div class="flex flex-wrap items-center justify-between gap-2">
+        <div class="flex items-center gap-2">
+          <button type="button" id="btnShopSubInventory" onclick="switchShopSubView('inventory')" class="ios-btn bg-gradient-to-br from-sky-500 to-teal-700 text-white text-xs font-bold px-4 py-2 rounded-xl shadow-xs">📦 المخزون والأصناف</button>
+          <button type="button" id="btnShopSubInvoices" onclick="switchShopSubView('invoices')" class="ios-btn bg-white/75 text-slate-700 border border-white text-xs font-bold px-4 py-2 rounded-xl">🧾 سجل فواتير المحل</button>
+        </div>
+        <input id="shopSearchInput" type="text" oninput="renderShop()" placeholder="ابحث بالاسم أو الباركود أو رقم الفاتورة..." class="ios-input rounded-xl px-3.5 py-2 text-xs sm:text-sm w-full sm:w-72 focus:outline-none focus:ring-2 focus:ring-sky-500" />
+      </div>
+
+      <!-- Sub-View 1: Inventory Table -->
+      <div id="shopSubView-inventory" class="glass-card overflow-hidden">
+        <div class="overflow-x-auto">
+          <table class="w-full text-sm text-right">
+            <thead class="bg-white/45 border-b border-white/70 text-slate-700 font-bold">
+              <tr>
+                <th class="px-4 py-3">الصنف / الباركود</th>
+                <th class="px-4 py-3">سعر التكلفة</th>
+                <th class="px-4 py-3">سعر المبيع</th>
+                <th class="px-4 py-3">الربح للقطعة</th>
+                <th class="px-4 py-3">الكمية المتوفرة</th>
+                <th class="px-4 py-3 text-center">إجراء</th>
+              </tr>
+            </thead>
+            <tbody id="shopProductsTableBody" class="divide-y divide-white/50"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Sub-View 2: Invoices Table -->
+      <div id="shopSubView-invoices" class="hidden glass-card overflow-hidden">
+        <div class="overflow-x-auto">
+          <table class="w-full text-sm text-right">
+            <thead class="bg-white/45 border-b border-white/70 text-slate-700 font-bold">
+              <tr>
+                <th class="px-4 py-3">رقم الفاتورة والتاريخ</th>
+                <th class="px-4 py-3">النوع والدفع</th>
+                <th class="px-4 py-3">العميل / المورد</th>
+                <th class="px-4 py-3">الأصناف</th>
+                <th class="px-4 py-3">الإجمالي الصافي</th>
+                <th class="px-4 py-3">صافي الربح</th>
+                <th class="px-4 py-3 text-center">إجراء</th>
+              </tr>
+            </thead>
+            <tbody id="shopInvoicesTableBody" class="divide-y divide-white/50"></tbody>
           </table>
         </div>
       </div>
@@ -1823,6 +1915,136 @@
     </div>
   </div>
 
+  <!-- Shop Product Modal -->
+  <div id="shopProductModal" class="fixed inset-0 bg-slate-900/40 backdrop-blur-md z-[63] hidden items-center justify-center p-4">
+    <div class="ios-modal max-w-md w-full p-6 animate-slide-up">
+      <div class="flex items-center justify-between mb-4">
+        <h3 id="shopProdModalTitle" class="text-lg font-extrabold text-slate-900">إضافة صنف للمخزون 📦</h3>
+        <button type="button" onclick="closeModal('shopProductModal')" class="w-8 h-8 rounded-full bg-slate-200/70 hover:bg-slate-200 text-slate-600 flex items-center justify-center text-sm font-bold">✕</button>
+      </div>
+      <form id="shopProductForm" class="space-y-3.5">
+        <input type="hidden" id="editShopProdId" value="" />
+        <div class="grid grid-cols-3 gap-2.5">
+          <div class="col-span-2">
+            <label class="block text-xs font-bold text-slate-600 mb-1">اسم الصنف / المنتج</label>
+            <input id="shopProdName" type="text" required placeholder="مثال: شاحن سريع، قميص قطني..." class="ios-input w-full rounded-xl px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-sky-500" />
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-600 mb-1">الباركود / الكود</label>
+            <input id="shopProdSku" type="text" placeholder="اختياري" class="ios-input w-full rounded-xl px-3 py-2.5 text-sm font-mono focus:outline-none focus:ring-2 focus:ring-sky-500" />
+          </div>
+        </div>
+        <div class="grid grid-cols-3 gap-2.5">
+          <div>
+            <label class="block text-xs font-bold text-slate-600 mb-1">سعر التكلفة</label>
+            <input id="shopProdCost" type="number" step="0.01" min="0" inputmode="decimal" required placeholder="0.00" class="ios-input w-full rounded-xl px-3 py-2.5 text-sm font-bold focus:outline-none focus:ring-2 focus:ring-sky-500" />
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-600 mb-1">سعر المبيع</label>
+            <input id="shopProdPrice" type="number" step="0.01" min="0.01" inputmode="decimal" required placeholder="0.00" class="ios-input w-full rounded-xl px-3 py-2.5 text-sm font-bold focus:outline-none focus:ring-2 focus:ring-emerald-500" />
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-600 mb-1">العملة</label>
+            <select id="shopProdCurrency" class="ios-input w-full rounded-xl px-2 py-2.5 text-sm font-bold focus:outline-none focus:ring-2 focus:ring-sky-500"></select>
+          </div>
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-bold text-slate-600 mb-1">الكمية الحالية بالمخزون</label>
+            <input id="shopProdQty" type="number" step="1" min="0" value="1" inputmode="numeric" required class="ios-input w-full rounded-xl px-3.5 py-2.5 text-sm font-bold focus:outline-none focus:ring-2 focus:ring-sky-500" />
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-600 mb-1">حد التنبيه لانخفاض المخزون</label>
+            <input id="shopProdMinQty" type="number" step="1" min="0" value="3" inputmode="numeric" required class="ios-input w-full rounded-xl px-3.5 py-2.5 text-sm font-bold focus:outline-none focus:ring-2 focus:ring-amber-500" />
+          </div>
+        </div>
+        <button type="submit" class="ios-btn w-full bg-gradient-to-br from-sky-500 to-indigo-600 text-white font-bold py-3 rounded-2xl">حفظ الصنف في المخزون ✓</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- POS Invoice Modal (Sale & Purchase) -->
+  <div id="posInvoiceModal" class="fixed inset-0 bg-slate-900/45 backdrop-blur-md z-50 hidden items-center justify-center p-4 overflow-y-auto">
+    <div class="ios-modal max-w-2xl w-full p-5 sm:p-6 animate-slide-up my-auto space-y-3.5">
+      <div class="flex items-center justify-between">
+        <h3 id="posModalTitle" class="text-lg font-extrabold text-slate-900">فاتورة مبيع جديدة (كاشير) 🧾</h3>
+        <button type="button" onclick="closeModal('posInvoiceModal')" class="w-8 h-8 rounded-full bg-slate-200/70 hover:bg-slate-200 text-slate-600 flex items-center justify-center text-sm font-bold">✕</button>
+      </div>
+
+      <input type="hidden" id="posInvoiceType" value="sale" />
+
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
+        <div>
+          <div class="flex items-center justify-between mb-1">
+            <label class="text-xs font-bold text-slate-600">العميل / المورد</label>
+            <button type="button" onclick="openPersonModal()" class="text-[11px] font-bold text-sky-700 hover:underline">+ شخص</button>
+          </div>
+          <select id="posPartySelect" class="ios-input w-full rounded-xl px-3 py-2 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-sky-500">
+            <option value="">زبون نقدي عام</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-slate-600 mb-1">طريقة الدفع</label>
+          <select id="posPaymentMode" class="ios-input w-full rounded-xl px-3 py-2 text-xs sm:text-sm font-bold focus:outline-none focus:ring-2 focus:ring-sky-500">
+            <option value="cash">نقدي (يُسجل بالحركة المالية فوراً)</option>
+            <option value="credit">آجل / ذمم (يُسجل كدين تلقائياً)</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-slate-600 mb-1">تاريخ الفاتورة</label>
+          <input id="posInvoiceDate" type="date" required class="ios-input w-full rounded-xl px-3 py-2 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-sky-500" />
+        </div>
+      </div>
+
+      <!-- Add Product to Cart Row -->
+      <div class="bg-white/60 border border-white/85 p-3 rounded-2xl space-y-2">
+        <div class="flex items-center justify-between">
+          <label class="text-xs font-extrabold text-slate-800">اختر صنفاً لإضافته إلى الفاتورة:</label>
+          <button type="button" onclick="openShopProductModal()" class="text-[11px] font-bold text-indigo-700 hover:underline">+ تعريف صنف جديد</button>
+        </div>
+        <div class="grid grid-cols-12 gap-2">
+          <select id="posProductPicker" class="ios-input col-span-7 sm:col-span-8 rounded-xl px-3 py-2 text-xs sm:text-sm font-bold focus:outline-none focus:ring-2 focus:ring-sky-500"></select>
+          <input id="posItemQty" type="number" min="1" value="1" inputmode="numeric" placeholder="الكمية" class="ios-input col-span-3 sm:col-span-2 rounded-xl px-2 py-2 text-center text-xs sm:text-sm font-bold focus:outline-none focus:ring-2 focus:ring-sky-500" />
+          <button type="button" onclick="addPosCartItem()" class="ios-btn col-span-2 bg-sky-600 hover:bg-sky-700 text-white font-extrabold text-sm rounded-xl">+</button>
+        </div>
+      </div>
+
+      <!-- Cart Items Table -->
+      <div class="bg-white/55 border border-white/80 rounded-2xl overflow-hidden max-h-48 overflow-y-auto">
+        <table class="w-full text-xs text-right">
+          <thead class="bg-white/65 text-slate-700 font-bold border-b border-white">
+            <tr>
+              <th class="px-3 py-2">الصنف</th>
+              <th class="px-3 py-2">السعر</th>
+              <th class="px-3 py-2">الكمية</th>
+              <th class="px-3 py-2">المجموع</th>
+              <th class="px-2 py-2"></th>
+            </tr>
+          </thead>
+          <tbody id="posCartBody" class="divide-y divide-white/50"></tbody>
+        </table>
+      </div>
+
+      <!-- Totals & Discount -->
+      <div class="grid grid-cols-3 gap-2.5 bg-sky-500/10 border border-sky-300/60 p-3 rounded-2xl text-xs">
+        <div>
+          <label class="text-[11px] font-bold text-slate-600 block mb-1">خصم إضافي</label>
+          <input id="posDiscountInput" type="number" step="0.01" min="0" value="0" oninput="renderPosCart()" class="ios-input w-full rounded-xl px-2.5 py-1.5 font-bold" />
+        </div>
+        <div class="text-center flex flex-col justify-center">
+          <span class="text-[11px] text-slate-600">صافي الفاتورة</span>
+          <strong id="posNetTotalLabel" class="text-base font-extrabold text-slate-900">0</strong>
+        </div>
+        <div class="text-center flex flex-col justify-center">
+          <span id="posProfitHeaderLabel" class="text-[11px] text-slate-600">صافي ربح الفاتورة</span>
+          <strong id="posNetProfitLabel" class="text-base font-extrabold text-emerald-700">0</strong>
+        </div>
+      </div>
+
+      <button type="button" onclick="submitPosInvoice()" class="ios-btn w-full bg-gradient-to-br from-emerald-500 to-teal-700 text-white font-extrabold py-3 rounded-2xl shadow-md">اعتماد الفاتورة وتحديث المخزون والحسابات ✓</button>
+    </div>
+  </div>
+
   <!-- Toast Notification -->
   <div id="toast" class="fixed bottom-6 left-1/2 -translate-x-1/2 bg-slate-900/85 backdrop-blur-xl text-white border border-white/15 text-sm font-bold px-6 py-3 rounded-full shadow-2xl z-50 hidden transition-opacity"></div>
 
@@ -2151,6 +2373,10 @@
         quickNotes: [
           { id: 'note_1', text: 'مراجعة تسعيرة الموردين قبل نهاية الأسبوع', amount: 0, currency: '$', alertDate: todayISO(2), pinned: true, createdAt: todayISO() }
         ],
+        shopProducts: [
+          { id: 'prod_1', name: 'منتج تجريبي أساسي', sku: '1001', cost: 15, price: 25, currency: '$', qty: 20, minQty: 5 }
+        ],
+        shopInvoices: [],
         schedules: [
           { id: 'sch_1', title: 'تحصيل قسط شركة الأفق', amount: 300, currency: '$', date: todayISO(4), recurrence: 'once', debtId: 'debt_1', personName: 'شركة الأفق للتجارة', phone: '0933123456', status: 'pending', note: 'تحويل بنكي أو نقدي' },
           { id: 'sch_2', title: 'استرداد سلفة خالد العلي', amount: 350, currency: '$', date: todayISO(-2), recurrence: 'once', debtId: 'debt_2', personName: 'خالد العلي', phone: '0944987654', status: 'pending', note: 'التواصل هاتفياً للتأكيد' },
@@ -2177,6 +2403,8 @@
       if (!s.recurringExpenses) s.recurringExpenses = [];
       if (!s.savingsGoals) s.savingsGoals = [];
       if (!s.quickNotes) s.quickNotes = [];
+      if (!s.shopProducts) s.shopProducts = [];
+      if (!s.shopInvoices) s.shopInvoices = [];
       if (!s.schedules) s.schedules = [];
       return s;
     }
@@ -2449,7 +2677,7 @@
         mainSel.value = state.currency;
       }
 
-      ['txCurrency', 'debtCurrency', 'schedCurrency', 'recCurrency', 'goalCurrency'].forEach(id => {
+      ['txCurrency', 'debtCurrency', 'schedCurrency', 'recCurrency', 'goalCurrency', 'shopProdCurrency'].forEach(id => {
         const el = document.getElementById(id);
         if (el) {
           const prev = el.value;
@@ -5457,6 +5685,7 @@
       renderSchedule();
       renderFullLog();
       renderQuickNotes();
+      renderShop();
     }
 
     // ==================== QUICK SMART ENTRY & NOTES MODULE ====================
@@ -5647,6 +5876,7 @@
       n.pinned = !n.pinned;
       saveState();
       renderQuickNotes();
+      renderShop();
     }
 
     function deleteQuickNote(noteId) {
@@ -5728,6 +5958,367 @@
           </div>
         `;
       }).join('');
+    }
+
+    // ==================== SHOP MANAGEMENT & POS MODULE ====================
+    let shopSubView = 'inventory';
+    let posCart = [];
+
+    function switchShopSubView(view) {
+      shopSubView = view;
+      document.getElementById('shopSubView-inventory').classList.toggle('hidden', view !== 'inventory');
+      document.getElementById('shopSubView-invoices').classList.toggle('hidden', view !== 'invoices');
+      document.getElementById('btnShopSubInventory').className = `ios-btn text-xs font-bold px-4 py-2 rounded-xl ${view === 'inventory' ? 'bg-gradient-to-br from-sky-500 to-teal-700 text-white shadow-xs' : 'bg-white/75 text-slate-700 border border-white'}`;
+      document.getElementById('btnShopSubInvoices').className = `ios-btn text-xs font-bold px-4 py-2 rounded-xl ${view === 'invoices' ? 'bg-gradient-to-br from-sky-500 to-teal-700 text-white shadow-xs' : 'bg-white/75 text-slate-700 border border-white'}`;
+      renderShop();
+    }
+
+    function openShopProductModal(prodId = '') {
+      document.getElementById('shopProductForm').reset();
+      document.getElementById('editShopProdId').value = prodId || '';
+      populateCurrencySelects();
+      if (prodId) {
+        const p = (state.shopProducts || []).find(x => x.id === prodId);
+        if (p) {
+          document.getElementById('shopProdModalTitle').textContent = 'تعديل بيانات الصنف 📦';
+          document.getElementById('shopProdName').value = p.name;
+          document.getElementById('shopProdSku').value = p.sku || '';
+          document.getElementById('shopProdCost').value = p.cost;
+          document.getElementById('shopProdPrice').value = p.price;
+          document.getElementById('shopProdCurrency').value = p.currency || state.currency;
+          document.getElementById('shopProdQty').value = p.qty;
+          document.getElementById('shopProdMinQty').value = p.minQty ?? 3;
+        }
+      } else {
+        document.getElementById('shopProdModalTitle').textContent = 'إضافة صنف للمخزون 📦';
+      }
+      openModal('shopProductModal');
+    }
+
+    document.getElementById('shopProductForm')?.addEventListener('submit', e => {
+      e.preventDefault();
+      const editId = document.getElementById('editShopProdId').value;
+      const name = document.getElementById('shopProdName').value.trim();
+      const sku = document.getElementById('shopProdSku').value.trim();
+      const cost = parseFloat(document.getElementById('shopProdCost').value) || 0;
+      const price = parseFloat(document.getElementById('shopProdPrice').value) || 0;
+      const currency = document.getElementById('shopProdCurrency').value || state.currency;
+      const qty = parseInt(document.getElementById('shopProdQty').value, 10) || 0;
+      const minQty = parseInt(document.getElementById('shopProdMinQty').value, 10) || 0;
+      if (!name || price <= 0) return;
+
+      if (editId) {
+        const existing = state.shopProducts.find(x => x.id === editId);
+        if (existing) Object.assign(existing, { name, sku, cost, price, currency, qty, minQty });
+        showToast('تم تحديث بيانات الصنف');
+      } else {
+        state.shopProducts.push({ id: 'prod_' + Date.now(), name, sku, cost, price, currency, qty, minQty });
+        showToast(`تمت إضافة "${name}" إلى المخزون`);
+      }
+
+      saveState();
+      closeModal('shopProductModal');
+      renderAll();
+      if (!document.getElementById('posInvoiceModal').classList.contains('hidden')) {
+        refreshPosProductPicker();
+      }
+    });
+
+    function deleteShopProduct(prodId) {
+      state.shopProducts = (state.shopProducts || []).filter(p => p.id !== prodId);
+      saveState();
+      renderAll();
+      showToast('تم حذف الصنف من المخزون');
+    }
+
+    function refreshPosProductPicker() {
+      const picker = document.getElementById('posProductPicker');
+      const type = document.getElementById('posInvoiceType').value;
+      if (!picker) return;
+      const prods = state.shopProducts || [];
+      if (!prods.length) {
+        picker.innerHTML = `<option value="">-- أضف أصنافاً للمخزون أولاً --</option>`;
+        return;
+      }
+      picker.innerHTML = prods.map(p => {
+        const unitVal = type === 'sale' ? p.price : p.cost;
+        return `<option value="${p.id}">${escapeHtml(p.name)} ${p.sku ? `[${escapeHtml(p.sku)}]` : ''} — ${fmt(unitVal, p.currency)} (متوفر: ${p.qty})</option>`;
+      }).join('');
+    }
+
+    function openPosInvoiceModal(type = 'sale') {
+      posCart = [];
+      document.getElementById('posInvoiceType').value = type;
+      document.getElementById('posModalTitle').textContent = type === 'sale' ? 'فاتورة مبيع جديدة (كاشير) 🧾' : 'فاتورة شراء وتوريد بضاعة 📦';
+      document.getElementById('posProfitHeaderLabel').textContent = type === 'sale' ? 'صافي ربح الفاتورة' : 'إجمالي التكلفة';
+      document.getElementById('posInvoiceDate').value = todayISO();
+      document.getElementById('posDiscountInput').value = 0;
+      document.getElementById('posPaymentMode').value = 'cash';
+
+      const partySel = document.getElementById('posPartySelect');
+      partySel.innerHTML = `<option value="">${type === 'sale' ? 'زبون نقدي عام' : 'مورد عام'}</option>` +
+        state.people.map(p => `<option value="${escapeHtml(p.name)}">${escapeHtml(p.name)}</option>`).join('');
+
+      refreshPosProductPicker();
+      renderPosCart();
+      openModal('posInvoiceModal');
+    }
+
+    function addPosCartItem() {
+      const prodId = document.getElementById('posProductPicker').value;
+      const qty = Math.max(1, parseInt(document.getElementById('posItemQty').value, 10) || 1);
+      const type = document.getElementById('posInvoiceType').value;
+      const prod = (state.shopProducts || []).find(p => p.id === prodId);
+      if (!prod) {
+        showToast('يرجى اختيار صنف صالح');
+        return;
+      }
+      if (type === 'sale' && prod.qty < qty) {
+        showToast(`الكمية المتوفرة من "${prod.name}" هي ${prod.qty} فقط!`);
+        return;
+      }
+      const existing = posCart.find(c => c.prodId === prodId);
+      if (existing) {
+        if (type === 'sale' && prod.qty < existing.qty + qty) {
+          showToast(`الكمية المتوفرة من "${prod.name}" هي ${prod.qty} فقط!`);
+          return;
+        }
+        existing.qty += qty;
+      } else {
+        posCart.push({
+          prodId: prod.id,
+          name: prod.name,
+          cost: Number(prod.cost || 0),
+          price: Number(type === 'sale' ? prod.price : prod.cost),
+          currency: prod.currency || state.currency,
+          qty
+        });
+      }
+      document.getElementById('posItemQty').value = 1;
+      renderPosCart();
+    }
+
+    function removePosCartItem(idx) {
+      posCart.splice(idx, 1);
+      renderPosCart();
+    }
+
+    function renderPosCart() {
+      const tbody = document.getElementById('posCartBody');
+      const type = document.getElementById('posInvoiceType').value;
+      const discount = parseFloat(document.getElementById('posDiscountInput').value) || 0;
+      const curr = posCart[0]?.currency || state.currency;
+
+      if (!posCart.length) {
+        tbody.innerHTML = `<tr><td colspan="5" class="text-center py-5 text-slate-400">السلة فارغة — اختر أصنافاً من الأعلى لإضافتها</td></tr>`;
+        document.getElementById('posNetTotalLabel').textContent = fmt(0, curr);
+        document.getElementById('posNetProfitLabel').textContent = fmt(0, curr);
+        return;
+      }
+
+      tbody.innerHTML = posCart.map((item, idx) => `
+        <tr>
+          <td class="px-3 py-2 font-bold text-slate-900">${escapeHtml(item.name)}</td>
+          <td class="px-3 py-2">${fmt(item.price, item.currency)}</td>
+          <td class="px-3 py-2 font-extrabold">${item.qty}</td>
+          <td class="px-3 py-2 font-extrabold text-sky-800">${fmt(item.price * item.qty, item.currency)}</td>
+          <td class="px-2 py-2 text-center"><button type="button" onclick="removePosCartItem(${idx})" class="text-rose-600 font-bold">✕</button></td>
+        </tr>
+      `).join('');
+
+      const grossTotal = posCart.reduce((s, it) => s + (it.price * it.qty), 0);
+      const totalCost = posCart.reduce((s, it) => s + (it.cost * it.qty), 0);
+      const netTotal = Math.max(0, grossTotal - discount);
+      const netProfit = type === 'sale' ? (netTotal - totalCost) : netTotal;
+
+      document.getElementById('posNetTotalLabel').textContent = fmt(netTotal, curr);
+      document.getElementById('posNetProfitLabel').textContent = fmt(netProfit, curr);
+    }
+
+    function submitPosInvoice() {
+      if (!posCart.length) {
+        showToast('أضف صنفاً واحداً على الأقل للفاتورة');
+        return;
+      }
+      const type = document.getElementById('posInvoiceType').value;
+      const partyName = document.getElementById('posPartySelect').value || '';
+      const paymentMode = document.getElementById('posPaymentMode').value;
+      const date = document.getElementById('posInvoiceDate').value || todayISO();
+      const discount = parseFloat(document.getElementById('posDiscountInput').value) || 0;
+      const curr = posCart[0].currency || state.currency;
+
+      if (paymentMode === 'credit' && !partyName) {
+        showToast('يرجى تحديد اسم العميل أو المورد للفواتير الآجلة (الذمم)');
+        return;
+      }
+
+      const grossTotal = posCart.reduce((s, it) => s + (it.price * it.qty), 0);
+      const totalCost = posCart.reduce((s, it) => s + (it.cost * it.qty), 0);
+      const netTotal = Math.max(0, grossTotal - discount);
+      const profit = type === 'sale' ? Number((netTotal - totalCost).toFixed(2)) : 0;
+
+      // Update inventory stock quantities
+      posCart.forEach(item => {
+        const prod = state.shopProducts.find(p => p.id === item.prodId);
+        if (prod) {
+          if (type === 'sale') {
+            prod.qty = Math.max(0, Number(prod.qty) - item.qty);
+          } else {
+            prod.qty = Number(prod.qty) + item.qty;
+          }
+        }
+      });
+
+      const invNo = 'INV-' + String(Date.now()).slice(-6);
+      const itemsSummary = posCart.map(it => `${it.name} (×${it.qty})`).join('، ');
+
+      state.shopInvoices.unshift({
+        id: 'inv_' + Date.now(),
+        no: invNo,
+        type,
+        paymentMode,
+        partyName: partyName || (type === 'sale' ? 'زبون نقدي' : 'مورد عام'),
+        date,
+        items: JSON.parse(JSON.stringify(posCart)),
+        itemsSummary,
+        discount,
+        netTotal,
+        profit,
+        currency: curr
+      });
+
+      // Record into main financial transactions or debts automatically
+      if (paymentMode === 'cash') {
+        state.transactions.push({
+          id: 'tx_' + Date.now(),
+          type: type === 'sale' ? 'income' : 'expense',
+          amount: netTotal,
+          currency: curr,
+          category: type === 'sale' ? 'مبيعات / خدمات' : 'تشغيل وعمل',
+          date,
+          method: 'نقدي',
+          personName: partyName,
+          note: `${type === 'sale' ? 'فاتورة مبيع' : 'فاتورة شراء'} #${invNo}`,
+          details: itemsSummary
+        });
+      } else {
+        state.debts.push({
+          id: 'debt_' + Date.now(),
+          direction: type === 'sale' ? 'receivable' : 'payable',
+          name: partyName,
+          phone: (state.people.find(p => p.name === partyName)?.phone) || '',
+          totalAmount: netTotal,
+          paidAmount: 0,
+          currency: curr,
+          dueDate: todayISO(7),
+          note: `${type === 'sale' ? 'فاتورة مبيع آجلة' : 'فاتورة شراء آجلة'} #${invNo}: ${itemsSummary}`
+        });
+      }
+
+      saveState();
+      closeModal('posInvoiceModal');
+      renderAll();
+      showToast(`تم اعتماد الفاتورة #${invNo} وتحديث المخزون والحسابات ✓`);
+    }
+
+    function sendShopInvoiceWhatsapp(invId) {
+      const inv = (state.shopInvoices || []).find(x => x.id === invId);
+      if (!inv) return;
+      const p = state.people.find(x => x.name === inv.partyName);
+      const waPhone = p ? formatWaPhone(p.phone) : '';
+      const msg = `فاتورة ${inv.type === 'sale' ? 'مبيع' : 'شراء'} (${inv.no})\nالتاريخ: ${inv.date}\nالطرف: ${inv.partyName}\nالأصناف: ${inv.itemsSummary}\nالصافي: ${fmt(inv.netTotal, inv.currency)} (${inv.paymentMode === 'cash' ? 'نقدي' : 'آجل'})\n— الزعيم برو`;
+      const url = waPhone ? `https://wa.me/${waPhone}?text=${encodeURIComponent(msg)}` : `https://wa.me/?text=${encodeURIComponent(msg)}`;
+      window.open(url, '_blank', 'noopener');
+    }
+
+    function renderShop() {
+      const prods = state.shopProducts || [];
+      const invs = state.shopInvoices || [];
+      const search = (document.getElementById('shopSearchInput')?.value || '').trim().toLowerCase();
+
+      const lowStockProds = prods.filter(p => Number(p.qty) <= Number(p.minQty ?? 3));
+      const navBadge = document.getElementById('navLowStockBadge');
+      if (navBadge) {
+        navBadge.textContent = lowStockProds.length;
+        navBadge.classList.toggle('hidden', lowStockProds.length === 0);
+      }
+
+      const sales = invs.filter(i => i.type === 'sale');
+      document.getElementById('shopStockCostTotal').textContent = fmtMulti(prods, p => Number(p.cost) * Number(p.qty));
+      document.getElementById('shopStockRetailTotal').textContent = `القيمة البيعية: ${fmtMulti(prods, p => Number(p.price) * Number(p.qty))}`;
+      document.getElementById('shopSalesTotal').textContent = fmtMulti(sales, i => i.netTotal);
+      document.getElementById('shopSalesCount').textContent = `${sales.length} فاتورة مبيع`;
+      document.getElementById('shopNetProfitTotal').textContent = fmtMulti(sales, i => i.profit);
+      document.getElementById('shopProductsCount').textContent = `${prods.length} صنف`;
+      document.getElementById('shopLowStockCount').textContent = `${lowStockProds.length} صنف قارب على النفاد`;
+
+      // Render Inventory Table
+      const prodTbody = document.getElementById('shopProductsTableBody');
+      if (prodTbody) {
+        const filteredProds = prods.filter(p => !search || `${p.name} ${p.sku || ''}`.toLowerCase().includes(search));
+        if (!filteredProds.length) {
+          prodTbody.innerHTML = `<tr><td colspan="6" class="text-center py-8 text-slate-400">لا توجد أصناف مطابقة في المخزون</td></tr>`;
+        } else {
+          prodTbody.innerHTML = filteredProds.map(p => {
+            const unitProfit = Number(p.price) - Number(p.cost);
+            const isLow = Number(p.qty) <= Number(p.minQty ?? 3);
+            const cs = getCurrencyStyle(p.currency);
+            return `
+              <tr class="${cs.row} hover:bg-white/50 transition">
+                <td class="px-4 py-3">
+                  <div class="font-extrabold text-slate-900">${escapeHtml(p.name)}</div>
+                  ${p.sku ? `<span class="text-[11px] font-mono text-slate-500">كود: ${escapeHtml(p.sku)}</span>` : ''}
+                </td>
+                <td class="px-4 py-3 text-slate-700 font-semibold">${fmt(p.cost, p.currency)}</td>
+                <td class="px-4 py-3 text-slate-900 font-extrabold">${fmt(p.price, p.currency)}</td>
+                <td class="px-4 py-3 font-extrabold ${unitProfit >= 0 ? 'text-emerald-600' : 'text-rose-600'}">+${fmt(unitProfit, p.currency)}</td>
+                <td class="px-4 py-3">
+                  <span class="px-2.5 py-1 rounded-full text-xs font-extrabold ${isLow ? 'bg-rose-500/20 text-rose-800' : 'bg-emerald-500/15 text-emerald-800'}">
+                    ${p.qty} قطعة ${isLow ? '⚠' : ''}
+                  </span>
+                </td>
+                <td class="px-4 py-3 text-center whitespace-nowrap space-x-2 space-x-reverse">
+                  <button type="button" onclick="openShopProductModal('${p.id}')" class="text-xs font-bold text-sky-700 hover:underline">تعديل</button>
+                  <button type="button" onclick="deleteShopProduct('${p.id}')" class="text-xs font-bold text-rose-600 hover:underline">حذف</button>
+                </td>
+              </tr>
+            `;
+          }).join('');
+        }
+      }
+
+      // Render Invoices Table
+      const invTbody = document.getElementById('shopInvoicesTableBody');
+      if (invTbody) {
+        const filteredInvs = invs.filter(i => !search || `${i.no} ${i.partyName} ${i.itemsSummary}`.toLowerCase().includes(search));
+        if (!filteredInvs.length) {
+          invTbody.innerHTML = `<tr><td colspan="7" class="text-center py-8 text-slate-400">لا توجد فواتير مسجلة بعد</td></tr>`;
+        } else {
+          invTbody.innerHTML = filteredInvs.map(inv => {
+            const isSale = inv.type === 'sale';
+            const cs = getCurrencyStyle(inv.currency);
+            return `
+              <tr class="${cs.row} hover:bg-white/50 transition">
+                <td class="px-4 py-3 whitespace-nowrap">
+                  <div class="font-extrabold text-slate-900" dir="ltr">${escapeHtml(inv.no)}</div>
+                  <div class="text-[11px] text-slate-500">${inv.date}</div>
+                </td>
+                <td class="px-4 py-3 whitespace-nowrap">
+                  <span class="px-2 py-0.5 rounded-full text-[11px] font-extrabold ${isSale ? 'bg-emerald-500/15 text-emerald-800' : 'bg-amber-500/20 text-amber-900'}">${isSale ? 'مبيع' : 'شراء'}</span>
+                  <span class="px-2 py-0.5 rounded-full text-[11px] font-bold bg-white/75 text-slate-700 mr-1">${inv.paymentMode === 'cash' ? 'نقدي' : 'آجل'}</span>
+                </td>
+                <td class="px-4 py-3 font-bold text-slate-800">${escapeHtml(inv.partyName)}</td>
+                <td class="px-4 py-3 text-xs text-slate-600 max-w-xs truncate">${escapeHtml(inv.itemsSummary)}</td>
+                <td class="px-4 py-3 font-extrabold text-slate-900">${fmt(inv.netTotal, inv.currency)}</td>
+                <td class="px-4 py-3 font-extrabold ${isSale ? 'text-teal-700' : 'text-slate-400'}">${isSale ? '+' + fmt(inv.profit, inv.currency) : '—'}</td>
+                <td class="px-4 py-3 text-center whitespace-nowrap">
+                  <button type="button" onclick="sendShopInvoiceWhatsapp('${inv.id}')" class="ios-btn bg-emerald-500/15 hover:bg-emerald-500/25 text-emerald-800 text-xs font-bold px-2.5 py-1 rounded-lg">واتساب</button>
+                </td>
+              </tr>
+            `;
+          }).join('');
+        }
+      }
     }
 
     window.addEventListener('DOMContentLoaded', () => {
