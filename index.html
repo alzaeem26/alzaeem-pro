@@ -148,6 +148,44 @@
     }
     .animate-slide-up { animation: slideUp 0.14s ease-out; }
 
+    /* Compact Uniform-Height Records Table (Mobile-First Clean Layout) */
+    .compact-records-table {
+      table-layout: fixed;
+      width: 100%;
+    }
+    .compact-records-table thead th {
+      padding: 0.55rem 0.65rem;
+      font-size: 0.72rem;
+      white-space: nowrap;
+    }
+    .compact-records-table tbody tr {
+      height: 54px;
+      max-height: 54px;
+    }
+    .compact-records-table tbody td {
+      padding: 0.42rem 0.65rem;
+      vertical-align: middle;
+      overflow: hidden;
+    }
+    .row-main-line {
+      display: block;
+      font-size: 0.78rem;
+      font-weight: 800;
+      line-height: 1.25;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .row-sub-line {
+      display: block;
+      font-size: 0.66rem;
+      line-height: 1.2;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      margin-top: 1px;
+    }
+
     /* ==================== DARK GLASS MODE (Clean, High Contrast, Non-Overlapping Colors) ==================== */
     body.dark-mode {
       color: #f1f5f9;
@@ -533,19 +571,16 @@
 
       <div class="glass-card overflow-hidden">
         <div class="overflow-x-auto">
-          <table class="w-full text-sm text-right">
-            <thead class="bg-white/45 border-b border-white/70 text-slate-700 font-bold">
+          <table class="compact-records-table text-right">
+            <thead class="bg-white/60 border-b border-slate-200/70 text-slate-600 font-bold">
               <tr>
-                <th class="px-4 py-3">التاريخ</th>
-                <th class="px-4 py-3">النوع</th>
-                <th class="px-4 py-3">التصنيف</th>
-                <th class="px-4 py-3">الوصف والتفاصيل</th>
-                <th class="px-4 py-3">طريقة الدفع</th>
-                <th class="px-4 py-3">المبلغ</th>
-                <th class="px-4 py-3 text-center">إجراء</th>
+                <th class="w-[46%]">الاسم والتفاصيل</th>
+                <th class="w-[17%] text-center">النوع</th>
+                <th class="w-[23%] text-left">المبلغ والتاريخ</th>
+                <th class="w-[14%] text-center">إجراء</th>
               </tr>
             </thead>
-            <tbody id="txTableBody" class="divide-y divide-white/50"></tbody>
+            <tbody id="txTableBody" class="divide-y divide-slate-200/60"></tbody>
           </table>
         </div>
       </div>
@@ -753,18 +788,15 @@
 
       <div class="glass-card overflow-hidden">
         <div class="overflow-x-auto">
-          <table class="w-full text-sm text-right">
-            <thead class="bg-white/45 border-b border-white/70 text-slate-700 font-bold">
+          <table class="compact-records-table text-right">
+            <thead class="bg-white/60 border-b border-slate-200/70 text-slate-600 font-bold">
               <tr>
-                <th class="px-4 py-3">التاريخ</th>
-                <th class="px-4 py-3">السجل</th>
-                <th class="px-4 py-3">الشخص / التصنيف</th>
-                <th class="px-4 py-3">العنوان والتفاصيل</th>
-                <th class="px-4 py-3">الحالة</th>
-                <th class="px-4 py-3">المبلغ</th>
+                <th class="w-[54%]">الاسم والتفاصيل</th>
+                <th class="w-[20%] text-center">النوع</th>
+                <th class="w-[26%] text-left">المبلغ والتاريخ</th>
               </tr>
             </thead>
-            <tbody id="fullLogTableBody" class="divide-y divide-white/50"></tbody>
+            <tbody id="fullLogTableBody" class="divide-y divide-slate-200/60"></tbody>
           </table>
         </div>
       </div>
@@ -3801,40 +3833,41 @@
 
       const tbody = document.getElementById('txTableBody');
       if (filtered.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="7" class="text-center py-8 text-slate-400">لا توجد حركات مطابقة للبحث</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="4" class="text-center py-6 text-slate-400 text-xs">لا توجد حركات مطابقة للبحث</td></tr>`;
         return;
       }
 
       tbody.innerHTML = filtered.map(t => {
-        const cs = getCurrencyStyle(t.currency);
+        const isInc = t.type === 'income';
+        const subText = [t.personName, t.category, t.details].filter(Boolean).join(' • ') || (t.method || 'نقدي');
         return `
-          <tr class="${cs.row} hover:bg-white/50 transition">
-            <td class="px-4 py-3 text-slate-600 whitespace-nowrap">${t.date}</td>
-            <td class="px-4 py-3 whitespace-nowrap">
-              <span class="px-2.5 py-1 rounded-full text-xs font-bold ${t.type === 'income' ? 'bg-emerald-500/15 text-emerald-700' : 'bg-rose-500/15 text-rose-700'}">
-                ${t.type === 'income' ? 'مدخول' : 'مصروف'}
+          <tr class="hover:bg-slate-50/80 transition">
+            <td>
+              <div class="flex items-center gap-2 min-w-0">
+                <span class="w-7 h-7 rounded-lg flex items-center justify-center text-xs font-extrabold shrink-0 ${isInc ? 'bg-emerald-500/15 text-emerald-700' : 'bg-rose-500/15 text-rose-700'}">
+                  ${isInc ? '↙' : '↗'}
+                </span>
+                <div class="min-w-0 flex-1">
+                  <span class="row-main-line text-slate-900">${escapeHtml(t.note)}</span>
+                  <span class="row-sub-line text-slate-500">${escapeHtml(subText)}</span>
+                </div>
+              </div>
+            </td>
+            <td class="text-center whitespace-nowrap">
+              <span class="inline-block px-2 py-0.5 rounded-full text-[11px] font-extrabold ${isInc ? 'bg-emerald-500/15 text-emerald-700' : 'bg-rose-500/15 text-rose-700'}">
+                ${isInc ? 'مدخول' : 'مصروف'}
               </span>
             </td>
-            <td class="px-4 py-3 font-semibold text-slate-700">${escapeHtml(t.category)}</td>
-            <td class="px-4 py-3 text-slate-800">
-              <div class="font-bold flex items-center gap-1.5 flex-wrap">
-                <span>${escapeHtml(t.note)}</span>
-                ${t.personName ? `<button type="button" onclick="filterByPersonInstant('${escapeHtml(t.personName)}')" class="text-xs font-bold text-sky-700 hover:underline">(${escapeHtml(t.personName)})</button>` : ''}
-                ${t.receiptImg ? `<button type="button" onclick="openReceiptViewer('${t.id}')" class="text-[11px] font-bold bg-indigo-500/15 text-indigo-800 px-2 py-0.5 rounded-lg hover:bg-indigo-500/25">📎 الإيصال</button>` : ''}
-              </div>
-              ${t.details ? `<div class="text-xs text-slate-500 mt-0.5">${escapeHtml(t.details)}</div>` : ''}
+            <td class="text-left whitespace-nowrap">
+              <span class="row-main-line ${isInc ? 'text-emerald-600' : 'text-rose-600'}" dir="ltr">${isInc ? '+' : '−'}${fmt(t.amount, t.currency)}</span>
+              <span class="row-sub-line text-slate-400">${t.date}</span>
             </td>
-            <td class="px-4 py-3 text-slate-600 text-xs">${escapeHtml(t.method || 'نقدي')}</td>
-            <td class="px-4 py-3 font-extrabold whitespace-nowrap">
-              <div class="flex items-center gap-1.5">
-                <span class="${t.type === 'income' ? 'text-emerald-600' : 'text-rose-600'}">${t.type === 'income' ? '+' : '−'}${fmt(t.amount, t.currency)}</span>
-                <span class="text-[10px] font-bold px-2 py-0.5 rounded-full border ${cs.badge}">${escapeHtml(t.currency || state.currency)}</span>
+            <td class="text-center whitespace-nowrap">
+              <div class="inline-flex items-center gap-1">
+                <button type="button" onclick="openVoucherForTx('${t.id}')" class="w-6 h-6 rounded-lg bg-emerald-500/10 text-emerald-700 text-[11px] font-bold flex items-center justify-center" title="عرض السند">📄</button>
+                <button type="button" onclick="editTx('${t.id}')" class="w-6 h-6 rounded-lg bg-sky-500/10 text-sky-700 text-[11px] font-bold flex items-center justify-center" title="تعديل">✎</button>
+                <button type="button" onclick="deleteTx('${t.id}')" class="w-6 h-6 rounded-lg bg-rose-500/10 text-rose-600 text-[11px] font-bold flex items-center justify-center" title="حذف">×</button>
               </div>
-            </td>
-            <td class="px-4 py-3 text-center whitespace-nowrap">
-              <button type="button" onclick="openVoucherForTx('${t.id}')" class="text-xs text-emerald-700 hover:text-emerald-900 font-bold px-2 py-1 rounded-xl hover:bg-emerald-500/10">سند</button>
-              <button type="button" onclick="editTx('${t.id}')" class="text-xs text-sky-700 hover:text-sky-900 font-bold px-2 py-1 rounded-xl hover:bg-sky-500/10">تعديل</button>
-              <button type="button" onclick="deleteTx('${t.id}')" class="text-xs text-rose-600 hover:text-rose-800 font-bold px-2 py-1 rounded-xl hover:bg-rose-500/10">حذف</button>
             </td>
           </tr>
         `;
@@ -4023,31 +4056,38 @@
       document.getElementById('fullLogTotalCount').textContent = `${filtered.length} سجل`;
       const tbody = document.getElementById('fullLogTableBody');
       if (filtered.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="6" class="text-center py-8 text-slate-400">لا توجد سجلات مطابقة</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="3" class="text-center py-6 text-slate-400 text-xs">لا توجد سجلات مطابقة</td></tr>`;
         return;
       }
 
       tbody.innerHTML = filtered.map(e => {
-        const cs = getCurrencyStyle(e.currency);
+        const iconMap = {
+          income: { sym: '↙', cls: 'bg-emerald-500/15 text-emerald-700' },
+          expense: { sym: '↗', cls: 'bg-rose-500/15 text-rose-700' },
+          debt: { sym: '🤝', cls: 'bg-amber-500/15 text-amber-700' },
+          schedule: { sym: '📅', cls: 'bg-sky-500/15 text-sky-700' }
+        };
+        const ic = iconMap[e.kind] || iconMap.income;
+        const subLine = [e.partyOrCat, e.details].filter(Boolean).join(' • ');
         return `
-          <tr class="${cs.row} hover:bg-white/50 transition">
-            <td class="px-4 py-3 text-slate-600 whitespace-nowrap">${e.date}</td>
-            <td class="px-4 py-3 whitespace-nowrap">
-              <span class="px-2.5 py-1 rounded-full text-xs font-bold ${e.badgeClass}">${e.kindLabel}</span>
-            </td>
-            <td class="px-4 py-3 font-semibold text-slate-700">
-              ${e.personName ? `<button type="button" onclick="filterByPersonInstant('${escapeHtml(e.personName)}')" class="text-sky-800 hover:underline font-extrabold text-right">${escapeHtml(e.partyOrCat)}</button>` : escapeHtml(e.partyOrCat)}
-            </td>
-            <td class="px-4 py-3 text-slate-800">
-              <div class="font-bold">${escapeHtml(e.title)}</div>
-              ${e.details ? `<div class="text-xs text-slate-500 mt-0.5">${escapeHtml(e.details)}</div>` : ''}
-            </td>
-            <td class="px-4 py-3 text-xs font-bold text-slate-600 whitespace-nowrap">${e.status}</td>
-            <td class="px-4 py-3 font-extrabold whitespace-nowrap">
-              <div class="flex items-center gap-1.5">
-                <span class="${e.amountClass}">${e.amountText}</span>
-                <span class="text-[10px] font-bold px-2 py-0.5 rounded-full border ${cs.badge}">${escapeHtml(e.currency)}</span>
+          <tr class="hover:bg-slate-50/80 transition">
+            <td>
+              <div class="flex items-center gap-2 min-w-0">
+                <span class="w-7 h-7 rounded-lg flex items-center justify-center text-xs font-extrabold shrink-0 ${ic.cls}">${ic.sym}</span>
+                <div class="min-w-0 flex-1">
+                  ${e.personName
+                    ? `<button type="button" onclick="filterByPersonInstant('${escapeHtml(e.personName)}')" class="row-main-line text-slate-900 hover:text-sky-700 text-right w-full">${escapeHtml(e.title)}</button>`
+                    : `<span class="row-main-line text-slate-900">${escapeHtml(e.title)}</span>`}
+                  <span class="row-sub-line text-slate-500">${escapeHtml(subLine)}</span>
+                </div>
               </div>
+            </td>
+            <td class="text-center whitespace-nowrap">
+              <span class="inline-block px-2 py-0.5 rounded-full text-[11px] font-extrabold ${e.badgeClass}">${e.kindLabel}</span>
+            </td>
+            <td class="text-left whitespace-nowrap">
+              <span class="row-main-line ${e.amountClass}" dir="ltr">${e.amountText}</span>
+              <span class="row-sub-line text-slate-400">${e.date}</span>
             </td>
           </tr>
         `;
