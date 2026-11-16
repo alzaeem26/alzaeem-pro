@@ -35,48 +35,41 @@
         radial-gradient(at 82% 86%, rgba(165, 180, 252, 0.30) 0px, transparent 54%),
         radial-gradient(at 15% 88%, rgba(147, 197, 253, 0.36) 0px, transparent 52%),
         linear-gradient(140deg, #f3f8ff 0%, #e8f7f5 50%, #eef2ff 100%);
-      background-attachment: fixed;
+      
       overflow-x: hidden;
     }
 
-    /* Ambient Floating Glass Orbs */
+    /* Ambient Glass Orbs (GPU-friendly static soft glow) */
     .ambient-orb {
       position: fixed;
       border-radius: 9999px;
-      filter: blur(72px);
+      filter: blur(60px);
       pointer-events: none;
       z-index: 0;
-      opacity: 0.42;
-      animation: floatOrb 15s ease-in-out infinite alternate;
-    }
-    @keyframes floatOrb {
-      0% { transform: translate(0px, 0px) scale(1); }
-      50% { transform: translate(28px, -22px) scale(1.08); }
-      100% { transform: translate(-20px, 24px) scale(0.95); }
+      opacity: 0.36;
+      will-change: auto;
     }
 
     .ios-header {
-      background: linear-gradient(180deg, rgba(255, 255, 255, 0.72) 0%, rgba(248, 251, 255, 0.56) 100%);
-      backdrop-filter: blur(32px) saturate(200%);
-      -webkit-backdrop-filter: blur(32px) saturate(200%);
+      background: rgba(255, 255, 255, 0.82);
+      backdrop-filter: blur(14px) saturate(160%);
+      -webkit-backdrop-filter: blur(14px) saturate(160%);
       border-bottom: 1.5px solid rgba(255, 255, 255, 0.92);
-      box-shadow: 0 8px 28px rgba(15, 23, 42, 0.06), inset 0 -1px 0 rgba(255, 255, 255, 0.9);
+      box-shadow: 0 6px 20px rgba(15, 23, 42, 0.05);
     }
 
     .glass-card {
       position: relative;
       overflow: hidden;
-      background: linear-gradient(145deg, rgba(255, 255, 255, 0.72) 0%, rgba(248, 252, 255, 0.52) 100%);
-      backdrop-filter: blur(28px) saturate(195%);
-      -webkit-backdrop-filter: blur(28px) saturate(195%);
+      background: linear-gradient(145deg, rgba(255, 255, 255, 0.84) 0%, rgba(248, 252, 255, 0.72) 100%);
+      backdrop-filter: blur(12px) saturate(150%);
+      -webkit-backdrop-filter: blur(12px) saturate(150%);
       border: 1.5px solid rgba(255, 255, 255, 0.94);
       box-shadow:
-        0 12px 32px -6px rgba(15, 23, 42, 0.08),
-        0 2px 8px rgba(15, 23, 42, 0.04),
-        inset 0 1.5px 1px rgba(255, 255, 255, 1),
-        inset 0 -1px 2px rgba(14, 165, 233, 0.08);
+        0 8px 24px -6px rgba(15, 23, 42, 0.07),
+        inset 0 1px 1px rgba(255, 255, 255, 0.95);
       border-radius: 24px;
-      transition: transform 0.22s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.22s ease, border-color 0.22s ease;
+      transition: box-shadow 0.18s ease, border-color 0.18s ease;
     }
     .glass-card::before {
       content: '';
@@ -110,9 +103,7 @@
     }
 
     .ios-input {
-      background: rgba(255, 255, 255, 0.58);
-      backdrop-filter: blur(18px) saturate(200%);
-      -webkit-backdrop-filter: blur(18px) saturate(200%);
+      background: rgba(255, 255, 255, 0.78);
       border: 1.5px solid rgba(255, 255, 255, 0.95);
       box-shadow: inset 0 1.5px 3px rgba(14, 116, 144, 0.08), 0 1px 0 rgba(255, 255, 255, 0.9);
       transition: all 0.18s ease;
@@ -151,8 +142,6 @@
     .ios-btn {
       position: relative;
       overflow: hidden;
-      backdrop-filter: blur(16px) saturate(190%);
-      -webkit-backdrop-filter: blur(16px) saturate(190%);
       border: 1px solid rgba(255, 255, 255, 0.65);
       transition: transform 0.16s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.22s ease, filter 0.18s ease;
       box-shadow:
@@ -198,8 +187,6 @@
       justify-content: center;
       border-radius: 14px;
       border: 1.25px solid rgba(255, 255, 255, 0.78);
-      backdrop-filter: blur(14px) saturate(210%);
-      -webkit-backdrop-filter: blur(14px) saturate(210%);
       box-shadow:
         0 8px 18px -4px rgba(15, 23, 42, 0.18),
         inset 0 2px 1.5px rgba(255, 255, 255, 0.92),
@@ -328,47 +315,22 @@
     </div>
   </div>
 
-  <!-- ==================== TOP HEADER & NAVIGATION ==================== -->
+  <!-- ==================== TOP HEADER & SIDEBAR DRAWER NAVIGATION ==================== -->
   <header class="ios-header sticky top-0 z-30">
-    <div class="max-w-7xl mx-auto px-3 sm:px-6 py-2.5 flex items-center gap-2">
-      <!-- Navigation Tabs -->
-      <nav class="ios-nav-pill flex-1 min-w-0 rounded-2xl p-1 flex items-center gap-1 overflow-x-auto no-scrollbar" aria-label="التنقل الرئيسي">
-        <button type="button" data-tab="dashboard" class="tab-btn ios-btn active whitespace-nowrap px-3.5 py-2 rounded-xl text-xs sm:text-sm font-bold flex items-center gap-1.5">
-          <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2.1" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 5a1 1 0 011-1h4a1 1 0 011 1v5a1 1 0 01-1 1H5a1 1 0 01-1-1V5zm10 0a1 1 0 011-1h4a1 1 0 011 1v2a1 1 0 01-1 1h-4a1 1 0 01-1-1V5zM4 16a1 1 0 011-1h4a1 1 0 011 1v3a1 1 0 01-1 1H5a1 1 0 01-1-1v-3zm10-3a1 1 0 011-1h4a1 1 0 011 1v6a1 1 0 01-1 1h-4a1 1 0 01-1-1v-6z"/></svg>
-          لوحة التحكم
-        </button>
-        <button type="button" data-tab="transactions" class="tab-btn ios-btn whitespace-nowrap px-3.5 py-2 rounded-xl text-xs sm:text-sm font-bold text-slate-600 hover:bg-white/60 flex items-center gap-1.5">
-          <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2.1" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4"/></svg>
-          المدخول والمصروف
-        </button>
-        <button type="button" data-tab="budget" class="tab-btn ios-btn whitespace-nowrap px-3.5 py-2 rounded-xl text-xs sm:text-sm font-bold text-slate-600 hover:bg-white/60 flex items-center gap-1.5">
-          <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2.1" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M11 3.055A9.001 9.001 0 1020.945 13H11V3.055z"/><path stroke-linecap="round" stroke-linejoin="round" d="M20.488 9H15V3.512A9.025 9.025 0 0120.488 9z"/></svg>
-          الميزانية
-        </button>
-        <button type="button" data-tab="debts" class="tab-btn ios-btn whitespace-nowrap px-3.5 py-2 rounded-xl text-xs sm:text-sm font-bold text-slate-600 hover:bg-white/60 flex items-center gap-1.5">
-          <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2.1" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
-          الأشخاص والديون
-          <span id="navDebtBadge" class="hidden bg-amber-400/25 text-amber-900 text-xs px-1.5 py-0.5 rounded-full">0</span>
-        </button>
-        <button type="button" data-tab="schedule" class="tab-btn ios-btn whitespace-nowrap px-3.5 py-2 rounded-xl text-xs sm:text-sm font-bold text-slate-600 hover:bg-white/60 flex items-center gap-1.5">
-          <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2.1" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
-          مواعيد القبض والتحصيل
-          <span id="navScheduleBadge" class="hidden bg-rose-500/20 text-rose-800 text-xs px-1.5 py-0.5 rounded-full">0</span>
-        </button>
-        <button type="button" data-tab="fullLog" class="tab-btn ios-btn whitespace-nowrap px-3.5 py-2 rounded-xl text-xs sm:text-sm font-bold text-slate-600 hover:bg-white/60 flex items-center gap-1.5">
-          <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2.1" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"/></svg>
-          السجل الكامل
-        </button>
-        <button type="button" data-tab="quickNotes" class="tab-btn ios-btn whitespace-nowrap px-3.5 py-2 rounded-xl text-xs sm:text-sm font-bold text-slate-600 hover:bg-white/60 flex items-center gap-1.5">
-          <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2.1" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
-          المفكرة والإدخال السريع
-          <span id="navNotesBadge" class="hidden bg-indigo-500/20 text-indigo-800 text-xs px-1.5 py-0.5 rounded-full">0</span>
-        </button>
-        <button type="button" data-tab="settings" class="tab-btn ios-btn whitespace-nowrap px-3.5 py-2 rounded-xl text-xs sm:text-sm font-bold text-slate-600 hover:bg-white/60 flex items-center gap-1.5">
-          <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2.1" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
-          الإعدادات والتهيئة
-        </button>
-      </nav>
+    <div class="max-w-7xl mx-auto px-3.5 sm:px-6 py-2.5 flex items-center justify-between gap-2">
+      <!-- App Icon & Title Button (Opens Sidebar Drawer) -->
+      <button type="button" id="btnAppMenuTrigger" onclick="toggleSideNavDrawer(true)" class="ios-btn flex items-center gap-2.5 bg-white/75 hover:bg-white border border-white/90 px-3 py-1.5 rounded-2xl shadow-xs text-right">
+        <span class="icon-badge-3d w-9 h-9 rounded-[12px] bg-gradient-to-br from-sky-500 to-teal-700 text-white font-extrabold text-base shrink-0">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.3" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h10"/></svg>
+        </span>
+        <div class="min-w-0">
+          <div class="flex items-center gap-1.5">
+            <span class="font-extrabold text-sm sm:text-base text-slate-900">الزعيم برو</span>
+            <span id="activeTabHeaderBadge" class="text-[11px] font-bold bg-sky-500/15 text-sky-800 px-2 py-0.5 rounded-full">لوحة التحكم</span>
+          </div>
+          <span class="text-[10px] text-slate-500 block leading-tight">اضغط لفتح القائمة الجانبية للأقسام</span>
+        </div>
+      </button>
 
       <!-- Dark Mode & Quick Lock Controls -->
       <div class="flex items-center gap-1.5 shrink-0">
@@ -381,6 +343,88 @@
       </div>
     </div>
   </header>
+
+  <!-- Collapsible Sidebar Drawer (Closes when clicking anywhere outside the drawer) -->
+  <div id="sideNavBackdrop" onclick="toggleSideNavDrawer(false)" class="fixed inset-0 bg-slate-900/35 z-40 hidden transition-opacity"></div>
+  <aside id="sideNavDrawer" class="fixed top-0 right-0 bottom-0 w-72 max-w-[82vw] z-50 ios-modal rounded-none rounded-l-3xl p-4 flex flex-col justify-between transform translate-x-full transition-transform duration-200 ease-out shadow-2xl">
+    <div class="space-y-3 overflow-y-auto no-scrollbar">
+      <div class="flex items-center justify-between pb-3 border-b border-white/70">
+        <div class="flex items-center gap-2.5">
+          <span class="icon-badge-3d w-9 h-9 rounded-[12px] bg-gradient-to-br from-sky-500 to-teal-700 text-white font-extrabold text-base">$</span>
+          <div>
+            <h2 class="font-extrabold text-base text-slate-900">الزعيم برو</h2>
+            <p class="text-[11px] text-slate-500">القائمة الرئيسية للأقسام</p>
+          </div>
+        </div>
+        <button type="button" onclick="toggleSideNavDrawer(false)" class="w-8 h-8 rounded-full bg-slate-200/70 hover:bg-slate-200 text-slate-600 flex items-center justify-center text-sm font-bold">✕</button>
+      </div>
+
+      <nav class="flex flex-col gap-1.5" aria-label="التنقل الجانبي">
+        <button type="button" data-tab="dashboard" data-label="لوحة التحكم" class="tab-btn ios-btn active w-full text-right px-3.5 py-2.5 rounded-2xl text-sm font-bold flex items-center justify-between">
+          <span class="flex items-center gap-2.5">
+            <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2.1" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 5a1 1 0 011-1h4a1 1 0 011 1v5a1 1 0 01-1 1H5a1 1 0 01-1-1V5zm10 0a1 1 0 011-1h4a1 1 0 011 1v2a1 1 0 01-1 1h-4a1 1 0 01-1-1V5zM4 16a1 1 0 011-1h4a1 1 0 011 1v3a1 1 0 01-1 1H5a1 1 0 01-1-1v-3zm10-3a1 1 0 011-1h4a1 1 0 011 1v6a1 1 0 01-1 1h-4a1 1 0 01-1-1v-6z"/></svg>
+            لوحة التحكم
+          </span>
+        </button>
+        <button type="button" data-tab="transactions" data-label="المدخول والمصروف" class="tab-btn ios-btn w-full text-right px-3.5 py-2.5 rounded-2xl text-sm font-bold text-slate-600 hover:bg-white/60 flex items-center justify-between">
+          <span class="flex items-center gap-2.5">
+            <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2.1" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4"/></svg>
+            المدخول والمصروف
+          </span>
+        </button>
+        <button type="button" data-tab="budget" data-label="الميزانية" class="tab-btn ios-btn w-full text-right px-3.5 py-2.5 rounded-2xl text-sm font-bold text-slate-600 hover:bg-white/60 flex items-center justify-between">
+          <span class="flex items-center gap-2.5">
+            <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2.1" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M11 3.055A9.001 9.001 0 1020.945 13H11V3.055z"/><path stroke-linecap="round" stroke-linejoin="round" d="M20.488 9H15V3.512A9.025 9.025 0 0120.488 9z"/></svg>
+            الميزانية
+          </span>
+        </button>
+        <button type="button" data-tab="debts" data-label="الأشخاص والديون" class="tab-btn ios-btn w-full text-right px-3.5 py-2.5 rounded-2xl text-sm font-bold text-slate-600 hover:bg-white/60 flex items-center justify-between">
+          <span class="flex items-center gap-2.5">
+            <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2.1" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+            الأشخاص والديون
+          </span>
+          <span id="navDebtBadge" class="hidden bg-amber-400/25 text-amber-900 text-xs px-2 py-0.5 rounded-full">0</span>
+        </button>
+        <button type="button" data-tab="schedule" data-label="مواعيد القبض والتحصيل" class="tab-btn ios-btn w-full text-right px-3.5 py-2.5 rounded-2xl text-sm font-bold text-slate-600 hover:bg-white/60 flex items-center justify-between">
+          <span class="flex items-center gap-2.5">
+            <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2.1" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+            مواعيد القبض والتحصيل
+          </span>
+          <span id="navScheduleBadge" class="hidden bg-rose-500/20 text-rose-800 text-xs px-2 py-0.5 rounded-full">0</span>
+        </button>
+        <button type="button" data-tab="fullLog" data-label="السجل الكامل" class="tab-btn ios-btn w-full text-right px-3.5 py-2.5 rounded-2xl text-sm font-bold text-slate-600 hover:bg-white/60 flex items-center justify-between">
+          <span class="flex items-center gap-2.5">
+            <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2.1" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"/></svg>
+            السجل الكامل
+          </span>
+        </button>
+        <button type="button" data-tab="shop" data-label="إدارة المحل (POS)" class="tab-btn ios-btn w-full text-right px-3.5 py-2.5 rounded-2xl text-sm font-bold text-slate-600 hover:bg-white/60 flex items-center justify-between">
+          <span class="flex items-center gap-2.5">
+            <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2.1" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
+            إدارة المحل (POS)
+          </span>
+          <span id="navLowStockBadge" class="hidden bg-rose-500/20 text-rose-800 text-xs px-2 py-0.5 rounded-full">0</span>
+        </button>
+        <button type="button" data-tab="quickNotes" data-label="المفكرة والإدخال السريع" class="tab-btn ios-btn w-full text-right px-3.5 py-2.5 rounded-2xl text-sm font-bold text-slate-600 hover:bg-white/60 flex items-center justify-between">
+          <span class="flex items-center gap-2.5">
+            <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2.1" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+            المفكرة والإدخال السريع
+          </span>
+          <span id="navNotesBadge" class="hidden bg-indigo-500/20 text-indigo-800 text-xs px-2 py-0.5 rounded-full">0</span>
+        </button>
+        <button type="button" data-tab="settings" data-label="الإعدادات والتهيئة" class="tab-btn ios-btn w-full text-right px-3.5 py-2.5 rounded-2xl text-sm font-bold text-slate-600 hover:bg-white/60 flex items-center justify-between">
+          <span class="flex items-center gap-2.5">
+            <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2.1" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+            الإعدادات والتهيئة
+          </span>
+        </button>
+      </nav>
+    </div>
+
+    <div class="pt-3 border-t border-white/70 text-[11px] text-slate-500 text-center">
+      اضغط في أي مكان خارج القائمة لإغلاقها
+    </div>
+  </aside>
 
   <!-- ==================== MAIN CONTENT ==================== -->
   <main class="relative z-10 flex-1 max-w-7xl w-full mx-auto px-3.5 sm:px-6 py-5 space-y-5">
@@ -793,6 +837,93 @@
       </div>
     </section>
 
+    <!-- ==================== TAB 6.2: SHOP MANAGEMENT & POS ==================== -->
+    <section id="view-shop" class="tab-view hidden space-y-5">
+      <div class="flex flex-wrap items-center justify-between gap-3">
+        <div>
+          <h2 class="text-xl font-extrabold text-slate-900">إدارة المحل التجاري ونقطة البيع (POS) 🏪</h2>
+          <p class="text-xs sm:text-sm text-slate-600">إدارة المخزون، فواتير المبيعات النقدية والآجلة، المشتريات، وحساب صافي أرباح المحل الحقيقية</p>
+        </div>
+        <div class="flex flex-wrap items-center gap-2">
+          <button type="button" onclick="openPosInvoiceModal('sale')" class="ios-btn bg-gradient-to-br from-emerald-500 to-teal-700 text-white text-xs sm:text-sm font-bold px-3.5 py-2.5 rounded-2xl shadow-sm">🧾 فاتورة مبيع (كاشير)</button>
+          <button type="button" onclick="openPosInvoiceModal('purchase')" class="ios-btn bg-gradient-to-br from-amber-500 to-orange-600 text-white text-xs sm:text-sm font-bold px-3.5 py-2.5 rounded-2xl shadow-sm">📦 فاتورة شراء / توريد</button>
+          <button type="button" onclick="openShopProductModal()" class="ios-btn bg-gradient-to-br from-sky-500 to-indigo-600 text-white text-xs sm:text-sm font-bold px-3.5 py-2.5 rounded-2xl shadow-sm">+ صنف جديد</button>
+        </div>
+      </div>
+
+      <!-- Shop KPI Summary Cards -->
+      <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+        <div class="glass-card p-3.5 sm:p-4">
+          <span class="text-[11px] font-bold text-slate-600 block">قيمة رأس مال المخزون (بالتكلفة)</span>
+          <p id="shopStockCostTotal" class="text-base sm:text-xl font-extrabold text-slate-900 mt-1 break-words">0</p>
+          <p id="shopStockRetailTotal" class="text-[11px] text-sky-800 mt-0.5">القيمة البيعية: 0</p>
+        </div>
+        <div class="glass-card p-3.5 sm:p-4">
+          <span class="text-[11px] font-bold text-slate-600 block">إجمالي مبيعات المحل</span>
+          <p id="shopSalesTotal" class="text-base sm:text-xl font-extrabold text-emerald-600 mt-1 break-words">0</p>
+          <p id="shopSalesCount" class="text-[11px] text-slate-600 mt-0.5">0 فاتورة مبيع</p>
+        </div>
+        <div class="glass-card p-3.5 sm:p-4">
+          <span class="text-[11px] font-bold text-slate-600 block">صافي أرباح المبيعات الحقيقية</span>
+          <p id="shopNetProfitTotal" class="text-base sm:text-xl font-extrabold text-teal-700 mt-1 break-words">0</p>
+          <p class="text-[11px] text-slate-500 mt-0.5">(سعر المبيع − سعر التكلفة − الخصم)</p>
+        </div>
+        <div class="glass-card p-3.5 sm:p-4">
+          <span class="text-[11px] font-bold text-slate-600 block">تنبيهات المخزون والأصناف</span>
+          <p id="shopProductsCount" class="text-base sm:text-xl font-extrabold text-indigo-700 mt-1">0 صنف</p>
+          <p id="shopLowStockCount" class="text-[11px] font-bold text-rose-600 mt-0.5">0 صنف قارب على النفاد</p>
+        </div>
+      </div>
+
+      <!-- Shop Sub-Tabs (Inventory vs Invoices) -->
+      <div class="flex flex-wrap items-center justify-between gap-2">
+        <div class="flex items-center gap-2">
+          <button type="button" id="btnShopSubInventory" onclick="switchShopSubView('inventory')" class="ios-btn bg-gradient-to-br from-sky-500 to-teal-700 text-white text-xs font-bold px-4 py-2 rounded-xl shadow-xs">📦 المخزون والأصناف</button>
+          <button type="button" id="btnShopSubInvoices" onclick="switchShopSubView('invoices')" class="ios-btn bg-white/75 text-slate-700 border border-white text-xs font-bold px-4 py-2 rounded-xl">🧾 سجل فواتير المحل</button>
+        </div>
+        <input id="shopSearchInput" type="text" oninput="renderShop()" placeholder="ابحث بالاسم أو الباركود أو رقم الفاتورة..." class="ios-input rounded-xl px-3.5 py-2 text-xs sm:text-sm w-full sm:w-72 focus:outline-none focus:ring-2 focus:ring-sky-500" />
+      </div>
+
+      <!-- Sub-View 1: Inventory Table -->
+      <div id="shopSubView-inventory" class="glass-card overflow-hidden">
+        <div class="overflow-x-auto">
+          <table class="w-full text-sm text-right">
+            <thead class="bg-white/45 border-b border-white/70 text-slate-700 font-bold">
+              <tr>
+                <th class="px-4 py-3">الصنف / الباركود</th>
+                <th class="px-4 py-3">سعر التكلفة</th>
+                <th class="px-4 py-3">سعر المبيع</th>
+                <th class="px-4 py-3">الربح للقطعة</th>
+                <th class="px-4 py-3">الكمية المتوفرة</th>
+                <th class="px-4 py-3 text-center">إجراء</th>
+              </tr>
+            </thead>
+            <tbody id="shopProductsTableBody" class="divide-y divide-white/50"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Sub-View 2: Invoices Table -->
+      <div id="shopSubView-invoices" class="hidden glass-card overflow-hidden">
+        <div class="overflow-x-auto">
+          <table class="w-full text-sm text-right">
+            <thead class="bg-white/45 border-b border-white/70 text-slate-700 font-bold">
+              <tr>
+                <th class="px-4 py-3">رقم الفاتورة والتاريخ</th>
+                <th class="px-4 py-3">النوع والدفع</th>
+                <th class="px-4 py-3">العميل / المورد</th>
+                <th class="px-4 py-3">الأصناف</th>
+                <th class="px-4 py-3">الإجمالي الصافي</th>
+                <th class="px-4 py-3">صافي الربح</th>
+                <th class="px-4 py-3 text-center">إجراء</th>
+              </tr>
+            </thead>
+            <tbody id="shopInvoicesTableBody" class="divide-y divide-white/50"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
     <!-- ==================== TAB 6.5: QUICK SMART ENTRY & FINANCIAL NOTES ==================== -->
     <section id="view-quickNotes" class="tab-view hidden space-y-5">
       <div class="flex flex-wrap items-center justify-between gap-3">
@@ -1192,9 +1323,8 @@
       </div>
       <form id="txForm" class="space-y-3.5">
         <input type="hidden" id="editTxId" value="" />
-        <div class="grid grid-cols-2 gap-2 bg-slate-200/60 p-1 rounded-2xl">
-          <button type="button" id="btnTypeIncome" onclick="setTxType('income')" class="py-2 rounded-xl text-sm font-bold transition">مدخول (قبض)</button>
-          <button type="button" id="btnTypeExpense" onclick="setTxType('expense')" class="py-2 rounded-xl text-sm font-bold transition">مصروف (صرف)</button>
+        <div id="txSingleModeBanner" class="py-2.5 px-4 rounded-2xl text-sm font-extrabold text-center text-white shadow-xs bg-emerald-600">
+          تسجيل مدخول (قبض)
         </div>
         <input type="hidden" id="txType" value="expense" />
 
@@ -1421,10 +1551,19 @@
             تقسيط المبلغ على دفعات (أقساط مجدولة)
           </label>
           <div id="debtInstallmentBox" class="hidden space-y-2.5 pt-2 border-t border-white/70">
+            <div class="grid grid-cols-2 gap-1.5 bg-slate-200/60 p-1 rounded-xl text-[11px]">
+              <button type="button" id="btnDebtInstModeCount" onclick="setDebtInstCalcMode('count')" class="py-1.5 rounded-lg font-bold bg-sky-600 text-white">تحديد عدد الدفعات</button>
+              <button type="button" id="btnDebtInstModeAmount" onclick="setDebtInstCalcMode('amount')" class="py-1.5 rounded-lg font-bold text-slate-600">تحديد قيمة القسط</button>
+            </div>
+            <input type="hidden" id="debtInstCalcMode" value="count" />
             <div class="grid grid-cols-2 gap-2.5">
-              <div>
-                <label class="block text-[11px] font-bold text-slate-600 mb-1">عدد الأقساط</label>
-                <input id="debtInstallmentCount" type="number" min="2" max="60" value="3" inputmode="numeric" class="ios-input w-full rounded-xl px-3 py-2 text-sm font-bold focus:outline-none focus:ring-2 focus:ring-sky-500" />
+              <div id="debtInstCountWrap">
+                <label class="block text-[11px] font-bold text-slate-600 mb-1">عدد الأقساط / الشهور</label>
+                <input id="debtInstallmentCount" type="number" min="2" max="120" value="3" inputmode="numeric" class="ios-input w-full rounded-xl px-3 py-2 text-sm font-bold focus:outline-none focus:ring-2 focus:ring-sky-500" />
+              </div>
+              <div id="debtInstAmountWrap" class="hidden">
+                <label class="block text-[11px] font-bold text-slate-600 mb-1">قيمة الدفعة الواحدة</label>
+                <input id="debtInstallmentMonthlyAmt" type="number" step="0.01" min="0.01" placeholder="مثال: 100" inputmode="decimal" class="ios-input w-full rounded-xl px-3 py-2 text-sm font-bold focus:outline-none focus:ring-2 focus:ring-sky-500" />
               </div>
               <div>
                 <label class="block text-[11px] font-bold text-slate-600 mb-1">دورية القسط</label>
@@ -1491,10 +1630,19 @@
           <p class="font-bold text-slate-900" id="instPlanDebtLabel"></p>
           <p class="text-xs text-sky-900 mt-0.5">المبلغ المتبقي للتقسيط: <span id="instPlanRemaining" class="font-extrabold"></span></p>
         </div>
+        <div class="grid grid-cols-2 gap-1.5 bg-slate-200/60 p-1 rounded-xl text-xs">
+          <button type="button" id="btnPlanModeCount" onclick="setPlanCalcMode('count')" class="py-1.5 rounded-lg font-bold bg-sky-600 text-white">تحديد عدد الأقساط</button>
+          <button type="button" id="btnPlanModeAmount" onclick="setPlanCalcMode('amount')" class="py-1.5 rounded-lg font-bold text-slate-600">تحديد قيمة القسط</button>
+        </div>
+        <input type="hidden" id="instPlanCalcMode" value="count" />
         <div class="grid grid-cols-2 gap-3">
-          <div>
+          <div id="instPlanCountWrap">
             <label class="block text-xs font-bold text-slate-600 mb-1">عدد الأقساط</label>
-            <input id="instPlanCount" type="number" min="2" max="60" value="3" inputmode="numeric" required class="ios-input w-full rounded-xl px-3.5 py-2.5 text-base font-bold focus:outline-none focus:ring-2 focus:ring-sky-500" />
+            <input id="instPlanCount" type="number" min="2" max="120" value="3" inputmode="numeric" class="ios-input w-full rounded-xl px-3.5 py-2.5 text-base font-bold focus:outline-none focus:ring-2 focus:ring-sky-500" />
+          </div>
+          <div id="instPlanAmtWrap" class="hidden">
+            <label class="block text-xs font-bold text-slate-600 mb-1">قيمة الدفعة الشهرية</label>
+            <input id="instPlanMonthlyAmt" type="number" step="0.01" min="0.01" placeholder="100" inputmode="decimal" class="ios-input w-full rounded-xl px-3.5 py-2.5 text-base font-bold focus:outline-none focus:ring-2 focus:ring-sky-500" />
           </div>
           <div>
             <label class="block text-xs font-bold text-slate-600 mb-1">دورية السداد</label>
@@ -1820,6 +1968,136 @@
         <button type="button" onclick="calcEvaluate(false)" class="ios-btn bg-slate-200/80 hover:bg-slate-200 text-slate-800 text-xs font-bold py-2.5 rounded-xl">= حساب الناتج</button>
         <button type="button" onclick="calcEvaluate(true)" class="ios-btn bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold py-2.5 rounded-xl">تطبيق المبلغ ✓</button>
       </div>
+    </div>
+  </div>
+
+  <!-- Shop Product Modal -->
+  <div id="shopProductModal" class="fixed inset-0 bg-slate-900/40 backdrop-blur-md z-[63] hidden items-center justify-center p-4">
+    <div class="ios-modal max-w-md w-full p-6 animate-slide-up">
+      <div class="flex items-center justify-between mb-4">
+        <h3 id="shopProdModalTitle" class="text-lg font-extrabold text-slate-900">إضافة صنف للمخزون 📦</h3>
+        <button type="button" onclick="closeModal('shopProductModal')" class="w-8 h-8 rounded-full bg-slate-200/70 hover:bg-slate-200 text-slate-600 flex items-center justify-center text-sm font-bold">✕</button>
+      </div>
+      <form id="shopProductForm" class="space-y-3.5">
+        <input type="hidden" id="editShopProdId" value="" />
+        <div class="grid grid-cols-3 gap-2.5">
+          <div class="col-span-2">
+            <label class="block text-xs font-bold text-slate-600 mb-1">اسم الصنف / المنتج</label>
+            <input id="shopProdName" type="text" required placeholder="مثال: شاحن سريع، قميص قطني..." class="ios-input w-full rounded-xl px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-sky-500" />
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-600 mb-1">الباركود / الكود</label>
+            <input id="shopProdSku" type="text" placeholder="اختياري" class="ios-input w-full rounded-xl px-3 py-2.5 text-sm font-mono focus:outline-none focus:ring-2 focus:ring-sky-500" />
+          </div>
+        </div>
+        <div class="grid grid-cols-3 gap-2.5">
+          <div>
+            <label class="block text-xs font-bold text-slate-600 mb-1">سعر التكلفة</label>
+            <input id="shopProdCost" type="number" step="0.01" min="0" inputmode="decimal" required placeholder="0.00" class="ios-input w-full rounded-xl px-3 py-2.5 text-sm font-bold focus:outline-none focus:ring-2 focus:ring-sky-500" />
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-600 mb-1">سعر المبيع</label>
+            <input id="shopProdPrice" type="number" step="0.01" min="0.01" inputmode="decimal" required placeholder="0.00" class="ios-input w-full rounded-xl px-3 py-2.5 text-sm font-bold focus:outline-none focus:ring-2 focus:ring-emerald-500" />
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-600 mb-1">العملة</label>
+            <select id="shopProdCurrency" class="ios-input w-full rounded-xl px-2 py-2.5 text-sm font-bold focus:outline-none focus:ring-2 focus:ring-sky-500"></select>
+          </div>
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-bold text-slate-600 mb-1">الكمية الحالية بالمخزون</label>
+            <input id="shopProdQty" type="number" step="1" min="0" value="1" inputmode="numeric" required class="ios-input w-full rounded-xl px-3.5 py-2.5 text-sm font-bold focus:outline-none focus:ring-2 focus:ring-sky-500" />
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-600 mb-1">حد التنبيه لانخفاض المخزون</label>
+            <input id="shopProdMinQty" type="number" step="1" min="0" value="3" inputmode="numeric" required class="ios-input w-full rounded-xl px-3.5 py-2.5 text-sm font-bold focus:outline-none focus:ring-2 focus:ring-amber-500" />
+          </div>
+        </div>
+        <button type="submit" class="ios-btn w-full bg-gradient-to-br from-sky-500 to-indigo-600 text-white font-bold py-3 rounded-2xl">حفظ الصنف في المخزون ✓</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- POS Invoice Modal (Sale & Purchase) -->
+  <div id="posInvoiceModal" class="fixed inset-0 bg-slate-900/45 backdrop-blur-md z-50 hidden items-center justify-center p-4 overflow-y-auto">
+    <div class="ios-modal max-w-2xl w-full p-5 sm:p-6 animate-slide-up my-auto space-y-3.5">
+      <div class="flex items-center justify-between">
+        <h3 id="posModalTitle" class="text-lg font-extrabold text-slate-900">فاتورة مبيع جديدة (كاشير) 🧾</h3>
+        <button type="button" onclick="closeModal('posInvoiceModal')" class="w-8 h-8 rounded-full bg-slate-200/70 hover:bg-slate-200 text-slate-600 flex items-center justify-center text-sm font-bold">✕</button>
+      </div>
+
+      <input type="hidden" id="posInvoiceType" value="sale" />
+
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
+        <div>
+          <div class="flex items-center justify-between mb-1">
+            <label class="text-xs font-bold text-slate-600">العميل / المورد</label>
+            <button type="button" onclick="openPersonModal()" class="text-[11px] font-bold text-sky-700 hover:underline">+ شخص</button>
+          </div>
+          <select id="posPartySelect" class="ios-input w-full rounded-xl px-3 py-2 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-sky-500">
+            <option value="">زبون نقدي عام</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-slate-600 mb-1">طريقة الدفع</label>
+          <select id="posPaymentMode" class="ios-input w-full rounded-xl px-3 py-2 text-xs sm:text-sm font-bold focus:outline-none focus:ring-2 focus:ring-sky-500">
+            <option value="cash">نقدي (يُسجل بالحركة المالية فوراً)</option>
+            <option value="credit">آجل / ذمم (يُسجل كدين تلقائياً)</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-slate-600 mb-1">تاريخ الفاتورة</label>
+          <input id="posInvoiceDate" type="date" required class="ios-input w-full rounded-xl px-3 py-2 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-sky-500" />
+        </div>
+      </div>
+
+      <!-- Add Product to Cart Row -->
+      <div class="bg-white/60 border border-white/85 p-3 rounded-2xl space-y-2">
+        <div class="flex items-center justify-between">
+          <label class="text-xs font-extrabold text-slate-800">اختر صنفاً لإضافته إلى الفاتورة:</label>
+          <button type="button" onclick="openShopProductModal()" class="text-[11px] font-bold text-indigo-700 hover:underline">+ تعريف صنف جديد</button>
+        </div>
+        <div class="grid grid-cols-12 gap-2">
+          <select id="posProductPicker" class="ios-input col-span-7 sm:col-span-8 rounded-xl px-3 py-2 text-xs sm:text-sm font-bold focus:outline-none focus:ring-2 focus:ring-sky-500"></select>
+          <input id="posItemQty" type="number" min="1" value="1" inputmode="numeric" placeholder="الكمية" class="ios-input col-span-3 sm:col-span-2 rounded-xl px-2 py-2 text-center text-xs sm:text-sm font-bold focus:outline-none focus:ring-2 focus:ring-sky-500" />
+          <button type="button" onclick="addPosCartItem()" class="ios-btn col-span-2 bg-sky-600 hover:bg-sky-700 text-white font-extrabold text-sm rounded-xl">+</button>
+        </div>
+      </div>
+
+      <!-- Cart Items Table -->
+      <div class="bg-white/55 border border-white/80 rounded-2xl overflow-hidden max-h-48 overflow-y-auto">
+        <table class="w-full text-xs text-right">
+          <thead class="bg-white/65 text-slate-700 font-bold border-b border-white">
+            <tr>
+              <th class="px-3 py-2">الصنف</th>
+              <th class="px-3 py-2">السعر</th>
+              <th class="px-3 py-2">الكمية</th>
+              <th class="px-3 py-2">المجموع</th>
+              <th class="px-2 py-2"></th>
+            </tr>
+          </thead>
+          <tbody id="posCartBody" class="divide-y divide-white/50"></tbody>
+        </table>
+      </div>
+
+      <!-- Totals & Discount -->
+      <div class="grid grid-cols-3 gap-2.5 bg-sky-500/10 border border-sky-300/60 p-3 rounded-2xl text-xs">
+        <div>
+          <label class="text-[11px] font-bold text-slate-600 block mb-1">خصم إضافي</label>
+          <input id="posDiscountInput" type="number" step="0.01" min="0" value="0" oninput="renderPosCart()" class="ios-input w-full rounded-xl px-2.5 py-1.5 font-bold" />
+        </div>
+        <div class="text-center flex flex-col justify-center">
+          <span class="text-[11px] text-slate-600">صافي الفاتورة</span>
+          <strong id="posNetTotalLabel" class="text-base font-extrabold text-slate-900">0</strong>
+        </div>
+        <div class="text-center flex flex-col justify-center">
+          <span id="posProfitHeaderLabel" class="text-[11px] text-slate-600">صافي ربح الفاتورة</span>
+          <strong id="posNetProfitLabel" class="text-base font-extrabold text-emerald-700">0</strong>
+        </div>
+      </div>
+
+      <button type="button" onclick="submitPosInvoice()" class="ios-btn w-full bg-gradient-to-br from-emerald-500 to-teal-700 text-white font-extrabold py-3 rounded-2xl shadow-md">اعتماد الفاتورة وتحديث المخزون والحسابات ✓</button>
     </div>
   </div>
 
@@ -2151,6 +2429,10 @@
         quickNotes: [
           { id: 'note_1', text: 'مراجعة تسعيرة الموردين قبل نهاية الأسبوع', amount: 0, currency: '$', alertDate: todayISO(2), pinned: true, createdAt: todayISO() }
         ],
+        shopProducts: [
+          { id: 'prod_1', name: 'منتج تجريبي أساسي', sku: '1001', cost: 15, price: 25, currency: '$', qty: 20, minQty: 5 }
+        ],
+        shopInvoices: [],
         schedules: [
           { id: 'sch_1', title: 'تحصيل قسط شركة الأفق', amount: 300, currency: '$', date: todayISO(4), recurrence: 'once', debtId: 'debt_1', personName: 'شركة الأفق للتجارة', phone: '0933123456', status: 'pending', note: 'تحويل بنكي أو نقدي' },
           { id: 'sch_2', title: 'استرداد سلفة خالد العلي', amount: 350, currency: '$', date: todayISO(-2), recurrence: 'once', debtId: 'debt_2', personName: 'خالد العلي', phone: '0944987654', status: 'pending', note: 'التواصل هاتفياً للتأكيد' },
@@ -2177,6 +2459,8 @@
       if (!s.recurringExpenses) s.recurringExpenses = [];
       if (!s.savingsGoals) s.savingsGoals = [];
       if (!s.quickNotes) s.quickNotes = [];
+      if (!s.shopProducts) s.shopProducts = [];
+      if (!s.shopInvoices) s.shopInvoices = [];
       if (!s.schedules) s.schedules = [];
       return s;
     }
@@ -2449,7 +2733,7 @@
         mainSel.value = state.currency;
       }
 
-      ['txCurrency', 'debtCurrency', 'schedCurrency', 'recCurrency', 'goalCurrency'].forEach(id => {
+      ['txCurrency', 'debtCurrency', 'schedCurrency', 'recCurrency', 'goalCurrency', 'shopProdCurrency'].forEach(id => {
         const el = document.getElementById(id);
         if (el) {
           const prev = el.value;
@@ -2519,6 +2803,20 @@
       window.open(url, '_blank', 'noopener');
     }
 
+    function toggleSideNavDrawer(forceState) {
+      const drawer = document.getElementById('sideNavDrawer');
+      const backdrop = document.getElementById('sideNavBackdrop');
+      if (!drawer || !backdrop) return;
+      const shouldOpen = typeof forceState === 'boolean' ? forceState : drawer.classList.contains('translate-x-full');
+      if (shouldOpen) {
+        backdrop.classList.remove('hidden');
+        drawer.classList.remove('translate-x-full');
+      } else {
+        drawer.classList.add('translate-x-full');
+        backdrop.classList.add('hidden');
+      }
+    }
+
     function navigateAndOpen(tabName, openModalFn) {
       switchTab(tabName);
       if (typeof openModalFn === 'function') {
@@ -2528,14 +2826,20 @@
 
     function switchTab(tabName) {
       activeTab = tabName;
+      let activeLabel = '';
       document.querySelectorAll('.tab-btn').forEach(btn => {
         const isActive = btn.dataset.tab === tabName;
         btn.classList.toggle('active', isActive);
         btn.classList.toggle('text-slate-600', !isActive);
+        if (isActive && btn.dataset.label) activeLabel = btn.dataset.label;
       });
+      const headerBadge = document.getElementById('activeTabHeaderBadge');
+      if (headerBadge && activeLabel) headerBadge.textContent = activeLabel;
+
       document.querySelectorAll('.tab-view').forEach(sec => {
         sec.classList.toggle('hidden', sec.id !== `view-${tabName}`);
       });
+      toggleSideNavDrawer(false);
       renderAll();
     }
 
@@ -4363,18 +4667,41 @@
       }).join('');
     }
 
-    function generateInstallmentSchedules(debtId, name, totalAmt, currency, startDate, count, freq, phone, note) {
-      const n = Math.max(2, parseInt(count, 10) || 2);
-      const baseAmt = Math.floor((totalAmt / n) * 100) / 100;
-      let assigned = 0;
+    function computeFlexibleInstallments(totalAmt, mode, countVal, monthlyAmtVal) {
+      if (mode === 'amount') {
+        const stepAmt = Math.max(0.01, parseFloat(monthlyAmtVal) || 0);
+        if (stepAmt <= 0 || totalAmt <= 0) return { count: 2, perAmount: 0, amounts: [] };
+        const fullCount = Math.floor(totalAmt / stepAmt);
+        const remainder = Number((totalAmt - (fullCount * stepAmt)).toFixed(2));
+        const amounts = [];
+        for (let i = 0; i < fullCount; i++) amounts.push(Number(stepAmt.toFixed(2)));
+        if (remainder > 0.009) amounts.push(remainder);
+        if (amounts.length === 0) amounts.push(Number(totalAmt.toFixed(2)));
+        return { count: amounts.length, perAmount: stepAmt, remainder, amounts };
+      } else {
+        const n = Math.max(2, parseInt(countVal, 10) || 2);
+        const baseAmt = Math.floor((totalAmt / n) * 100) / 100;
+        let assigned = 0;
+        const amounts = [];
+        for (let i = 0; i < n; i++) {
+          const a = (i === n - 1) ? Number((totalAmt - assigned).toFixed(2)) : baseAmt;
+          assigned += a;
+          amounts.push(a);
+        }
+        return { count: n, perAmount: amounts[0] || 0, remainder: 0, amounts };
+      }
+    }
+
+    function generateInstallmentSchedules(debtId, name, totalAmt, currency, startDate, mode, countVal, monthlyAmtVal, freq, phone, note) {
+      const plan = computeFlexibleInstallments(totalAmt, mode, countVal, monthlyAmtVal);
+      const n = plan.amounts.length;
       for (let i = 0; i < n; i++) {
         const d = new Date(startDate);
         if (freq === 'weekly') d.setDate(d.getDate() + i * 7);
         else if (freq === 'biweekly') d.setDate(d.getDate() + i * 14);
         else d.setMonth(d.getMonth() + i);
         const iso = d.toISOString().split('T')[0];
-        const amt = (i === n - 1) ? Number((totalAmt - assigned).toFixed(2)) : baseAmt;
-        assigned += amt;
+        const amt = plan.amounts[i];
         state.schedules.push({
           id: `sch_${Date.now()}_${i}`,
           title: `قسط (${i + 1}/${n}): ${name}`,
@@ -4389,14 +4716,40 @@
           note: note || `قسط رقم ${i + 1} من ${n}`
         });
       }
+      return n;
+    }
+
+    function setDebtInstCalcMode(mode) {
+      document.getElementById('debtInstCalcMode').value = mode;
+      document.getElementById('debtInstCountWrap').classList.toggle('hidden', mode !== 'count');
+      document.getElementById('debtInstAmountWrap').classList.toggle('hidden', mode !== 'amount');
+      document.getElementById('btnDebtInstModeCount').className = `py-1.5 rounded-lg font-bold ${mode === 'count' ? 'bg-sky-600 text-white' : 'text-slate-600'}`;
+      document.getElementById('btnDebtInstModeAmount').className = `py-1.5 rounded-lg font-bold ${mode === 'amount' ? 'bg-sky-600 text-white' : 'text-slate-600'}`;
+      updateDebtInstallmentPreview();
     }
 
     function updateDebtInstallmentPreview() {
       const amt = parseFloat(document.getElementById('debtAmount').value) || 0;
-      const cnt = Math.max(2, parseInt(document.getElementById('debtInstallmentCount').value, 10) || 2);
+      const mode = document.getElementById('debtInstCalcMode').value || 'count';
+      const cnt = document.getElementById('debtInstallmentCount').value;
+      const mAmt = document.getElementById('debtInstallmentMonthlyAmt').value;
       const curr = document.getElementById('debtCurrency').value || state.currency;
-      const per = amt > 0 ? (amt / cnt) : 0;
-      document.getElementById('debtInstallmentPreview').textContent = `قيمة كل قسط تقريباً: ${fmt(per, curr)} × ${cnt} أقساط`;
+      const prevEl = document.getElementById('debtInstallmentPreview');
+      if (mode === 'amount') {
+        const step = parseFloat(mAmt) || 0;
+        if (amt <= 0 || step <= 0) {
+          prevEl.textContent = 'أدخل المبلغ الإجمالي وقيمة الدفعة لحساب عدد الشهور تلقائياً';
+          return;
+        }
+        const plan = computeFlexibleInstallments(amt, 'amount', cnt, step);
+        prevEl.textContent = plan.remainder > 0.009
+          ? `المدة المستنتجة: ${plan.count} دفعة (${plan.count - 1} × ${fmt(step, curr)} + دفعة أخيرة ${fmt(plan.remainder, curr)})`
+          : `المدة المستنتجة: ${plan.count} دفعات متساوية × ${fmt(step, curr)}`;
+      } else {
+        const n = Math.max(2, parseInt(cnt, 10) || 2);
+        const per = amt > 0 ? (amt / n) : 0;
+        prevEl.textContent = `قيمة كل قسط: ${fmt(per, curr)} × ${n} دفعات`;
+      }
     }
 
     document.getElementById('debtIsInstallment').addEventListener('change', e => {
@@ -4406,8 +4759,8 @@
       updateDebtInstallmentPreview();
     });
 
-    ['debtAmount', 'debtInstallmentCount', 'debtCurrency'].forEach(id => {
-      document.getElementById(id).addEventListener('input', updateDebtInstallmentPreview);
+    ['debtAmount', 'debtInstallmentCount', 'debtInstallmentMonthlyAmt', 'debtCurrency'].forEach(id => {
+      document.getElementById(id)?.addEventListener('input', updateDebtInstallmentPreview);
     });
 
     function openDebtModal() {
@@ -4455,7 +4808,9 @@
       const phone = document.getElementById('debtPhone').value.trim();
       const rawNote = document.getElementById('debtNote').value.trim();
       const isInst = document.getElementById('debtIsInstallment').checked;
+      const instMode = document.getElementById('debtInstCalcMode').value || 'count';
       const instCount = parseInt(document.getElementById('debtInstallmentCount').value, 10) || 3;
+      const instMonthlyAmt = parseFloat(document.getElementById('debtInstallmentMonthlyAmt').value) || 0;
       const instFreq = document.getElementById('debtInstallmentFreq').value;
       const autoSched = document.getElementById('debtAutoSchedule').checked;
       if (!name || isNaN(rawAmount) || rawAmount <= 0 || !dueDate) return;
@@ -4484,8 +4839,9 @@
       const debtId = 'debt_' + Date.now();
       state.debts.push({ id: debtId, direction, name, phone, totalAmount: amount, paidAmount: 0, currency, dueDate, note });
 
+      let createdInstCount = instCount;
       if (isInst) {
-        generateInstallmentSchedules(debtId, name, amount, currency, dueDate, instCount, instFreq, phone, note);
+        createdInstCount = generateInstallmentSchedules(debtId, name, amount, currency, dueDate, instMode, instCount, instMonthlyAmt, instFreq, phone, note);
       } else if (autoSched) {
         state.schedules.push({
           id: 'sch_' + Date.now(),
@@ -4505,7 +4861,7 @@
       saveState();
       closeModal('debtModal');
       renderAll();
-      showToast(isInst ? `تم التسجيل وجدولة ${instCount} أقساط` : 'تم الحفظ بنجاح');
+      showToast(isInst ? `تم التسجيل وجدولة ${createdInstCount} أقساط` : 'تم الحفظ بنجاح');
     });
 
     function openInstallmentPlanModal(debtId) {
@@ -4523,17 +4879,44 @@
       openModal('installmentPlanModal');
     }
 
+    function setPlanCalcMode(mode) {
+      document.getElementById('instPlanCalcMode').value = mode;
+      document.getElementById('instPlanCountWrap').classList.toggle('hidden', mode !== 'count');
+      document.getElementById('instPlanAmtWrap').classList.toggle('hidden', mode !== 'amount');
+      document.getElementById('btnPlanModeCount').className = `py-1.5 rounded-lg font-bold ${mode === 'count' ? 'bg-sky-600 text-white' : 'text-slate-600'}`;
+      document.getElementById('btnPlanModeAmount').className = `py-1.5 rounded-lg font-bold ${mode === 'amount' ? 'bg-sky-600 text-white' : 'text-slate-600'}`;
+      updateInstPlanPreview();
+    }
+
     function updateInstPlanPreview() {
       const debtId = document.getElementById('instPlanDebtId').value;
       const d = state.debts.find(x => x.id === debtId);
       if (!d) return;
       const rem = Math.max(0, Number(d.totalAmount) - Number(d.paidAmount));
-      const cnt = Math.max(2, parseInt(document.getElementById('instPlanCount').value, 10) || 2);
+      const mode = document.getElementById('instPlanCalcMode').value || 'count';
+      const cnt = document.getElementById('instPlanCount').value;
+      const mAmt = document.getElementById('instPlanMonthlyAmt').value;
       const dCurr = d.currency || state.currency;
-      document.getElementById('instPlanPreview').textContent = `قيمة كل قسط: ${fmt(rem / cnt, dCurr)} × ${cnt} أقساط`;
+      const prevEl = document.getElementById('instPlanPreview');
+
+      if (mode === 'amount') {
+        const step = parseFloat(mAmt) || 0;
+        if (step <= 0) {
+          prevEl.textContent = 'أدخل قيمة الدفعة الشهرية لحساب عدد الشهور تلقائياً';
+          return;
+        }
+        const plan = computeFlexibleInstallments(rem, 'amount', cnt, step);
+        prevEl.textContent = plan.remainder > 0.009
+          ? `المدة المستنتجة: ${plan.count} دفعة (${plan.count - 1} × ${fmt(step, dCurr)} + دفعة أخيرة ${fmt(plan.remainder, dCurr)})`
+          : `المدة المستنتجة: ${plan.count} دفعات متساوية × ${fmt(step, dCurr)}`;
+      } else {
+        const n = Math.max(2, parseInt(cnt, 10) || 2);
+        prevEl.textContent = `قيمة كل قسط: ${fmt(rem / n, dCurr)} × ${n} أقساط`;
+      }
     }
 
-    document.getElementById('instPlanCount').addEventListener('input', updateInstPlanPreview);
+    document.getElementById('instPlanCount')?.addEventListener('input', updateInstPlanPreview);
+    document.getElementById('instPlanMonthlyAmt')?.addEventListener('input', updateInstPlanPreview);
 
     document.getElementById('installmentPlanForm').addEventListener('submit', e => {
       e.preventDefault();
@@ -4541,7 +4924,9 @@
       const d = state.debts.find(x => x.id === debtId);
       if (!d) return;
       const rem = Math.max(0, Number(d.totalAmount) - Number(d.paidAmount));
-      const cnt = Math.max(2, parseInt(document.getElementById('instPlanCount').value, 10) || 2);
+      const mode = document.getElementById('instPlanCalcMode').value || 'count';
+      const cnt = parseInt(document.getElementById('instPlanCount').value, 10) || 2;
+      const mAmt = parseFloat(document.getElementById('instPlanMonthlyAmt').value) || 0;
       const freq = document.getElementById('instPlanFreq').value;
       const startDate = document.getElementById('instPlanStartDate').value || todayISO(7);
       const dCurr = d.currency || state.currency;
@@ -4549,12 +4934,12 @@
       state.schedules = state.schedules.filter(sc => !(sc.debtId === debtId && sc.status === 'pending'));
       const p = state.people.find(x => x.name === d.name);
       const phone = d.phone || (p ? p.phone : '') || '';
-      generateInstallmentSchedules(debtId, d.name, rem, dCurr, startDate, cnt, freq, phone, d.note);
+      const totalCreated = generateInstallmentSchedules(debtId, d.name, rem, dCurr, startDate, mode, cnt, mAmt, freq, phone, d.note);
 
       saveState();
       closeModal('installmentPlanModal');
       renderAll();
-      showToast(`تم إنشاء ${cnt} أقساط مجدولة بنجاح`);
+      showToast(`تم إنشاء ${totalCreated} أقساط مجدولة بنجاح`);
     });
 
     function openDebtPayModal(debtId) {
@@ -4587,8 +4972,9 @@
       const dCurr = d.currency || state.currency;
       const isPayable = d.direction === 'payable';
       d.paidAmount = Math.min(Number(d.totalAmount), Number(d.paidAmount) + payAmt);
+      const payTxId = 'tx_' + Date.now();
       state.transactions.push({
-        id: 'tx_' + Date.now(),
+        id: payTxId,
         type: isPayable ? 'expense' : 'income',
         amount: payAmt,
         currency: dCurr,
@@ -4607,7 +4993,8 @@
       saveState();
       closeModal('debtPayModal');
       renderAll();
-      showToast(isPayable ? 'تم تسجيل السداد وخصمه من المصروف' : 'تم تسجيل الدفعة وإضافتها للمدخول');
+      showToast(isPayable ? 'تم تسجيل السداد وعرض السند' : 'تم تسجيل القبض وعرض السند');
+      openVoucherForTx(payTxId);
     });
 
     function exportVisibleDebtsCsv() {
@@ -5045,10 +5432,16 @@
     // ==================== TRANSACTION MODAL, CALCULATOR, RATE & RECEIPT ====================
     function setTxType(type) {
       document.getElementById('txType').value = type;
-      const btnIn = document.getElementById('btnTypeIncome');
-      const btnEx = document.getElementById('btnTypeExpense');
-      btnIn.className = `py-2 rounded-xl text-sm font-bold transition ${type === 'income' ? 'bg-emerald-600 text-white shadow-xs' : 'text-slate-600'}`;
-      btnEx.className = `py-2 rounded-xl text-sm font-bold transition ${type === 'expense' ? 'bg-rose-600 text-white shadow-xs' : 'text-slate-600'}`;
+      const banner = document.getElementById('txSingleModeBanner');
+      if (banner) {
+        banner.textContent = type === 'income' ? 'عملية مدخول (قبض مالي)' : 'عملية مصروف (صرف مالي)';
+        banner.className = `py-2.5 px-4 rounded-2xl text-sm font-extrabold text-center text-white shadow-xs ${type === 'income' ? 'bg-gradient-to-br from-emerald-500 to-teal-700' : 'bg-gradient-to-br from-rose-500 to-pink-600'}`;
+      }
+      const submitBtn = document.querySelector('#txForm button[type="submit"]');
+      if (submitBtn) {
+        submitBtn.textContent = type === 'income' ? 'حفظ المدخول وعرض السند ✓' : 'حفظ المصروف وعرض السند ✓';
+        submitBtn.className = `ios-btn w-full ${type === 'income' ? 'bg-gradient-to-br from-emerald-500 to-teal-700' : 'bg-gradient-to-br from-rose-500 to-pink-600'} text-white font-bold py-3 rounded-2xl shadow-md`;
+      }
 
       const catSelect = document.getElementById('txCategory');
       const cats = type === 'income' ? state.incomeCategories : Array.from(new Set([...state.expenseCategories, ...state.budgets.map(b => b.name)]));
@@ -5329,11 +5722,13 @@
         }
       }
 
-      state.transactions.push({ id: 'tx_' + Date.now(), type, amount: conv.amount, currency: conv.currency, category, date, personName, method, note, details: conv.details, receiptImg });
+      const newTxId = 'tx_' + Date.now();
+      state.transactions.push({ id: newTxId, type, amount: conv.amount, currency: conv.currency, category, date, personName, method, note, details: conv.details, receiptImg });
       saveState();
       closeModal('txModal');
       renderAll();
-      showToast(type === 'income' ? 'تم تسجيل المدخول' : 'تم تسجيل المصروف');
+      showToast(type === 'income' ? 'تم تسجيل المدخول — جاري عرض السند...' : 'تم تسجيل المصروف — جاري عرض السند...');
+      openVoucherForTx(newTxId);
     });
 
     // ==================== BACKUP, IMPORT, CSV & PROTECTED RESET ====================
@@ -5457,6 +5852,7 @@
       renderSchedule();
       renderFullLog();
       renderQuickNotes();
+      renderShop();
     }
 
     // ==================== QUICK SMART ENTRY & NOTES MODULE ====================
@@ -5647,6 +6043,7 @@
       n.pinned = !n.pinned;
       saveState();
       renderQuickNotes();
+      renderShop();
     }
 
     function deleteQuickNote(noteId) {
@@ -5728,6 +6125,367 @@
           </div>
         `;
       }).join('');
+    }
+
+    // ==================== SHOP MANAGEMENT & POS MODULE ====================
+    let shopSubView = 'inventory';
+    let posCart = [];
+
+    function switchShopSubView(view) {
+      shopSubView = view;
+      document.getElementById('shopSubView-inventory').classList.toggle('hidden', view !== 'inventory');
+      document.getElementById('shopSubView-invoices').classList.toggle('hidden', view !== 'invoices');
+      document.getElementById('btnShopSubInventory').className = `ios-btn text-xs font-bold px-4 py-2 rounded-xl ${view === 'inventory' ? 'bg-gradient-to-br from-sky-500 to-teal-700 text-white shadow-xs' : 'bg-white/75 text-slate-700 border border-white'}`;
+      document.getElementById('btnShopSubInvoices').className = `ios-btn text-xs font-bold px-4 py-2 rounded-xl ${view === 'invoices' ? 'bg-gradient-to-br from-sky-500 to-teal-700 text-white shadow-xs' : 'bg-white/75 text-slate-700 border border-white'}`;
+      renderShop();
+    }
+
+    function openShopProductModal(prodId = '') {
+      document.getElementById('shopProductForm').reset();
+      document.getElementById('editShopProdId').value = prodId || '';
+      populateCurrencySelects();
+      if (prodId) {
+        const p = (state.shopProducts || []).find(x => x.id === prodId);
+        if (p) {
+          document.getElementById('shopProdModalTitle').textContent = 'تعديل بيانات الصنف 📦';
+          document.getElementById('shopProdName').value = p.name;
+          document.getElementById('shopProdSku').value = p.sku || '';
+          document.getElementById('shopProdCost').value = p.cost;
+          document.getElementById('shopProdPrice').value = p.price;
+          document.getElementById('shopProdCurrency').value = p.currency || state.currency;
+          document.getElementById('shopProdQty').value = p.qty;
+          document.getElementById('shopProdMinQty').value = p.minQty ?? 3;
+        }
+      } else {
+        document.getElementById('shopProdModalTitle').textContent = 'إضافة صنف للمخزون 📦';
+      }
+      openModal('shopProductModal');
+    }
+
+    document.getElementById('shopProductForm')?.addEventListener('submit', e => {
+      e.preventDefault();
+      const editId = document.getElementById('editShopProdId').value;
+      const name = document.getElementById('shopProdName').value.trim();
+      const sku = document.getElementById('shopProdSku').value.trim();
+      const cost = parseFloat(document.getElementById('shopProdCost').value) || 0;
+      const price = parseFloat(document.getElementById('shopProdPrice').value) || 0;
+      const currency = document.getElementById('shopProdCurrency').value || state.currency;
+      const qty = parseInt(document.getElementById('shopProdQty').value, 10) || 0;
+      const minQty = parseInt(document.getElementById('shopProdMinQty').value, 10) || 0;
+      if (!name || price <= 0) return;
+
+      if (editId) {
+        const existing = state.shopProducts.find(x => x.id === editId);
+        if (existing) Object.assign(existing, { name, sku, cost, price, currency, qty, minQty });
+        showToast('تم تحديث بيانات الصنف');
+      } else {
+        state.shopProducts.push({ id: 'prod_' + Date.now(), name, sku, cost, price, currency, qty, minQty });
+        showToast(`تمت إضافة "${name}" إلى المخزون`);
+      }
+
+      saveState();
+      closeModal('shopProductModal');
+      renderAll();
+      if (!document.getElementById('posInvoiceModal').classList.contains('hidden')) {
+        refreshPosProductPicker();
+      }
+    });
+
+    function deleteShopProduct(prodId) {
+      state.shopProducts = (state.shopProducts || []).filter(p => p.id !== prodId);
+      saveState();
+      renderAll();
+      showToast('تم حذف الصنف من المخزون');
+    }
+
+    function refreshPosProductPicker() {
+      const picker = document.getElementById('posProductPicker');
+      const type = document.getElementById('posInvoiceType').value;
+      if (!picker) return;
+      const prods = state.shopProducts || [];
+      if (!prods.length) {
+        picker.innerHTML = `<option value="">-- أضف أصنافاً للمخزون أولاً --</option>`;
+        return;
+      }
+      picker.innerHTML = prods.map(p => {
+        const unitVal = type === 'sale' ? p.price : p.cost;
+        return `<option value="${p.id}">${escapeHtml(p.name)} ${p.sku ? `[${escapeHtml(p.sku)}]` : ''} — ${fmt(unitVal, p.currency)} (متوفر: ${p.qty})</option>`;
+      }).join('');
+    }
+
+    function openPosInvoiceModal(type = 'sale') {
+      posCart = [];
+      document.getElementById('posInvoiceType').value = type;
+      document.getElementById('posModalTitle').textContent = type === 'sale' ? 'فاتورة مبيع جديدة (كاشير) 🧾' : 'فاتورة شراء وتوريد بضاعة 📦';
+      document.getElementById('posProfitHeaderLabel').textContent = type === 'sale' ? 'صافي ربح الفاتورة' : 'إجمالي التكلفة';
+      document.getElementById('posInvoiceDate').value = todayISO();
+      document.getElementById('posDiscountInput').value = 0;
+      document.getElementById('posPaymentMode').value = 'cash';
+
+      const partySel = document.getElementById('posPartySelect');
+      partySel.innerHTML = `<option value="">${type === 'sale' ? 'زبون نقدي عام' : 'مورد عام'}</option>` +
+        state.people.map(p => `<option value="${escapeHtml(p.name)}">${escapeHtml(p.name)}</option>`).join('');
+
+      refreshPosProductPicker();
+      renderPosCart();
+      openModal('posInvoiceModal');
+    }
+
+    function addPosCartItem() {
+      const prodId = document.getElementById('posProductPicker').value;
+      const qty = Math.max(1, parseInt(document.getElementById('posItemQty').value, 10) || 1);
+      const type = document.getElementById('posInvoiceType').value;
+      const prod = (state.shopProducts || []).find(p => p.id === prodId);
+      if (!prod) {
+        showToast('يرجى اختيار صنف صالح');
+        return;
+      }
+      if (type === 'sale' && prod.qty < qty) {
+        showToast(`الكمية المتوفرة من "${prod.name}" هي ${prod.qty} فقط!`);
+        return;
+      }
+      const existing = posCart.find(c => c.prodId === prodId);
+      if (existing) {
+        if (type === 'sale' && prod.qty < existing.qty + qty) {
+          showToast(`الكمية المتوفرة من "${prod.name}" هي ${prod.qty} فقط!`);
+          return;
+        }
+        existing.qty += qty;
+      } else {
+        posCart.push({
+          prodId: prod.id,
+          name: prod.name,
+          cost: Number(prod.cost || 0),
+          price: Number(type === 'sale' ? prod.price : prod.cost),
+          currency: prod.currency || state.currency,
+          qty
+        });
+      }
+      document.getElementById('posItemQty').value = 1;
+      renderPosCart();
+    }
+
+    function removePosCartItem(idx) {
+      posCart.splice(idx, 1);
+      renderPosCart();
+    }
+
+    function renderPosCart() {
+      const tbody = document.getElementById('posCartBody');
+      const type = document.getElementById('posInvoiceType').value;
+      const discount = parseFloat(document.getElementById('posDiscountInput').value) || 0;
+      const curr = posCart[0]?.currency || state.currency;
+
+      if (!posCart.length) {
+        tbody.innerHTML = `<tr><td colspan="5" class="text-center py-5 text-slate-400">السلة فارغة — اختر أصنافاً من الأعلى لإضافتها</td></tr>`;
+        document.getElementById('posNetTotalLabel').textContent = fmt(0, curr);
+        document.getElementById('posNetProfitLabel').textContent = fmt(0, curr);
+        return;
+      }
+
+      tbody.innerHTML = posCart.map((item, idx) => `
+        <tr>
+          <td class="px-3 py-2 font-bold text-slate-900">${escapeHtml(item.name)}</td>
+          <td class="px-3 py-2">${fmt(item.price, item.currency)}</td>
+          <td class="px-3 py-2 font-extrabold">${item.qty}</td>
+          <td class="px-3 py-2 font-extrabold text-sky-800">${fmt(item.price * item.qty, item.currency)}</td>
+          <td class="px-2 py-2 text-center"><button type="button" onclick="removePosCartItem(${idx})" class="text-rose-600 font-bold">✕</button></td>
+        </tr>
+      `).join('');
+
+      const grossTotal = posCart.reduce((s, it) => s + (it.price * it.qty), 0);
+      const totalCost = posCart.reduce((s, it) => s + (it.cost * it.qty), 0);
+      const netTotal = Math.max(0, grossTotal - discount);
+      const netProfit = type === 'sale' ? (netTotal - totalCost) : netTotal;
+
+      document.getElementById('posNetTotalLabel').textContent = fmt(netTotal, curr);
+      document.getElementById('posNetProfitLabel').textContent = fmt(netProfit, curr);
+    }
+
+    function submitPosInvoice() {
+      if (!posCart.length) {
+        showToast('أضف صنفاً واحداً على الأقل للفاتورة');
+        return;
+      }
+      const type = document.getElementById('posInvoiceType').value;
+      const partyName = document.getElementById('posPartySelect').value || '';
+      const paymentMode = document.getElementById('posPaymentMode').value;
+      const date = document.getElementById('posInvoiceDate').value || todayISO();
+      const discount = parseFloat(document.getElementById('posDiscountInput').value) || 0;
+      const curr = posCart[0].currency || state.currency;
+
+      if (paymentMode === 'credit' && !partyName) {
+        showToast('يرجى تحديد اسم العميل أو المورد للفواتير الآجلة (الذمم)');
+        return;
+      }
+
+      const grossTotal = posCart.reduce((s, it) => s + (it.price * it.qty), 0);
+      const totalCost = posCart.reduce((s, it) => s + (it.cost * it.qty), 0);
+      const netTotal = Math.max(0, grossTotal - discount);
+      const profit = type === 'sale' ? Number((netTotal - totalCost).toFixed(2)) : 0;
+
+      // Update inventory stock quantities
+      posCart.forEach(item => {
+        const prod = state.shopProducts.find(p => p.id === item.prodId);
+        if (prod) {
+          if (type === 'sale') {
+            prod.qty = Math.max(0, Number(prod.qty) - item.qty);
+          } else {
+            prod.qty = Number(prod.qty) + item.qty;
+          }
+        }
+      });
+
+      const invNo = 'INV-' + String(Date.now()).slice(-6);
+      const itemsSummary = posCart.map(it => `${it.name} (×${it.qty})`).join('، ');
+
+      state.shopInvoices.unshift({
+        id: 'inv_' + Date.now(),
+        no: invNo,
+        type,
+        paymentMode,
+        partyName: partyName || (type === 'sale' ? 'زبون نقدي' : 'مورد عام'),
+        date,
+        items: JSON.parse(JSON.stringify(posCart)),
+        itemsSummary,
+        discount,
+        netTotal,
+        profit,
+        currency: curr
+      });
+
+      // Record into main financial transactions or debts automatically
+      if (paymentMode === 'cash') {
+        state.transactions.push({
+          id: 'tx_' + Date.now(),
+          type: type === 'sale' ? 'income' : 'expense',
+          amount: netTotal,
+          currency: curr,
+          category: type === 'sale' ? 'مبيعات / خدمات' : 'تشغيل وعمل',
+          date,
+          method: 'نقدي',
+          personName: partyName,
+          note: `${type === 'sale' ? 'فاتورة مبيع' : 'فاتورة شراء'} #${invNo}`,
+          details: itemsSummary
+        });
+      } else {
+        state.debts.push({
+          id: 'debt_' + Date.now(),
+          direction: type === 'sale' ? 'receivable' : 'payable',
+          name: partyName,
+          phone: (state.people.find(p => p.name === partyName)?.phone) || '',
+          totalAmount: netTotal,
+          paidAmount: 0,
+          currency: curr,
+          dueDate: todayISO(7),
+          note: `${type === 'sale' ? 'فاتورة مبيع آجلة' : 'فاتورة شراء آجلة'} #${invNo}: ${itemsSummary}`
+        });
+      }
+
+      saveState();
+      closeModal('posInvoiceModal');
+      renderAll();
+      showToast(`تم اعتماد الفاتورة #${invNo} وتحديث المخزون والحسابات ✓`);
+    }
+
+    function sendShopInvoiceWhatsapp(invId) {
+      const inv = (state.shopInvoices || []).find(x => x.id === invId);
+      if (!inv) return;
+      const p = state.people.find(x => x.name === inv.partyName);
+      const waPhone = p ? formatWaPhone(p.phone) : '';
+      const msg = `فاتورة ${inv.type === 'sale' ? 'مبيع' : 'شراء'} (${inv.no})\nالتاريخ: ${inv.date}\nالطرف: ${inv.partyName}\nالأصناف: ${inv.itemsSummary}\nالصافي: ${fmt(inv.netTotal, inv.currency)} (${inv.paymentMode === 'cash' ? 'نقدي' : 'آجل'})\n— الزعيم برو`;
+      const url = waPhone ? `https://wa.me/${waPhone}?text=${encodeURIComponent(msg)}` : `https://wa.me/?text=${encodeURIComponent(msg)}`;
+      window.open(url, '_blank', 'noopener');
+    }
+
+    function renderShop() {
+      const prods = state.shopProducts || [];
+      const invs = state.shopInvoices || [];
+      const search = (document.getElementById('shopSearchInput')?.value || '').trim().toLowerCase();
+
+      const lowStockProds = prods.filter(p => Number(p.qty) <= Number(p.minQty ?? 3));
+      const navBadge = document.getElementById('navLowStockBadge');
+      if (navBadge) {
+        navBadge.textContent = lowStockProds.length;
+        navBadge.classList.toggle('hidden', lowStockProds.length === 0);
+      }
+
+      const sales = invs.filter(i => i.type === 'sale');
+      document.getElementById('shopStockCostTotal').textContent = fmtMulti(prods, p => Number(p.cost) * Number(p.qty));
+      document.getElementById('shopStockRetailTotal').textContent = `القيمة البيعية: ${fmtMulti(prods, p => Number(p.price) * Number(p.qty))}`;
+      document.getElementById('shopSalesTotal').textContent = fmtMulti(sales, i => i.netTotal);
+      document.getElementById('shopSalesCount').textContent = `${sales.length} فاتورة مبيع`;
+      document.getElementById('shopNetProfitTotal').textContent = fmtMulti(sales, i => i.profit);
+      document.getElementById('shopProductsCount').textContent = `${prods.length} صنف`;
+      document.getElementById('shopLowStockCount').textContent = `${lowStockProds.length} صنف قارب على النفاد`;
+
+      // Render Inventory Table
+      const prodTbody = document.getElementById('shopProductsTableBody');
+      if (prodTbody) {
+        const filteredProds = prods.filter(p => !search || `${p.name} ${p.sku || ''}`.toLowerCase().includes(search));
+        if (!filteredProds.length) {
+          prodTbody.innerHTML = `<tr><td colspan="6" class="text-center py-8 text-slate-400">لا توجد أصناف مطابقة في المخزون</td></tr>`;
+        } else {
+          prodTbody.innerHTML = filteredProds.map(p => {
+            const unitProfit = Number(p.price) - Number(p.cost);
+            const isLow = Number(p.qty) <= Number(p.minQty ?? 3);
+            const cs = getCurrencyStyle(p.currency);
+            return `
+              <tr class="${cs.row} hover:bg-white/50 transition">
+                <td class="px-4 py-3">
+                  <div class="font-extrabold text-slate-900">${escapeHtml(p.name)}</div>
+                  ${p.sku ? `<span class="text-[11px] font-mono text-slate-500">كود: ${escapeHtml(p.sku)}</span>` : ''}
+                </td>
+                <td class="px-4 py-3 text-slate-700 font-semibold">${fmt(p.cost, p.currency)}</td>
+                <td class="px-4 py-3 text-slate-900 font-extrabold">${fmt(p.price, p.currency)}</td>
+                <td class="px-4 py-3 font-extrabold ${unitProfit >= 0 ? 'text-emerald-600' : 'text-rose-600'}">+${fmt(unitProfit, p.currency)}</td>
+                <td class="px-4 py-3">
+                  <span class="px-2.5 py-1 rounded-full text-xs font-extrabold ${isLow ? 'bg-rose-500/20 text-rose-800' : 'bg-emerald-500/15 text-emerald-800'}">
+                    ${p.qty} قطعة ${isLow ? '⚠' : ''}
+                  </span>
+                </td>
+                <td class="px-4 py-3 text-center whitespace-nowrap space-x-2 space-x-reverse">
+                  <button type="button" onclick="openShopProductModal('${p.id}')" class="text-xs font-bold text-sky-700 hover:underline">تعديل</button>
+                  <button type="button" onclick="deleteShopProduct('${p.id}')" class="text-xs font-bold text-rose-600 hover:underline">حذف</button>
+                </td>
+              </tr>
+            `;
+          }).join('');
+        }
+      }
+
+      // Render Invoices Table
+      const invTbody = document.getElementById('shopInvoicesTableBody');
+      if (invTbody) {
+        const filteredInvs = invs.filter(i => !search || `${i.no} ${i.partyName} ${i.itemsSummary}`.toLowerCase().includes(search));
+        if (!filteredInvs.length) {
+          invTbody.innerHTML = `<tr><td colspan="7" class="text-center py-8 text-slate-400">لا توجد فواتير مسجلة بعد</td></tr>`;
+        } else {
+          invTbody.innerHTML = filteredInvs.map(inv => {
+            const isSale = inv.type === 'sale';
+            const cs = getCurrencyStyle(inv.currency);
+            return `
+              <tr class="${cs.row} hover:bg-white/50 transition">
+                <td class="px-4 py-3 whitespace-nowrap">
+                  <div class="font-extrabold text-slate-900" dir="ltr">${escapeHtml(inv.no)}</div>
+                  <div class="text-[11px] text-slate-500">${inv.date}</div>
+                </td>
+                <td class="px-4 py-3 whitespace-nowrap">
+                  <span class="px-2 py-0.5 rounded-full text-[11px] font-extrabold ${isSale ? 'bg-emerald-500/15 text-emerald-800' : 'bg-amber-500/20 text-amber-900'}">${isSale ? 'مبيع' : 'شراء'}</span>
+                  <span class="px-2 py-0.5 rounded-full text-[11px] font-bold bg-white/75 text-slate-700 mr-1">${inv.paymentMode === 'cash' ? 'نقدي' : 'آجل'}</span>
+                </td>
+                <td class="px-4 py-3 font-bold text-slate-800">${escapeHtml(inv.partyName)}</td>
+                <td class="px-4 py-3 text-xs text-slate-600 max-w-xs truncate">${escapeHtml(inv.itemsSummary)}</td>
+                <td class="px-4 py-3 font-extrabold text-slate-900">${fmt(inv.netTotal, inv.currency)}</td>
+                <td class="px-4 py-3 font-extrabold ${isSale ? 'text-teal-700' : 'text-slate-400'}">${isSale ? '+' + fmt(inv.profit, inv.currency) : '—'}</td>
+                <td class="px-4 py-3 text-center whitespace-nowrap">
+                  <button type="button" onclick="sendShopInvoiceWhatsapp('${inv.id}')" class="ios-btn bg-emerald-500/15 hover:bg-emerald-500/25 text-emerald-800 text-xs font-bold px-2.5 py-1 rounded-lg">واتساب</button>
+                </td>
+              </tr>
+            `;
+          }).join('');
+        }
+      }
     }
 
     window.addEventListener('DOMContentLoaded', () => {
