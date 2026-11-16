@@ -70,6 +70,25 @@
       will-change: transform;
     }
 
+    /* Authentic iOS Liquid Glass Sidebar Drawer with iPhone System Typography */
+    #sideNavDrawer, #sideNavDrawer * {
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", "SF Arabic", "Helvetica Neue", "Geeza Pro", system-ui, sans-serif !important;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+    #sideNavDrawer {
+      background: linear-gradient(155deg, rgba(255, 255, 255, 0.84) 0%, rgba(240, 249, 255, 0.76) 55%, rgba(230, 255, 250, 0.78) 100%) !important;
+      backdrop-filter: blur(22px) saturate(190%) !important;
+      -webkit-backdrop-filter: blur(22px) saturate(190%) !important;
+      border-left: 1.5px solid rgba(255, 255, 255, 0.96) !important;
+      box-shadow: -12px 0 38px rgba(14, 116, 144, 0.22), inset 1px 0 1px rgba(255, 255, 255, 1) !important;
+    }
+    body.dark-mode #sideNavDrawer {
+      background: linear-gradient(155deg, rgba(15, 23, 42, 0.88) 0%, rgba(12, 24, 44, 0.82) 100%) !important;
+      border-left: 1.5px solid rgba(56, 189, 248, 0.32) !important;
+      box-shadow: -14px 0 42px rgba(0, 0, 0, 0.55), inset 1px 0 0 rgba(255, 255, 255, 0.16) !important;
+    }
+
     .ios-input {
       background: #ffffff;
       border: 1.5px solid rgba(203, 213, 225, 0.85);
