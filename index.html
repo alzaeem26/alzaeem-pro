@@ -50,6 +50,7 @@
       border: 1px solid rgba(226, 232, 240, 0.95);
       box-shadow: 0 18px 40px rgba(15, 23, 42, 0.22);
       border-radius: 26px;
+      will-change: transform;
     }
     #sideNavDrawer {
       background: linear-gradient(155deg, rgba(255, 255, 255, 0.84) 0%, rgba(240, 249, 255, 0.76) 55%, rgba(230, 255, 250, 0.78) 100%) !important;
@@ -82,6 +83,11 @@
     }
     .no-scrollbar::-webkit-scrollbar { display: none; }
     .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .animate-slide-up { animation: slideUp 0.14s ease-out; }
   </style>
 </head>
 <body class="min-h-screen flex flex-col">
@@ -122,16 +128,19 @@
       </div>
 
       <nav class="flex flex-col gap-2">
-        <button type="button" data-tab="dashboard" class="tab-btn ios-btn active w-full text-right px-3.5 py-2.5 rounded-xl text-xs font-extrabold">📊 لوحة التحكم</button>
-        <button type="button" data-tab="transactions" class="tab-btn ios-btn w-full text-right px-3.5 py-2.5 rounded-xl text-xs font-extrabold text-slate-600 hover:bg-white/60">💵 المدخول والمصروف</button>
-        <button type="button" data-tab="settings" class="tab-btn ios-btn w-full text-right px-3.5 py-2.5 rounded-xl text-xs font-extrabold text-slate-600 hover:bg-white/60">⚙️ الإعدادات والحساب</button>
+        <button type="button" data-tab="dashboard" class="tab-btn ios-btn active w-full text-right px-3.5 py-2.5 rounded-xl text-xs font-extrabold flex items-center gap-2.5">📊 لوحة التحكم</button>
+        <button type="button" data-tab="transactions" class="tab-btn ios-btn w-full text-right px-3.5 py-2.5 rounded-xl text-xs font-extrabold text-slate-600 hover:bg-white/60 flex items-center gap-2.5">💵 المدخول والمصروف</button>
+        <button type="button" data-tab="budget" class="tab-btn ios-btn w-full text-right px-3.5 py-2.5 rounded-xl text-xs font-extrabold text-slate-600 hover:bg-white/60 flex items-center gap-2.5">📋 الميزانية والمصاريف</button>
+        <button type="button" data-tab="debts" class="tab-btn ios-btn w-full text-right px-3.5 py-2.5 rounded-xl text-xs font-extrabold text-slate-600 hover:bg-white/60 flex items-center gap-2.5">🤝 الأشخاص والديون</button>
+        <button type="button" data-tab="schedule" class="tab-btn ios-btn w-full text-right px-3.5 py-2.5 rounded-xl text-xs font-extrabold text-slate-600 hover:bg-white/60 flex items-center gap-2.5">📅 مواعيد القبض</button>
+        <button type="button" data-tab="shop" class="tab-btn ios-btn w-full text-right px-3.5 py-2.5 rounded-xl text-xs font-extrabold text-slate-600 hover:bg-white/60 flex items-center gap-2.5">🏪 إدارة المحل (POS)</button>
+        <button type="button" data-tab="settings" class="tab-btn ios-btn w-full text-right px-3.5 py-2.5 rounded-xl text-xs font-extrabold text-slate-600 hover:bg-white/60 flex items-center gap-2.5">⚙️ الإعدادات والحساب</button>
       </nav>
     </div>
 
     <div class="pt-3 border-t border-slate-200 space-y-2.5">
-      <button type="button" id="btnDrawerDevAdmin" onclick="toggleSideNavDrawer(false); openAdminMerchantModal()" class="ios-btn w-full bg-gradient-to-r from-indigo-600 to-violet-700 text-white text-xs font-extrabold py-2.5 px-3.5 rounded-2xl shadow-md flex items-center justify-between">
+      <button type="button" id="btnDrawerDevAdmin" onclick="toggleSideNavDrawer(false); openAdminMerchantModal()" class="hidden ios-btn w-full bg-gradient-to-r from-indigo-600 to-violet-700 text-white text-xs font-extrabold py-2.5 px-3.5 rounded-2xl shadow-md flex items-center justify-between">
         <span>🛠️ لوحة المطور والإدارة</span>
-        <span class="text-[10px] bg-white/20 px-2 py-0.5 rounded-md">مفتوح</span>
       </button>
     </div>
   </aside>
@@ -140,9 +149,29 @@
   <main class="relative z-10 flex-1 max-w-7xl w-full mx-auto px-3.5 sm:px-6 py-5 space-y-5">
     <section id="view-dashboard" class="tab-view space-y-5">
       <div class="glass-card p-6 space-y-3">
-        <h2 class="text-xl font-extrabold text-slate-900">أهلاً بك في تطبيق الزعيم PRO</h2>
-        <p class="text-xs sm:text-sm text-slate-600">النظام الشامل لإدارة الميزانية، الديون، ومبيعات المحل التجاري.</p>
+        <h2 class="text-xl font-extrabold text-slate-900">الملخص المالي العام</h2>
+        <p class="text-xs sm:text-sm text-slate-600">مرحباً بك في نظام الزعيم PRO المتكامل.</p>
       </div>
+    </section>
+
+    <section id="view-transactions" class="tab-view hidden space-y-5">
+      <div class="glass-card p-6"><h2 class="text-xl font-extrabold text-slate-900">سجل المدخول والمصروف</h2></div>
+    </section>
+
+    <section id="view-budget" class="tab-view hidden space-y-5">
+      <div class="glass-card p-6"><h2 class="text-xl font-extrabold text-slate-900">الميزانية والمصاريف الثابتة</h2></div>
+    </section>
+
+    <section id="view-debts" class="tab-view hidden space-y-5">
+      <div class="glass-card p-6"><h2 class="text-xl font-extrabold text-slate-900">الأشخاص والديون</h2></div>
+    </section>
+
+    <section id="view-schedule" class="tab-view hidden space-y-5">
+      <div class="glass-card p-6"><h2 class="text-xl font-extrabold text-slate-900">مواعيد القبض والتحصيل</h2></div>
+    </section>
+
+    <section id="view-shop" class="tab-view hidden space-y-5">
+      <div class="glass-card p-6"><h2 class="text-xl font-extrabold text-slate-900">إدارة المحل التجاري ونقطة البيع (POS)</h2></div>
     </section>
 
     <section id="view-settings" class="tab-view hidden space-y-4">
@@ -254,6 +283,8 @@
     function updateSubscriptionUI() {
       const sub = getEffectiveSubscription();
       const isDev = Boolean(sub.isDev);
+      
+      document.getElementById('btnDrawerDevAdmin')?.classList.toggle('hidden', !isDev);
       
       const disp = document.getElementById('settingsAccountDisplay');
       if (disp) {
