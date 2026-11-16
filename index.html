@@ -300,8 +300,12 @@
         </div>
       </button>
 
-      <!-- Notifications Bell & Quick Lock Controls -->
+      <!-- Subscription Status Pill, Notifications Bell & Quick Lock Controls -->
       <div class="flex items-center gap-1.5 shrink-0">
+        <button type="button" id="btnHeaderSubBadge" onclick="openSubscriptionModal()" class="ios-btn px-2.5 py-1.5 rounded-2xl bg-gradient-to-r from-amber-500/20 to-yellow-500/20 border border-amber-400/70 text-amber-900 text-[11px] font-extrabold flex items-center gap-1 shadow-2xs" title="إدارة الاشتراك والباقات">
+          <span id="headerSubIcon">👑</span>
+          <span id="headerSubLabel">تجريبي</span>
+        </button>
         <button type="button" id="btnNotificationsBell" onclick="openNotificationsModal()" class="relative ios-btn w-9 h-9 rounded-2xl bg-white/75 border border-white/90 text-slate-700 flex items-center justify-center shadow-xs" title="التنبيهات والإشعارات">
           <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
           <span id="headerBellDot" class="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-rose-500 hidden ring-2 ring-white"></span>
@@ -317,15 +321,13 @@
   <div id="sideNavBackdrop" onclick="toggleSideNavDrawer(false)" class="fixed inset-0 bg-slate-900/35 z-40 hidden transition-opacity"></div>
   <aside id="sideNavDrawer" class="fixed top-0 right-0 bottom-0 w-60 max-w-[70vw] z-50 ios-modal rounded-none rounded-l-3xl p-3 flex flex-col justify-between transform translate-x-full transition-transform duration-200 ease-out shadow-2xl">
     <div class="space-y-3 overflow-y-auto no-scrollbar">
-      <div class="flex items-center justify-between pb-3 border-b border-white/70">
-        <div class="flex items-center gap-2 min-w-0">
-          <span class="icon-badge-3d w-8 h-8 rounded-[11px] bg-gradient-to-br from-sky-500 to-teal-700 text-white font-extrabold text-sm shrink-0">$</span>
-          <div class="flex items-center gap-2 min-w-0">
-            <h2 class="font-extrabold text-sm text-slate-900 truncate">الزعيم PRO</h2>
-            <button type="button" onclick="toggleDarkMode()" class="ios-btn w-7 h-7 rounded-xl bg-slate-200/70 hover:bg-slate-200 text-slate-700 flex items-center justify-center shadow-2xs shrink-0" title="الوضع الليلي / النهاري">
-              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/></svg>
-            </button>
-          </div>
+      <div class="flex items-center justify-between pb-3 border-b border-white/70 gap-2">
+        <div class="flex items-center gap-1.5 min-w-0">
+          <span onclick="handleStealthDevTap()" class="icon-badge-3d w-7 h-7 rounded-[10px] bg-gradient-to-br from-sky-500 to-teal-700 text-white font-extrabold text-xs shrink-0 cursor-pointer">$</span>
+          <h2 class="font-extrabold text-sm text-slate-900 truncate">الزعيم PRO</h2>
+          <button type="button" onclick="toggleDarkMode()" class="ios-btn w-6.5 h-6.5 rounded-xl bg-slate-200/70 hover:bg-slate-200 text-slate-700 flex items-center justify-center shadow-2xs shrink-0" title="الوضع الليلي / النهاري">
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/></svg>
+          </button>
         </div>
         <button type="button" onclick="toggleSideNavDrawer(false)" class="w-7 h-7 rounded-full bg-slate-200/70 hover:bg-slate-200 text-slate-600 flex items-center justify-center text-xs font-bold shrink-0">✕</button>
       </div>
@@ -392,8 +394,16 @@
       </nav>
     </div>
 
-    <div class="pt-3 border-t border-white/70 text-[11px] text-slate-500 text-center">
-      اضغط في أي مكان خارج القائمة لإغلاقها
+    <div class="pt-2.5 border-t border-white/70 space-y-2">
+      <button type="button" id="btnDrawerDevAdmin" onclick="toggleSideNavDrawer(false); openAdminMerchantModal()" class="hidden ios-btn w-full bg-gradient-to-r from-indigo-600 to-violet-700 text-white text-xs font-extrabold py-2 px-3 rounded-xl shadow-sm flex items-center justify-between">
+        <span class="flex items-center gap-1.5"><span>🛠️</span> <span>لوحة المطور الموثّق</span></span>
+        <span class="text-[10px] bg-white/25 px-1.5 py-0.5 rounded-md">إدارة</span>
+      </button>
+      <button type="button" onclick="toggleSideNavDrawer(false); openSubscriptionModal()" class="ios-btn w-full bg-gradient-to-r from-amber-500 to-orange-600 text-white text-xs font-extrabold py-2 px-3 rounded-xl shadow-sm flex items-center justify-between">
+        <span class="flex items-center gap-1.5"><span>👑</span> <span id="drawerSubStatusText">باقة PRO (شهر مجاني)</span></span>
+        <span class="text-[10px] bg-white/25 px-1.5 py-0.5 rounded-md">التفاصيل</span>
+      </button>
+      <p class="text-[10px] text-slate-500 text-center">اضغط في أي مكان خارج القائمة لإغلاقها</p>
     </div>
   </aside>
 
@@ -574,10 +584,10 @@
           <table class="compact-records-table text-right">
             <thead class="bg-white/60 border-b border-slate-200/70 text-slate-600 font-bold">
               <tr>
-                <th class="w-[46%]">الاسم والتفاصيل</th>
-                <th class="w-[17%] text-center">النوع</th>
-                <th class="w-[23%] text-left">المبلغ والتاريخ</th>
-                <th class="w-[14%] text-center">إجراء</th>
+                <th class="w-[43%]">الاسم والتفاصيل</th>
+                <th class="w-[15%] text-center">النوع</th>
+                <th class="w-[22%] text-left">المبلغ والتاريخ</th>
+                <th class="w-[20%] text-center">السند والخيارات</th>
               </tr>
             </thead>
             <tbody id="txTableBody" class="divide-y divide-slate-200/60"></tbody>
@@ -791,9 +801,10 @@
           <table class="compact-records-table text-right">
             <thead class="bg-white/60 border-b border-slate-200/70 text-slate-600 font-bold">
               <tr>
-                <th class="w-[54%]">الاسم والتفاصيل</th>
-                <th class="w-[20%] text-center">النوع</th>
-                <th class="w-[26%] text-left">المبلغ والتاريخ</th>
+                <th class="w-[45%]">الاسم والتفاصيل</th>
+                <th class="w-[15%] text-center">النوع</th>
+                <th class="w-[22%] text-left">المبلغ والتاريخ</th>
+                <th class="w-[18%] text-center">السند والخيارات</th>
               </tr>
             </thead>
             <tbody id="fullLogTableBody" class="divide-y divide-slate-200/60"></tbody>
@@ -2250,6 +2261,110 @@
       }
     };
 
+    // ==================== CLOUD MERCHANT SETTINGS & SHAM CASH BARCODE SYNC ====================
+    window._globalMerchantUnsub = null;
+
+    window.subscribeGlobalMerchantSettings = function(onConfigReceived) {
+      if (!window._cloudSync.ready || !window._cloudSync.db) return;
+      try {
+        if (window._globalMerchantUnsub) {
+          window._globalMerchantUnsub();
+          window._globalMerchantUnsub = null;
+        }
+        const cfgDocRef = doc(window._cloudSync.db, 'artifacts', window._cloudSync.appId, 'public', 'data', 'alzaeem_global_config', 'merchant_settings');
+        window._globalMerchantUnsub = onSnapshot(cfgDocRef, (snap) => {
+          if (snap.exists()) {
+            const data = snap.data();
+            if (data && onConfigReceived) {
+              onConfigReceived(data);
+            }
+          }
+        }, (err) => console.warn('Global merchant listener:', err));
+      } catch (e) {
+        console.warn('subscribeGlobalMerchantSettings error:', e);
+      }
+    };
+
+    window.cloudSaveGlobalMerchantSettings = async function(cfgObj) {
+      if (!window._cloudSync.ready || !window._cloudSync.db) return false;
+      try {
+        const cfgDocRef = doc(window._cloudSync.db, 'artifacts', window._cloudSync.appId, 'public', 'data', 'alzaeem_global_config', 'merchant_settings');
+        await setDoc(cfgDocRef, {
+          shamAccount: cfgObj.shamAccount || '09XXXXXXXX',
+          whatsappPhone: cfgObj.whatsappPhone || '09XXXXXXXX',
+          monthlyPrice: cfgObj.monthlyPrice || 'اشتراك شهري شامل',
+          yearlyPrice: cfgObj.yearlyPrice || 'اشتراك سنوي شامل',
+          qrDataUrl: cfgObj.qrDataUrl || '',
+          devEmail: cfgObj.devEmail || '',
+          updatedAt: Date.now()
+        }, { merge: true });
+        return true;
+      } catch (e) {
+        console.error('cloudSaveGlobalMerchantSettings error:', e);
+        return false;
+      }
+    };
+
+    // ==================== CLOUD LICENSE CODES REGISTRY (SINGLE-DEVICE LOCK) ====================
+    window.cloudRegisterGeneratedLicense = async function(code, days) {
+      if (!window._cloudSync.ready || !window._cloudSync.db) return false;
+      try {
+        const licDocRef = doc(window._cloudSync.db, 'artifacts', window._cloudSync.appId, 'public', 'data', 'alzaeem_global_licenses', code);
+        await setDoc(licDocRef, {
+          code,
+          days: Number(days),
+          status: 'available',
+          createdAt: Date.now(),
+          usedBy: '',
+          deviceId: '',
+          usedAt: 0
+        });
+        return true;
+      } catch (e) {
+        console.error('cloudRegisterGeneratedLicense error:', e);
+        return false;
+      }
+    };
+
+    window.cloudVerifyAndClaimLicense = async function(code, userIdentifier, deviceId) {
+      if (!window._cloudSync.ready || !window._cloudSync.db) {
+        return { mode: 'offline' };
+      }
+      try {
+        const licDocRef = doc(window._cloudSync.db, 'artifacts', window._cloudSync.appId, 'public', 'data', 'alzaeem_global_licenses', code);
+        const snap = await getDoc(licDocRef);
+        if (!snap.exists()) {
+          return { mode: 'cloud', ok: false, reason: 'not_found' };
+        }
+        const data = snap.data();
+        if (data.status === 'revoked') {
+          return { mode: 'cloud', ok: false, reason: 'revoked' };
+        }
+        if (data.status === 'used') {
+          // Allow re-claiming only on the exact same deviceId or same registered email
+          const sameDevice = data.deviceId && data.deviceId === deviceId;
+          const sameUser = userIdentifier && data.usedBy && data.usedBy.toLowerCase() === userIdentifier.toLowerCase();
+          if (!sameDevice && !sameUser) {
+            return { mode: 'cloud', ok: false, reason: 'already_used_other_device' };
+          }
+          return { mode: 'cloud', ok: true, days: Number(data.days || 30), alreadyClaimedBySame: true, usedAt: data.usedAt || Date.now() };
+        }
+        // Claim code in Firestore
+        const now = Date.now();
+        await setDoc(licDocRef, {
+          ...data,
+          status: 'used',
+          usedBy: userIdentifier || deviceId,
+          deviceId: deviceId,
+          usedAt: now
+        }, { merge: true });
+        return { mode: 'cloud', ok: true, days: Number(data.days || 30), usedAt: now };
+      } catch (e) {
+        console.error('cloudVerifyAndClaimLicense error:', e);
+        return { mode: 'offline' };
+      }
+    };
+
     window.reinitCloudEngine();
   </script>
 
@@ -2548,6 +2663,27 @@
     };
 
     window.onCloudEngineReady = async function() {
+      // Subscribe all users automatically to the Developer's global Sham Cash & Barcode settings
+      if (window.subscribeGlobalMerchantSettings) {
+        window.subscribeGlobalMerchantSettings((remoteCfg) => {
+          const localCfg = getMerchantConfig();
+          const merged = {
+            ...localCfg,
+            shamAccount: remoteCfg.shamAccount || localCfg.shamAccount,
+            whatsappPhone: remoteCfg.whatsappPhone || localCfg.whatsappPhone,
+            monthlyPrice: remoteCfg.monthlyPrice || localCfg.monthlyPrice,
+            yearlyPrice: remoteCfg.yearlyPrice || localCfg.yearlyPrice,
+            qrDataUrl: remoteCfg.qrDataUrl !== undefined ? remoteCfg.qrDataUrl : localCfg.qrDataUrl,
+            devEmail: remoteCfg.devEmail || localCfg.devEmail
+          };
+          saveMerchantConfig(merged);
+          updateSubscriptionUI();
+          const subModal = document.getElementById('subscriptionModal');
+          if (subModal && !subModal.classList.contains('hidden')) {
+            renderSubscriptionModalContent();
+          }
+        });
+      }
       if (!activeAccount || !activeAccount.email) return;
       if (window._cloudSync && window._cloudSync.failed && !window._cloudSync.ready) {
         setCloudBadgeState('offline_external');
@@ -2790,6 +2926,7 @@
     }
 
     function switchTab(tabName) {
+      if (tabName === 'shop' && !checkProFeatureAccess('shop')) return;
       activeTab = tabName;
       let activeLabel = '';
       document.querySelectorAll('.tab-btn').forEach(btn => {
@@ -3260,6 +3397,7 @@
     }
 
     function openPersonModal(personId = '') {
+      if (!personId && !checkProFeatureAccess('person')) return;
       document.getElementById('personForm').reset();
       document.getElementById('editPersonId').value = personId || '';
       if (personId) {
@@ -3489,6 +3627,7 @@
     ];
 
     function openWorldCurrenciesModal() {
+      if (!checkProFeatureAccess('currency')) return;
       const searchEl = document.getElementById('worldCurrSearch');
       if (searchEl) searchEl.value = '';
       renderWorldCurrenciesList();
@@ -3841,14 +3980,14 @@
         const isInc = t.type === 'income';
         const subText = [t.personName, t.category, t.details].filter(Boolean).join(' • ') || (t.method || 'نقدي');
         return `
-          <tr class="hover:bg-slate-50/80 transition">
+          <tr onclick="openTxRecordOptions('${t.id}')" class="cursor-pointer hover:bg-slate-50/80 transition">
             <td>
               <div class="flex items-center gap-2 min-w-0">
                 <span class="w-7 h-7 rounded-lg flex items-center justify-center text-xs font-extrabold shrink-0 ${isInc ? 'bg-emerald-500/15 text-emerald-700' : 'bg-rose-500/15 text-rose-700'}">
                   ${isInc ? '↙' : '↗'}
                 </span>
                 <div class="min-w-0 flex-1">
-                  <span class="row-main-line text-slate-900">${escapeHtml(t.note)}</span>
+                  <span class="row-main-line text-slate-900">${escapeHtml(t.note)} ${t.receiptImg ? '📎' : ''}</span>
                   <span class="row-sub-line text-slate-500">${escapeHtml(subText)}</span>
                 </div>
               </div>
@@ -3862,11 +4001,10 @@
               <span class="row-main-line ${isInc ? 'text-emerald-600' : 'text-rose-600'}" dir="ltr">${isInc ? '+' : '−'}${fmt(t.amount, t.currency)}</span>
               <span class="row-sub-line text-slate-400">${t.date}</span>
             </td>
-            <td class="text-center whitespace-nowrap">
+            <td class="text-center whitespace-nowrap" onclick="event.stopPropagation()">
               <div class="inline-flex items-center gap-1">
-                <button type="button" onclick="openVoucherForTx('${t.id}')" class="w-6 h-6 rounded-lg bg-emerald-500/10 text-emerald-700 text-[11px] font-bold flex items-center justify-center" title="عرض السند">📄</button>
-                <button type="button" onclick="editTx('${t.id}')" class="w-6 h-6 rounded-lg bg-sky-500/10 text-sky-700 text-[11px] font-bold flex items-center justify-center" title="تعديل">✎</button>
-                <button type="button" onclick="deleteTx('${t.id}')" class="w-6 h-6 rounded-lg bg-rose-500/10 text-rose-600 text-[11px] font-bold flex items-center justify-center" title="حذف">×</button>
+                <button type="button" onclick="openVoucherForTx('${t.id}')" class="px-2 py-1 rounded-lg bg-emerald-600 text-white text-[10px] font-extrabold shadow-2xs">السند</button>
+                <button type="button" onclick="openTxRecordOptions('${t.id}')" class="w-6 h-6 rounded-lg bg-slate-200/80 text-slate-700 text-xs font-extrabold flex items-center justify-center" title="خيارات">⋮</button>
               </div>
             </td>
           </tr>
@@ -3984,6 +4122,7 @@
 
       state.transactions.forEach(t => {
         entries.push({
+          rawId: t.id,
           date: t.date,
           kind: t.type,
           kindLabel: t.type === 'income' ? 'مدخول' : 'مصروف',
@@ -4004,6 +4143,7 @@
         const dCurr = d.currency || state.currency;
         const isPayable = d.direction === 'payable';
         entries.push({
+          rawId: d.id,
           date: d.dueDate,
           kind: 'debt',
           kindLabel: isPayable ? 'دين عَلَيْك' : 'دين لَك',
@@ -4022,6 +4162,7 @@
       state.schedules.forEach(s => {
         const sCurr = s.currency || state.currency;
         entries.push({
+          rawId: s.id,
           date: s.date,
           kind: 'schedule',
           kindLabel: 'موعد قبض',
@@ -4056,7 +4197,7 @@
       document.getElementById('fullLogTotalCount').textContent = `${filtered.length} سجل`;
       const tbody = document.getElementById('fullLogTableBody');
       if (filtered.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="3" class="text-center py-6 text-slate-400 text-xs">لا توجد سجلات مطابقة</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="4" class="text-center py-6 text-slate-400 text-xs">لا توجد سجلات مطابقة</td></tr>`;
         return;
       }
 
@@ -4069,15 +4210,14 @@
         };
         const ic = iconMap[e.kind] || iconMap.income;
         const subLine = [e.partyOrCat, e.details].filter(Boolean).join(' • ');
+        const isTx = e.kind === 'income' || e.kind === 'expense';
         return `
-          <tr class="hover:bg-slate-50/80 transition">
+          <tr onclick="openFullLogRecordOptions('${e.kind}', '${e.rawId}')" class="cursor-pointer hover:bg-slate-50/80 transition">
             <td>
               <div class="flex items-center gap-2 min-w-0">
                 <span class="w-7 h-7 rounded-lg flex items-center justify-center text-xs font-extrabold shrink-0 ${ic.cls}">${ic.sym}</span>
                 <div class="min-w-0 flex-1">
-                  ${e.personName
-                    ? `<button type="button" onclick="filterByPersonInstant('${escapeHtml(e.personName)}')" class="row-main-line text-slate-900 hover:text-sky-700 text-right w-full">${escapeHtml(e.title)}</button>`
-                    : `<span class="row-main-line text-slate-900">${escapeHtml(e.title)}</span>`}
+                  <span class="row-main-line text-slate-900">${escapeHtml(e.title)}</span>
                   <span class="row-sub-line text-slate-500">${escapeHtml(subLine)}</span>
                 </div>
               </div>
@@ -4088,6 +4228,14 @@
             <td class="text-left whitespace-nowrap">
               <span class="row-main-line ${e.amountClass}" dir="ltr">${e.amountText}</span>
               <span class="row-sub-line text-slate-400">${e.date}</span>
+            </td>
+            <td class="text-center whitespace-nowrap" onclick="event.stopPropagation()">
+              <div class="inline-flex items-center gap-1">
+                ${isTx
+                  ? `<button type="button" onclick="openVoucherForTx('${e.rawId}')" class="px-2 py-1 rounded-lg bg-emerald-600 text-white text-[10px] font-extrabold shadow-2xs">السند</button>`
+                  : `<button type="button" onclick="openFullLogRecordOptions('${e.kind}', '${e.rawId}')" class="px-2 py-1 rounded-lg bg-sky-500/15 text-sky-800 text-[10px] font-extrabold">خيارات</button>`}
+                <button type="button" onclick="openFullLogRecordOptions('${e.kind}', '${e.rawId}')" class="w-6 h-6 rounded-lg bg-slate-200/80 text-slate-700 text-xs font-extrabold flex items-center justify-center" title="خيارات">⋮</button>
+              </div>
             </td>
           </tr>
         `;
@@ -5330,6 +5478,88 @@
     // ==================== DIGITAL RECEIPT / PAYMENT VOUCHER ====================
     let currentVoucherData = null;
 
+    
+    function openTxRecordOptions(txId) {
+      const t = state.transactions.find(x => x.id === txId);
+      if (!t) return;
+      const isInc = t.type === 'income';
+      document.getElementById('rasTitle').textContent = t.note;
+      document.getElementById('rasSubtitle').textContent = `${isInc ? 'مدخول' : 'مصروف'} • ${t.date} • ${t.category}`;
+      document.getElementById('rasBodySummary').innerHTML = `
+        <div class="flex justify-between"><span class="text-slate-500">المبلغ:</span><strong class="${isInc ? 'text-emerald-600' : 'text-rose-600'}">${isInc ? '+' : '−'}${fmt(t.amount, t.currency)}</strong></div>
+        ${t.personName ? `<div class="flex justify-between"><span class="text-slate-500">الطرف / الشخص:</span><strong>${escapeHtml(t.personName)}</strong></div>` : ''}
+        <div class="flex justify-between"><span class="text-slate-500">طريقة الدفع:</span><strong>${escapeHtml(t.method || 'نقدي')}</strong></div>
+        ${t.details ? `<div class="text-slate-600 pt-1 border-t border-slate-200/70">${escapeHtml(t.details)}</div>` : ''}
+      `;
+      let btns = `
+        <button type="button" onclick="closeModal('recordActionSheetModal'); openVoucherForTx('${t.id}')" class="col-span-2 ios-btn bg-gradient-to-br from-emerald-500 to-teal-700 text-white font-extrabold py-2.5 px-3 rounded-xl text-xs shadow-sm">📄 إظهار السند المالي الرقمي (طباعة / واتساب)</button>
+      `;
+      if (t.receiptImg) {
+        btns += `<button type="button" onclick="closeModal('recordActionSheetModal'); openReceiptViewer('${t.id}')" class="col-span-2 ios-btn bg-indigo-500/15 text-indigo-800 font-bold py-2 px-3 rounded-xl text-xs">📎 عرض صورة الإيصال المرفقة</button>`;
+      }
+      if (t.personName) {
+        btns += `<button type="button" onclick="closeModal('recordActionSheetModal'); filterByPersonInstant('${escapeHtml(t.personName)}')" class="col-span-2 ios-btn bg-sky-500/15 text-sky-800 font-bold py-2 px-3 rounded-xl text-xs">👤 كشف وملخص حركات: ${escapeHtml(t.personName)}</button>`;
+      }
+      btns += `
+        <button type="button" onclick="closeModal('recordActionSheetModal'); editTx('${t.id}')" class="ios-btn bg-amber-500/15 text-amber-900 font-bold py-2 px-3 rounded-xl text-xs">✎ تعديل الحركة</button>
+        <button type="button" onclick="closeModal('recordActionSheetModal'); deleteTx('${t.id}')" class="ios-btn bg-rose-500/15 text-rose-700 font-bold py-2 px-3 rounded-xl text-xs">🗑️ حذف الحركة</button>
+      `;
+      document.getElementById('rasButtonsGrid').innerHTML = btns;
+      openModal('recordActionSheetModal');
+    }
+
+    function openFullLogRecordOptions(kind, rawId) {
+      if (kind === 'income' || kind === 'expense') {
+        openTxRecordOptions(rawId);
+        return;
+      }
+      if (kind === 'debt') {
+        const d = state.debts.find(x => x.id === rawId);
+        if (!d) return;
+        const dCurr = d.currency || state.currency;
+        const rem = Math.max(0, Number(d.totalAmount) - Number(d.paidAmount));
+        const isPayable = d.direction === 'payable';
+        document.getElementById('rasTitle').textContent = `${isPayable ? 'دين عليك' : 'دين لك'}: ${d.name}`;
+        document.getElementById('rasSubtitle').textContent = `تاريخ الاستحقاق: ${d.dueDate}`;
+        document.getElementById('rasBodySummary').innerHTML = `
+          <div class="flex justify-between"><span class="text-slate-500">المبلغ الإجمالي:</span><strong>${fmt(d.totalAmount, dCurr)}</strong></div>
+          <div class="flex justify-between"><span class="text-slate-500">المتبقي:</span><strong class="${isPayable ? 'text-rose-600' : 'text-amber-700'}">${fmt(rem, dCurr)}</strong></div>
+          ${d.note ? `<div class="text-slate-600 pt-1 border-t border-slate-200/70">${escapeHtml(d.note)}</div>` : ''}
+        `;
+        let btns = '';
+        if (rem > 0) {
+          btns += `<button type="button" onclick="closeModal('recordActionSheetModal'); openDebtPayModal('${d.id}')" class="col-span-2 ios-btn bg-emerald-600 text-white font-extrabold py-2.5 px-3 rounded-xl text-xs">💵 تسجيل دفعة قبض / سداد</button>`;
+        }
+        btns += `
+          <button type="button" onclick="closeModal('recordActionSheetModal'); filterByPersonInstant('${escapeHtml(d.name)}')" class="ios-btn bg-sky-500/15 text-sky-800 font-bold py-2 px-3 rounded-xl text-xs">👤 ملخص ${escapeHtml(d.name)}</button>
+          <button type="button" onclick="closeModal('recordActionSheetModal'); editDebt('${d.id}')" class="ios-btn bg-amber-500/15 text-amber-900 font-bold py-2 px-3 rounded-xl text-xs">✎ تعديل الدين</button>
+        `;
+        document.getElementById('rasButtonsGrid').innerHTML = btns;
+        openModal('recordActionSheetModal');
+        return;
+      }
+      if (kind === 'schedule') {
+        const s = state.schedules.find(x => x.id === rawId);
+        if (!s) return;
+        document.getElementById('rasTitle').textContent = s.title;
+        document.getElementById('rasSubtitle').textContent = `موعد قبض • ${s.date}`;
+        document.getElementById('rasBodySummary').innerHTML = `
+          <div class="flex justify-between"><span class="text-slate-500">المبلغ المجدول:</span><strong class="text-sky-800">${fmt(s.amount, s.currency)}</strong></div>
+          ${s.note ? `<div class="text-slate-600 pt-1 border-t border-slate-200/70">${escapeHtml(s.note)}</div>` : ''}
+        `;
+        let btns = '';
+        if (s.status === 'pending') {
+          btns += `<button type="button" onclick="closeModal('recordActionSheetModal'); openScheduleCollectModal('${s.id}')" class="col-span-2 ios-btn bg-emerald-600 text-white font-extrabold py-2.5 px-3 rounded-xl text-xs">✓ تأكيد قبض الموعد</button>`;
+        }
+        btns += `
+          <button type="button" onclick="closeModal('recordActionSheetModal'); editSchedule('${s.id}')" class="ios-btn bg-amber-500/15 text-amber-900 font-bold py-2 px-3 rounded-xl text-xs">✎ تعديل الموعد</button>
+          <button type="button" onclick="closeModal('recordActionSheetModal'); deleteSchedule('${s.id}')" class="ios-btn bg-rose-500/15 text-rose-700 font-bold py-2 px-3 rounded-xl text-xs">🗑️ حذف الموعد</button>
+        `;
+        document.getElementById('rasButtonsGrid').innerHTML = btns;
+        openModal('recordActionSheetModal');
+      }
+    }
+
     function openVoucherForTx(txId) {
       const t = state.transactions.find(x => x.id === txId);
       if (!t) return;
@@ -5635,7 +5865,495 @@
       openModal('receiptViewerModal');
     }
 
+    
+    // ==================== SUBSCRIPTION, VERIFIED DEVELOPER MODE & SHAM CASH ENGINE ====================
+    const SUB_STORAGE_KEY = 'alzaeem_pro_subscription_v1';
+    const MERCHANT_CFG_KEY = 'alzaeem_pro_merchant_cfg_v1';
+    const DEV_MODE_STORAGE_KEY = 'alzaeem_pro_verified_dev_v1';
+    const LICENSE_SALT = 'ALZAEEM_PRO_SY_2026_SECRET_KEY';
+    const MASTER_DEV_SEED = 'ALZAEEM_OWNER_MASTER_2026';
+
+    function getMasterDeveloperCode() {
+      const sig = computeLicenseSignature('DEVMASTER', MASTER_DEV_SEED);
+      return `ZAEEM-DEV-MASTER-${sig}`;
+    }
+
+    function isDeveloperModeActive() {
+      try {
+        if (localStorage.getItem(DEV_MODE_STORAGE_KEY) === '1') return true;
+      } catch (e) {}
+      const cfg = getMerchantConfig();
+      if (cfg.devEmail && activeAccount && activeAccount.email &&
+          cfg.devEmail.toLowerCase().trim() === activeAccount.email.toLowerCase().trim()) {
+        return true;
+      }
+      return false;
+    }
+
+    function activateDeveloperMode(silent = false) {
+      try { localStorage.setItem(DEV_MODE_STORAGE_KEY, '1'); } catch (e) {}
+      updateSubscriptionUI();
+      if (!silent) showToast('🛠️ تم تفعيل وضع المطور الموثّق (صلاحيات كاملة مدى الحياة)');
+    }
+
+    function deactivateDeveloperMode() {
+      try { localStorage.removeItem(DEV_MODE_STORAGE_KEY); } catch (e) {}
+      closeModal('adminMerchantModal');
+      updateSubscriptionUI();
+      showToast('تم الخروج من وضع المطور والعودة لواجهة المستخدم العادي');
+    }
+
+    function copyMasterDeveloperCode() {
+      const code = getMasterDeveloperCode();
+      const ta = document.createElement('textarea');
+      ta.value = code;
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand('copy');
+      document.body.removeChild(ta);
+      showToast('تم نسخ كود المطور الرئيسي السري');
+    }
+
+    function getMerchantConfig() {
+      try {
+        const raw = localStorage.getItem(MERCHANT_CFG_KEY);
+        if (raw) return JSON.parse(raw);
+      } catch (e) {}
+      return {
+        shamAccount: '09XXXXXXXX',
+        whatsappPhone: '09XXXXXXXX',
+        monthlyPrice: 'اشتراك شهري شامل',
+        yearlyPrice: 'اشتراك سنوي شامل',
+        qrDataUrl: '',
+        devEmail: '',
+        devSecretPin: '0000'
+      };
+    }
+
+    function saveMerchantConfig(cfg) {
+      try { localStorage.setItem(MERCHANT_CFG_KEY, JSON.stringify(cfg)); } catch (e) {}
+    }
+
+    function getSubscriptionRecord() {
+      const now = Date.now();
+      const thirtyDaysMs = 30 * 24 * 60 * 60 * 1000;
+      try {
+        const raw = localStorage.getItem(SUB_STORAGE_KEY);
+        if (raw) {
+          const parsed = JSON.parse(raw);
+          if (parsed && parsed.trialStartedAt) return parsed;
+        }
+      } catch (e) {}
+      const initial = {
+        trialStartedAt: now,
+        planType: 'trial', // 'trial' | 'monthly' | 'yearly' | 'free' | 'developer'
+        expiresAt: now + thirtyDaysMs,
+        usedCodes: []
+      };
+      try { localStorage.setItem(SUB_STORAGE_KEY, JSON.stringify(initial)); } catch (e) {}
+      return initial;
+    }
+
+    function saveSubscriptionRecord(rec) {
+      try { localStorage.setItem(SUB_STORAGE_KEY, JSON.stringify(rec)); } catch (e) {}
+    }
+
+    function getEffectiveSubscription() {
+      if (isDeveloperModeActive()) {
+        return {
+          isPro: true,
+          isDev: true,
+          planType: 'developer',
+          daysLeft: 9999,
+          expiresDateStr: 'مدى الحياة (المطور)'
+        };
+      }
+      const rec = getSubscriptionRecord();
+      const now = Date.now();
+      const msLeft = Number(rec.expiresAt || 0) - now;
+      const daysLeft = Math.max(0, Math.ceil(msLeft / (24 * 60 * 60 * 1000)));
+      const isProActive = msLeft > 0 && (rec.planType === 'trial' || rec.planType === 'monthly' || rec.planType === 'yearly');
+      return {
+        isPro: isProActive,
+        isDev: false,
+        planType: isProActive ? rec.planType : 'free',
+        daysLeft,
+        expiresDateStr: rec.expiresAt ? new Date(rec.expiresAt).toLocaleDateString('ar-EG') : ''
+      };
+    }
+
+    function computeLicenseSignature(daysStr, nonceStr) {
+      const str = `${LICENSE_SALT}::${daysStr}::${nonceStr}`;
+      let h1 = 0x811c9dc5;
+      for (let i = 0; i < str.length; i++) {
+        h1 ^= str.charCodeAt(i);
+        h1 = Math.imul(h1, 0x01000193);
+      }
+      return (h1 >>> 0).toString(36).toUpperCase().padStart(6, '0').slice(0, 6);
+    }
+
+    function getOrCreateDeviceId() {
+      const KEY = 'alzaeem_pro_device_uid_v1';
+      try {
+        let uid = localStorage.getItem(KEY);
+        if (!uid) {
+          uid = 'DEV-' + Math.random().toString(36).substring(2, 10).toUpperCase() + '-' + Date.now().toString(36).toUpperCase();
+          localStorage.setItem(KEY, uid);
+        }
+        return uid;
+      } catch (e) { return 'DEV-LOCAL'; }
+    }
+
+    async function generateClientLicenseCode() {
+      const days = String(document.getElementById('genPlanDuration').value || '30');
+      const nonce = Math.random().toString(36).substring(2, 6).toUpperCase();
+      const sig = computeLicenseSignature(days, nonce);
+      const code = `ZAEEM-${days}-${nonce}-${sig}`;
+      document.getElementById('generatedLicenseCodeText').textContent = code;
+      document.getElementById('generatedCodeResultBox').classList.remove('hidden');
+
+      if (window.cloudRegisterGeneratedLicense) {
+        const synced = await window.cloudRegisterGeneratedLicense(code, days);
+        showToast(synced ? 'تم توليد الكود وحفظه في سحابة Firebase بنجاح ☁️' : 'تم توليد الكود محلياً (اربط Firebase للمزامنة السحابية)');
+      } else {
+        showToast('تم توليد كود التفعيل بنجاح');
+      }
+    }
+
+    function copyGeneratedLicenseCode() {
+      const code = document.getElementById('generatedLicenseCodeText').textContent;
+      if (!code) return;
+      const ta = document.createElement('textarea');
+      ta.value = code;
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand('copy');
+      document.body.removeChild(ta);
+      showToast('تم نسخ كود التفعيل لإرساله للعميل');
+    }
+
+    document.getElementById('activateLicenseForm')?.addEventListener('submit', async e => {
+      e.preventDefault();
+      const rawCode = document.getElementById('licenseCodeInput').value.trim().toUpperCase();
+      if (rawCode === getMasterDeveloperCode()) {
+        document.getElementById('licenseCodeInput').value = '';
+        activateDeveloperMode(false);
+        renderSubscriptionModalContent();
+        return;
+      }
+      const parts = rawCode.split('-');
+      if (parts.length !== 4 || parts[0] !== 'ZAEEM') {
+        showToast('صيغة كود التفعيل غير صحيحة');
+        return;
+      }
+      const [, daysStr, nonceStr, sigStr] = parts;
+      const days = parseInt(daysStr, 10);
+      const expectedSig = computeLicenseSignature(daysStr, nonceStr);
+      if (isNaN(days) || days <= 0 || sigStr !== expectedSig) {
+        showToast('كود التفعيل غير صالح أو منتهي الصلاحية');
+        return;
+      }
+
+      const userIdent = (activeAccount && activeAccount.email) ? activeAccount.email : '';
+      const deviceId = getOrCreateDeviceId();
+
+      if (window.cloudVerifyAndClaimLicense) {
+        showToast('جاري التحقق من الكود عبر السحابة...');
+        const cloudRes = await window.cloudVerifyAndClaimLicense(rawCode, userIdent, deviceId);
+        if (cloudRes && cloudRes.mode === 'cloud') {
+          if (!cloudRes.ok) {
+            if (cloudRes.reason === 'already_used_other_device') {
+              showToast('⛔ عذراً، هذا الكود مستخدم مسبقاً على جهاز أو حساب آخر!');
+            } else if (cloudRes.reason === 'revoked') {
+              showToast('⛔ تم إيقاف هذا الكود من قبل الإدارة');
+            } else {
+              showToast('⛔ كود التفعيل غير مسجل أو غير صالح');
+            }
+            return;
+          }
+          const rec = getSubscriptionRecord();
+          const claimStart = cloudRes.usedAt || Date.now();
+          const newExpiry = claimStart + (Number(cloudRes.days || days) * 24 * 60 * 60 * 1000);
+          rec.expiresAt = Math.max(Number(rec.expiresAt || 0), newExpiry);
+          rec.planType = Number(cloudRes.days || days) >= 300 ? 'yearly' : 'monthly';
+          if (!(rec.usedCodes || []).includes(rawCode)) {
+            rec.usedCodes = [...(rec.usedCodes || []), rawCode];
+          }
+          saveSubscriptionRecord(rec);
+          document.getElementById('licenseCodeInput').value = '';
+          updateSubscriptionUI();
+          renderSubscriptionModalContent();
+          showToast(`🎉 تم تفعيل باقة الزعيم PRO سحابياً لمدة ${cloudRes.days || days} يوم!`);
+          return;
+        }
+      }
+
+      // Fallback offline local verification if Firebase is not connected yet
+      const rec = getSubscriptionRecord();
+      if ((rec.usedCodes || []).includes(rawCode)) {
+        showToast('تم استخدام هذا الكود مسبقاً على هذا الحساب');
+        return;
+      }
+      const now = Date.now();
+      const baseTime = Math.max(now, Number(rec.expiresAt || 0));
+      rec.expiresAt = baseTime + (days * 24 * 60 * 60 * 1000);
+      rec.planType = days >= 300 ? 'yearly' : 'monthly';
+      rec.usedCodes = [...(rec.usedCodes || []), rawCode];
+      saveSubscriptionRecord(rec);
+      document.getElementById('licenseCodeInput').value = '';
+      updateSubscriptionUI();
+      renderSubscriptionModalContent();
+      showToast(`🎉 مبروك! تم تفعيل باقة الزعيم PRO لمدة ${days} يوم بنجاح`);
+    });
+
+    function updateSubscriptionUI() {
+      const sub = getEffectiveSubscription();
+      const isDev = Boolean(sub.isDev);
+      const hdrBtn = document.getElementById('btnHeaderSubBadge');
+      const hdrIcon = document.getElementById('headerSubIcon');
+      const hdrLbl = document.getElementById('headerSubLabel');
+      const drwTxt = document.getElementById('drawerSubStatusText');
+      const adminModalBtn = document.getElementById('btnOpenAdminMerchant');
+      const drawerAdminBtn = document.getElementById('btnDrawerDevAdmin');
+
+      // Show Developer/Admin buttons ONLY if Developer Mode is verified!
+      if (adminModalBtn) adminModalBtn.classList.toggle('hidden', !isDev);
+      if (drawerAdminBtn) drawerAdminBtn.classList.toggle('hidden', !isDev);
+
+      if (isDev) {
+        if (hdrBtn) hdrBtn.className = 'ios-btn px-2.5 py-1.5 rounded-2xl bg-gradient-to-r from-indigo-600 to-violet-700 text-white text-[11px] font-extrabold flex items-center gap-1 shadow-xs';
+        if (hdrIcon) hdrIcon.textContent = '🛠️';
+        if (hdrLbl) hdrLbl.textContent = 'المطور PRO';
+        if (drwTxt) drwTxt.textContent = 'وضع المطور الموثّق (مفتوح)';
+      } else if (sub.isPro) {
+        if (hdrBtn) hdrBtn.className = 'ios-btn px-2.5 py-1.5 rounded-2xl bg-gradient-to-r from-amber-500/20 to-yellow-500/20 border border-amber-400/70 text-amber-900 text-[11px] font-extrabold flex items-center gap-1 shadow-2xs';
+        if (hdrIcon) hdrIcon.textContent = '👑';
+        if (hdrLbl) hdrLbl.textContent = sub.planType === 'trial' ? `تجريبي (${sub.daysLeft}ي)` : `PRO (${sub.daysLeft}ي)`;
+        if (drwTxt) drwTxt.textContent = sub.planType === 'trial' ? `تجريبي مجاني (${sub.daysLeft} يوم)` : `مشترك PRO (${sub.daysLeft} يوم)`;
+      } else {
+        if (hdrBtn) hdrBtn.className = 'ios-btn px-2.5 py-1.5 rounded-2xl bg-slate-200/80 border border-slate-300 text-slate-700 text-[11px] font-extrabold flex items-center gap-1 shadow-2xs';
+        if (hdrIcon) hdrIcon.textContent = '⭐';
+        if (hdrLbl) hdrLbl.textContent = 'ترقية PRO';
+        if (drwTxt) drwTxt.textContent = 'الباقة المجانية (ترقية)';
+      }
+    }
+
+    let selectedPaymentPlan = 'monthly';
+    function selectPlanForPayment(plan) {
+      selectedPaymentPlan = plan;
+      showToast(plan === 'yearly' ? 'تم اختيار الباقة السنوية — حوّل عبر شام كاش ثم اطلب التفعيل' : 'تم اختيار الباقة الشهرية — حوّل عبر شام كاش ثم اطلب التفعيل');
+    }
+
+    function renderSubscriptionModalContent() {
+      const sub = getEffectiveSubscription();
+      const cfg = getMerchantConfig();
+      const subTitle = document.getElementById('subModalStatusSubtitle');
+      const banner = document.getElementById('subCurrentPlanBanner');
+
+      if (subTitle) {
+        subTitle.textContent = sub.isPro
+          ? (sub.planType === 'trial' ? `الفترة التجريبية المجانية نشطة (متبقي ${sub.daysLeft} يوم)` : `اشتراك PRO نشط (ينتهي في ${sub.expiresDateStr})`)
+          : 'أنت الآن على الباقة المجانية — قم بالترقية لفتح كافة المزايا بلا حدود';
+      }
+
+      if (banner) {
+        banner.innerHTML = sub.isDev
+          ? `<div><strong class="text-indigo-900 block">حساب المطور ومالك المشروع 🛠️</strong><span class="text-slate-600">جميع الميزات والأقسام مفتوحة مدى الحياة بلا قيود</span></div><span class="px-2.5 py-1 rounded-full bg-indigo-600 text-white font-extrabold">مطور موثّق ✓</span>`
+          : sub.isPro
+            ? `<div><strong class="text-slate-900 block">باقتك الحالية: ${sub.planType === 'trial' ? 'شهر تجريبي مجاني 🎁' : (sub.planType === 'yearly' ? 'الباقة السنوية PRO 👑' : 'الباقة الشهرية PRO 👑')}</strong><span class="text-slate-600">المتبقي: <strong>${sub.daysLeft} يوم</strong> (حتى ${sub.expiresDateStr})</span></div><span class="px-2.5 py-1 rounded-full bg-emerald-600 text-white font-extrabold">مفعّل ✓</span>`
+            : `<div><strong class="text-slate-900 block">باقتك الحالية: الباقة المجانية (Free)</strong><span class="text-slate-600">محدودة بـ 30 حركة شهرياً و 5 أشخاص وبدون POS</span></div><span class="px-2.5 py-1 rounded-full bg-amber-600 text-white font-extrabold">قم بالترقية</span>`;
+      }
+
+      document.getElementById('displayMonthlyPriceLabel').textContent = cfg.monthlyPrice || 'اشتراك شهري شامل';
+      document.getElementById('displayYearlyPriceLabel').textContent = cfg.yearlyPrice || 'اشتراك سنوي شامل';
+      document.getElementById('merchantShamAccountDisplay').textContent = cfg.shamAccount || '09XXXXXXXX';
+      document.getElementById('merchantWhatsappDisplay').textContent = cfg.whatsappPhone || '09XXXXXXXX';
+
+      const qrImg = document.getElementById('shamCashQrImg');
+      const qrPh = document.getElementById('shamCashQrPlaceholder');
+      if (cfg.qrDataUrl) {
+        qrImg.src = cfg.qrDataUrl;
+        qrImg.classList.remove('hidden');
+        qrPh.classList.add('hidden');
+      } else {
+        qrImg.src = '';
+        qrImg.classList.add('hidden');
+        qrPh.classList.remove('hidden');
+      }
+    }
+
+    function openSubscriptionModal() {
+      renderSubscriptionModalContent();
+      openModal('subscriptionModal');
+    }
+
+    function copyMerchantShamAccount() {
+      const cfg = getMerchantConfig();
+      const val = cfg.shamAccount || '';
+      if (!val) return;
+      const ta = document.createElement('textarea');
+      ta.value = val;
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand('copy');
+      document.body.removeChild(ta);
+      showToast('تم نسخ رقم حساب شام كاش');
+    }
+
+    function requestActivationViaWhatsapp() {
+      const cfg = getMerchantConfig();
+      const wa = formatWaPhone(cfg.whatsappPhone);
+      if (!wa) {
+        showToast('يرجى ضبط رقم واتساب التاجر من إعدادات الإدارة أولاً');
+        return;
+      }
+      const planName = selectedPaymentPlan === 'yearly' ? 'الباقة السنوية PRO' : 'الباقة الشهرية PRO';
+      const accInfo = (activeAccount && activeAccount.email) ? ` (${activeAccount.email})` : '';
+      const msg = `مرحباً، قمت بالتحويل عبر شام كاش لتفعيل اشتراك تطبيق الزعيم PRO (${planName})${accInfo}، أرجو تزويدي بكود التفعيل.`;
+      window.open(`https://wa.me/${wa}?text=${encodeURIComponent(msg)}`, '_blank', 'noopener');
+    }
+
+    // Stealth 5-tap trigger on sidebar app badge for developer verification on a new device
+    let _devTapCount = 0;
+    let _devTapTimer = null;
+    function handleStealthDevTap() {
+      _devTapCount++;
+      clearTimeout(_devTapTimer);
+      _devTapTimer = setTimeout(() => { _devTapCount = 0; }, 1800);
+      if (_devTapCount >= 5) {
+        _devTapCount = 0;
+        openAdminMerchantModal();
+      }
+    }
+
+    // Merchant & Developer Admin Panel Handlers
+    function openAdminMerchantModal() {
+      document.getElementById('adminPinInput').value = '';
+      document.getElementById('adminPinGate').classList.remove('hidden');
+      document.getElementById('adminControlsBody').classList.add('hidden');
+      const cfg = getMerchantConfig();
+      document.getElementById('cfgShamAccount').value = cfg.shamAccount || '';
+      document.getElementById('cfgWhatsappPhone').value = cfg.whatsappPhone || '';
+      document.getElementById('cfgMonthlyPrice').value = cfg.monthlyPrice || '';
+      document.getElementById('cfgYearlyPrice').value = cfg.yearlyPrice || '';
+      document.getElementById('cfgDevEmail').value = cfg.devEmail || '';
+      document.getElementById('cfgDevSecretPin').value = '';
+      document.getElementById('masterDevCodeDisplay').textContent = getMasterDeveloperCode();
+      openModal('adminMerchantModal');
+    }
+
+    document.getElementById('adminUnlockForm')?.addEventListener('submit', e => {
+      e.preventDefault();
+      const entered = document.getElementById('adminPinInput').value.trim();
+      const cfg = getMerchantConfig();
+      const expectedDevPin = cfg.devSecretPin || '0000';
+      if (entered === expectedDevPin || entered.toUpperCase() === getMasterDeveloperCode()) {
+        activateDeveloperMode(true);
+        document.getElementById('adminPinGate').classList.add('hidden');
+        document.getElementById('adminControlsBody').classList.remove('hidden');
+      } else {
+        showToast('رمز المطور السري غير صحيح');
+      }
+    });
+
+    document.getElementById('cfgShamQrFile')?.addEventListener('change', e => {
+      const file = e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = ev => {
+        const img = new Image();
+        img.onload = () => {
+          const canvas = document.createElement('canvas');
+          const maxDim = 360;
+          let w = img.width, h = img.height;
+          if (w > maxDim || h > maxDim) {
+            if (w > h) { h = Math.round(h * (maxDim / w)); w = maxDim; }
+            else { w = Math.round(w * (maxDim / h)); h = maxDim; }
+          }
+          canvas.width = w; canvas.height = h;
+          canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+          const cfg = getMerchantConfig();
+          cfg.qrDataUrl = canvas.toDataURL('image/png');
+          saveMerchantConfig(cfg);
+          renderSubscriptionModalContent();
+          showToast('تم رفع باركود شام كاش بنجاح');
+        };
+        img.src = ev.target.result;
+      };
+      reader.readAsDataURL(file);
+    });
+
+    function clearMerchantQrImage() {
+      const cfg = getMerchantConfig();
+      cfg.qrDataUrl = '';
+      saveMerchantConfig(cfg);
+      renderSubscriptionModalContent();
+      if (window.cloudSaveGlobalMerchantSettings) {
+        window.cloudSaveGlobalMerchantSettings(cfg);
+      }
+      showToast('تم حذف صورة الباركود');
+    }
+
+    document.getElementById('merchantConfigForm')?.addEventListener('submit', e => {
+      e.preventDefault();
+      const cfg = getMerchantConfig();
+      cfg.shamAccount = document.getElementById('cfgShamAccount').value.trim() || '09XXXXXXXX';
+      cfg.whatsappPhone = document.getElementById('cfgWhatsappPhone').value.trim() || '09XXXXXXXX';
+      cfg.monthlyPrice = document.getElementById('cfgMonthlyPrice').value.trim() || 'اشتراك شهري شامل';
+      cfg.yearlyPrice = document.getElementById('cfgYearlyPrice').value.trim() || 'اشتراك سنوي شامل';
+      const newDevEmail = document.getElementById('cfgDevEmail').value.trim().toLowerCase();
+      const newDevPin = document.getElementById('cfgDevSecretPin').value.trim();
+      if (newDevEmail) cfg.devEmail = newDevEmail;
+      if (newDevPin.length >= 4) cfg.devSecretPin = newDevPin;
+      saveMerchantConfig(cfg);
+      renderSubscriptionModalContent();
+      closeModal('adminMerchantModal');
+      if (window.cloudSaveGlobalMerchantSettings) {
+        window.cloudSaveGlobalMerchantSettings(cfg).then(ok => {
+          showToast(ok ? 'تم حفظ ونشر إعدادات شام كاش والباركود سحابياً لجميع المستخدمين ☁️' : 'تم الحفظ محلياً (تأكد من ربط Firebase للنشر العام)');
+        });
+      } else {
+        showToast('تم حفظ إعدادات شام كاش ورقم التواصل ✓');
+      }
+    });
+
+    // Enforce Free Plan Limits gracefully when trial/PRO expires
+    function checkProFeatureAccess(featureType) {
+      const sub = getEffectiveSubscription();
+      if (sub.isPro) return true;
+      if (featureType === 'shop') {
+        showToast('إدارة المحل (POS) متاحة في باقة الزعيم PRO — قم بالترقية للمتابعة');
+        openSubscriptionModal();
+        return false;
+      }
+      if (featureType === 'tx') {
+        const ym = currentMonthISO();
+        const monthCount = state.transactions.filter(t => t.date.startsWith(ym)).length;
+        if (monthCount >= 30) {
+          showToast('وصلت للحد الأقصى في الباقة المجانية (30 حركة شهرياً) — قم بالترقية لـ PRO');
+          openSubscriptionModal();
+          return false;
+        }
+      }
+      if (featureType === 'person') {
+        if (state.people.length >= 5) {
+          showToast('الباقة المجانية تسمح بـ 5 أشخاص كحد أقصى — قم بالترقية لـ PRO');
+          openSubscriptionModal();
+          return false;
+        }
+      }
+      if (featureType === 'currency') {
+        if (state.currencies.length >= 1) {
+          showToast('تعدد العملات متاح في باقة الزعيم PRO — قم بالترقية للمتابعة');
+          openSubscriptionModal();
+          return false;
+        }
+      }
+      return true;
+    }
+
     function openTxModal(type = 'expense') {
+      if (!checkProFeatureAccess('tx')) return;
       document.getElementById('txForm').reset();
       document.getElementById('editTxId').value = '';
       document.getElementById('txModalTitle').textContent = 'إضافة حركة مالية';
@@ -5841,6 +6559,7 @@
 
     function renderAll() {
       updateHeaderBadges();
+      updateSubscriptionUI();
       updateBellDotAndNotifications();
       if (activeTab === 'dashboard') {
         renderDashboard();
@@ -6593,5 +7312,246 @@
     </div>
   </div>
 
+  <!-- Record Quick Options & Voucher Action Sheet Modal -->
+  <div id="recordActionSheetModal" class="fixed inset-0 bg-slate-900/40 z-[68] hidden items-center justify-center p-4">
+    <div class="ios-modal max-w-sm w-full p-5 animate-slide-up space-y-3.5 text-right">
+      <div class="flex items-center justify-between border-b border-slate-200/70 pb-2.5">
+        <div class="min-w-0">
+          <h3 id="rasTitle" class="text-base font-extrabold text-slate-900 truncate">تفاصيل وخيارات السجل</h3>
+          <p id="rasSubtitle" class="text-[11px] text-slate-500 truncate mt-0.5"></p>
+        </div>
+        <button type="button" onclick="closeModal('recordActionSheetModal')" class="w-8 h-8 rounded-full bg-slate-200/70 hover:bg-slate-200 text-slate-600 flex items-center justify-center text-sm font-bold shrink-0">✕</button>
+      </div>
+      <div id="rasBodySummary" class="bg-slate-50/90 dark:bg-slate-800/70 border border-slate-200/70 rounded-2xl p-3 text-xs space-y-1"></div>
+      <div id="rasButtonsGrid" class="grid grid-cols-2 gap-2"></div>
+    </div>
+  </div>
+
+  <!-- ==================== SUBSCRIPTION & SHAM CASH PAYMENT MODAL ==================== -->
+  <div id="subscriptionModal" class="fixed inset-0 bg-slate-900/45 z-[72] hidden items-center justify-center p-4 overflow-y-auto">
+    <div class="ios-modal max-w-lg w-full p-5 sm:p-6 animate-slide-up my-auto space-y-4 text-right">
+      <div class="flex items-center justify-between border-b border-slate-200/70 pb-3">
+        <div class="flex items-center gap-2.5">
+          <span class="icon-badge-3d w-9 h-9 rounded-[12px] bg-gradient-to-br from-amber-400 to-orange-600 text-white text-base">👑</span>
+          <div>
+            <h3 class="text-base sm:text-lg font-extrabold text-slate-900">الزعيم PRO — الباقات والاشتراكات</h3>
+            <p id="subModalStatusSubtitle" class="text-[11px] font-bold text-emerald-700">حالة الاشتراك الحالية</p>
+          </div>
+        </div>
+        <button type="button" onclick="closeModal('subscriptionModal')" class="w-8 h-8 rounded-full bg-slate-200/70 hover:bg-slate-200 text-slate-600 flex items-center justify-center text-sm font-bold">✕</button>
+      </div>
+
+      <!-- Current Plan Banner -->
+      <div id="subCurrentPlanBanner" class="p-3.5 rounded-2xl bg-gradient-to-br from-sky-500/15 to-teal-500/15 border border-sky-300/70 flex flex-wrap items-center justify-between gap-2 text-xs"></div>
+
+      <!-- 3 Plans Comparison Grid: Free vs Monthly PRO vs Yearly PRO -->
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
+        <!-- Plan 1: Free -->
+        <div class="p-3 rounded-2xl bg-white/65 border border-slate-200/80 flex flex-col justify-between gap-2">
+          <div>
+            <span class="text-[10px] font-extrabold bg-slate-200 text-slate-700 px-2 py-0.5 rounded-full">الباقة المجانية</span>
+            <h4 class="font-extrabold text-sm text-slate-900 mt-1">محدودة للاستخدام البسيط</h4>
+            <ul class="text-[11px] text-slate-600 space-y-1 mt-2">
+              <li>• حتى 30 حركة مالية شهرياً</li>
+              <li>• حتى 5 أشخاص وديون</li>
+              <li>• عملة واحدة فقط</li>
+              <li class="text-rose-600">✕ بدون نقطة بيع (POS)</li>
+            </ul>
+          </div>
+          <div class="pt-2 border-t border-slate-200/60 text-center">
+            <strong class="text-xs font-extrabold text-slate-700">مجاناً للأبد</strong>
+          </div>
+        </div>
+
+        <!-- Plan 2: Monthly PRO -->
+        <div class="p-3 rounded-2xl bg-sky-500/10 border-2 border-sky-400/80 flex flex-col justify-between gap-2">
+          <div>
+            <span class="text-[10px] font-extrabold bg-sky-600 text-white px-2 py-0.5 rounded-full">PRO شهري</span>
+            <h4 class="font-extrabold text-sm text-slate-900 mt-1" id="displayMonthlyPriceLabel">اشتراك شهري شامل</h4>
+            <ul class="text-[11px] text-slate-700 space-y-1 mt-2">
+              <li>✓ حركات وأشخاص بلا حدود</li>
+              <li>✓ تعدد العملات والتصريف</li>
+              <li>✓ إدارة المحل (POS) والمخزون</li>
+              <li>✓ سندات واتساب وتصدير Excel</li>
+            </ul>
+          </div>
+          <button type="button" onclick="selectPlanForPayment('monthly')" class="ios-btn w-full bg-sky-600 hover:bg-sky-700 text-white text-[11px] font-extrabold py-1.5 rounded-xl">اختيار الباقة الشهرية</button>
+        </div>
+
+        <!-- Plan 3: Yearly PRO -->
+        <div class="p-3 rounded-2xl bg-amber-500/10 border-2 border-amber-400/90 flex flex-col justify-between gap-2 relative">
+          <div>
+            <span class="text-[10px] font-extrabold bg-amber-600 text-white px-2 py-0.5 rounded-full">PRO سنوي (توفير)</span>
+            <h4 class="font-extrabold text-sm text-slate-900 mt-1" id="displayYearlyPriceLabel">اشتراك سنوي شامل</h4>
+            <ul class="text-[11px] text-slate-700 space-y-1 mt-2">
+              <li>✓ جميع ميزات PRO بلا حدود</li>
+              <li>✓ مزامنة سحابية وتقارير P&L</li>
+              <li>✓ أولوية الدعم الفني والتحديثات</li>
+              <li>✓ توفير شهرين مجاناً</li>
+            </ul>
+          </div>
+          <button type="button" onclick="selectPlanForPayment('yearly')" class="ios-btn w-full bg-gradient-to-r from-amber-500 to-orange-600 text-white text-[11px] font-extrabold py-1.5 rounded-xl shadow-xs">اختيار الباقة السنوية</button>
+        </div>
+      </div>
+
+      <!-- Sham Cash & Merchant Payment Details Card -->
+      <div class="p-4 rounded-2xl bg-white/80 border-2 border-emerald-400/70 space-y-3">
+        <div class="flex items-center justify-between gap-2">
+          <div class="flex items-center gap-2">
+            <span class="w-8 h-8 rounded-xl bg-emerald-600 text-white font-extrabold flex items-center justify-center text-sm">💳</span>
+            <div>
+              <h4 class="text-xs sm:text-sm font-extrabold text-slate-900">الدفع والتحويل عبر شام كاش (Sham Cash)</h4>
+              <p class="text-[10px] text-slate-500">امسح الباركود أو حوّل إلى رقم الحساب ثم أرسل الإشعار واتساب</p>
+            </div>
+          </div>
+          <button type="button" id="btnOpenAdminMerchant" onclick="openAdminMerchantModal()" class="hidden ios-btn bg-indigo-600 text-white text-[11px] font-extrabold px-2.5 py-1 rounded-xl shadow-2xs" title="لوحة إدارة المطور والتاجر">🛠️ لوحة المطور</button>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-12 gap-3 items-center bg-slate-50/90 dark:bg-slate-800/70 p-3 rounded-xl border border-slate-200/70">
+          <!-- Sham Cash Barcode Preview -->
+          <div class="sm:col-span-4 flex flex-col items-center justify-center text-center gap-1">
+            <div id="shamCashQrBox" class="w-24 h-24 rounded-xl bg-white border border-slate-300 flex items-center justify-center overflow-hidden shadow-2xs p-1">
+              <img id="shamCashQrImg" src="" alt="باركود شام كاش" class="w-full h-full object-contain hidden" />
+              <div id="shamCashQrPlaceholder" class="text-[10px] text-slate-400 font-bold leading-tight px-1">
+                باركود شام كاش<br/>(يُرفع من الإدارة)
+              </div>
+            </div>
+            <span class="text-[10px] font-bold text-slate-500">باركود التحويل</span>
+          </div>
+
+          <!-- Merchant Contact & Sham Cash Account Info -->
+          <div class="sm:col-span-8 space-y-2 text-xs">
+            <div class="flex items-center justify-between bg-white dark:bg-slate-900 px-3 py-2 rounded-xl border border-slate-200/80">
+              <div>
+                <span class="text-[10px] text-slate-500 block">حساب شام كاش / رقم التحويل:</span>
+                <strong id="merchantShamAccountDisplay" class="text-sm font-extrabold text-emerald-700" dir="ltr">09XXXXXXXX</strong>
+              </div>
+              <button type="button" onclick="copyMerchantShamAccount()" class="ios-btn bg-emerald-500/15 hover:bg-emerald-500/25 text-emerald-800 text-[11px] font-bold px-2.5 py-1 rounded-lg">نسخ</button>
+            </div>
+            <div class="flex items-center justify-between bg-white dark:bg-slate-900 px-3 py-2 rounded-xl border border-slate-200/80">
+              <div>
+                <span class="text-[10px] text-slate-500 block">رقم التواصل والدعم (واتساب):</span>
+                <strong id="merchantWhatsappDisplay" class="text-sm font-extrabold text-sky-800" dir="ltr">09XXXXXXXX</strong>
+              </div>
+              <button type="button" onclick="requestActivationViaWhatsapp()" class="ios-btn bg-emerald-600 hover:bg-emerald-700 text-white text-[11px] font-extrabold px-3 py-1.5 rounded-lg shadow-2xs">طلب التفعيل واتساب</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Activation Code Entry Form -->
+        <form id="activateLicenseForm" class="pt-2 border-t border-slate-200/70 space-y-2">
+          <label class="block text-xs font-extrabold text-slate-800">لديك كود تفعيل؟ أدخله هنا لتفعيل باقة PRO فوراً:</label>
+          <div class="flex gap-2">
+            <input id="licenseCodeInput" type="text" required placeholder="ZAEEM-PRO-XXXX" dir="ltr" class="ios-input flex-1 rounded-xl px-3.5 py-2 text-center text-sm font-extrabold uppercase tracking-wider focus:outline-none focus:ring-2 focus:ring-amber-500" />
+            <button type="submit" class="ios-btn bg-gradient-to-br from-amber-500 to-orange-600 text-white text-xs font-extrabold px-4 py-2 rounded-xl shadow-sm shrink-0">تفعيل الآن ✓</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== MERCHANT ADMIN PANEL MODAL (PROTECTED) ==================== -->
+  <div id="adminMerchantModal" class="fixed inset-0 bg-slate-950/60 z-[75] hidden items-center justify-center p-4 overflow-y-auto">
+    <div class="ios-modal max-w-md w-full p-5 sm:p-6 animate-slide-up my-auto space-y-4 text-right">
+      <div class="flex items-center justify-between border-b border-slate-200/70 pb-3">
+        <div>
+          <h3 class="text-base sm:text-lg font-extrabold text-slate-900">لوحة التاجر وإعدادات الاشتراكات ⚙️</h3>
+          <p class="text-[11px] text-slate-500">تخصيص حساب شام كاش، الباركود، الأسعار، وتوليد أكواد التفعيل للعملاء</p>
+        </div>
+        <button type="button" onclick="closeModal('adminMerchantModal')" class="w-8 h-8 rounded-full bg-slate-200/70 hover:bg-slate-200 text-slate-600 flex items-center justify-center text-sm font-bold">✕</button>
+      </div>
+
+      <!-- Admin PIN Unlock Section -->
+      <div id="adminPinGate" class="space-y-3">
+        <p class="text-xs text-slate-600">أدخل رمز الإدارة الخاص بك (الافتراضي: <strong>0000</strong> أو رمز قفل التطبيق):</p>
+        <form id="adminUnlockForm" class="flex gap-2">
+          <input id="adminPinInput" type="password" inputmode="numeric" required placeholder="••••" class="ios-input flex-1 rounded-xl px-3 py-2 text-center text-base font-extrabold tracking-widest" />
+          <button type="submit" class="ios-btn bg-sky-600 text-white text-xs font-extrabold px-4 py-2 rounded-xl">دخول الإدارة</button>
+        </form>
+      </div>
+
+      <!-- Admin Controls (Shown after Developer Verification) -->
+      <div id="adminControlsBody" class="hidden space-y-4">
+        <!-- 0. Verified Developer Identity & Master Key -->
+        <div class="space-y-2.5 bg-indigo-500/10 p-3.5 rounded-2xl border border-indigo-300/70">
+          <div class="flex items-center justify-between">
+            <h4 class="text-xs font-extrabold text-indigo-900">0. هوية المطور الموثّق وكود المطور الرئيسي 🛠️</h4>
+            <button type="button" onclick="deactivateDeveloperMode()" class="text-[10px] font-bold text-rose-600 hover:underline">إغلاق وضع المطور</button>
+          </div>
+          <p class="text-[10px] text-slate-600 leading-relaxed">سجّل بريدك الإلكتروني الخاص ورمز المطور السري؛ عند تسجيل دخولك بهما من أي هاتف أو كمبيوتر سيُفتح لك وضع المطور واشتراك PRO مدى الحياة تلقائياً.</p>
+          <div class="grid grid-cols-2 gap-2">
+            <div>
+              <label class="block text-[10px] font-bold text-slate-600 mb-0.5">بريد المطور الموثّق</label>
+              <input id="cfgDevEmail" type="email" placeholder="developer@domain.com" dir="ltr" class="ios-input w-full rounded-xl px-2.5 py-1.5 text-xs font-bold text-left" />
+            </div>
+            <div>
+              <label class="block text-[10px] font-bold text-slate-600 mb-0.5">رمز المطور السري (PIN)</label>
+              <input id="cfgDevSecretPin" type="password" inputmode="numeric" placeholder="تغيير الرمز (افتراضي 0000)" class="ios-input w-full rounded-xl px-2.5 py-1.5 text-xs font-bold text-center" />
+            </div>
+          </div>
+          <div class="bg-white/85 dark:bg-slate-900 p-2.5 rounded-xl border border-indigo-200 flex items-center justify-between gap-2">
+            <div class="min-w-0">
+              <span class="text-[10px] text-slate-500 block">كود المطور الرئيسي (لتفعيل أي جهاز فوراً):</span>
+              <code id="masterDevCodeDisplay" class="text-xs font-extrabold text-indigo-700 tracking-wider block truncate" dir="ltr"></code>
+            </div>
+            <button type="button" onclick="copyMasterDeveloperCode()" class="ios-btn bg-indigo-600 text-white text-[10px] font-bold px-2.5 py-1.5 rounded-lg shrink-0">نسخ الكود</button>
+          </div>
+        </div>
+        <!-- 1. Merchant Sham Cash & Barcode Config -->
+        <form id="merchantConfigForm" class="space-y-2.5 bg-white/70 p-3.5 rounded-2xl border border-slate-200/80">
+          <h4 class="text-xs font-extrabold text-emerald-800">1. بيانات الدفع عبر شام كاش والتواصل</h4>
+          <div class="grid grid-cols-2 gap-2">
+            <div>
+              <label class="block text-[11px] font-bold text-slate-600 mb-1">حساب / رقم شام كاش</label>
+              <input id="cfgShamAccount" type="text" required placeholder="09xxxxxxxx" dir="ltr" class="ios-input w-full rounded-xl px-3 py-1.5 text-xs font-bold" />
+            </div>
+            <div>
+              <label class="block text-[11px] font-bold text-slate-600 mb-1">رقم واتساب للتواصل</label>
+              <input id="cfgWhatsappPhone" type="text" required placeholder="09xxxxxxxx" dir="ltr" class="ios-input w-full rounded-xl px-3 py-1.5 text-xs font-bold" />
+            </div>
+          </div>
+          <div class="grid grid-cols-2 gap-2">
+            <div>
+              <label class="block text-[11px] font-bold text-slate-600 mb-1">سعر الباقة الشهرية</label>
+              <input id="cfgMonthlyPrice" type="text" placeholder="مثال: 5$ أو 50,000 ل.س" class="ios-input w-full rounded-xl px-3 py-1.5 text-xs font-bold" />
+            </div>
+            <div>
+              <label class="block text-[11px] font-bold text-slate-600 mb-1">سعر الباقة السنوية</label>
+              <input id="cfgYearlyPrice" type="text" placeholder="مثال: 45$ أو 450,000 ل.س" class="ios-input w-full rounded-xl px-3 py-1.5 text-xs font-bold" />
+            </div>
+          </div>
+          <div class="space-y-1">
+            <label class="block text-[11px] font-bold text-slate-600">صورة باركود شام كاش (QR Code):</label>
+            <div class="flex items-center gap-2">
+              <label class="ios-btn cursor-pointer bg-sky-500/15 hover:bg-sky-500/25 text-sky-800 text-xs font-bold px-3 py-1.5 rounded-xl">
+                📷 رفع صورة الباركود
+                <input id="cfgShamQrFile" type="file" accept="image/*" class="hidden" />
+              </label>
+              <button type="button" onclick="clearMerchantQrImage()" class="text-[11px] font-bold text-rose-600 hover:underline">حذف الصورة</button>
+            </div>
+          </div>
+          <button type="submit" class="ios-btn w-full bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-extrabold py-2 rounded-xl">حفظ بيانات الدفع والباركود ✓</button>
+        </form>
+
+        <!-- 2. License Code Generator for Clients -->
+        <div class="space-y-2.5 bg-amber-500/10 p-3.5 rounded-2xl border border-amber-300/70">
+          <h4 class="text-xs font-extrabold text-amber-900">2. توليد كود تفعيل اشتراك لعميل</h4>
+          <div class="grid grid-cols-2 gap-2">
+            <select id="genPlanDuration" class="ios-input rounded-xl px-2.5 py-2 text-xs font-bold">
+              <option value="30">اشتراك شهري (30 يوم)</option>
+              <option value="365">اشتراك سنوي (365 يوم)</option>
+              <option value="3650">اشتراك ممتد (10 سنوات)</option>
+            </select>
+            <button type="button" onclick="generateClientLicenseCode()" class="ios-btn bg-gradient-to-r from-amber-500 to-orange-600 text-white text-xs font-extrabold py-2 px-3 rounded-xl shadow-xs">توليد كود جديد ⚡</button>
+          </div>
+          <div id="generatedCodeResultBox" class="hidden bg-white dark:bg-slate-900 p-2.5 rounded-xl border border-amber-300 flex items-center justify-between gap-2">
+            <code id="generatedLicenseCodeText" class="text-xs sm:text-sm font-extrabold text-amber-800 tracking-wider" dir="ltr"></code>
+            <button type="button" onclick="copyGeneratedLicenseCode()" class="ios-btn bg-amber-500/20 text-amber-900 text-[11px] font-bold px-2.5 py-1 rounded-lg">نسخ الكود</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
 </body>
-          </html>
+            </html>
