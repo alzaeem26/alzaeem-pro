@@ -262,10 +262,11 @@
         </div>
       </button>
 
-      <!-- Dark Mode & Quick Lock Controls -->
+      <!-- Notifications Bell & Quick Lock Controls -->
       <div class="flex items-center gap-1.5 shrink-0">
-        <button type="button" id="btnToggleDarkMode" onclick="toggleDarkMode()" class="ios-btn w-9 h-9 rounded-2xl bg-white/75 border border-white/90 text-slate-700 flex items-center justify-center shadow-xs" title="الوضع الليلي / النهاري">
-          <svg id="darkModeSvg" class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/></svg>
+        <button type="button" id="btnNotificationsBell" onclick="openNotificationsModal()" class="relative ios-btn w-9 h-9 rounded-2xl bg-white/75 border border-white/90 text-slate-700 flex items-center justify-center shadow-xs" title="التنبيهات والإشعارات">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
+          <span id="headerBellDot" class="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-rose-500 hidden ring-2 ring-white"></span>
         </button>
         <button type="button" id="btnQuickLockApp" onclick="lockAppNow()" class="hidden ios-btn w-9 h-9 rounded-2xl bg-gradient-to-br from-amber-400/25 to-amber-500/20 border border-amber-300/70 text-amber-800 flex items-center justify-center shadow-xs" title="قفل التطبيق الآن">
           <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
@@ -279,14 +280,16 @@
   <aside id="sideNavDrawer" class="fixed top-0 right-0 bottom-0 w-60 max-w-[70vw] z-50 ios-modal rounded-none rounded-l-3xl p-3 flex flex-col justify-between transform translate-x-full transition-transform duration-200 ease-out shadow-2xl">
     <div class="space-y-3 overflow-y-auto no-scrollbar">
       <div class="flex items-center justify-between pb-3 border-b border-white/70">
-        <div class="flex items-center gap-2.5">
-          <span class="icon-badge-3d w-9 h-9 rounded-[12px] bg-gradient-to-br from-sky-500 to-teal-700 text-white font-extrabold text-base">$</span>
-          <div>
-            <h2 class="font-extrabold text-base text-slate-900">الزعيم PRO</h2>
-            <p class="text-[11px] text-slate-500">القائمة الرئيسية للأقسام</p>
+        <div class="flex items-center gap-2 min-w-0">
+          <span class="icon-badge-3d w-8 h-8 rounded-[11px] bg-gradient-to-br from-sky-500 to-teal-700 text-white font-extrabold text-sm shrink-0">$</span>
+          <div class="min-w-0">
+            <h2 class="font-extrabold text-sm text-slate-900 truncate">الزعيم PRO</h2>
+            <button type="button" onclick="toggleDarkMode()" class="text-[11px] font-bold text-sky-700 hover:underline flex items-center gap-1 text-right">
+              <span id="darkModeDrawerLabel">الوضع الليلي 🌙</span>
+            </button>
           </div>
         </div>
-        <button type="button" onclick="toggleSideNavDrawer(false)" class="w-8 h-8 rounded-full bg-slate-200/70 hover:bg-slate-200 text-slate-600 flex items-center justify-center text-sm font-bold">✕</button>
+        <button type="button" onclick="toggleSideNavDrawer(false)" class="w-7 h-7 rounded-full bg-slate-200/70 hover:bg-slate-200 text-slate-600 flex items-center justify-center text-xs font-bold shrink-0">✕</button>
       </div>
 
       <nav class="flex flex-col gap-1.5" aria-label="التنقل الجانبي">
@@ -5798,6 +5801,7 @@
 
     function renderAll() {
       updateHeaderBadges();
+      updateBellDotAndNotifications();
       if (activeTab === 'dashboard') {
         renderDashboard();
       } else if (activeTab === 'transactions') {
@@ -6458,11 +6462,96 @@
       }
     }
 
+    
+    function getActiveAlertsList() {
+      const today = todayISO();
+      const alerts = [];
+      // 1. Overdue or Today Schedules
+      (state.schedules || []).filter(s => s.status === 'pending' && s.date <= today).forEach(s => {
+        const isOverdue = s.date < today;
+        alerts.push({
+          id: s.id,
+          type: isOverdue ? 'overdue_sched' : 'today_sched',
+          title: `موعد قبض: ${s.title}`,
+          desc: `المبلغ: ${fmt(s.amount, s.currency)} — التاريخ: ${s.date} ${isOverdue ? '(متأخر)' : '(اليوم)'}`,
+          date: s.date,
+          actionTab: 'schedule'
+        });
+      });
+      // 2. Overdue Debts
+      (state.debts || []).filter(d => Number(d.totalAmount) > Number(d.paidAmount) && d.dueDate < today).forEach(d => {
+        alerts.push({
+          id: d.id,
+          type: 'overdue_debt',
+          title: `دين متأخر الاستحقاق (${d.direction === 'payable' ? 'عليك' : 'لك'}): ${d.name}`,
+          desc: `المتبقي: ${fmt(Number(d.totalAmount) - Number(d.paidAmount), d.currency)} — تاريخ الاستحقاق: ${d.dueDate}`,
+          date: d.dueDate,
+          actionTab: 'debts'
+        });
+      });
+      // 3. Low stock inventory items
+      (state.shopProducts || []).filter(p => Number(p.qty) <= Number(p.minQty ?? 3)).forEach(p => {
+        alerts.push({
+          id: p.id,
+          type: 'low_stock',
+          title: `تنبيه نفاد مخزون: ${p.name}`,
+          desc: `الكمية المتوفرة حالياً: ${p.qty} قطعة (الحد الأدنى: ${p.minQty ?? 3})`,
+          date: todayISO(),
+          actionTab: 'shop'
+        });
+      });
+      return alerts;
+    }
+
+    function updateBellDotAndNotifications() {
+      const alerts = getActiveAlertsList();
+      const dot = document.getElementById('headerBellDot');
+      if (dot) {
+        dot.classList.toggle('hidden', alerts.length === 0);
+      }
+    }
+
+    function openNotificationsModal() {
+      const alerts = getActiveAlertsList();
+      const container = document.getElementById('notificationsListContainer');
+      if (!container) return;
+      if (!alerts.length) {
+        container.innerHTML = `<div class="p-8 text-center text-slate-400 text-xs">لا توجد تنبيهات أو إشعارات معلقة حالياً ✓</div>`;
+      } else {
+        container.innerHTML = alerts.map(a => `
+          <div class="p-3.5 rounded-2xl bg-white/70 border border-white flex items-center justify-between gap-3 shadow-2xs">
+            <div class="min-w-0">
+              <h4 class="font-extrabold text-xs sm:text-sm text-slate-900 truncate">${escapeHtml(a.title)}</h4>
+              <p class="text-[11px] text-slate-600 mt-0.5">${escapeHtml(a.desc)}</p>
+            </div>
+            <button type="button" onclick="closeModal('notificationsModal'); switchTab('${a.actionTab}')" class="ios-btn bg-sky-500/15 hover:bg-sky-500/25 text-sky-800 text-xs font-bold px-3 py-1.5 rounded-xl shrink-0">عرض</button>
+          </div>
+        `).join('');
+      }
+      openModal('notificationsModal');
+    }
+
     window.addEventListener('DOMContentLoaded', () => {
+      updateBellDotAndNotifications();
       initThemeAndLock();
       processDueRecurringExpenses();
       renderAll();
     });
   </script>
+  <!-- Notifications & Alerts Center Modal -->
+  <div id="notificationsModal" class="fixed inset-0 bg-slate-900/35 z-50 hidden items-center justify-center p-4 overflow-y-auto">
+    <div class="ios-modal max-w-md w-full p-5 sm:p-6 animate-slide-up my-auto space-y-4">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center gap-2">
+          <span class="w-8 h-8 rounded-xl bg-amber-500/20 text-amber-800 flex items-center justify-center font-bold text-sm">🔔</span>
+          <h3 class="text-base sm:text-lg font-extrabold text-slate-900">مركز التنبيهات والإشعارات</h3>
+        </div>
+        <button type="button" onclick="closeModal('notificationsModal')" class="w-8 h-8 rounded-full bg-slate-200/70 hover:bg-slate-200 text-slate-600 flex items-center justify-center text-sm font-bold">✕</button>
+      </div>
+      <div id="notificationsListContainer" class="space-y-2.5 max-h-[60vh] overflow-y-auto pr-0.5"></div>
+      <button type="button" onclick="closeModal('notificationsModal')" class="ios-btn w-full bg-gradient-to-br from-sky-500 to-teal-700 text-white font-bold py-2.5 rounded-2xl text-xs">إغلاق</button>
+    </div>
+  </div>
+
 </body>
 </html>
