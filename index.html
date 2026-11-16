@@ -50,10 +50,6 @@
       border: 1px solid rgba(226, 232, 240, 0.95);
       box-shadow: 0 18px 40px rgba(15, 23, 42, 0.22);
       border-radius: 26px;
-      will-change: transform;
-    }
-    #sideNavDrawer, #sideNavDrawer * {
-      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", "SF Arabic", "Helvetica Neue", "Geeza Pro", system-ui, sans-serif !important;
     }
     #sideNavDrawer {
       background: linear-gradient(155deg, rgba(255, 255, 255, 0.84) 0%, rgba(240, 249, 255, 0.76) 55%, rgba(230, 255, 250, 0.78) 100%) !important;
@@ -86,11 +82,6 @@
     }
     .no-scrollbar::-webkit-scrollbar { display: none; }
     .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-    @keyframes slideUp {
-      from { opacity: 0; transform: translateY(10px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-    .animate-slide-up { animation: slideUp 0.14s ease-out; }
   </style>
 </head>
 <body class="min-h-screen flex flex-col">
@@ -120,26 +111,27 @@
 
   <!-- SIDEBAR DRAWER -->
   <div id="sideNavBackdrop" onclick="toggleSideNavDrawer(false)" class="fixed inset-0 bg-slate-900/35 z-40 hidden"></div>
-  <aside id="sideNavDrawer" class="fixed top-0 right-0 bottom-0 w-60 max-w-[70vw] z-50 ios-modal rounded-none rounded-l-3xl p-3 flex flex-col justify-between transform translate-x-full transition-transform duration-200 ease-out shadow-2xl">
-    <div class="space-y-3 overflow-y-auto no-scrollbar">
-      <div class="flex items-center justify-between pb-3 border-b border-white/70 gap-2">
-        <div class="flex items-center gap-1.5 min-w-0">
-          <span onclick="handleStealthDevTap()" class="icon-badge-3d w-7 h-7 rounded-[10px] bg-gradient-to-br from-sky-500 to-teal-700 text-white font-extrabold text-xs shrink-0 cursor-pointer">$</span>
+  <aside id="sideNavDrawer" class="fixed top-0 right-0 bottom-0 w-64 max-w-[75vw] z-55 ios-modal rounded-none rounded-l-3xl p-4 flex flex-col justify-between transform translate-x-full transition-transform duration-200 ease-out shadow-2xl">
+    <div class="space-y-4 overflow-y-auto no-scrollbar">
+      <div class="flex items-center justify-between pb-3 border-b border-slate-200 gap-2">
+        <div class="flex items-center gap-2 min-w-0">
+          <span onclick="handleStealthDevTap()" class="icon-badge-3d w-8 h-8 rounded-[10px] bg-gradient-to-br from-sky-500 to-teal-700 text-white font-extrabold text-xs shrink-0 cursor-pointer">$</span>
           <h2 class="font-extrabold text-sm text-slate-900 truncate">الزعيم PRO</h2>
         </div>
-        <button type="button" onclick="toggleSideNavDrawer(false)" class="w-7 h-7 rounded-full bg-slate-200 text-slate-600 flex items-center justify-center font-bold">✕</button>
+        <button type="button" onclick="toggleSideNavDrawer(false)" class="w-8 h-8 rounded-full bg-slate-200 text-slate-600 flex items-center justify-center font-bold">✕</button>
       </div>
 
-      <nav class="flex flex-col gap-1.5">
-        <button type="button" data-tab="dashboard" class="tab-btn ios-btn active w-full text-right px-3 py-2 rounded-xl text-xs font-bold">لوحة التحكم</button>
-        <button type="button" data-tab="transactions" class="tab-btn ios-btn w-full text-right px-3 py-2 rounded-xl text-xs font-bold text-slate-600 hover:bg-white/60">المدخول والمصروف</button>
-        <button type="button" data-tab="settings" class="tab-btn ios-btn w-full text-right px-3 py-2 rounded-xl text-xs font-bold text-slate-600 hover:bg-white/60">الإعدادات والحساب</button>
+      <nav class="flex flex-col gap-2">
+        <button type="button" data-tab="dashboard" class="tab-btn ios-btn active w-full text-right px-3.5 py-2.5 rounded-xl text-xs font-extrabold">📊 لوحة التحكم</button>
+        <button type="button" data-tab="transactions" class="tab-btn ios-btn w-full text-right px-3.5 py-2.5 rounded-xl text-xs font-extrabold text-slate-600 hover:bg-white/60">💵 المدخول والمصروف</button>
+        <button type="button" data-tab="settings" class="tab-btn ios-btn w-full text-right px-3.5 py-2.5 rounded-xl text-xs font-extrabold text-slate-600 hover:bg-white/60">⚙️ الإعدادات والحساب</button>
       </nav>
     </div>
 
-    <div class="pt-2.5 border-t border-white/70 space-y-2">
-      <button type="button" id="btnDrawerDevAdmin" onclick="toggleSideNavDrawer(false); openAdminMerchantModal()" class="hidden ios-btn w-full bg-gradient-to-r from-indigo-600 to-violet-700 text-white text-xs font-extrabold py-2 px-3 rounded-xl shadow-sm flex items-center justify-between">
-        <span>🛠️ لوحة المطور الموثّق</span>
+    <div class="pt-3 border-t border-slate-200 space-y-2.5">
+      <button type="button" id="btnDrawerDevAdmin" onclick="toggleSideNavDrawer(false); openAdminMerchantModal()" class="ios-btn w-full bg-gradient-to-r from-indigo-600 to-violet-700 text-white text-xs font-extrabold py-2.5 px-3.5 rounded-2xl shadow-md flex items-center justify-between">
+        <span>🛠️ لوحة المطور والإدارة</span>
+        <span class="text-[10px] bg-white/20 px-2 py-0.5 rounded-md">مفتوح</span>
       </button>
     </div>
   </aside>
@@ -153,12 +145,14 @@
       </div>
     </section>
 
-    <section id="view-settings" class="tab-view hidden space-y-3.5">
+    <section id="view-settings" class="tab-view hidden space-y-4">
       <div class="glass-card p-5 space-y-4">
         <h3 class="text-base font-extrabold text-slate-900">إعدادات الحساب والمزامنة</h3>
-        <p class="text-xs text-slate-600">حسابك الحالي:</p>
-        <div id="settingsAccountDisplay" class="p-3 rounded-xl bg-white/80 border border-slate-200 text-xs font-bold">لم تقم بتسجيل الدخول بعد</div>
-        <button type="button" onclick="openAccountModal()" class="ios-btn bg-indigo-600 text-white text-xs font-bold px-4 py-2.5 rounded-xl">تسجيل الدخول / ربط البريد</button>
+        <div id="settingsAccountDisplay" class="p-3.5 rounded-2xl bg-white/80 border border-slate-200 text-xs font-bold leading-relaxed">جاري التحقق من الحساب...</div>
+        <div class="flex flex-wrap gap-2 pt-2">
+          <button type="button" onclick="openAccountModal()" class="ios-btn bg-indigo-600 text-white text-xs font-bold px-4 py-2.5 rounded-xl">تسجيل الدخول / ربط البريد</button>
+          <button type="button" onclick="signOutAccount()" class="ios-btn bg-rose-500/15 text-rose-700 text-xs font-bold px-4 py-2.5 rounded-xl">تسجيل الخروج (تجربة نسخة عادية)</button>
+        </div>
       </div>
     </section>
   </main>
@@ -217,7 +211,7 @@
         <button type="button" onclick="closeModal('subscriptionModal')" class="w-8 h-8 rounded-full bg-slate-200 text-slate-600 flex items-center justify-center font-bold">✕</button>
       </div>
       <div id="subCurrentPlanBanner" class="p-3.5 rounded-2xl bg-sky-500/15 border border-sky-300 text-xs"></div>
-      <button type="button" id="btnOpenAdminMerchant" onclick="openAdminMerchantModal()" class="hidden ios-btn w-full bg-indigo-600 text-white text-xs font-extrabold py-2.5 rounded-xl">🛠️ لوحة المطور والإدارة</button>
+      <button type="button" onclick="closeModal('subscriptionModal'); openAdminMerchantModal()" class="ios-btn w-full bg-indigo-600 text-white text-xs font-extrabold py-2.5 rounded-xl">🛠️ فتح لوحة المطور والإدارة</button>
     </div>
   </div>
 
@@ -260,12 +254,10 @@
     function updateSubscriptionUI() {
       const sub = getEffectiveSubscription();
       const isDev = Boolean(sub.isDev);
-      document.getElementById('btnOpenAdminMerchant')?.classList.toggle('hidden', !isDev);
-      document.getElementById('btnDrawerDevAdmin')?.classList.toggle('hidden', !isDev);
       
       const disp = document.getElementById('settingsAccountDisplay');
       if (disp) {
-        disp.textContent = activeAccount && activeAccount.email ? `مسجل حالياً: ${activeAccount.email} (${isDev ? 'مطور موثّق' : 'حساب عادي'})` : 'لم تقم بتسجيل الدخول بعد';
+        disp.textContent = activeAccount && activeAccount.email ? `مسجل حالياً: ${activeAccount.email} (${isDev ? 'مطور موثّق 🛠️' : 'حساب عادي'})` : 'لم تقم بتسجيل الدخول بعد';
       }
 
       if (isDev) {
@@ -286,12 +278,22 @@
       
       if (['hussamalzaeem20@gmail.com', 'hussamsungam@gmail.com'].includes(email)) {
         activateDeveloperMode();
+      } else {
+        localStorage.removeItem('alzaeem_pro_verified_dev_v1');
       }
       
       closeModal('accountModal');
       updateSubscriptionUI();
       showToast(`تم تسجيل الدخول بنجاح إلى ${email}`);
     });
+
+    function signOutAccount() {
+      localStorage.removeItem(ACTIVE_ACCOUNT_KEY);
+      localStorage.removeItem('alzaeem_pro_verified_dev_v1');
+      activeAccount = null;
+      updateSubscriptionUI();
+      showToast('تم تسجيل الخروج بنجاح والتحويل لحساب عادي');
+    }
 
     document.getElementById('adminUnlockForm')?.addEventListener('submit', e => {
       e.preventDefault();
@@ -307,11 +309,12 @@
 
     function openAdminMerchantModal() {
       document.getElementById('adminPinInput').value = '';
-      document.getElementById('adminPinGate').classList.remove('hidden');
-      document.getElementById('adminControlsBody').classList.add('hidden');
       if (isDeveloperModeActive()) {
         document.getElementById('adminPinGate').classList.add('hidden');
         document.getElementById('adminControlsBody').classList.remove('hidden');
+      } else {
+        document.getElementById('adminPinGate').classList.remove('hidden');
+        document.getElementById('adminControlsBody').classList.add('hidden');
       }
       openModal('adminMerchantModal');
     }
