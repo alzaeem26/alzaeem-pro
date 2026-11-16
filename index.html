@@ -7,8 +7,8 @@
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-  <meta name="apple-mobile-web-app-title" content="الزعيم برو" />
-  <title>الزعيم برو | إدارة الميزانية والديون ومواعيد التحصيل</title>
+  <meta name="apple-mobile-web-app-title" content="الزعيم PRO" />
+  <title>الزعيم PRO | إدارة الميزانية والديون ومواعيد التحصيل</title>
   <link id="appFavicon" rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 128 128'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0%25' stop-color='%230ea5e9'/%3E%3Cstop offset='100%25' stop-color='%230f766e'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='128' height='128' rx='28' fill='url(%23g)'/%3E%3Ctext x='64' y='84' font-size='68' font-family='Arial,sans-serif' font-weight='bold' text-anchor='middle' fill='white'%3E%24%3C/text%3E%3C/svg%3E" />
   <link id="appleTouchIcon" rel="apple-touch-icon" href="" />
   <script src="https://cdn.tailwindcss.com/3.4.17"></script>
@@ -39,179 +39,90 @@
       overflow-x: hidden;
     }
 
-    /* Ambient Glass Orbs (GPU-friendly static soft glow) */
+    /* Ultra-Fast Hardware-Accelerated Glass Styling (Zero Lag on Mobile & Low-End Devices) */
     .ambient-orb {
-      position: fixed;
-      border-radius: 9999px;
-      filter: blur(60px);
-      pointer-events: none;
-      z-index: 0;
-      opacity: 0.36;
-      will-change: auto;
+      display: none !important;
     }
 
     .ios-header {
-      background: rgba(255, 255, 255, 0.82);
-      backdrop-filter: blur(14px) saturate(160%);
-      -webkit-backdrop-filter: blur(14px) saturate(160%);
-      border-bottom: 1.5px solid rgba(255, 255, 255, 0.92);
-      box-shadow: 0 6px 20px rgba(15, 23, 42, 0.05);
+      background: rgba(255, 255, 255, 0.94);
+      border-bottom: 1px solid rgba(203, 213, 225, 0.7);
+      box-shadow: 0 2px 10px rgba(15, 23, 42, 0.04);
     }
 
     .glass-card {
       position: relative;
-      overflow: hidden;
-      background: linear-gradient(145deg, rgba(255, 255, 255, 0.84) 0%, rgba(248, 252, 255, 0.72) 100%);
-      backdrop-filter: blur(12px) saturate(150%);
-      -webkit-backdrop-filter: blur(12px) saturate(150%);
-      border: 1.5px solid rgba(255, 255, 255, 0.94);
-      box-shadow:
-        0 8px 24px -6px rgba(15, 23, 42, 0.07),
-        inset 0 1px 1px rgba(255, 255, 255, 0.95);
-      border-radius: 24px;
-      transition: box-shadow 0.18s ease, border-color 0.18s ease;
-    }
-    .glass-card::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(125deg, rgba(255, 255, 255, 0.65) 0%, rgba(255, 255, 255, 0.14) 36%, rgba(255, 255, 255, 0) 62%);
-      pointer-events: none;
-      z-index: 0;
+      background: rgba(255, 255, 255, 0.92);
+      border: 1px solid rgba(226, 232, 240, 0.95);
+      box-shadow: 0 4px 12px -2px rgba(15, 23, 42, 0.05);
+      border-radius: 22px;
     }
     .glass-card > * {
       position: relative;
       z-index: 1;
     }
-    .glass-card:hover {
-      border-color: #ffffff;
-      box-shadow:
-        0 22px 50px -8px rgba(2, 132, 199, 0.26),
-        0 6px 16px rgba(15, 23, 42, 0.08),
-        inset 0 2px 2px rgba(255, 255, 255, 1);
-    }
 
     .ios-modal {
-      background: linear-gradient(155deg, rgba(255, 255, 255, 0.74) 0%, rgba(240, 249, 255, 0.58) 100%);
-      backdrop-filter: blur(44px) saturate(250%) brightness(1.04);
-      -webkit-backdrop-filter: blur(44px) saturate(250%) brightness(1.04);
-      border: 1.5px solid rgba(255, 255, 255, 0.98);
-      box-shadow:
-        0 32px 80px rgba(14, 116, 144, 0.28),
-        inset 0 2px 1.5px rgba(255, 255, 255, 1);
-      border-radius: 28px;
+      background: rgba(255, 255, 255, 0.98);
+      border: 1px solid rgba(226, 232, 240, 0.95);
+      box-shadow: 0 18px 40px rgba(15, 23, 42, 0.22);
+      border-radius: 26px;
+      will-change: transform;
     }
 
     .ios-input {
-      background: rgba(255, 255, 255, 0.78);
-      border: 1.5px solid rgba(255, 255, 255, 0.95);
-      box-shadow: inset 0 1.5px 3px rgba(14, 116, 144, 0.08), 0 1px 0 rgba(255, 255, 255, 0.9);
-      transition: all 0.18s ease;
+      background: #ffffff;
+      border: 1.5px solid rgba(203, 213, 225, 0.85);
+      transition: border-color 0.12s ease;
     }
     .ios-input:focus {
-      background: rgba(255, 255, 255, 0.96);
+      background: #ffffff;
       border-color: #0ea5e9;
-      box-shadow: 0 0 0 3.5px rgba(14, 165, 233, 0.28), inset 0 1px 2px rgba(15, 23, 42, 0.03);
+      box-shadow: 0 0 0 2.5px rgba(14, 165, 233, 0.2);
     }
 
     .ios-nav-pill {
-      background: rgba(255, 255, 255, 0.48);
-      backdrop-filter: blur(26px) saturate(210%);
-      -webkit-backdrop-filter: blur(26px) saturate(210%);
-      border: 1.5px solid rgba(255, 255, 255, 0.94);
-      box-shadow: inset 0 1.5px 1px rgba(255, 255, 255, 0.98), 0 6px 18px rgba(15, 23, 42, 0.06);
+      background: rgba(255, 255, 255, 0.85);
+      border: 1px solid rgba(226, 232, 240, 0.9);
     }
 
-    /* iPhone Squircle Liquid Glass Buttons & Icons */
+    /* Fast Squircle Buttons & Icons */
     .tab-btn {
-      border-radius: 16px;
+      border-radius: 14px;
       border: 1px solid transparent;
     }
     .tab-btn.active {
-      background: linear-gradient(155deg, rgba(14, 165, 233, 0.88) 0%, rgba(13, 148, 136, 0.92) 100%);
-      backdrop-filter: blur(18px) saturate(200%);
-      -webkit-backdrop-filter: blur(18px) saturate(200%);
-      border: 1px solid rgba(255, 255, 255, 0.72);
+      background: linear-gradient(135deg, #0ea5e9 0%, #0d9488 100%);
       color: #ffffff;
-      box-shadow:
-        0 8px 20px -4px rgba(14, 165, 233, 0.42),
-        inset 0 1.5px 1px rgba(255, 255, 255, 0.78),
-        inset 0 -1.5px 2px rgba(15, 23, 42, 0.14);
+      box-shadow: 0 4px 10px -2px rgba(14, 165, 233, 0.35);
     }
 
     .ios-btn {
       position: relative;
-      overflow: hidden;
-      border: 1px solid rgba(255, 255, 255, 0.65);
-      transition: transform 0.16s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.22s ease, filter 0.18s ease;
-      box-shadow:
-        0 6px 16px -3px rgba(15, 23, 42, 0.10),
-        inset 0 1.5px 1px rgba(255, 255, 255, 0.75),
-        inset 0 -1.5px 2px rgba(15, 23, 42, 0.08);
-    }
-    .ios-btn::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(165deg, rgba(255, 255, 255, 0.42) 0%, rgba(255, 255, 255, 0.08) 46%, rgba(255, 255, 255, 0) 52%);
-      pointer-events: none;
-    }
-    .ios-btn::after {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(120deg, rgba(255, 255, 255, 0) 20%, rgba(255, 255, 255, 0.45) 50%, rgba(255, 255, 255, 0) 80%);
-      transform: translateX(120%);
-      transition: transform 0.55s ease;
-      pointer-events: none;
-    }
-    .ios-btn:hover::after { transform: translateX(-120%); }
-    .ios-btn:hover {
-      filter: brightness(1.04);
-      transform: translateY(-1px);
-      box-shadow:
-        0 10px 22px -4px rgba(14, 165, 233, 0.24),
-        inset 0 1.5px 1.5px rgba(255, 255, 255, 0.92),
-        inset 0 -1.5px 2px rgba(15, 23, 42, 0.10);
+      border: 1px solid rgba(255, 255, 255, 0.55);
+      transition: transform 0.1s ease, opacity 0.1s ease;
+      box-shadow: 0 3px 8px -2px rgba(15, 23, 42, 0.08);
     }
     .ios-btn:active {
-      transform: scale(0.95) translateY(0);
+      transform: scale(0.97);
     }
 
-    /* iPhone App-Icon Style Squircle Glass Badges */
     .icon-badge-3d {
-      position: relative;
-      overflow: hidden;
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      border-radius: 14px;
-      border: 1.25px solid rgba(255, 255, 255, 0.78);
-      box-shadow:
-        0 8px 18px -4px rgba(15, 23, 42, 0.18),
-        inset 0 2px 1.5px rgba(255, 255, 255, 0.92),
-        inset 0 -2px 3px rgba(15, 23, 42, 0.18);
-      transition: transform 0.2s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.22s ease;
-    }
-    .icon-badge-3d::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(160deg, rgba(255, 255, 255, 0.58) 0%, rgba(255, 255, 255, 0.14) 48%, rgba(255, 255, 255, 0) 54%);
-      pointer-events: none;
-    }
-    .glass-card:hover .icon-badge-3d,
-    .ios-btn:hover .icon-badge-3d {
-      transform: scale(1.07);
+      border-radius: 13px;
+      border: 1px solid rgba(255, 255, 255, 0.75);
+      box-shadow: 0 4px 10px -2px rgba(15, 23, 42, 0.14);
     }
 
     .no-scrollbar::-webkit-scrollbar { display: none; }
     .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
     @keyframes slideUp {
-      from { opacity: 0; transform: translateY(16px) scale(0.97); }
-      to { opacity: 1; transform: translateY(0) scale(1); }
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
     }
-    .animate-slide-up { animation: slideUp 0.24s cubic-bezier(0.22, 1, 0.36, 1); }
+    .animate-slide-up { animation: slideUp 0.14s ease-out; }
 
     /* ==================== DARK GLASS MODE ==================== */
     body.dark-mode {
@@ -300,11 +211,11 @@
   <div class="ambient-orb w-80 h-80 bg-indigo-400 bottom-8 right-1/4" style="animation-delay: -10s;"></div>
 
   <!-- ==================== APP PIN LOCK OVERLAY ==================== -->
-  <div id="appLockOverlay" class="fixed inset-0 bg-slate-950/85 backdrop-blur-2xl z-[100] hidden items-center justify-center p-4">
+  <div id="appLockOverlay" class="fixed inset-0 bg-slate-950/85  z-[100] hidden items-center justify-center p-4">
     <div class="ios-modal max-w-xs w-full p-6 text-center space-y-4 animate-slide-up">
       <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-sky-500 to-teal-700 text-white flex items-center justify-center mx-auto shadow-lg text-2xl">🔐</div>
       <div>
-        <h2 class="text-lg font-extrabold text-slate-900">الزعيم برو مقفل</h2>
+        <h2 class="text-lg font-extrabold text-slate-900">الزعيم PRO مقفل</h2>
         <p class="text-xs text-slate-600 mt-1">أدخل رمز الحماية (PIN) لفتح سجلاتك المالية</p>
       </div>
       <form id="unlockAppForm" class="space-y-3">
@@ -325,7 +236,7 @@
         </span>
         <div class="min-w-0">
           <div class="flex items-center gap-1.5">
-            <span class="font-extrabold text-sm sm:text-base text-slate-900">الزعيم برو</span>
+            <span class="font-extrabold text-sm sm:text-base text-slate-900">الزعيم PRO</span>
             <span id="activeTabHeaderBadge" class="text-[11px] font-bold bg-sky-500/15 text-sky-800 px-2 py-0.5 rounded-full">لوحة التحكم</span>
           </div>
           <span class="text-[10px] text-slate-500 block leading-tight">اضغط لفتح القائمة الجانبية للأقسام</span>
@@ -346,13 +257,13 @@
 
   <!-- Collapsible Sidebar Drawer (Closes when clicking anywhere outside the drawer) -->
   <div id="sideNavBackdrop" onclick="toggleSideNavDrawer(false)" class="fixed inset-0 bg-slate-900/35 z-40 hidden transition-opacity"></div>
-  <aside id="sideNavDrawer" class="fixed top-0 right-0 bottom-0 w-72 max-w-[82vw] z-50 ios-modal rounded-none rounded-l-3xl p-4 flex flex-col justify-between transform translate-x-full transition-transform duration-200 ease-out shadow-2xl">
+  <aside id="sideNavDrawer" class="fixed top-0 right-0 bottom-0 w-60 max-w-[70vw] z-50 ios-modal rounded-none rounded-l-3xl p-3 flex flex-col justify-between transform translate-x-full transition-transform duration-200 ease-out shadow-2xl">
     <div class="space-y-3 overflow-y-auto no-scrollbar">
       <div class="flex items-center justify-between pb-3 border-b border-white/70">
         <div class="flex items-center gap-2.5">
           <span class="icon-badge-3d w-9 h-9 rounded-[12px] bg-gradient-to-br from-sky-500 to-teal-700 text-white font-extrabold text-base">$</span>
           <div>
-            <h2 class="font-extrabold text-base text-slate-900">الزعيم برو</h2>
+            <h2 class="font-extrabold text-base text-slate-900">الزعيم PRO</h2>
             <p class="text-[11px] text-slate-500">القائمة الرئيسية للأقسام</p>
           </div>
         </div>
@@ -360,59 +271,59 @@
       </div>
 
       <nav class="flex flex-col gap-1.5" aria-label="التنقل الجانبي">
-        <button type="button" data-tab="dashboard" data-label="لوحة التحكم" class="tab-btn ios-btn active w-full text-right px-3.5 py-2.5 rounded-2xl text-sm font-bold flex items-center justify-between">
+        <button type="button" data-tab="dashboard" data-label="لوحة التحكم" class="tab-btn ios-btn active w-full text-right px-3 py-2 rounded-xl text-xs font-bold flex items-center justify-between">
           <span class="flex items-center gap-2.5">
             <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2.1" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 5a1 1 0 011-1h4a1 1 0 011 1v5a1 1 0 01-1 1H5a1 1 0 01-1-1V5zm10 0a1 1 0 011-1h4a1 1 0 011 1v2a1 1 0 01-1 1h-4a1 1 0 01-1-1V5zM4 16a1 1 0 011-1h4a1 1 0 011 1v3a1 1 0 01-1 1H5a1 1 0 01-1-1v-3zm10-3a1 1 0 011-1h4a1 1 0 011 1v6a1 1 0 01-1 1h-4a1 1 0 01-1-1v-6z"/></svg>
             لوحة التحكم
           </span>
         </button>
-        <button type="button" data-tab="transactions" data-label="المدخول والمصروف" class="tab-btn ios-btn w-full text-right px-3.5 py-2.5 rounded-2xl text-sm font-bold text-slate-600 hover:bg-white/60 flex items-center justify-between">
+        <button type="button" data-tab="transactions" data-label="المدخول والمصروف" class="tab-btn ios-btn w-full text-right px-3 py-2 rounded-xl text-xs font-bold text-slate-600 hover:bg-white/60 flex items-center justify-between">
           <span class="flex items-center gap-2.5">
             <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2.1" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4"/></svg>
             المدخول والمصروف
           </span>
         </button>
-        <button type="button" data-tab="budget" data-label="الميزانية" class="tab-btn ios-btn w-full text-right px-3.5 py-2.5 rounded-2xl text-sm font-bold text-slate-600 hover:bg-white/60 flex items-center justify-between">
+        <button type="button" data-tab="budget" data-label="الميزانية" class="tab-btn ios-btn w-full text-right px-3 py-2 rounded-xl text-xs font-bold text-slate-600 hover:bg-white/60 flex items-center justify-between">
           <span class="flex items-center gap-2.5">
             <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2.1" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M11 3.055A9.001 9.001 0 1020.945 13H11V3.055z"/><path stroke-linecap="round" stroke-linejoin="round" d="M20.488 9H15V3.512A9.025 9.025 0 0120.488 9z"/></svg>
             الميزانية
           </span>
         </button>
-        <button type="button" data-tab="debts" data-label="الأشخاص والديون" class="tab-btn ios-btn w-full text-right px-3.5 py-2.5 rounded-2xl text-sm font-bold text-slate-600 hover:bg-white/60 flex items-center justify-between">
+        <button type="button" data-tab="debts" data-label="الأشخاص والديون" class="tab-btn ios-btn w-full text-right px-3 py-2 rounded-xl text-xs font-bold text-slate-600 hover:bg-white/60 flex items-center justify-between">
           <span class="flex items-center gap-2.5">
             <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2.1" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
             الأشخاص والديون
           </span>
           <span id="navDebtBadge" class="hidden bg-amber-400/25 text-amber-900 text-xs px-2 py-0.5 rounded-full">0</span>
         </button>
-        <button type="button" data-tab="schedule" data-label="مواعيد القبض والتحصيل" class="tab-btn ios-btn w-full text-right px-3.5 py-2.5 rounded-2xl text-sm font-bold text-slate-600 hover:bg-white/60 flex items-center justify-between">
+        <button type="button" data-tab="schedule" data-label="مواعيد القبض والتحصيل" class="tab-btn ios-btn w-full text-right px-3 py-2 rounded-xl text-xs font-bold text-slate-600 hover:bg-white/60 flex items-center justify-between">
           <span class="flex items-center gap-2.5">
             <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2.1" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
             مواعيد القبض والتحصيل
           </span>
           <span id="navScheduleBadge" class="hidden bg-rose-500/20 text-rose-800 text-xs px-2 py-0.5 rounded-full">0</span>
         </button>
-        <button type="button" data-tab="fullLog" data-label="السجل الكامل" class="tab-btn ios-btn w-full text-right px-3.5 py-2.5 rounded-2xl text-sm font-bold text-slate-600 hover:bg-white/60 flex items-center justify-between">
+        <button type="button" data-tab="fullLog" data-label="السجل الكامل" class="tab-btn ios-btn w-full text-right px-3 py-2 rounded-xl text-xs font-bold text-slate-600 hover:bg-white/60 flex items-center justify-between">
           <span class="flex items-center gap-2.5">
             <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2.1" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"/></svg>
             السجل الكامل
           </span>
         </button>
-        <button type="button" data-tab="shop" data-label="إدارة المحل (POS)" class="tab-btn ios-btn w-full text-right px-3.5 py-2.5 rounded-2xl text-sm font-bold text-slate-600 hover:bg-white/60 flex items-center justify-between">
+        <button type="button" data-tab="shop" data-label="إدارة المحل (POS)" class="tab-btn ios-btn w-full text-right px-3 py-2 rounded-xl text-xs font-bold text-slate-600 hover:bg-white/60 flex items-center justify-between">
           <span class="flex items-center gap-2.5">
             <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2.1" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
             إدارة المحل (POS)
           </span>
           <span id="navLowStockBadge" class="hidden bg-rose-500/20 text-rose-800 text-xs px-2 py-0.5 rounded-full">0</span>
         </button>
-        <button type="button" data-tab="quickNotes" data-label="المفكرة والإدخال السريع" class="tab-btn ios-btn w-full text-right px-3.5 py-2.5 rounded-2xl text-sm font-bold text-slate-600 hover:bg-white/60 flex items-center justify-between">
+        <button type="button" data-tab="quickNotes" data-label="المفكرة والإدخال السريع" class="tab-btn ios-btn w-full text-right px-3 py-2 rounded-xl text-xs font-bold text-slate-600 hover:bg-white/60 flex items-center justify-between">
           <span class="flex items-center gap-2.5">
             <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2.1" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
             المفكرة والإدخال السريع
           </span>
           <span id="navNotesBadge" class="hidden bg-indigo-500/20 text-indigo-800 text-xs px-2 py-0.5 rounded-full">0</span>
         </button>
-        <button type="button" data-tab="settings" data-label="الإعدادات والتهيئة" class="tab-btn ios-btn w-full text-right px-3.5 py-2.5 rounded-2xl text-sm font-bold text-slate-600 hover:bg-white/60 flex items-center justify-between">
+        <button type="button" data-tab="settings" data-label="الإعدادات والتهيئة" class="tab-btn ios-btn w-full text-right px-3 py-2 rounded-xl text-xs font-bold text-slate-600 hover:bg-white/60 flex items-center justify-between">
           <span class="flex items-center gap-2.5">
             <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2.1" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
             الإعدادات والتهيئة
@@ -1084,7 +995,7 @@
   <!-- ==================== MODALS ==================== -->
 
   <!-- World Currencies Picker Modal -->
-  <div id="worldCurrenciesModal" class="fixed inset-0 bg-slate-900/35 backdrop-blur-md z-50 hidden items-center justify-center p-4 overflow-y-auto">
+  <div id="worldCurrenciesModal" class="fixed inset-0 bg-slate-900/35  z-50 hidden items-center justify-center p-4 overflow-y-auto">
     <div class="ios-modal max-w-md w-full p-5 sm:p-6 animate-slide-up my-auto space-y-3.5">
       <div class="flex items-center justify-between">
         <div>
@@ -1110,7 +1021,7 @@
   </div>
 
   <!-- Account Sign-In Modal -->
-  <div id="accountModal" class="fixed inset-0 bg-slate-900/35 backdrop-blur-md z-50 hidden items-center justify-center p-4">
+  <div id="accountModal" class="fixed inset-0 bg-slate-900/35  z-50 hidden items-center justify-center p-4">
     <div class="ios-modal max-w-md w-full p-6 animate-slide-up">
       <div class="flex items-center justify-between mb-4">
         <h3 class="text-lg font-extrabold text-slate-900">تفعيل الحساب والمزامنة السحابية</h3>
@@ -1142,7 +1053,7 @@
   </div>
 
   <!-- Sign Out Password Modal -->
-  <div id="signOutModal" class="fixed inset-0 bg-slate-900/35 backdrop-blur-md z-50 hidden items-center justify-center p-4">
+  <div id="signOutModal" class="fixed inset-0 bg-slate-900/35  z-50 hidden items-center justify-center p-4">
     <div class="ios-modal max-w-sm w-full p-6 animate-slide-up text-center space-y-4">
       <div class="w-12 h-12 rounded-full bg-rose-500/15 text-rose-600 flex items-center justify-center mx-auto text-xl font-bold">🔒</div>
       <h3 class="text-lg font-extrabold text-slate-900">تأكيد الخروج من الحساب</h3>
@@ -1159,7 +1070,7 @@
   </div>
 
   <!-- Custom External Firebase Configuration Modal -->
-  <div id="customFirebaseModal" class="fixed inset-0 bg-slate-900/40 backdrop-blur-md z-50 hidden items-center justify-center p-4 overflow-y-auto">
+  <div id="customFirebaseModal" class="fixed inset-0 bg-slate-900/40  z-50 hidden items-center justify-center p-4 overflow-y-auto">
     <div class="ios-modal max-w-md w-full p-5 sm:p-6 animate-slide-up my-auto space-y-3.5">
       <div class="flex items-center justify-between">
         <div>
@@ -1189,7 +1100,7 @@
   </div>
 
   <!-- Install App Instructions Modal -->
-  <div id="installModal" class="fixed inset-0 bg-slate-900/35 backdrop-blur-md z-50 hidden items-center justify-center p-4">
+  <div id="installModal" class="fixed inset-0 bg-slate-900/35  z-50 hidden items-center justify-center p-4">
     <div class="ios-modal max-w-sm w-full p-6 animate-slide-up space-y-4 text-right">
       <div class="flex items-center justify-between">
         <h3 class="text-lg font-extrabold text-slate-900">تثبيت التطبيق على الموبايل</h3>
@@ -1210,7 +1121,7 @@
   </div>
 
   <!-- Person Modal -->
-  <div id="personModal" class="fixed inset-0 bg-slate-900/45 backdrop-blur-md z-[62] hidden items-center justify-center p-4">
+  <div id="personModal" class="fixed inset-0 bg-slate-900/45  z-[62] hidden items-center justify-center p-4">
     <div class="ios-modal max-w-md w-full p-6 animate-slide-up">
       <div class="flex items-center justify-between mb-4">
         <h3 id="personModalTitle" class="text-lg font-extrabold text-slate-900">إضافة شخص / جهة للتعامل</h3>
@@ -1240,7 +1151,7 @@
   </div>
 
   <!-- Smart Contact Sync & Import Modal -->
-  <div id="contactSyncModal" class="fixed inset-0 bg-slate-900/45 backdrop-blur-md z-[64] hidden items-center justify-center p-4 overflow-y-auto">
+  <div id="contactSyncModal" class="fixed inset-0 bg-slate-900/45  z-[64] hidden items-center justify-center p-4 overflow-y-auto">
     <div class="ios-modal max-w-lg w-full p-5 sm:p-6 animate-slide-up my-auto space-y-4">
       <div class="flex items-center justify-between">
         <div>
@@ -1315,7 +1226,7 @@
   </div>
 
   <!-- Transaction Modal -->
-  <div id="txModal" class="fixed inset-0 bg-slate-900/35 backdrop-blur-md z-50 hidden items-center justify-center p-4 overflow-y-auto">
+  <div id="txModal" class="fixed inset-0 bg-slate-900/35  z-50 hidden items-center justify-center p-4 overflow-y-auto">
     <div class="ios-modal max-w-md w-full p-6 animate-slide-up my-auto">
       <div class="flex items-center justify-between mb-4">
         <h3 id="txModalTitle" class="text-lg font-extrabold text-slate-900">إضافة حركة مالية</h3>
@@ -1424,7 +1335,7 @@
   </div>
 
   <!-- Schedule Collection Amount Modal -->
-  <div id="scheduleCollectModal" class="fixed inset-0 bg-slate-900/35 backdrop-blur-md z-50 hidden items-center justify-center p-4">
+  <div id="scheduleCollectModal" class="fixed inset-0 bg-slate-900/35  z-50 hidden items-center justify-center p-4">
     <div class="ios-modal max-w-md w-full p-6 animate-slide-up">
       <div class="flex items-center justify-between mb-4">
         <h3 class="text-lg font-extrabold text-slate-900">تأكيد قبض دفعة الموعد</h3>
@@ -1459,7 +1370,7 @@
   </div>
 
   <!-- Budget Category Modal -->
-  <div id="budgetModal" class="fixed inset-0 bg-slate-900/35 backdrop-blur-md z-50 hidden items-center justify-center p-4">
+  <div id="budgetModal" class="fixed inset-0 bg-slate-900/35  z-50 hidden items-center justify-center p-4">
     <div class="ios-modal max-w-md w-full p-6 animate-slide-up">
       <div class="flex items-center justify-between mb-4">
         <h3 class="text-lg font-extrabold text-slate-900">إضافة / تعديل فئة ميزانية</h3>
@@ -1485,7 +1396,7 @@
   </div>
 
   <!-- Debt Modal -->
-  <div id="debtModal" class="fixed inset-0 bg-slate-900/35 backdrop-blur-md z-50 hidden items-center justify-center p-4 overflow-y-auto">
+  <div id="debtModal" class="fixed inset-0 bg-slate-900/35  z-50 hidden items-center justify-center p-4 overflow-y-auto">
     <div class="ios-modal max-w-md w-full p-6 animate-slide-up my-auto">
       <div class="flex items-center justify-between mb-4">
         <h3 id="debtModalTitle" class="text-lg font-extrabold text-slate-900">تسجيل دين / التزام مالي</h3>
@@ -1587,7 +1498,7 @@
   </div>
 
   <!-- Debt Payment Modal -->
-  <div id="debtPayModal" class="fixed inset-0 bg-slate-900/35 backdrop-blur-md z-50 hidden items-center justify-center p-4">
+  <div id="debtPayModal" class="fixed inset-0 bg-slate-900/35  z-50 hidden items-center justify-center p-4">
     <div class="ios-modal max-w-md w-full p-6 animate-slide-up">
       <div class="flex items-center justify-between mb-4">
         <h3 id="debtPayModalTitle" class="text-lg font-extrabold text-slate-900">تسجيل دفعة تحصيل / سداد</h3>
@@ -1618,7 +1529,7 @@
   </div>
 
   <!-- Installment Plan Modal -->
-  <div id="installmentPlanModal" class="fixed inset-0 bg-slate-900/35 backdrop-blur-md z-50 hidden items-center justify-center p-4">
+  <div id="installmentPlanModal" class="fixed inset-0 bg-slate-900/35  z-50 hidden items-center justify-center p-4">
     <div class="ios-modal max-w-md w-full p-6 animate-slide-up">
       <div class="flex items-center justify-between mb-4">
         <h3 class="text-lg font-extrabold text-slate-900">جدولة المتبقي بالأقساط</h3>
@@ -1664,7 +1575,7 @@
   </div>
 
   <!-- Schedule Modal -->
-  <div id="scheduleModal" class="fixed inset-0 bg-slate-900/35 backdrop-blur-md z-50 hidden items-center justify-center p-4 overflow-y-auto">
+  <div id="scheduleModal" class="fixed inset-0 bg-slate-900/35  z-50 hidden items-center justify-center p-4 overflow-y-auto">
     <div class="ios-modal max-w-md w-full p-6 animate-slide-up my-auto">
       <div class="flex items-center justify-between mb-4">
         <h3 id="scheduleModalTitle" class="text-lg font-extrabold text-slate-900">تحديد موعد قبض / تحصيل</h3>
@@ -1744,7 +1655,7 @@
   </div>
 
   <!-- Digital Receipt / Payment Voucher Modal -->
-  <div id="voucherModal" class="fixed inset-0 bg-slate-900/40 backdrop-blur-md z-[65] hidden items-center justify-center p-4 overflow-y-auto">
+  <div id="voucherModal" class="fixed inset-0 bg-slate-900/40  z-[65] hidden items-center justify-center p-4 overflow-y-auto">
     <div class="ios-modal max-w-md w-full p-6 animate-slide-up my-auto space-y-4">
       <div class="flex items-center justify-between">
         <span class="text-xs font-extrabold bg-sky-500/15 text-sky-800 px-3 py-1 rounded-full">سند مالي رقمي موثّق</span>
@@ -1760,7 +1671,7 @@
   </div>
 
   <!-- Savings Goal Modal -->
-  <div id="savingsGoalModal" class="fixed inset-0 bg-slate-900/35 backdrop-blur-md z-50 hidden items-center justify-center p-4">
+  <div id="savingsGoalModal" class="fixed inset-0 bg-slate-900/35  z-50 hidden items-center justify-center p-4">
     <div class="ios-modal max-w-md w-full p-6 animate-slide-up">
       <div class="flex items-center justify-between mb-4">
         <h3 class="text-lg font-extrabold text-slate-900">إضافة هدف ادخار جديد 🎯</h3>
@@ -1800,7 +1711,7 @@
   </div>
 
   <!-- Savings Goal Deposit Modal -->
-  <div id="goalDepositModal" class="fixed inset-0 bg-slate-900/35 backdrop-blur-md z-50 hidden items-center justify-center p-4">
+  <div id="goalDepositModal" class="fixed inset-0 bg-slate-900/35  z-50 hidden items-center justify-center p-4">
     <div class="ios-modal max-w-sm w-full p-6 animate-slide-up">
       <div class="flex items-center justify-between mb-4">
         <h3 class="text-lg font-extrabold text-slate-900">إيداع في هدف الادخار</h3>
@@ -1825,7 +1736,7 @@
   </div>
 
   <!-- Recurring Expense Modal -->
-  <div id="recurringModal" class="fixed inset-0 bg-slate-900/35 backdrop-blur-md z-50 hidden items-center justify-center p-4">
+  <div id="recurringModal" class="fixed inset-0 bg-slate-900/35  z-50 hidden items-center justify-center p-4">
     <div class="ios-modal max-w-md w-full p-6 animate-slide-up">
       <div class="flex items-center justify-between mb-4">
         <h3 class="text-lg font-extrabold text-slate-900">إضافة مصروف متكرر شهرياً</h3>
@@ -1866,7 +1777,7 @@
   </div>
 
   <!-- Monthly Profit & Loss Report Modal -->
-  <div id="pnlReportModal" class="fixed inset-0 bg-slate-900/35 backdrop-blur-md z-50 hidden items-center justify-center p-4 overflow-y-auto">
+  <div id="pnlReportModal" class="fixed inset-0 bg-slate-900/35  z-50 hidden items-center justify-center p-4 overflow-y-auto">
     <div class="ios-modal max-w-md w-full p-6 animate-slide-up my-auto space-y-4">
       <div class="flex items-center justify-between">
         <h3 class="text-lg font-extrabold text-slate-900">تقرير الأرباح والخسائر الشهري</h3>
@@ -1882,7 +1793,7 @@
   </div>
 
   <!-- Person Statement Modal -->
-  <div id="personStatementModal" class="fixed inset-0 bg-slate-900/35 backdrop-blur-md z-50 hidden items-center justify-center p-4 overflow-y-auto">
+  <div id="personStatementModal" class="fixed inset-0 bg-slate-900/35  z-50 hidden items-center justify-center p-4 overflow-y-auto">
     <div class="ios-modal max-w-lg w-full p-6 animate-slide-up my-auto space-y-4">
       <div class="flex items-center justify-between">
         <div>
@@ -1901,7 +1812,7 @@
   </div>
 
   <!-- Confirm Reset Modal with Warning & Password (0000) -->
-  <div id="resetModal" class="fixed inset-0 bg-slate-900/35 backdrop-blur-md z-50 hidden items-center justify-center p-4">
+  <div id="resetModal" class="fixed inset-0 bg-slate-900/35  z-50 hidden items-center justify-center p-4">
     <div class="ios-modal max-w-sm w-full p-6 animate-slide-up text-center space-y-4">
       <div class="w-12 h-12 rounded-full bg-rose-500/15 text-rose-600 flex items-center justify-center mx-auto text-xl font-bold">⚠</div>
       <h3 class="text-lg font-extrabold text-slate-900">تنبيه: تصفير البيانات</h3>
@@ -1922,7 +1833,7 @@
   </div>
 
   <!-- Receipt Image Viewer Modal -->
-  <div id="receiptViewerModal" class="fixed inset-0 bg-slate-950/75 backdrop-blur-md z-[70] hidden items-center justify-center p-4">
+  <div id="receiptViewerModal" class="fixed inset-0 bg-slate-950/75  z-[70] hidden items-center justify-center p-4">
     <div class="ios-modal max-w-md w-full p-4 animate-slide-up space-y-3 text-center">
       <div class="flex items-center justify-between">
         <h3 id="receiptViewerTitle" class="text-sm font-extrabold text-slate-900">صورة الإيصال</h3>
@@ -1933,7 +1844,7 @@
   </div>
 
   <!-- Universal Floating Calculator Modal -->
-  <div id="universalCalcModal" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-[60] hidden items-center justify-center p-4">
+  <div id="universalCalcModal" class="fixed inset-0 bg-slate-900/40  z-[60] hidden items-center justify-center p-4">
     <div class="ios-modal max-w-xs w-full p-4 animate-slide-up space-y-3">
       <div class="flex items-center justify-between">
         <h3 class="text-sm font-extrabold text-slate-900">الآلة الحاسبة</h3>
@@ -1972,7 +1883,7 @@
   </div>
 
   <!-- Shop Product Modal -->
-  <div id="shopProductModal" class="fixed inset-0 bg-slate-900/40 backdrop-blur-md z-[63] hidden items-center justify-center p-4">
+  <div id="shopProductModal" class="fixed inset-0 bg-slate-900/40  z-[63] hidden items-center justify-center p-4">
     <div class="ios-modal max-w-md w-full p-6 animate-slide-up">
       <div class="flex items-center justify-between mb-4">
         <h3 id="shopProdModalTitle" class="text-lg font-extrabold text-slate-900">إضافة صنف للمخزون 📦</h3>
@@ -2020,7 +1931,7 @@
   </div>
 
   <!-- POS Invoice Modal (Sale & Purchase) -->
-  <div id="posInvoiceModal" class="fixed inset-0 bg-slate-900/45 backdrop-blur-md z-50 hidden items-center justify-center p-4 overflow-y-auto">
+  <div id="posInvoiceModal" class="fixed inset-0 bg-slate-900/45  z-50 hidden items-center justify-center p-4 overflow-y-auto">
     <div class="ios-modal max-w-2xl w-full p-5 sm:p-6 animate-slide-up my-auto space-y-3.5">
       <div class="flex items-center justify-between">
         <h3 id="posModalTitle" class="text-lg font-extrabold text-slate-900">فاتورة مبيع جديدة (كاشير) 🧾</h3>
@@ -2102,7 +2013,7 @@
   </div>
 
   <!-- Toast Notification -->
-  <div id="toast" class="fixed bottom-6 left-1/2 -translate-x-1/2 bg-slate-900/85 backdrop-blur-xl text-white border border-white/15 text-sm font-bold px-6 py-3 rounded-full shadow-2xl z-50 hidden transition-opacity"></div>
+  <div id="toast" class="fixed bottom-6 left-1/2 -translate-x-1/2 bg-slate-900/85  text-white border border-white/15 text-sm font-bold px-6 py-3 rounded-full shadow-2xl z-50 hidden transition-opacity"></div>
 
   <script type="module">
     import { initializeApp, getApps, deleteApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
@@ -2313,8 +2224,8 @@
         if (appleIcon) appleIcon.href = pngUrl;
 
         const manifest = {
-          name: 'الزعيم برو - إدارة الميزانية والديون',
-          short_name: 'الزعيم برو',
+          name: 'الزعيم PRO - إدارة الميزانية والديون',
+          short_name: 'الزعيم PRO',
           start_url: '.',
           display: 'standalone',
           background_color: '#eef4fb',
@@ -2798,7 +2709,7 @@
         return;
       }
       const sCurr = s.currency || state.currency;
-      const msg = `السلام عليكم، نود تذكيركم بموعد القبض/التحصيل (${s.title}) بمبلغ ${fmt(s.amount, sCurr)} بتاريخ ${s.date}.${s.note ? ' ملاحظة: ' + s.note : ''} — الزعيم برو`;
+      const msg = `السلام عليكم، نود تذكيركم بموعد القبض/التحصيل (${s.title}) بمبلغ ${fmt(s.amount, sCurr)} بتاريخ ${s.date}.${s.note ? ' ملاحظة: ' + s.note : ''} — الزعيم PRO`;
       const url = `https://wa.me/${waPhone}?text=${encodeURIComponent(msg)}`;
       window.open(url, '_blank', 'noopener');
     }
@@ -2998,7 +2909,7 @@
       a.download = filename;
       a.click();
 
-      const subject = encodeURIComponent(`نسخة احتياطية - الزعيم برو (${todayISO()})`);
+      const subject = encodeURIComponent(`نسخة احتياطية - الزعيم PRO (${todayISO()})`);
       const body = encodeURIComponent(
         `مرحباً ${activeAccount.name || ''}،\n\n` +
         `تم تنزيل ملف النسخة الاحتياطية (${filename}) على جهازك.\n` +
@@ -3487,7 +3398,7 @@
       const totD = fmtMulti(pDebts, d => d.totalAmount);
       const totP = fmtMulti(pDebts, d => d.paidAmount);
       const totR = fmtMulti(pDebts, d => Math.max(0, Number(d.totalAmount) - Number(d.paidAmount)));
-      const msg = `السلام عليكم ${p.name}، إليكم ملخص كشف الحساب من الزعيم برو:%0Aإجمالي الديون: ${totD}%0Aالمدفوع: ${totP}%0Aالمتبقي: ${totR}`;
+      const msg = `السلام عليكم ${p.name}، إليكم ملخص كشف الحساب من الزعيم PRO:%0Aإجمالي الديون: ${totD}%0Aالمدفوع: ${totP}%0Aالمتبقي: ${totR}`;
       window.open(`https://wa.me/${waPhone}?text=${msg}`, '_blank', 'noopener');
     }
 
@@ -3802,6 +3713,7 @@
         options: {
           responsive: true,
           maintainAspectRatio: false,
+          animation: false,
           plugins: { legend: { position: 'top', labels: { font: { family: '-apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Arabic", system-ui, sans-serif' } } } },
           scales: { y: { beginAtZero: true } }
         }
@@ -3828,6 +3740,7 @@
         options: {
           responsive: true,
           maintainAspectRatio: false,
+          animation: false,
           plugins: { legend: { position: 'bottom', labels: { font: { family: '-apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Arabic", system-ui, sans-serif' } } } }
         }
       });
@@ -5379,7 +5292,7 @@
         <div class="flex items-center justify-between border-b border-slate-200 pb-2.5">
           <div>
             <h4 class="text-base font-extrabold ${isIncome ? 'text-emerald-700' : 'text-rose-700'}">${currentVoucherData.typeLabel}</h4>
-            <p class="text-[11px] text-slate-500">تطبيق الزعيم برو للإدارة المالية</p>
+            <p class="text-[11px] text-slate-500">تطبيق الزعيم PRO للإدارة المالية</p>
           </div>
           <div class="text-left" dir="ltr">
             <span class="text-xs font-extrabold text-slate-800 block">${voucherNo}</span>
@@ -5404,7 +5317,7 @@
     function buildVoucherPlainText() {
       if (!currentVoucherData) return '';
       const v = currentVoucherData;
-      return `${v.typeLabel} (${v.no})\nالتاريخ: ${v.date}\n${v.isIncome ? 'استلمنا من' : 'صرفنا إلى'}: ${v.personName}\nالمبلغ: ${v.amountText}\nطريقة الدفع: ${v.method}\nالبيان: ${v.note}${v.details ? `\nالتفاصيل: ${v.details}` : ''}\n— الزعيم برو`;
+      return `${v.typeLabel} (${v.no})\nالتاريخ: ${v.date}\n${v.isIncome ? 'استلمنا من' : 'صرفنا إلى'}: ${v.personName}\nالمبلغ: ${v.amountText}\nطريقة الدفع: ${v.method}\nالبيان: ${v.note}${v.details ? `\nالتفاصيل: ${v.details}` : ''}\n— الزعيم PRO`;
     }
 
     function shareVoucherWhatsapp() {
@@ -5835,24 +5748,62 @@
       showToast('تمت استعادة البيانات التجريبية');
     });
 
-    // ==================== MASTER RENDER ====================
+    // ==================== MASTER RENDER (LAZY PER-TAB FOR INSTANT SPEED) ====================
+    function updateHeaderBadges() {
+      const today = todayISO();
+      const pendingDebtsCount = state.debts.filter(d => Number(d.totalAmount) > Number(d.paidAmount)).length;
+      const navDebtBadge = document.getElementById('navDebtBadge');
+      if (navDebtBadge) {
+        navDebtBadge.textContent = pendingDebtsCount;
+        navDebtBadge.classList.toggle('hidden', pendingDebtsCount === 0);
+      }
+      const alertSchedCount = state.schedules.filter(s => s.status === 'pending' && s.date <= today).length;
+      const navScheduleBadge = document.getElementById('navScheduleBadge');
+      if (navScheduleBadge) {
+        navScheduleBadge.textContent = alertSchedCount;
+        navScheduleBadge.classList.toggle('hidden', alertSchedCount === 0);
+      }
+      const lowStockCount = (state.shopProducts || []).filter(p => Number(p.qty) <= Number(p.minQty ?? 3)).length;
+      const navLowStockBadge = document.getElementById('navLowStockBadge');
+      if (navLowStockBadge) {
+        navLowStockBadge.textContent = lowStockCount;
+        navLowStockBadge.classList.toggle('hidden', lowStockCount === 0);
+      }
+      const notesCount = (state.quickNotes || []).length;
+      const navNotesBadge = document.getElementById('navNotesBadge');
+      if (navNotesBadge) {
+        navNotesBadge.textContent = notesCount;
+        navNotesBadge.classList.toggle('hidden', notesCount === 0);
+      }
+    }
+
     function renderAll() {
-      renderPinLockUI();
-      renderAccountUI();
-      populateCurrencySelects();
-      populatePeopleSelects();
-      renderSettingsLists();
-      renderDashboard();
-      renderTransactions();
-      renderRecurringExpenses();
-      renderSavingsGoals();
-      renderBudget();
-      renderPeople();
-      renderDebts();
-      renderSchedule();
-      renderFullLog();
-      renderQuickNotes();
-      renderShop();
+      updateHeaderBadges();
+      if (activeTab === 'dashboard') {
+        renderDashboard();
+      } else if (activeTab === 'transactions') {
+        renderTransactions();
+      } else if (activeTab === 'budget') {
+        renderRecurringExpenses();
+        renderSavingsGoals();
+        renderBudget();
+      } else if (activeTab === 'debts') {
+        renderPeople();
+        renderDebts();
+      } else if (activeTab === 'schedule') {
+        renderSchedule();
+      } else if (activeTab === 'fullLog') {
+        renderFullLog();
+      } else if (activeTab === 'shop') {
+        renderShop();
+      } else if (activeTab === 'quickNotes') {
+        renderQuickNotes();
+      } else if (activeTab === 'settings') {
+        renderPinLockUI();
+        renderAccountUI();
+        populateCurrencySelects();
+        renderSettingsLists();
+      }
     }
 
     // ==================== QUICK SMART ENTRY & NOTES MODULE ====================
@@ -6393,7 +6344,7 @@
       if (!inv) return;
       const p = state.people.find(x => x.name === inv.partyName);
       const waPhone = p ? formatWaPhone(p.phone) : '';
-      const msg = `فاتورة ${inv.type === 'sale' ? 'مبيع' : 'شراء'} (${inv.no})\nالتاريخ: ${inv.date}\nالطرف: ${inv.partyName}\nالأصناف: ${inv.itemsSummary}\nالصافي: ${fmt(inv.netTotal, inv.currency)} (${inv.paymentMode === 'cash' ? 'نقدي' : 'آجل'})\n— الزعيم برو`;
+      const msg = `فاتورة ${inv.type === 'sale' ? 'مبيع' : 'شراء'} (${inv.no})\nالتاريخ: ${inv.date}\nالطرف: ${inv.partyName}\nالأصناف: ${inv.itemsSummary}\nالصافي: ${fmt(inv.netTotal, inv.currency)} (${inv.paymentMode === 'cash' ? 'نقدي' : 'آجل'})\n— الزعيم PRO`;
       const url = waPhone ? `https://wa.me/${waPhone}?text=${encodeURIComponent(msg)}` : `https://wa.me/?text=${encodeURIComponent(msg)}`;
       window.open(url, '_blank', 'noopener');
     }
