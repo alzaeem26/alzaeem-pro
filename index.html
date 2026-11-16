@@ -70,11 +70,16 @@
       will-change: transform;
     }
 
-    /* Authentic iOS Liquid Glass Sidebar Drawer with iPhone System Typography */
+    /* Authentic iOS Liquid Glass Sidebar Drawer with iPhone System Typography (Enhanced weight & readability) */
     #sideNavDrawer, #sideNavDrawer * {
       font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", "SF Arabic", "Helvetica Neue", "Geeza Pro", system-ui, sans-serif !important;
       -webkit-font-smoothing: antialiased;
       -moz-osx-font-smoothing: grayscale;
+    }
+    #sideNavDrawer nav button {
+      font-size: 0.82rem !important;
+      font-weight: 800 !important;
+      letter-spacing: -0.01em;
     }
     #sideNavDrawer {
       background: linear-gradient(155deg, rgba(255, 255, 255, 0.84) 0%, rgba(240, 249, 255, 0.76) 55%, rgba(230, 255, 250, 0.78) 100%) !important;
@@ -143,50 +148,44 @@
     }
     .animate-slide-up { animation: slideUp 0.14s ease-out; }
 
-    /* ==================== DARK GLASS MODE ==================== */
+    /* ==================== DARK GLASS MODE (Clean, High Contrast, Non-Overlapping Colors) ==================== */
     body.dark-mode {
-      color: #f8fafc;
-      background-color: #050a18;
-      background-image:
-        radial-gradient(at 8% 8%, rgba(14, 165, 233, 0.38) 0px, transparent 50%),
-        radial-gradient(at 92% 12%, rgba(20, 184, 166, 0.34) 0px, transparent 48%),
-        radial-gradient(at 82% 85%, rgba(99, 102, 241, 0.34) 0px, transparent 52%),
-        radial-gradient(at 16% 86%, rgba(3, 105, 161, 0.42) 0px, transparent 50%),
-        linear-gradient(145deg, #050b1a 0%, #071926 50%, #0b1128 100%);
+      color: #f1f5f9;
+      background-color: #0b132b;
+      background-image: linear-gradient(145deg, #0b132b 0%, #0f172a 50%, #020617 100%);
     }
-    body.dark-mode .ambient-orb { opacity: 0.48; }
     body.dark-mode .ios-header {
-      background: linear-gradient(180deg, rgba(15, 23, 42, 0.62) 0%, rgba(15, 23, 42, 0.40) 100%);
-      border-bottom: 1.5px solid rgba(56, 189, 248, 0.28);
+      background: rgba(15, 23, 42, 0.92);
+      border-bottom: 1.5px solid rgba(56, 189, 248, 0.22);
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
     }
     body.dark-mode .glass-card {
-      background: linear-gradient(145deg, rgba(30, 41, 59, 0.46) 0%, rgba(15, 23, 42, 0.30) 100%);
-      border-color: rgba(56, 189, 248, 0.28);
-      box-shadow:
-        0 18px 44px rgba(0, 0, 0, 0.52),
-        inset 0 1.5px 0 rgba(255, 255, 255, 0.24),
-        inset 0 -1px 2px rgba(20, 184, 166, 0.16);
+      background: rgba(30, 41, 59, 0.82);
+      border: 1.5px solid rgba(56, 189, 248, 0.2);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
     }
     body.dark-mode .glass-card::before {
-      background: linear-gradient(125deg, rgba(56, 189, 248, 0.18) 0%, rgba(255, 255, 255, 0.04) 40%, rgba(255, 255, 255, 0) 65%);
+      background: linear-gradient(125deg, rgba(56, 189, 248, 0.08) 0%, rgba(255, 255, 255, 0.02) 40%, rgba(255, 255, 255, 0) 65%);
     }
     body.dark-mode .ios-modal {
-      background: linear-gradient(155deg, rgba(15, 23, 42, 0.80) 0%, rgba(12, 24, 44, 0.68) 100%);
-      border-color: rgba(56, 189, 248, 0.32);
-      color: #f8fafc;
+      background: rgba(15, 23, 42, 0.96);
+      border: 1.5px solid rgba(56, 189, 248, 0.3);
+      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.6);
+      color: #f1f5f9;
     }
     body.dark-mode .ios-input {
-      background: rgba(30, 41, 59, 0.78);
-      border-color: rgba(56, 189, 248, 0.24);
+      background: rgba(30, 41, 59, 0.95);
+      border: 1.5px solid rgba(56, 189, 248, 0.3);
       color: #f8fafc;
     }
     body.dark-mode .ios-input:focus {
-      background: rgba(30, 41, 59, 0.96);
+      background: rgba(30, 41, 59, 1);
       border-color: #38bdf8;
+      box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.25);
     }
     body.dark-mode .ios-nav-pill {
-      background: rgba(15, 23, 42, 0.56);
-      border-color: rgba(56, 189, 248, 0.22);
+      background: rgba(15, 23, 42, 0.85);
+      border: 1.5px solid rgba(56, 189, 248, 0.2);
     }
     body.dark-mode .text-slate-900 { color: #f8fafc !important; }
     body.dark-mode .text-slate-800 { color: #e2e8f0 !important; }
@@ -200,8 +199,9 @@
     body.dark-mode .bg-white\/70,
     body.dark-mode .bg-white\/75,
     body.dark-mode .bg-white\/80 {
-      background-color: rgba(30, 41, 59, 0.62) !important;
-      border-color: rgba(56, 189, 248, 0.20) !important;
+      background-color: rgba(30, 41, 59, 0.8) !important;
+      border-color: rgba(56, 189, 248, 0.2) !important;
+      color: #e2e8f0 !important;
     }
     body.dark-mode .border-white,
     body.dark-mode .border-white\/60,
@@ -209,7 +209,7 @@
     body.dark-mode .border-white\/75,
     body.dark-mode .border-white\/80,
     body.dark-mode .border-white\/85 {
-      border-color: rgba(56, 189, 248, 0.20) !important;
+      border-color: rgba(56, 189, 248, 0.2) !important;
     }
 
     @media print {
