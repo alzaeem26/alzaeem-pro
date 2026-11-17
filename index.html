@@ -227,10 +227,6 @@
       <span class="w-8 h-8 rounded-xl bg-teal-500/15 text-teal-700 flex items-center justify-center">🏪</span> المحل ونقطة البيع
       <span id="navLowStockBadge" class="hidden ms-auto text-[10px] font-extrabold bg-rose-500 text-white px-2 py-0.5 rounded-full">0</span>
     </button>
-    <button type="button" class="nav-item w-full flex items-center gap-3 px-3 py-2.5 rounded-2xl text-sm font-bold text-slate-700" data-tab="quickNotes">
-      <span class="w-8 h-8 rounded-xl bg-indigo-500/15 text-indigo-700 flex items-center justify-center">📝</span> الملاحظات المالية
-      <span id="navNotesBadge" class="hidden ms-auto text-[10px] font-extrabold bg-indigo-500 text-white px-2 py-0.5 rounded-full">0</span>
-    </button>
     <button type="button" class="nav-item w-full flex items-center gap-3 px-3 py-2.5 rounded-2xl text-sm font-bold text-slate-700" data-tab="settings">
       <span class="w-8 h-8 rounded-xl bg-slate-500/15 text-slate-700 flex items-center justify-center">⚙️</span> الإعدادات والحساب
     </button>
@@ -290,9 +286,35 @@
 
   <!-- ===== VIEW: DASHBOARD ===== -->
   <section id="view-dashboard" class="tab-view space-y-4">
-    <div class="flex items-center justify-between gap-2">
-      <h2 class="text-sm font-extrabold text-slate-800">نظرة عامة</h2>
-      <button type="button" id="btnOpenPnlReport" class="ios-btn bg-white/80 hover:bg-white border border-white text-sky-800 text-xs font-bold px-3 py-1.5 rounded-xl shadow-2xs">📊 تقرير الأرباح والخسائر الشهري</button>
+    <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-3">
+      <div class="flex items-center justify-between gap-2">
+        <h2 class="text-sm sm:text-base font-extrabold text-slate-900">الملخص المالي العام</h2>
+        <button type="button" id="btnOpenPnlReport" class="ios-btn bg-white/80 hover:bg-white border border-white text-sky-800 text-xs font-bold px-3 py-1.5 rounded-xl shadow-2xs shrink-0">📊 تقرير الشهر</button>
+      </div>
+
+      <!-- 5 Primary Quick Action Buttons: 2 rows on mobile (2 + 3), 1 row on desktop -->
+      <div id="dashboardQuickActions" class="grid grid-cols-6 sm:flex sm:flex-wrap items-center gap-2">
+        <button type="button" data-dash-action="new-income" class="col-span-3 sm:col-auto ios-btn bg-gradient-to-b from-emerald-400/95 to-teal-600 text-white text-xs sm:text-sm font-bold px-3 sm:px-4 py-2.5 rounded-2xl shadow-sm flex items-center justify-center gap-2">
+          <span class="icon-badge-3d w-6 h-6 rounded-lg bg-white/25 text-white"><svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.6" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg></span>
+          مدخول جديد
+        </button>
+        <button type="button" data-dash-action="new-expense" class="col-span-3 sm:col-auto ios-btn bg-gradient-to-b from-rose-400/95 to-pink-600 text-white text-xs sm:text-sm font-bold px-3 sm:px-4 py-2.5 rounded-2xl shadow-sm flex items-center justify-center gap-2">
+          <span class="icon-badge-3d w-6 h-6 rounded-lg bg-white/25 text-white"><svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.6" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M20 12H4"/></svg></span>
+          مصروف جديد
+        </button>
+        <button type="button" data-dash-action="new-debt" class="col-span-2 sm:col-auto ios-btn bg-gradient-to-b from-amber-400/95 to-orange-600 text-white text-xs sm:text-sm font-bold px-2 sm:px-4 py-2.5 rounded-2xl shadow-sm flex items-center justify-center gap-1.5">
+          <span class="icon-badge-3d w-6 h-6 rounded-lg bg-white/25 text-white"><svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.4" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2z"/></svg></span>
+          دين
+        </button>
+        <button type="button" data-dash-action="new-schedule" class="col-span-2 sm:col-auto ios-btn bg-gradient-to-b from-sky-400/95 to-teal-600 text-white text-xs sm:text-sm font-bold px-2 sm:px-4 py-2.5 rounded-2xl shadow-sm flex items-center justify-center gap-1.5">
+          <span class="icon-badge-3d w-6 h-6 rounded-lg bg-white/25 text-white"><svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.4" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg></span>
+          موعد قبض
+        </button>
+        <button type="button" data-dash-action="new-person" class="col-span-2 sm:col-auto ios-btn bg-gradient-to-b from-indigo-400/95 to-purple-600 text-white text-xs sm:text-sm font-bold px-2 sm:px-4 py-2.5 rounded-2xl shadow-sm flex items-center justify-center gap-1.5">
+          <span class="icon-badge-3d w-6 h-6 rounded-lg bg-white/25 text-white"><svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.4" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"/></svg></span>
+          شخص
+        </button>
+      </div>
     </div>
     <div class="grid grid-cols-2 lg:grid-cols-4 gap-3">
       <div class="ios-card rounded-2.5xl p-4 col-span-2 lg:col-span-2">
@@ -568,37 +590,19 @@
     </div>
   </section>
 
-  <!-- ===== VIEW: QUICK NOTES ===== -->
-  <section id="view-quickNotes" class="tab-view hidden space-y-4">
-    <div class="ios-card rounded-2.5xl p-4">
-      <div class="flex items-center justify-between mb-3">
-        <h3 class="text-sm font-extrabold text-slate-900">📝 ملاحظة أو تنبيه مالي سريع</h3>
-        <span id="notesTotalBadge" class="text-[11px] font-bold text-slate-500">0 ملاحظة</span>
-      </div>
-      <form id="quickNoteForm" class="space-y-2.5">
-        <input id="qNoteText" type="text" required placeholder="مثال: مراجعة تسعيرة الموردين قبل نهاية الأسبوع" class="ios-input w-full rounded-xl px-3 py-2.5 text-sm" />
-        <div class="grid grid-cols-2 gap-2">
-          <input id="qNoteAmount" type="number" step="0.01" min="0" placeholder="مبلغ اختياري" class="ios-input rounded-xl px-3 py-2 text-sm" />
-          <input id="qNoteDate" type="date" class="ios-input rounded-xl px-3 py-2 text-sm" />
-        </div>
-        <button type="submit" class="ios-btn w-full bg-gradient-to-br from-indigo-500 to-violet-700 text-white font-bold py-2.5 rounded-xl text-sm">حفظ الملاحظة</button>
-      </form>
-    </div>
-    <div id="quickNotesGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2.5"></div>
-  </section>
-
   <!-- ===== VIEW: SETTINGS ===== -->
   <section id="view-settings" class="tab-view hidden space-y-4">
     <div class="ios-card rounded-2.5xl p-4 space-y-3">
-      <h3 class="text-sm font-extrabold text-slate-900">الحساب والبيانات</h3>
       <div class="flex items-center justify-between gap-2 flex-wrap">
+        <h3 class="text-sm font-extrabold text-slate-900">الحسابات وتبديل البريد الإلكتروني</h3>
         <span id="accountStatusBadge" class="text-[11px] font-bold bg-slate-200/70 text-slate-700 px-2.5 py-1 rounded-full">حساب محلي</span>
-        <button type="button" id="btnSignOutAccount" class="hidden text-[11px] font-bold text-rose-600 hover:underline">تسجيل الخروج</button>
       </div>
       <p id="accountCurrentInfo" class="text-[11px] text-slate-500 leading-relaxed">الوضع المحلي — بياناتك محفوظة على هذا الجهاز فقط.</p>
-      <div class="grid grid-cols-2 gap-2">
-        <button type="button" id="btnOpenAccount" class="ios-btn bg-white/80 hover:bg-white border border-white text-slate-700 text-xs font-bold py-2.5 rounded-xl">إعداد الحساب</button>
-        <button type="button" id="btnOpenContactSync" class="ios-btn bg-white/80 hover:bg-white border border-white text-slate-700 text-xs font-bold py-2.5 rounded-xl">استيراد جهات الاتصال</button>
+      <div id="settingsSavedAccountsList" class="space-y-1.5"></div>
+      <div class="flex flex-wrap gap-2">
+        <button type="button" id="btnOpenAccount" class="ios-btn flex-1 bg-gradient-brand text-white text-xs font-bold py-2.5 px-3 rounded-xl">+ تسجيل / تبديل إيميل</button>
+        <button type="button" id="btnSignOutAccount" class="hidden ios-btn bg-rose-500/15 hover:bg-rose-500/25 text-rose-700 text-xs font-bold py-2.5 px-3.5 rounded-xl">تسجيل الخروج 🚪</button>
+        <button type="button" id="btnOpenContactSync" class="ios-btn bg-white/80 hover:bg-white border border-white text-slate-700 text-xs font-bold py-2.5 px-3 rounded-xl">جهات الاتصال</button>
       </div>
     </div>
 
@@ -1238,20 +1242,25 @@
     </div>
   </div>
 
-  <!-- Account -->
+  <!-- Account & Multi-Email Switcher -->
   <div id="accountModal" class="fixed inset-0 bg-slate-900/50 z-[66] hidden items-center justify-center p-4 overflow-y-auto">
-    <div class="ios-modal max-w-sm w-full p-5 animate-slide-up space-y-3.5">
+    <div class="ios-modal max-w-sm w-full p-5 animate-slide-up my-auto space-y-3.5">
       <div class="flex items-center justify-between">
-        <h3 class="text-base font-extrabold text-slate-900">الحساب والمزامنة</h3>
+        <h3 class="text-base font-extrabold text-slate-900">إدارة الحسابات والتبديل</h3>
         <button type="button" class="modal-close w-8 h-8 rounded-full bg-slate-200/70 text-slate-600 font-bold text-sm shrink-0" data-close="accountModal">✕</button>
       </div>
-      <p class="text-[11px] text-slate-500 leading-relaxed">بياناتك محفوظة على هذا الجهاز. ربط السحابة (Firebase) سيتاح كوحدة منفصلة في نسخة لاحقة، ولن يعمل قبل أن يتحقق منها خادم لا ملف المتصفح.</p>
+      <div id="modalSavedAccountsSection" class="hidden space-y-2">
+        <p class="text-[11px] font-bold text-slate-600">الحسابات المسجّلة على هذا الجهاز (اضغط للتبديل الفوري):</p>
+        <div id="modalSavedAccountsList" class="space-y-1.5 max-h-40 overflow-y-auto scroll-slim"></div>
+        <button type="button" id="btnModalSignOut" class="hidden ios-btn w-full bg-rose-500/15 hover:bg-rose-500/25 text-rose-700 text-xs font-bold py-2 rounded-xl">تسجيل الخروج من الحساب النشط 🚪</button>
+        <div class="border-t border-white/60 pt-2"></div>
+      </div>
       <form id="accountForm" class="space-y-3">
-        <div><label class="block text-[11px] font-bold text-slate-600 mb-1">البريد الإلكتروني</label><input id="accEmail" type="email" dir="ltr" placeholder="you@example.com" class="ios-input w-full rounded-xl px-3 py-2.5 text-sm" /></div>
-        <div><label class="block text-[11px] font-bold text-slate-600 mb-1">الاسم</label><input id="accName" type="text" class="ios-input w-full rounded-xl px-3 py-2.5 text-sm" /></div>
-        <div><label class="block text-[11px] font-bold text-slate-600 mb-1">رمز الحساب (اختياري، للسحابة لاحقاً)</label><input id="accPin" type="password" inputmode="numeric" minlength="4" class="ios-input w-full rounded-xl px-3 py-2.5 text-sm text-center tracking-widest" /></div>
-        <label class="flex items-center gap-2 text-xs font-bold text-slate-700 cursor-pointer"><input id="accKeepCurrentData" type="checkbox" checked class="rounded" /> الإبقاء على البيانات الحالية عند الربط</label>
-        <button type="submit" id="btnSubmitAccountForm" class="ios-btn w-full bg-gradient-to-br from-sky-500 to-teal-700 text-white font-bold py-2.5 rounded-xl text-sm">حفظ بيانات الحساب</button>
+        <p class="text-[11px] font-bold text-slate-700">تسجيل الدخول بحساب جديد أو بريد آخر:</p>
+        <div><label class="block text-[11px] font-bold text-slate-600 mb-1">البريد الإلكتروني</label><input id="accEmail" type="email" required dir="ltr" placeholder="you@example.com" class="ios-input w-full rounded-xl px-3 py-2.5 text-sm" /></div>
+        <div><label class="block text-[11px] font-bold text-slate-600 mb-1">الاسم (اختياري)</label><input id="accName" type="text" placeholder="اسم الحساب" class="ios-input w-full rounded-xl px-3 py-2.5 text-sm" /></div>
+        <label class="flex items-center gap-2 text-xs font-bold text-slate-700 cursor-pointer"><input id="accKeepCurrentData" type="checkbox" class="rounded" /> نسخ البيانات الحالية إلى الحساب الجديد (إن كان جديداً)</label>
+        <button type="submit" id="btnSubmitAccountForm" class="ios-btn w-full bg-gradient-to-br from-sky-500 to-teal-700 text-white font-bold py-2.5 rounded-xl text-sm">دخول وتفعيل الحساب ✓</button>
       </form>
     </div>
   </div>
@@ -1259,12 +1268,18 @@
   <!-- Sign out -->
   <div id="signOutModal" class="fixed inset-0 bg-slate-900/55 z-[72] hidden items-center justify-center p-4">
     <div class="ios-modal max-w-xs w-full p-5 animate-slide-up space-y-3">
-      <h3 class="text-sm font-extrabold text-slate-900">تأكيد الخروج</h3>
-      <p class="text-[11px] text-slate-600 leading-relaxed">سيتم دمج بيانات الحساب النشط في الملف المحلي قبل الخروج، فلا تضيع حركاتك.</p>
-      <form id="signOutForm" class="space-y-2">
-        <input id="signOutPasswordInput" type="password" inputmode="numeric" class="ios-input w-full rounded-xl px-3 py-2.5 text-center text-base font-extrabold tracking-widest" />
-        <p id="signOutPasswordError" class="hidden text-xs font-bold text-rose-600">الرمز غير صحيح.</p>
-        <button type="submit" class="ios-btn w-full bg-rose-600 text-white text-xs font-bold py-2.5 rounded-xl">تأكيد الخروج</button>
+      <div class="flex items-center justify-between">
+        <h3 class="text-sm font-extrabold text-slate-900">تأكيد تسجيل الخروج</h3>
+        <button type="button" class="modal-close w-7 h-7 rounded-full bg-slate-200/70 text-slate-600 font-bold text-xs shrink-0" data-close="signOutModal">✕</button>
+      </div>
+      <p class="text-[11px] text-slate-600 leading-relaxed">ستبقى بيانات حسابك (<strong id="signOutAccountLabel"></strong>) محفوظة ومستقلة للعودة إليها لاحقاً، وسيعود التطبيق للوضع المحلي.</p>
+      <form id="signOutForm" class="space-y-2.5">
+        <div id="signOutPinWrap" class="hidden space-y-1">
+          <label class="block text-[11px] font-bold text-slate-600">أدخل رمز قفل التطبيق للتأكيد:</label>
+          <input id="signOutPasswordInput" type="password" inputmode="numeric" placeholder="••••" class="ios-input w-full rounded-xl px-3 py-2.5 text-center text-base font-extrabold tracking-widest" />
+          <p id="signOutPasswordError" class="hidden text-xs font-bold text-rose-600">الرمز غير صحيح.</p>
+        </div>
+        <button type="submit" class="ios-btn w-full bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold py-2.5 rounded-xl">تأكيد الخروج الآن 🚪</button>
       </form>
     </div>
   </div>
@@ -1799,7 +1814,7 @@ document.addEventListener('click', e => {
 
 /* ==================== NAVIGATION ==================== */
 let activeTab = 'dashboard';
-const TAB_LABELS = { dashboard: 'لوحة القيادة', transactions: 'الحركات', budget: 'الميزانية', debts: 'الديون', schedule: 'المواعيد', fullLog: 'السجل الشامل', shop: 'المحل', quickNotes: 'الملاحظات', settings: 'الإعدادات' };
+const TAB_LABELS = { dashboard: 'لوحة القيادة', transactions: 'الحركات', budget: 'الميزانية', debts: 'الديون', schedule: 'المواعيد', fullLog: 'السجل الشامل', shop: 'المحل', settings: 'الإعدادات' };
 
 function toggleSideNavDrawer(force) {
   const drawer = $('sideNavDrawer'), backdrop = $('sideNavBackdrop');
@@ -2155,7 +2170,6 @@ function renderAll() {
     schedule: () => renderSchedule(),
     fullLog: () => { populatePeopleSelects(); renderFullLog(); },
     shop: () => renderShop(),
-    quickNotes: () => renderQuickNotes(),
     settings: () => { populateCurrencySelects(); renderPinLockUI(); renderAccountUI(); renderSettingsLists(); }
   }[activeTab] || (() => {}))();
 }
@@ -2172,7 +2186,6 @@ function updateHeaderBadges() {
   setBadge('navDebtBadge', pendingDebts);
   setBadge('navScheduleBadge', state.schedules.filter(s => s.status === 'pending' && s.date <= today).length);
   setBadge('navLowStockBadge', lowStockProducts().length);
-  setBadge('navNotesBadge', (state.quickNotes || []).length);
 }
 
 function lowStockProducts() {
@@ -2744,42 +2757,6 @@ function renderShop() {
   }
 }
 
-/* ==================== NOTES ==================== */
-function renderQuickNotes() {
-  const notes = state.quickNotes || [], today = todayISO();
-  const grid = $('quickNotesGrid');
-  if (!grid) return;
-  if (!notes.length) {
-    grid.innerHTML = `<p class="col-span-full text-xs text-slate-400 text-center py-6">لا ملاحظات — أضف أول ملاحظة بالأعلى</p>`;
-    return;
-  }
-  const sorted = [...notes].sort((a, b) => (b.pinned ? 1 : 0) - (a.pinned ? 1 : 0));
-  grid.innerHTML = sorted.map(n => {
-    const due = n.alertDate === today, late = n.alertDate && n.alertDate < today;
-    const cls = n.pinned ? 'border-2 border-indigo-400/80 bg-indigo-500/[0.08]'
-      : late ? 'border-2 border-rose-400/75 bg-rose-500/[0.07]'
-      : due ? 'border-2 border-amber-400/80 bg-amber-500/[0.08]'
-      : 'border border-white/85 bg-white/65';
-    return `<div class="p-4 rounded-2xl ${cls} flex flex-col justify-between gap-3">
-      <div class="space-y-1.5">
-        <div class="flex items-start justify-between gap-2">
-          <p class="text-sm font-extrabold text-slate-900 leading-relaxed">${escapeHtml(n.text)}</p>
-          <button type="button" class="text-sm shrink-0 ${n.pinned ? '' : 'opacity-40 hover:opacity-80'}" data-action="pin-note" data-id="${n.id}">📌</button></div>
-        <div class="flex flex-wrap gap-1.5 text-[11px]">
-          ${Number(n.amount) > 0 ? `<span class="font-extrabold bg-sky-500/15 text-sky-800 px-2 py-0.5 rounded-lg">${fmt(n.amount, n.currency || state.currency)}</span>` : ''}
-          ${n.alertDate ? `<span class="font-bold px-2 py-0.5 rounded-lg ${late ? 'bg-rose-500/15 text-rose-700' : due ? 'bg-amber-500/20 text-amber-800' : 'bg-slate-200/70 text-slate-700'}">⏰ ${n.alertDate}</span>` : ''}
-        </div></div>
-      <div class="flex flex-wrap items-center justify-between gap-1.5 pt-2 border-t border-white/60 text-[11px]">
-        <div class="flex items-center gap-1">
-          <button type="button" class="ios-btn bg-emerald-500/15 text-emerald-800 font-bold px-2 py-1 rounded-lg" data-action="note-tx" data-id="${n.id}" data-type="income">+ مدخول</button>
-          <button type="button" class="ios-btn bg-rose-500/15 text-rose-800 font-bold px-2 py-1 rounded-lg" data-action="note-tx" data-id="${n.id}" data-type="expense">− مصروف</button>
-          <button type="button" class="ios-btn bg-amber-500/15 text-amber-800 font-bold px-2 py-1 rounded-lg" data-action="note-debt" data-id="${n.id}">دين</button>
-        </div>
-        <button type="button" class="text-rose-600 font-bold hover:underline px-1" data-action="del-note" data-id="${n.id}">حذف</button>
-      </div></div>`;
-  }).join('');
-}
-
 /* ==================== SETTINGS & ACCOUNT ==================== */
 function renderSettingsLists() {
   const set = (id, html) => { const el = $(id); if (el) el.innerHTML = html; };
@@ -2804,15 +2781,16 @@ function setCloudBadgeState(status) {
 function renderAccountUI() {
   const badge = $('accountStatusBadge'), info = $('accountCurrentInfo'), out = $('btnSignOutAccount');
   if (activeAccount && activeAccount.email) {
-    if (badge) badge.textContent = `الحساب: ${activeAccount.email}`;
-    if (info) info.textContent = 'البيانات معزولة لهذا الحساب على هذا الجهاز. المزامنة السحابية ستتاح لاحقاً كوحدة يتحقق منها خادم.';
+    if (badge) badge.textContent = `الحساب النشط: ${activeAccount.email}`;
+    if (info) info.textContent = 'بيانات هذا الحساب محفوظة ومعزولة عن بقية الحسابات على هذا الجهاز.';
     if (out) out.classList.remove('hidden');
   } else {
-    if (badge) badge.textContent = 'وضع محلي';
-    if (info) info.textContent = 'كل شيء محفوظ على هذا الجهاز فقط. صدّر نسخة JSON بانتظام.';
+    if (badge) badge.textContent = 'وضع محلي (غير مسجّل)';
+    if (info) info.textContent = 'أنت تعمل الآن على الحساب المحلي الافتراضي. يمكنك التسجيل أو التبديل بين عدة إيميلات.';
     if (out) out.classList.add('hidden');
   }
   setCloudBadgeState(activeAccount ? 'local' : 'off');
+  renderSavedAccountsLists();
 }
 
 /* ==================== SUBSCRIPTION UI ==================== */
@@ -3023,12 +3001,6 @@ wire('shopInvoicesTableBody', {
   'wa-invoice': d => sendShopInvoiceWhatsapp(d.id),
   'del-invoice': d => deleteShopInvoice(d.id)
 });
-wire('quickNotesGrid', {
-  'pin-note': d => togglePinQuickNote(d.id),
-  'del-note': d => deleteQuickNote(d.id),
-  'note-tx': d => convertNoteToTx(d.id, d.type),
-  'note-debt': d => convertNoteToDebt(d.id)
-});
 wire('currenciesList', { 'del-currency': d => removeCurrency(Number(d.idx)) });
 wire('incomeCatsList', { 'del-cat': d => removePresetCat('income', Number(d.idx)) });
 wire('expenseCatsList', { 'del-cat': d => removePresetCat('expense', Number(d.idx)) });
@@ -3204,12 +3176,6 @@ function addSavingsDeposit(id) {
     category: state.expenseCategories[0] || 'طوارئ وأخرى', date: todayISO(), method: 'تحويل داخلي',
     personId: '', note: `إيداع في هدف: ${g.title}`, details: 'تحويل للادخار' });
   saveState(); renderAll(); showToast('تم تسجيل الإيداع');
-}
-function deleteQuickNote(id) { state.quickNotes = state.quickNotes.filter(n => n.id !== id); saveState(); renderAll(); }
-function togglePinQuickNote(id) {
-  const n = state.quickNotes.find(x => x.id === id);
-  if (!n) return;
-  n.pinned = !n.pinned; saveState(); renderAll();
 }
 function openReceiptViewer(txId) {
   const t = state.transactions.find(x => x.id === txId);
@@ -4687,69 +4653,191 @@ function switchShopSubView(view) {
 on('btnShopSubInventory', 'click', () => switchShopSubView('inventory'));
 on('btnShopSubInvoices', 'click', () => switchShopSubView('invoices'));
 
-/* ==================== ACCOUNT (local only) ==================== */
+/* ==================== DASHBOARD QUICK ACTIONS ==================== */
+on('dashboardQuickActions', 'click', e => {
+  const btn = e.target.closest('[data-dash-action]');
+  if (!btn) return;
+  const act = btn.dataset.dashAction;
+  if (act === 'new-income') { switchTab('transactions'); openTxModal('income'); }
+  else if (act === 'new-expense') { switchTab('transactions'); openTxModal('expense'); }
+  else if (act === 'new-debt') { switchTab('debts'); openDebtModal(''); }
+  else if (act === 'new-schedule') { switchTab('schedule'); openScheduleModal(''); }
+  else if (act === 'new-person') { switchTab('debts'); openPersonModal(''); }
+});
+
+/* ==================== MULTI-ACCOUNT & EMAIL SWITCHER ==================== */
+const SAVED_ACCOUNTS_KEY = 'alzaeem_pro_saved_accounts_v1';
+
+function getSavedAccountsList() {
+  try {
+    const raw = JSON.parse(localStorage.getItem(SAVED_ACCOUNTS_KEY) || '[]');
+    const list = Array.isArray(raw) ? raw : [];
+    if (activeAccount && activeAccount.email && !list.some(a => a.email === activeAccount.email)) {
+      list.unshift({ email: activeAccount.email, name: activeAccount.name || activeAccount.email });
+    }
+    return list;
+  } catch (e) { return []; }
+}
+
+function registerSavedAccount(email, name) {
+  const cleanEmail = String(email || '').trim().toLowerCase();
+  if (!cleanEmail) return;
+  const list = getSavedAccountsList();
+  const idx = list.findIndex(a => a.email === cleanEmail);
+  if (idx >= 0) {
+    if (name) list[idx].name = name;
+  } else {
+    list.unshift({ email: cleanEmail, name: name || cleanEmail });
+  }
+  try { localStorage.setItem(SAVED_ACCOUNTS_KEY, JSON.stringify(list)); } catch (e) {}
+}
+
+function removeSavedAccountFromList(email) {
+  const cleanEmail = String(email || '').trim().toLowerCase();
+  if (activeAccount && activeAccount.email === cleanEmail) {
+    showToast('سجّل الخروج من الحساب النشط أولاً قبل حذفه من القائمة');
+    return;
+  }
+  if (!confirm(`حذف بيانات الحساب "${cleanEmail}" من هذا الجهاز؟`)) return;
+  const list = getSavedAccountsList().filter(a => a.email !== cleanEmail);
+  try { localStorage.setItem(SAVED_ACCOUNTS_KEY, JSON.stringify(list)); } catch (e) {}
+  try { localStorage.removeItem('alzaeem_pro_user_' + cleanEmail); } catch (e) {}
+  try { localStorage.removeItem('alzaeem_pro_sub_user_' + cleanEmail); } catch (e) {}
+  renderSavedAccountsLists();
+  showToast('تم حذف الحساب المحلي');
+}
+
+function switchToEmailAccount(email, name, keepCurrentIfNew = false) {
+  const cleanEmail = String(email || '').trim().toLowerCase();
+  if (!cleanEmail || !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(cleanEmail)) {
+    showToast('صيغة البريد غير صحيحة');
+    return;
+  }
+  flushPending();
+  const oldKey = storageKey;
+  const newKey = 'alzaeem_pro_user_' + cleanEmail;
+  const resolvedName = (name || '').trim() || getSavedAccountsList().find(a => a.email === cleanEmail)?.name || cleanEmail;
+
+  activeAccount = { email: cleanEmail, name: resolvedName };
+  try { localStorage.setItem(ACTIVE_ACCOUNT_KEY, JSON.stringify(activeAccount)); } catch (err) {}
+  registerSavedAccount(cleanEmail, resolvedName);
+  storageKey = newKey;
+
+  let existing = null;
+  try { existing = localStorage.getItem(newKey); } catch (err) {}
+  if (existing) {
+    try { state = ensureStateFields(JSON.parse(existing)); } catch (err) { state = createDemoState(); }
+  } else if (oldKey !== newKey && keepCurrentIfNew) {
+    state = ensureStateFields(JSON.parse(JSON.stringify(state)));
+  } else if (oldKey !== newKey) {
+    state = createDemoState();
+  }
+  try { localStorage.setItem(newKey, JSON.stringify(state)); } catch (err) {}
+
+  populateCurrencySelects();
+  populatePeopleSelects();
+  populateMonthFilter();
+  closeModal('accountModal');
+  renderAll();
+  showToast(`تم التبديل إلى حساب: ${cleanEmail}`);
+}
+
+function renderSavedAccountsLists() {
+  const list = getSavedAccountsList();
+  const activeEmail = activeAccount?.email || '';
+
+  const buildHtml = () => list.map(acc => {
+    const isCur = acc.email === activeEmail;
+    const isDevAcc = MASTER_DEV_EMAILS.includes(acc.email);
+    return `<div class="p-2.5 rounded-xl border flex items-center justify-between gap-2 text-xs ${isCur ? 'bg-sky-500/15 border-sky-400/80' : 'bg-white/75 border-white'}">
+      <div class="min-w-0">
+        <div class="flex items-center gap-1.5">
+          <strong class="text-slate-900 truncate" dir="ltr">${escapeHtml(acc.email)}</strong>
+          ${isDevAcc ? '<span class="text-[9px] font-extrabold bg-indigo-600 text-white px-1.5 py-0.5 rounded-full">مطور</span>' : ''}
+          ${isCur ? '<span class="text-[9px] font-extrabold bg-emerald-600 text-white px-1.5 py-0.5 rounded-full">نشط</span>' : ''}
+        </div>
+        ${acc.name && acc.name !== acc.email ? `<span class="text-[10px] text-slate-500 block truncate">${escapeHtml(acc.name)}</span>` : ''}
+      </div>
+      <div class="flex items-center gap-1 shrink-0">
+        ${!isCur ? `<button type="button" class="ios-btn bg-sky-600 text-white text-[10px] font-bold px-2.5 py-1 rounded-lg" data-acc-action="switch" data-email="${escapeHtml(acc.email)}">تبديل</button>` : ''}
+        ${!isCur ? `<button type="button" class="text-rose-500 hover:text-rose-700 font-bold text-xs px-1" data-acc-action="remove" data-email="${escapeHtml(acc.email)}" title="حذف">×</button>` : ''}
+      </div>
+    </div>`;
+  }).join('');
+
+  const settingsBox = $('settingsSavedAccountsList');
+  if (settingsBox) settingsBox.innerHTML = list.length ? buildHtml() : '';
+
+  const modalSec = $('modalSavedAccountsSection');
+  const modalBox = $('modalSavedAccountsList');
+  const modalSignOut = $('btnModalSignOut');
+  if (modalSec && modalBox) {
+    modalSec.classList.toggle('hidden', list.length === 0);
+    modalBox.innerHTML = buildHtml();
+  }
+  if (modalSignOut) modalSignOut.classList.toggle('hidden', !activeEmail);
+}
+
+['settingsSavedAccountsList', 'modalSavedAccountsList'].forEach(id => {
+  on(id, 'click', e => {
+    const btn = e.target.closest('[data-acc-action]');
+    if (!btn) return;
+    if (btn.dataset.accAction === 'switch') switchToEmailAccount(btn.dataset.email, '', false);
+    else if (btn.dataset.accAction === 'remove') removeSavedAccountFromList(btn.dataset.email);
+  });
+});
+
 function openAccountModal() {
   const f = $('accountForm'); if (f) f.reset();
-  if (activeAccount) {
-    if ($('accEmail')) $('accEmail').value = activeAccount.email || '';
-    if ($('accName')) $('accName').value = activeAccount.name || '';
-  }
+  renderSavedAccountsLists();
   openModal('accountModal');
 }
 on('accountForm', 'submit', e => {
   e.preventDefault();
   const email = ($('accEmail')?.value || '').trim().toLowerCase();
   const name = ($('accName')?.value || '').trim();
-  if (!email) { showToast('أدخل بريداً للتسمية'); return; }
-  if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) { showToast('صيغة البريد غير صحيحة'); return; }
-  /* Switching accounts merges the current bucket first, so nothing written
-     under the previous key is stranded. */
-  flushPending();
-  const oldKey = storageKey;
-  const newKey = 'alzaeem_pro_user_' + email;
-  activeAccount = { email, name: name || email };
-  try { localStorage.setItem(ACTIVE_ACCOUNT_KEY, JSON.stringify(activeAccount)); } catch (err) {}
-  storageKey = newKey;
-  let existing = null;
-  try { existing = localStorage.getItem(newKey); } catch (err) {}
-  if (existing) {
-    try { state = ensureStateFields(JSON.parse(existing)); } catch (err) { state = createDemoState(); }
-  } else if (oldKey !== newKey && $('accKeepCurrentData')?.checked) {
-    /* keep current state, it will be written under the new key below */
-  } else if (oldKey !== newKey) {
-    state = createDemoState();
-  }
-  try { localStorage.setItem(newKey, JSON.stringify(state)); } catch (err) {}
-  if (oldKey !== newKey && oldKey !== STORAGE_KEY) {
-    try { localStorage.removeItem(oldKey); } catch (err) {}
-  }
+  const keep = !!$('accKeepCurrentData')?.checked;
+  if (!email) { showToast('أدخل البريد الإلكتروني'); return; }
+  switchToEmailAccount(email, name, keep);
+});
+on('btnModalSignOut', 'click', () => {
   closeModal('accountModal');
-  renderAll();
-  showToast(`تم التحويل إلى ${email}`);
+  signOutAccount();
 });
 function signOutAccount() {
+  if (!activeAccount || !activeAccount.email) return;
   const i = $('signOutPasswordInput'); if (i) i.value = '';
   $('signOutPasswordError')?.classList.add('hidden');
+  const lbl = $('signOutAccountLabel');
+  if (lbl) lbl.textContent = activeAccount.email;
+  const pinWrap = $('signOutPinWrap');
+  if (pinWrap) pinWrap.classList.toggle('hidden', !getAppPin());
   openModal('signOutModal');
 }
 on('signOutForm', 'submit', e => {
   e.preventDefault();
-  const entered = ($('signOutPasswordInput')?.value || '').trim();
-  /* No '0000' backdoor, and no silent stranding of the active bucket. */
-  if (!entered || entered !== getAppPin()) {
-    $('signOutPasswordError')?.classList.remove('hidden');
-    showToast(getAppPin() ? 'الرمز غير صحيح' : 'فعّل رمز قفل التطبيق قبل استخدام الخروج');
-    return;
+  const pin = getAppPin();
+  if (pin) {
+    const entered = ($('signOutPasswordInput')?.value || '').trim();
+    if (entered !== pin) {
+      $('signOutPasswordError')?.classList.remove('hidden');
+      showToast('رمز قفل التطبيق غير صحيح');
+      return;
+    }
   }
   flushPending();
-  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch (err) {}
+  const prevEmail = activeAccount?.email || '';
   activeAccount = null;
   storageKey = STORAGE_KEY;
   try { localStorage.removeItem(ACTIVE_ACCOUNT_KEY); } catch (err) {}
+  try { localStorage.removeItem(DEV_MODE_STORAGE_KEY); } catch (err) {}
   state = loadState();
+  populateCurrencySelects();
+  populatePeopleSelects();
+  populateMonthFilter();
   closeModal('signOutModal');
   renderAll();
-  showToast('تم الخروج — بيانات الحساب نُقلت للملف المحلي');
+  showToast(`تم تسجيل الخروج من ${prevEmail} والعودة للوضع المحلي`);
 });
 
 /* ==================== PROTECTED RESET ==================== */
