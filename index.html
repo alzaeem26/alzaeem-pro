@@ -1541,7 +1541,7 @@
    kill the rest of the script. That was the most likely cause of a
    fully-coordinated but dead app. */
 const $ = id => document.getElementById(id);
-const on = (id, ev, fn) => { const el = $(id); if (el) el.addEventListener(ev, fn); else console.warn('[missing]', id); };
+const on = (id, ev, fn) => { const el = $(id); if (!el) { console.warn('[missing]', id); return; } if (typeof fn !== 'function') { console.error('[invalid handler]', id, ev); return; } el.addEventListener(ev, fn); };
 const pad = n => String(n).padStart(2, '0');
 
 function escapeHtml(v) {
@@ -1810,6 +1810,10 @@ function closeModal(id) {
 document.addEventListener('click', e => {
   const closer = e.target.closest('[data-close]');
   if (closer) { closeModal(closer.dataset.close); return; }
+  if (e.target.classList && e.target.classList.contains('fixed') && e.target.id && e.target.id.endsWith('Modal')) {
+    closeModal(e.target.id);
+    return;
+  }
   const goto = e.target.closest('[data-goto]');
   if (goto) switchTab(goto.dataset.goto);
 });
@@ -3106,16 +3110,16 @@ on('btnAddRecurring', 'click', () => openRecurringModal());
 on('btnAddShopProduct', 'click', () => openShopProductModal(''));
 on('btnNewSale', 'click', () => openPosInvoiceModal('sale'));
 on('btnNewPurchase', 'click', () => openPosInvoiceModal('purchase'));
-on('btnOpenWorldCurrencies', 'click', openWorldCurrenciesModal);
-on('btnOpenContactSync', 'click', openContactSyncModal);
-on('btnDebtTabContactSync', 'click', openContactSyncModal);
+on('btnOpenWorldCurrencies', 'click', () => openWorldCurrenciesModal());
+on('btnOpenContactSync', 'click', () => openContactSyncModal());
+on('btnDebtTabContactSync', 'click', () => openContactSyncModal());
 on('btnOpenAccount', 'click', () => openAccountModal());
 on('btnDrawerOpenAccount', 'click', () => { toggleSideNavDrawer(false); openAccountModal(); });
-on('btnSignOutAccount', 'click', signOutAccount);
+on('btnSignOutAccount', 'click', () => signOutAccount());
 on('btnResetData', 'click', () => { const i = $('resetPasswordInput'); if (i) i.value = ''; $('resetPasswordError')?.classList.add('hidden'); openModal('resetModal'); });
-on('btnStealthDevTap', 'click', handleStealthDevTap);
+on('btnStealthDevTap', 'click', () => handleStealthDevTap());
 on('btnDrawerDevAdmin', 'click', () => { toggleSideNavDrawer(false); openAdminMerchantModal(); });
-on('btnSettingsDevAdmin', 'click', openAdminMerchantModal);
+on('btnSettingsDevAdmin', 'click', () => openAdminMerchantModal());
 
 /* ==================== SMALL UTILITIES ==================== */
 function copyText(text, okMsg) {
