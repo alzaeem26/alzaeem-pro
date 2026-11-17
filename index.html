@@ -271,7 +271,7 @@
     <form id="smartQuickEntryForm" class="space-y-2">
       <div class="flex items-center gap-2">
         <span class="text-slate-400 shrink-0">⚡</span>
-        <input id="smartQuickInput" type="text" autocomplete="off" placeholder="اكتب حركة بسرعة: صرف 50 غداء، دين 200 على أحمد، قبض 300 من شركة الأفق" class="ios-input flex-1 rounded-xl px-3 py-2.5 text-sm" />
+        <input id="smartQuickInput" type="text" autocomplete="off" placeholder="اكتب حركة بسرعة: صرف 50 غداء، دين 200 على أحمد، قبض 300 من شركة الأفق" class="ios-input flex-1 min-w-0 rounded-xl px-3 py-2.5 text-sm" />
         <button type="submit" class="ios-btn bg-gradient-brand text-white font-bold text-xs px-4 py-2.5 rounded-xl shrink-0">إضافة</button>
       </div>
       <div id="smartQuickPreview" class="hidden text-xs text-slate-700 bg-sky-500/10 border border-sky-300/60 rounded-xl px-3 py-2"></div>
@@ -458,12 +458,12 @@
       </div>
     </div>
 
-    <div class="ios-card rounded-2.5xl p-4">
-      <div class="flex items-center justify-between mb-3">
-        <h3 class="text-sm font-extrabold text-slate-900">الأشخاص والجهات</h3>
+    <div class="ios-card rounded-2.5xl overflow-hidden">
+      <div class="px-4 py-3 border-b border-white/70 flex items-center justify-between">
+        <h3 class="text-sm font-extrabold text-slate-900">سجل الأشخاص والجهات</h3>
         <span id="peopleCountLabel" class="text-[11px] font-bold text-slate-500">0 شخص</span>
       </div>
-      <div id="peopleGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2.5"></div>
+      <div id="peopleGrid" class="divide-y divide-white/50"></div>
     </div>
 
     <div class="ios-card rounded-2.5xl p-4">
@@ -561,7 +561,7 @@
         <button type="button" id="btnNewPurchase" class="ios-btn bg-gradient-to-br from-amber-500 to-orange-600 text-white font-bold py-2.5 rounded-xl text-sm">📦 فاتورة شراء</button>
       </div>
       <div class="flex items-center gap-2">
-        <input id="shopSearchInput" type="text" placeholder="بحث بالاسم أو الكود أو رقم الفاتورة..." class="ios-input flex-1 rounded-xl px-3 py-2 text-sm" />
+        <input id="shopSearchInput" type="text" placeholder="بحث بالاسم أو الكود أو رقم الفاتورة..." class="ios-input flex-1 min-w-0 rounded-xl px-3 py-2 text-sm" />
         <button type="button" id="btnAddShopProduct" class="ios-btn bg-white/80 hover:bg-white border border-white text-slate-700 text-xs font-bold px-3 py-2 rounded-xl shrink-0">+ صنف</button>
       </div>
       <p id="shopLowStockCount" class="text-[11px] font-bold text-rose-600"></p>
@@ -604,13 +604,14 @@
         <button type="button" id="btnSignOutAccount" class="hidden ios-btn bg-rose-500/15 hover:bg-rose-500/25 text-rose-700 text-xs font-bold py-2.5 px-3.5 rounded-xl">تسجيل الخروج 🚪</button>
         <button type="button" id="btnOpenContactSync" class="ios-btn bg-white/80 hover:bg-white border border-white text-slate-700 text-xs font-bold py-2.5 px-3 rounded-xl">جهات الاتصال</button>
       </div>
+      <button type="button" id="btnSettingsDevAdmin" class="hidden ios-btn w-full bg-gradient-to-r from-indigo-600 to-violet-700 text-white text-xs font-extrabold py-2.5 px-3 rounded-xl shadow-sm">🛠️ فتح لوحة المطور والتاجر (إعداد الباقات وشام كاش)</button>
     </div>
 
     <div class="ios-card rounded-2.5xl p-4 space-y-3">
       <h3 class="text-sm font-extrabold text-slate-900">🔒 قفل التطبيق</h3>
       <p id="appPinStatusText" class="text-[11px] text-slate-500 leading-relaxed"></p>
       <form id="appPinSetupForm" class="flex gap-2">
-        <input id="newAppPinInput" type="password" inputmode="numeric" minlength="4" placeholder="رمز 4 أرقام على الأقل" class="ios-input flex-1 rounded-xl px-3 py-2 text-sm text-center tracking-widest" />
+        <input id="newAppPinInput" type="password" inputmode="numeric" minlength="4" placeholder="رمز 4 أرقام على الأقل" class="ios-input flex-1 min-w-0 rounded-xl px-3 py-2 text-sm text-center tracking-widest" />
         <button type="submit" class="ios-btn bg-slate-800 text-white text-xs font-bold px-4 py-2 rounded-xl shrink-0">تفعيل</button>
       </form>
       <button type="button" id="btnDisableAppPin" class="hidden text-[11px] font-bold text-rose-600 hover:underline">إلغاء قفل التطبيق</button>
@@ -632,7 +633,7 @@
       <div class="border-t border-white/60 pt-3 space-y-2">
         <span class="text-[11px] font-bold text-emerald-800 block">تصنيفات المدخول</span>
         <form id="addIncomeCatForm" class="flex gap-1.5">
-          <input id="newIncomeCatName" type="text" required placeholder="تصنيف مدخول جديد..." class="ios-input flex-1 rounded-xl px-3 py-1.5 text-xs" />
+          <input id="newIncomeCatName" type="text" required placeholder="تصنيف مدخول جديد..." class="ios-input flex-1 min-w-0 rounded-xl px-3 py-1.5 text-xs" />
           <button type="submit" class="ios-btn bg-emerald-600 text-white text-xs font-bold px-3 py-1.5 rounded-xl shrink-0">+ إضافة</button>
         </form>
         <div id="incomeCatsList" class="flex flex-wrap gap-1.5"></div>
@@ -640,7 +641,7 @@
       <div class="border-t border-white/60 pt-3 space-y-2">
         <span class="text-[11px] font-bold text-rose-800 block">تصنيفات المصروف</span>
         <form id="addExpenseCatForm" class="flex gap-1.5">
-          <input id="newExpenseCatName" type="text" required placeholder="تصنيف مصروف جديد..." class="ios-input flex-1 rounded-xl px-3 py-1.5 text-xs" />
+          <input id="newExpenseCatName" type="text" required placeholder="تصنيف مصروف جديد..." class="ios-input flex-1 min-w-0 rounded-xl px-3 py-1.5 text-xs" />
           <button type="submit" class="ios-btn bg-rose-600 text-white text-xs font-bold px-3 py-1.5 rounded-xl shrink-0">+ إضافة</button>
         </form>
         <div id="expenseCatsList" class="flex flex-wrap gap-1.5"></div>
@@ -678,7 +679,7 @@
           <div class="col-span-2">
             <label class="block text-[11px] font-bold text-slate-600 mb-1">المبلغ</label>
             <div class="flex gap-2">
-              <input id="txAmount" type="number" step="0.01" min="0.01" required placeholder="0.00" class="ios-input flex-1 rounded-xl px-3 py-2.5 text-base font-extrabold" />
+              <input id="txAmount" type="number" step="0.01" min="0.01" required placeholder="0.00" class="ios-input flex-1 min-w-0 rounded-xl px-3 py-2.5 text-base font-extrabold" />
               <button type="button" class="ios-btn calc-trigger w-11 rounded-xl bg-slate-800/90 text-white text-sm font-bold shrink-0" data-calc-target="txAmount" title="آلة حاسبة">🖩</button>
             </div>
           </div>
@@ -699,11 +700,11 @@
         <div>
           <label class="block text-[11px] font-bold text-slate-600 mb-1">التصنيف</label>
           <div class="flex gap-2">
-            <select id="txCategory" class="ios-input flex-1 rounded-xl px-3 py-2.5 text-sm"></select>
+            <select id="txCategory" class="ios-input flex-1 min-w-0 rounded-xl px-3 py-2.5 text-sm"></select>
             <button type="button" id="btnToggleQuickCat" class="ios-btn w-11 rounded-xl bg-white/80 border border-white text-slate-700 text-lg font-bold shrink-0" title="تصنيف جديد">+</button>
           </div>
           <div id="quickCatRow" class="hidden flex gap-2 mt-2">
-            <input id="quickCatInput" type="text" placeholder="اسم التصنيف الجديد" class="ios-input flex-1 rounded-xl px-3 py-2 text-sm" />
+            <input id="quickCatInput" type="text" placeholder="اسم التصنيف الجديد" class="ios-input flex-1 min-w-0 rounded-xl px-3 py-2 text-sm" />
             <button type="button" id="btnSaveQuickCat" class="ios-btn bg-emerald-600 text-white text-xs font-bold px-3 rounded-xl shrink-0">إضافة</button>
           </div>
         </div>
@@ -771,7 +772,7 @@
           <div>
             <label class="block text-[11px] font-bold text-slate-600 mb-1">المبلغ</label>
             <div class="flex gap-1.5">
-              <input id="debtAmount" type="number" step="0.01" min="0.01" required class="ios-input flex-1 rounded-xl px-3 py-2.5 text-sm font-extrabold" />
+              <input id="debtAmount" type="number" step="0.01" min="0.01" required class="ios-input flex-1 min-w-0 rounded-xl px-3 py-2.5 text-sm font-extrabold" />
               <button type="button" class="ios-btn calc-trigger w-10 rounded-xl bg-slate-800/90 text-white text-xs font-bold shrink-0" data-calc-target="debtAmount">🖩</button>
             </div>
           </div>
@@ -1363,7 +1364,7 @@
         <form id="activateLicenseForm" class="pt-2 border-t border-slate-200/70 space-y-2">
           <label class="block text-xs font-extrabold text-slate-800">كود التفعيل:</label>
           <div class="flex gap-2">
-            <input id="licenseCodeInput" type="text" required placeholder="ZAEEM-30-XXXX-XXXX" dir="ltr" class="ios-input flex-1 rounded-xl px-3.5 py-2 text-center text-sm font-extrabold uppercase tracking-wider" />
+            <input id="licenseCodeInput" type="text" required placeholder="ZAEEM-30-XXXX-XXXX" dir="ltr" class="ios-input flex-1 min-w-0 rounded-xl px-3.5 py-2 text-center text-sm font-extrabold uppercase tracking-wider" />
             <button type="submit" class="ios-btn bg-gradient-to-br from-amber-500 to-orange-600 text-white text-xs font-extrabold px-4 py-2 rounded-xl shrink-0">تفعيل ✓</button>
           </div>
           <p class="text-[10px] text-slate-400 leading-relaxed">تنبيه: التحقق من الكود في نسخة محلية يعمل على هذا الجهاز فقط، وهو راحة تشغيل لا حماية. الترخيص الحقيقي يحتاج تحققاً من خادم.</p>
@@ -1387,7 +1388,7 @@
       <div id="adminPinGate" class="space-y-3">
         <p class="text-xs text-slate-600">أدخل رمز المطور السري.</p>
         <form id="adminUnlockForm" class="flex gap-2">
-          <input id="adminPinInput" type="password" inputmode="numeric" required placeholder="••••" class="ios-input flex-1 rounded-xl px-3 py-2 text-center text-base font-extrabold tracking-widest" />
+          <input id="adminPinInput" type="password" inputmode="numeric" required placeholder="••••" class="ios-input flex-1 min-w-0 rounded-xl px-3 py-2 text-center text-base font-extrabold tracking-widest" />
           <button type="submit" class="ios-btn bg-sky-600 text-white text-xs font-extrabold px-4 py-2 rounded-xl shrink-0">دخول</button>
         </form>
       </div>
@@ -1413,9 +1414,10 @@
             <div><label class="block text-[11px] font-bold text-slate-600 mb-1">سعر الباقة الشهرية</label><input id="cfgMonthlyPrice" type="text" placeholder="مثال: 5$ أو 50,000 ل.س" class="ios-input w-full rounded-xl px-3 py-1.5 text-xs font-bold" /></div>
             <div><label class="block text-[11px] font-bold text-slate-600 mb-1">سعر الباقة السنوية</label><input id="cfgYearlyPrice" type="text" placeholder="مثال: 45$ أو 450,000 ل.س" class="ios-input w-full rounded-xl px-3 py-1.5 text-xs font-bold" /></div>
           </div>
-          <div class="space-y-1">
+          <div class="space-y-1.5">
             <label class="block text-[11px] font-bold text-slate-600">باركود شام كاش (QR):</label>
-            <div class="flex items-center gap-2">
+            <div class="flex items-center gap-2.5">
+              <img id="adminQrPreviewImg" src="" alt="معاينة الباركود" class="w-12 h-12 rounded-xl border border-slate-300 bg-white object-contain hidden shrink-0" />
               <label class="ios-btn cursor-pointer bg-sky-500/15 hover:bg-sky-500/25 text-sky-800 text-xs font-bold px-3 py-1.5 rounded-xl">📷 رفع صورة<input id="cfgShamQrFile" type="file" accept="image/*" class="hidden" /></label>
               <button type="button" id="btnClearMerchantQr" class="text-[11px] font-bold text-rose-600 hover:underline">حذف الصورة</button>
             </div>
@@ -2447,25 +2449,32 @@ function renderPeople() {
   if (count) count.textContent = `${state.people.length} شخص / جهة`;
   if (!grid) return;
   if (!state.people.length) {
-    grid.innerHTML = `<p class="col-span-full text-xs text-slate-400 text-center py-4">لا أشخاص مسجّلون — أضف شخصاً للبدء</p>`;
+    grid.innerHTML = `<p class="text-xs text-slate-400 text-center py-6">لا أشخاص مسجّلون — أضف شخصاً للبدء</p>`;
     return;
   }
   grid.innerHTML = state.people.map(p => {
     const pDebts = state.debts.filter(d => d.personId === p.id || d.name === p.name);
     const rem = pDebts.length ? fmtMulti(pDebts, d => Math.max(0, Number(d.totalAmount) - Number(d.paidAmount))) : fmt(0);
-    return `<div class="p-3.5 rounded-2xl bg-white/60 border border-white/85 flex flex-col justify-between gap-2.5">
-      <div class="min-w-0">
-        <button type="button" class="font-extrabold text-sm text-slate-900 hover:text-sky-700 hover:underline truncate text-right block" data-action="filter-person" data-id="${p.id}">${escapeHtml(p.name)}</button>
-        <p class="text-[11px] text-slate-500 truncate">${p.phone ? `📞 ${escapeHtml(p.phone)}` : 'بدون رقم'}${p.note ? ` • ${escapeHtml(p.note)}` : ''}</p>
+    const subInfo = [p.phone ? `📞 ${p.phone}` : 'بدون رقم', p.note].filter(Boolean).join(' • ');
+    return `<div class="px-4 py-2.5 h-[54px] flex items-center justify-between gap-2.5 hover:bg-white/40 transition">
+      <div class="flex items-center gap-2.5 min-w-0 flex-1">
+        <span class="w-7 h-7 rounded-lg bg-indigo-500/15 text-indigo-700 flex items-center justify-center text-xs font-extrabold shrink-0">👤</span>
+        <div class="min-w-0 flex-1">
+          <button type="button" class="row-main-line text-slate-900 hover:text-sky-700 hover:underline text-right w-full" data-action="filter-person" data-id="${p.id}">${escapeHtml(p.name)}</button>
+          <span class="row-sub-line text-slate-500">${escapeHtml(subInfo)}</span>
+        </div>
       </div>
-      <div class="flex items-center justify-between gap-2 pt-2 border-t border-white/60">
-        <span class="text-[11px] text-slate-600">المتبقي: <strong class="text-amber-700">${rem}</strong></span>
-        <div class="flex items-center gap-1 shrink-0">
-          <button type="button" class="ios-btn bg-sky-500/15 text-sky-800 text-[11px] font-bold px-2 py-1 rounded-lg" data-action="statement-person" data-id="${p.id}">كشف</button>
-          <button type="button" class="ios-btn bg-amber-500/15 text-amber-800 text-[11px] font-bold px-2 py-1 rounded-lg" data-action="debt-person" data-id="${p.id}">+ دين</button>
-          <button type="button" class="text-[11px] text-slate-500 hover:text-slate-800 font-bold px-1" data-action="edit-person" data-id="${p.id}" title="تعديل">✎</button>
-          <button type="button" class="text-xs text-rose-500 hover:text-rose-700 font-bold px-1" data-action="del-person" data-id="${p.id}" title="حذف">×</button>
-        </div></div></div>`;
+      <div class="text-left shrink-0 hidden sm:block">
+        <span class="row-main-line text-amber-700" dir="ltr">${rem}</span>
+        <span class="row-sub-line text-slate-400">المتبقي</span>
+      </div>
+      <div class="flex items-center gap-1 shrink-0">
+        <button type="button" class="ios-btn bg-sky-500/15 text-sky-800 text-[10px] font-bold px-2 py-1 rounded-lg" data-action="statement-person" data-id="${p.id}">كشف</button>
+        <button type="button" class="ios-btn bg-amber-500/15 text-amber-800 text-[10px] font-bold px-2 py-1 rounded-lg" data-action="debt-person" data-id="${p.id}">+ دين</button>
+        <button type="button" class="w-6 h-6 rounded-lg bg-slate-200/70 text-slate-700 text-[11px] font-bold flex items-center justify-center" data-action="edit-person" data-id="${p.id}" title="تعديل">✎</button>
+        <button type="button" class="w-6 h-6 rounded-lg bg-rose-500/15 text-rose-600 text-xs font-bold flex items-center justify-center" data-action="del-person" data-id="${p.id}" title="حذف">×</button>
+      </div>
+    </div>`;
   }).join('');
 }
 
@@ -2797,9 +2806,10 @@ function renderAccountUI() {
 function updateSubscriptionUI() {
   const sub = getEffectiveSubscription();
   const hdr = $('btnHeaderSubBadge'), icon = $('headerSubIcon'), lbl = $('headerSubLabel'), drw = $('drawerSubStatusText');
-  const devBtn = $('btnDrawerDevAdmin'), subModalAdminBtn = $('btnOpenAdminMerchant');
+  const devBtn = $('btnDrawerDevAdmin'), subModalAdminBtn = $('btnOpenAdminMerchant'), settingsDevBtn = $('btnSettingsDevAdmin');
   if (devBtn) devBtn.classList.toggle('hidden', !sub.isDev);
   if (subModalAdminBtn) subModalAdminBtn.classList.toggle('hidden', !sub.isDev);
+  if (settingsDevBtn) settingsDevBtn.classList.toggle('hidden', !sub.isDev);
   if (sub.isDev) {
     if (hdr) hdr.className = 'ios-btn px-2.5 py-1.5 rounded-2xl bg-gradient-to-r from-indigo-600 to-violet-700 text-white text-[11px] font-extrabold flex items-center gap-1 shadow-xs';
     if (icon) icon.textContent = '🛠️';
@@ -3105,6 +3115,7 @@ on('btnSignOutAccount', 'click', signOutAccount);
 on('btnResetData', 'click', () => { const i = $('resetPasswordInput'); if (i) i.value = ''; $('resetPasswordError')?.classList.add('hidden'); openModal('resetModal'); });
 on('btnStealthDevTap', 'click', handleStealthDevTap);
 on('btnDrawerDevAdmin', 'click', () => { toggleSideNavDrawer(false); openAdminMerchantModal(); });
+on('btnSettingsDevAdmin', 'click', openAdminMerchantModal);
 
 /* ==================== SMALL UTILITIES ==================== */
 function copyText(text, okMsg) {
@@ -4303,7 +4314,6 @@ document.querySelectorAll('.smart-example').forEach(b => b.addEventListener('cli
 
 /* ==================== WORLD CURRENCIES ==================== */
 function openWorldCurrenciesModal() {
-  if (!checkProFeatureAccess('currency')) return;
   if ($('worldCurrSearch')) $('worldCurrSearch').value = '';
   renderWorldCurrenciesList();
   openModal('worldCurrenciesModal');
@@ -4975,6 +4985,8 @@ function renderAdminMerchantForm() {
   set('cfgShamAccount', cfg.shamAccount); set('cfgWhatsappPhone', cfg.whatsappPhone);
   set('cfgMonthlyPrice', cfg.monthlyPrice); set('cfgYearlyPrice', cfg.yearlyPrice);
   set('cfgDevEmail', cfg.devEmail); set('cfgDevSecretPin', '');
+  const admQr = $('adminQrPreviewImg');
+  if (admQr) { if (cfg.qrDataUrl) { admQr.src = cfg.qrDataUrl; admQr.classList.remove('hidden'); } else { admQr.src = ''; admQr.classList.add('hidden'); } }
   renderAdminLicenses();
 }
 on('adminUnlockForm', 'submit', e => {
@@ -5028,6 +5040,7 @@ on('cfgShamQrFile', 'change', e => {
       cfg.qrDataUrl = url;
       saveMerchantConfig(cfg);
       renderSubscriptionModalContent();
+      renderAdminMerchantForm();
       showToast('تم حفظ الباركود');
     };
     img.onerror = () => showToast('تعذّر قراءة الصورة');
@@ -5041,6 +5054,7 @@ on('btnClearMerchantQr', 'click', () => {
   cfg.qrDataUrl = '';
   saveMerchantConfig(cfg);
   renderSubscriptionModalContent();
+  renderAdminMerchantForm();
   showToast('تم حذف الباركود');
 });
 
