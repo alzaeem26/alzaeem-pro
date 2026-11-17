@@ -1422,7 +1422,9 @@
               <button type="button" id="btnClearMerchantQr" class="text-[11px] font-bold text-rose-600 hover:underline">حذف الصورة</button>
             </div>
           </div>
-          <button type="submit" class="ios-btn w-full bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-extrabold py-2 rounded-xl">حفظ الإعدادات ✓</button>
+          <button type="submit" class="ios-btn w-full bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-extrabold py-2 rounded-xl">حفظ الإعدادات على هذا الجهاز ✓</button>
+          <button type="button" id="btnExportCustomerBuild" class="ios-btn w-full bg-sky-600 hover:bg-sky-700 text-white text-xs font-extrabold py-2.5 rounded-xl shadow-xs">📤 تصدير ملف التطبيق للزبائن (مضمّن برقمك وأسعارك)</button>
+          <p class="text-[10px] text-slate-500 leading-relaxed">ملاحظة: الحفظ يحفظ الإعدادات في متصفحك الحالي فقط، أما زر <strong>تصدير ملف التطبيق للزبائن</strong> فينشئ ملف HTML جاهزاً لإرساله لزبائنك وتظهر فيه أرقامك وأسعارك وباركودك تلقائياً.</p>
         </form>
 
         <div class="space-y-2.5 bg-amber-500/10 p-3.5 rounded-2xl border border-amber-300/70">
@@ -1494,8 +1496,10 @@
 
 </main>
 
-<!-- Floating action button -->
-<button type="button" id="fabAddTx" class="fixed bottom-5 left-5 z-40 w-14 h-14 rounded-2xl bg-gradient-brand text-white text-2xl font-bold flex items-center justify-center icon-badge-3d shadow-glass-lg">+</button>
+<!-- Floating Dashboard shortcut button -->
+<button type="button" id="fabAddTx" title="العودة إلى لوحة القيادة" aria-label="لوحة القيادة" class="fixed bottom-5 left-5 z-40 w-14 h-14 rounded-2xl bg-gradient-brand text-white flex items-center justify-center icon-badge-3d shadow-glass-lg">
+  <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+</button>
 
 <!-- Toast -->
 <div id="toast" class="hidden fixed bottom-6 inset-x-4 sm:inset-x-auto sm:left-1/2 sm:-translate-x-1/2 z-[95] bg-slate-900 text-white text-xs sm:text-sm font-bold px-4 py-3 rounded-2xl shadow-glass-lg animate-toast text-center"></div>
@@ -1643,6 +1647,26 @@ const DEFAULT_EXPENSE_BUDGETS = [
 
 function uid(prefix) { return `${prefix}_${Date.now().toString(36)}${Math.random().toString(36).slice(2, 6)}`; }
 
+function createCleanInitialState() {
+  return {
+    version: 2,
+    currency: '$',
+    currencies: JSON.parse(JSON.stringify(DEFAULT_CURRENCIES)),
+    incomeCategories: [...DEFAULT_INCOME_CATEGORIES],
+    expenseCategories: DEFAULT_EXPENSE_BUDGETS.map(b => b.name),
+    budgets: [],
+    people: [],
+    transactions: [],
+    debts: [],
+    recurringExpenses: [],
+    savingsGoals: [],
+    quickNotes: [],
+    shopProducts: [],
+    shopInvoices: [],
+    schedules: []
+  };
+}
+
 function createDemoState() {
   const m = currentMonthISO();
   const p1 = uid('per'), p2 = uid('per'), p3 = uid('per');
@@ -1689,7 +1713,7 @@ function createDemoState() {
    history from his card. They are now linked by ID, with personName kept
    only as a fallback for legacy rows whose person no longer exists. */
 function ensureStateFields(s) {
-  if (!s || typeof s !== 'object') return createDemoState();
+  if (!s || typeof s !== 'object') return createCleanInitialState();
   if (!Array.isArray(s.currencies) || !s.currencies.length) s.currencies = JSON.parse(JSON.stringify(DEFAULT_CURRENCIES));
   if (!s.currency || !s.currencies.some(c => c.code === s.currency)) s.currency = s.currencies[0].code;
   if (!Array.isArray(s.incomeCategories) || !s.incomeCategories.length) s.incomeCategories = [...DEFAULT_INCOME_CATEGORIES];
@@ -1749,7 +1773,7 @@ if (activeAccount && activeAccount.email) storageKey = 'alzaeem_pro_user_' + act
 function loadState() {
   let raw = null;
   try { raw = localStorage.getItem(storageKey); } catch (e) { raw = null; }
-  if (!raw) return createDemoState();
+  if (!raw) return createCleanInitialState();
   try {
     return ensureStateFields(JSON.parse(raw));
   } catch (e) {
@@ -2015,7 +2039,7 @@ function checkProFeatureAccess(feature, countOverride) {
   const sub = getEffectiveSubscription();
   if (sub.isPro) return true;
   let blocked = false;
-  if (feature === 'shop') blocked = true;
+  if (feature === 'shop' || feature === 'import') blocked = true;
   if (feature === 'tx') blocked = (countOverride ?? state.transactions.filter(t => String(t.date).startsWith(currentMonthISO())).length) >= FREE_LIMITS.txPerMonth;
   if (feature === 'person') blocked = (countOverride ?? state.people.length) >= FREE_LIMITS.people;
   if (feature === 'debt') blocked = (countOverride ?? state.debts.length) >= FREE_LIMITS.debts;
@@ -2035,15 +2059,29 @@ function checkProFeatureAccess(feature, countOverride) {
    like protection. Codes are now random and checked against a local
    registry, which at least makes them non-forgeable from the source text. */
 function getMerchantConfig() {
+  const base = defaultMerchantConfig();
   try {
     const raw = localStorage.getItem(MERCHANT_CFG_KEY);
-    if (raw) return { ...defaultMerchantConfig(), ...JSON.parse(raw) };
+    if (raw) {
+      const saved = JSON.parse(raw);
+      return {
+        ...base,
+        ...saved,
+        shamAccount: (saved.shamAccount !== undefined && saved.shamAccount !== '') ? saved.shamAccount : base.shamAccount,
+        whatsappPhone: (saved.whatsappPhone !== undefined && saved.whatsappPhone !== '') ? saved.whatsappPhone : base.whatsappPhone,
+        monthlyPrice: (saved.monthlyPrice && saved.monthlyPrice !== 'اشتراك شهري شامل') ? saved.monthlyPrice : (base.monthlyPrice || saved.monthlyPrice || 'اشتراك شهري شامل'),
+        yearlyPrice: (saved.yearlyPrice && saved.yearlyPrice !== 'اشتراك سنوي شامل') ? saved.yearlyPrice : (base.yearlyPrice || saved.yearlyPrice || 'اشتراك سنوي شامل'),
+        qrDataUrl: saved.qrDataUrl || base.qrDataUrl
+      };
+    }
   } catch (e) {}
-  return defaultMerchantConfig();
+  return base;
 }
+/* __BAKED_MERCHANT_CFG_START__ */
 function defaultMerchantConfig() {
-  return { shamAccount: '', whatsappPhone: '', monthlyPrice: 'اشتراك شهري شامل', yearlyPrice: 'اشتراك سنوي شامل', qrDataUrl: '', devEmail: '', devSecretPin: '2002' };
+  return { shamAccount: '', whatsappPhone: '', monthlyPrice: 'اشتراك شهري شامل', yearlyPrice: 'اشتراك سنوي شامل', qrDataUrl: '', devEmail: 'hussamalzaeem20@gmail.com', devSecretPin: '2002' };
 }
+/* __BAKED_MERCHANT_CFG_END__ */
 function saveMerchantConfig(cfg) { try { localStorage.setItem(MERCHANT_CFG_KEY, JSON.stringify(cfg)); } catch (e) {} }
 
 const MASTER_DEV_EMAILS = ['hussamalzaeem20@gmail.com', 'hussamsungam@gmail.com'];
@@ -3100,7 +3138,7 @@ document.querySelectorAll('.plan-pick-btn').forEach(b => b.addEventListener('cli
 }));
 on('btnAddIncome', 'click', () => openTxModal('income'));
 on('btnAddExpense', 'click', () => openTxModal('expense'));
-on('fabAddTx', 'click', () => openTxModal('expense'));
+on('fabAddTx', 'click', () => switchTab('dashboard'));
 on('btnAddPerson', 'click', () => openPersonModal(''));
 on('btnAddDebt', 'click', () => openDebtModal(''));
 on('btnAddSchedule', 'click', () => openScheduleModal(''));
@@ -4721,14 +4759,38 @@ function removeSavedAccountFromList(email) {
   showToast('تم حذف الحساب المحلي');
 }
 
+function isEmailAccountPro(email) {
+  const clean = String(email || '').trim().toLowerCase();
+  if (!clean) return false;
+  if (MASTER_DEV_EMAILS.includes(clean)) return true;
+  const cfg = getMerchantConfig();
+  if (cfg.devEmail && cfg.devEmail.toLowerCase().trim() === clean) return true;
+  try {
+    const raw = localStorage.getItem('alzaeem_pro_sub_user_' + clean);
+    if (raw) {
+      const rec = JSON.parse(raw);
+      if (rec && Number(rec.expiresAt || 0) > Date.now() && ['monthly', 'yearly'].includes(rec.planType)) return true;
+    }
+  } catch (e) {}
+  return false;
+}
+
 function switchToEmailAccount(email, name, keepCurrentIfNew = false) {
   const cleanEmail = String(email || '').trim().toLowerCase();
   if (!cleanEmail || !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(cleanEmail)) {
     showToast('صيغة البريد غير صحيحة');
     return;
   }
-  flushPending();
   const oldKey = storageKey;
+  if (oldKey !== ('alzaeem_pro_user_' + cleanEmail) && keepCurrentIfNew) {
+    if (!isEmailAccountPro(cleanEmail) && !getEffectiveSubscription().isPro) {
+      showToast('سحب أو نسخ البيانات لحساب آخر يتطلب اشتراك PRO في الحساب المستهدف');
+      closeModal('accountModal');
+      openSubscriptionModal();
+      return;
+    }
+  }
+  flushPending();
   const newKey = 'alzaeem_pro_user_' + cleanEmail;
   const resolvedName = (name || '').trim() || getSavedAccountsList().find(a => a.email === cleanEmail)?.name || cleanEmail;
 
@@ -4744,7 +4806,7 @@ function switchToEmailAccount(email, name, keepCurrentIfNew = false) {
   } else if (oldKey !== newKey && keepCurrentIfNew) {
     state = ensureStateFields(JSON.parse(JSON.stringify(state)));
   } else if (oldKey !== newKey) {
-    state = createDemoState();
+    state = createCleanInitialState();
   }
   try { localStorage.setItem(newKey, JSON.stringify(state)); } catch (err) {}
 
@@ -4898,6 +4960,14 @@ on('btnExportJson', 'click', () => {
 on('inputImportJson', 'change', e => {
   const file = e.target.files[0];
   if (!file) return;
+  const sub = getEffectiveSubscription();
+  const isPaidOrDev = sub.isDev || (sub.isPro && ['monthly', 'yearly'].includes(sub.planType));
+  if (!isPaidOrDev) {
+    e.target.value = '';
+    showToast('استيراد وسحب البيانات متاح فقط للحسابات المشتركة في باقة PRO');
+    openSubscriptionModal();
+    return;
+  }
   const r = new FileReader();
   r.onload = ev => {
     let parsed = null;
@@ -5060,6 +5130,41 @@ on('btnClearMerchantQr', 'click', () => {
   renderSubscriptionModalContent();
   renderAdminMerchantForm();
   showToast('تم حذف الباركود');
+});
+
+on('btnExportCustomerBuild', 'click', () => {
+  const cfg = getMerchantConfig();
+  cfg.shamAccount = ($('cfgShamAccount')?.value || '').trim();
+  cfg.whatsappPhone = ($('cfgWhatsappPhone')?.value || '').trim();
+  cfg.monthlyPrice = ($('cfgMonthlyPrice')?.value || '').trim() || 'اشتراك شهري شامل';
+  cfg.yearlyPrice = ($('cfgYearlyPrice')?.value || '').trim() || 'اشتراك سنوي شامل';
+  const email = ($('cfgDevEmail')?.value || '').trim().toLowerCase();
+  const pin = ($('cfgDevSecretPin')?.value || '').trim();
+  if (email) cfg.devEmail = email;
+  if (pin.length >= 4) cfg.devSecretPin = pin;
+  saveMerchantConfig(cfg);
+  renderSubscriptionModalContent();
+
+  const bakedFn = `/* __BAKED_MERCHANT_CFG_START__ */\nfunction defaultMerchantConfig() {\n  return ${JSON.stringify(cfg)};\n}\n/* __BAKED_MERCHANT_CFG_END__ */`;
+  const cloneDoc = document.documentElement.cloneNode(true);
+  cloneDoc.querySelectorAll('#adminMerchantModal, #subscriptionModal, #sideNavBackdrop, #toast').forEach(el => {
+    el.classList.add('hidden');
+    el.classList.remove('flex');
+  });
+  const drw = cloneDoc.querySelector('#sideNavDrawer');
+  if (drw) drw.classList.add('translate-x-full');
+  const docHtml = '<!DOCTYPE html>\n' + cloneDoc.outerHTML;
+  const patched = docHtml.replace(
+    /\/\* __BAKED_MERCHANT_CFG_START__ \*\/[\s\S]*?\/\* __BAKED_MERCHANT_CFG_END__ \*\//,
+    () => bakedFn
+  );
+  const blob = new Blob([patched], { type: 'text/html;charset=utf-8' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'alzaeem-pro-customers.html';
+  a.click();
+  setTimeout(() => URL.revokeObjectURL(a.href), 2000);
+  showToast('تم تصدير نسخة الزبائن مضمّنة بأرقامك وأسعارك والباركود ✓');
 });
 
 /* ==================== BOOT ==================== */
