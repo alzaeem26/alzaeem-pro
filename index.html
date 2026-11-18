@@ -239,11 +239,72 @@
     height: 3px; border-radius: 999px; background: linear-gradient(90deg, #0ea5e9, #0d9488);
   }
 
+  .calc-shell {
+    background: rgba(255,255,255,.97);
+    border: 1px solid rgba(255,255,255,.85);
+    border-radius: 1.65rem;
+    box-shadow: 0 24px 70px -28px rgba(15,23,42,.55);
+  }
+  body.dark-mode .calc-shell { background: rgba(15,23,42,.98); border-color: rgba(148,163,184,.18); }
+  .calc-title-icon {
+    width: 40px; height: 40px; display: inline-flex; align-items: center; justify-content: center;
+    border-radius: 14px; color: white; font-size: 19px; font-weight: 900;
+    background: linear-gradient(145deg,#0284c7,#0f766e);
+    box-shadow: 0 7px 16px -8px rgba(2,132,199,.8);
+  }
+  .calc-display-wrap {
+    padding: 12px 14px 10px; border-radius: 18px;
+    background: linear-gradient(145deg,#0f172a,#1e293b);
+    border: 1px solid rgba(148,163,184,.22);
+  }
+  .calc-display {
+    min-height: 42px; display:flex; align-items:center; justify-content:flex-end;
+    color:#f8fafc; font-size: clamp(26px,7vw,34px); font-weight:900;
+    letter-spacing:.02em; overflow-x:auto; white-space:nowrap; font-variant-numeric:tabular-nums;
+  }
+  .calc-key {
+    min-height: 52px; border-radius: 15px; background: #f1f5f9; color:#1e293b;
+    font-size:17px; font-weight:850; border:1px solid rgba(148,163,184,.18);
+    box-shadow: 0 2px 0 rgba(148,163,184,.22);
+    transition: transform .12s ease, filter .12s ease, background .12s ease;
+  }
+  .calc-key:active { transform:scale(.96); filter:brightness(.97); }
+  .calc-key-operator { background:#e0f2fe; color:#0369a1; }
+  .calc-key-clear { background:#ffe4e6; color:#be123c; }
+  .calc-key-equals { background:linear-gradient(145deg,#0284c7,#0f766e); color:white; box-shadow:0 7px 16px -9px rgba(2,132,199,.8); }
+  body.dark-mode .calc-key { background:#334155; color:#f1f5f9; border-color:rgba(148,163,184,.15); }
+  body.dark-mode .calc-key-operator { background:#164e63; color:#bae6fd; }
+  body.dark-mode .calc-key-clear { background:#881337; color:#ffe4e6; }
+  @media (max-width:380px) { .calc-key { min-height:48px; border-radius:13px; } }
+
+  .receipt-document { background:#fff; color:#0f172a; }
+  .receipt-brand-head { padding-bottom:10px; border-bottom:1px solid #dbe3ec; }
+  .receipt-type-pill { display:inline-flex; margin-top:5px; padding:5px 16px; border:1.5px solid #0f172a; border-radius:999px; font-size:11px; font-weight:900; }
+  .receipt-meta-grid { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+  .receipt-meta-grid > div { display:flex; flex-direction:column; gap:3px; padding:8px; border:1px solid #e2e8f0; border-radius:10px; background:#f8fafc; min-width:0; }
+  .receipt-meta-grid span,.receipt-details span,.receipt-description > span { color:#64748b; font-size:9px; font-weight:700; }
+  .receipt-meta-grid strong { color:#0f172a; font-size:10px; font-weight:900; overflow-wrap:anywhere; }
+  .receipt-amount-panel { padding:13px 10px; display:flex; flex-direction:column; align-items:center; gap:3px; border:1.5px solid #0f766e; border-radius:14px; background:linear-gradient(145deg,#f0fdfa,#f8fafc); }
+  .receipt-amount-panel span { font-size:10px; font-weight:800; color:#0f766e; }
+  .receipt-amount-panel strong { font-size:25px; line-height:1.25; font-weight:950; color:#0f172a; }
+  .receipt-amount-panel small { font-size:10px; color:#475569; font-weight:700; }
+  .receipt-details { display:grid; gap:0; border:1px solid #e2e8f0; border-radius:12px; overflow:hidden; }
+  .receipt-details > div { display:flex; align-items:flex-start; justify-content:space-between; gap:10px; padding:8px 9px; border-bottom:1px solid #edf2f7; font-size:11px; }
+  .receipt-details > div:last-child { border-bottom:0; }
+  .receipt-details strong { text-align:left; color:#0f172a; font-size:10px; font-weight:850; overflow-wrap:anywhere; }
+  .receipt-description { padding:9px 10px; border-right:3px solid #0f766e; border-radius:8px; background:#f8fafc; display:grid; gap:5px; }
+  .receipt-description strong { font-size:11px; color:#0f172a; line-height:1.7; }
+  .receipt-description p { margin:0; color:#475569; font-size:10px; line-height:1.7; white-space:pre-wrap; }
+  .receipt-signatures { display:grid; grid-template-columns:1fr 1fr; gap:14px; padding-top:11px; border-top:1px dashed #94a3b8; }
+  .receipt-signatures > div { display:flex; flex-direction:column; gap:22px; text-align:center; color:#64748b; font-size:9px; font-weight:700; }
+  .receipt-signatures i { display:block; border-bottom:1px dotted #64748b; margin:0 8px; }
   #sideNavDrawer {
     width: min(17rem, 84vw);
-    background: #f8fcff;
-    border-left: 1px solid rgba(148,163,184,.22);
-    box-shadow: -14px 0 34px -24px rgba(15,23,42,.38);
+    background: rgba(248,252,255,.90);
+    -webkit-backdrop-filter: blur(16px) saturate(145%);
+    backdrop-filter: blur(16px) saturate(145%);
+    border-left: 1px solid rgba(148,163,184,.24);
+    box-shadow: -14px 0 34px -24px rgba(15,23,42,.42);
     border-radius: 0 0 0 22px;
     transition: transform .2s ease-out, visibility .2s ease-out;
   }
@@ -256,8 +317,8 @@
     pointer-events: auto;
   }
   body.dark-mode #sideNavDrawer {
-    background: #0f1b2c;
-    border-left-color: rgba(148,163,184,.16);
+    background: rgba(15,27,44,.91);
+    border-left-color: rgba(148,163,184,.20);
   }
   #sideNavDrawer .drawer-brand {
     background: linear-gradient(135deg, #0f766e, #0284c7 58%, #2563eb);
@@ -993,7 +1054,10 @@
           </div>
         </div>
         <div>
-          <label class="block text-[11px] font-bold text-slate-600 mb-1">الطرف / الشخص</label>
+          <div class="flex items-center justify-between gap-2 mb-1">
+            <label class="block text-[11px] font-bold text-slate-600">الطرف / الشخص</label>
+            <button type="button" class="inline-flex items-center gap-1 text-[11px] font-extrabold text-sky-700 bg-sky-50 hover:bg-sky-100 px-2.5 py-1.5 rounded-lg" data-add-person-for="txPerson">＋ إضافة شخص</button>
+          </div>
           <select id="txPerson" class="ios-input w-full rounded-xl px-3 py-2.5 text-sm"></select>
         </div>
         <div>
@@ -1041,7 +1105,10 @@
           <button type="button" class="dir-btn ios-btn py-2.5 rounded-xl text-xs font-extrabold border" data-dir="payable">📤 دين عليك (لتسدّده)</button>
         </div>
         <div>
-          <label class="block text-[11px] font-bold text-slate-600 mb-1">اختر من المسجّلين</label>
+          <div class="flex items-center justify-between gap-2 mb-1">
+            <label class="block text-[11px] font-bold text-slate-600">اختر من المسجّلين</label>
+            <button type="button" class="inline-flex items-center gap-1 text-[11px] font-extrabold text-sky-700 bg-sky-50 hover:bg-sky-100 px-2.5 py-1.5 rounded-lg" data-add-person-for="debtPersonSelect">＋ إضافة شخص</button>
+          </div>
           <select id="debtPersonSelect" class="ios-input w-full rounded-xl px-3 py-2.5 text-sm"></select>
         </div>
         <div class="grid grid-cols-2 gap-2">
@@ -1226,7 +1293,10 @@
           <select id="schedLinkedDebt" class="ios-input w-full rounded-xl px-3 py-2.5 text-sm"></select>
         </div>
         <div>
-          <label class="block text-[11px] font-bold text-slate-600 mb-1">الشخص</label>
+          <div class="flex items-center justify-between gap-2 mb-1">
+            <label class="block text-[11px] font-bold text-slate-600">الشخص</label>
+            <button type="button" class="inline-flex items-center gap-1 text-[11px] font-extrabold text-sky-700 bg-sky-50 hover:bg-sky-100 px-2.5 py-1.5 rounded-lg" data-add-person-for="schedPersonSelect">＋ إضافة شخص</button>
+          </div>
           <select id="schedPersonSelect" class="ios-input w-full rounded-xl px-3 py-2.5 text-sm"></select>
         </div>
         <div>
@@ -1340,32 +1410,38 @@
   </div>
 
   <!-- Calculator -->
-  <div id="universalCalcModal" class="fixed inset-0 bg-slate-900/50 z-[74] hidden items-end sm:items-center justify-center p-0 sm:p-4">
-    <div class="ios-modal max-w-xs w-full p-4 animate-slide-up space-y-3 rounded-b-none sm:rounded-[1.6rem]">
+  <div id="universalCalcModal" class="fixed inset-0 bg-slate-950/55 backdrop-blur-sm z-[74] hidden items-end sm:items-center justify-center p-2 sm:p-4">
+    <div class="ios-modal calc-shell max-w-[340px] w-full p-4 sm:p-5 animate-slide-up space-y-4 rounded-[1.6rem]">
       <div class="flex items-center justify-between">
-        <h3 class="text-xs font-extrabold text-slate-700">آلة حاسبة</h3>
-        <button type="button" class="modal-close w-7 h-7 rounded-full bg-slate-200/70 text-slate-600 font-bold text-xs shrink-0" data-close="universalCalcModal">✕</button>
+        <div class="flex items-center gap-2.5">
+          <span class="calc-title-icon">∑</span>
+          <div><h3 class="text-sm font-extrabold text-slate-900 dark:text-slate-100">الآلة الحاسبة</h3><p class="text-[10px] text-slate-500">حساب سريع ودقيق</p></div>
+        </div>
+        <button type="button" class="modal-close w-9 h-9 rounded-full bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-200 font-bold text-sm shrink-0" data-close="universalCalcModal" aria-label="إغلاق">✕</button>
       </div>
-      <div id="calcDisplay" class="bg-slate-900 text-white rounded-xl px-3 py-3 text-right text-xl font-extrabold overflow-x-auto scroll-slim" dir="ltr">0</div>
-      <div class="grid grid-cols-4 gap-1.5" id="calcPad">
-        <button type="button" class="ios-btn calc-key py-3 rounded-xl bg-rose-500/15 text-rose-700 font-extrabold text-sm" data-key="C">C</button>
-        <button type="button" class="ios-btn calc-key py-3 rounded-xl bg-white/70 text-slate-700 font-extrabold text-sm" data-key="←">⌫</button>
-        <button type="button" class="ios-btn calc-key py-3 rounded-xl bg-white/70 text-slate-700 font-extrabold text-sm" data-key="/">÷</button>
-        <button type="button" class="ios-btn calc-key py-3 rounded-xl bg-white/70 text-slate-700 font-extrabold text-sm" data-key="*">×</button>
-        <button type="button" class="ios-btn calc-key py-3 rounded-xl bg-white/70 text-slate-800 font-extrabold text-sm" data-key="7">7</button>
-        <button type="button" class="ios-btn calc-key py-3 rounded-xl bg-white/70 text-slate-800 font-extrabold text-sm" data-key="8">8</button>
-        <button type="button" class="ios-btn calc-key py-3 rounded-xl bg-white/70 text-slate-800 font-extrabold text-sm" data-key="9">9</button>
-        <button type="button" class="ios-btn calc-key py-3 rounded-xl bg-white/70 text-slate-700 font-extrabold text-sm" data-key="-">−</button>
-        <button type="button" class="ios-btn calc-key py-3 rounded-xl bg-white/70 text-slate-800 font-extrabold text-sm" data-key="4">4</button>
-        <button type="button" class="ios-btn calc-key py-3 rounded-xl bg-white/70 text-slate-800 font-extrabold text-sm" data-key="5">5</button>
-        <button type="button" class="ios-btn calc-key py-3 rounded-xl bg-white/70 text-slate-800 font-extrabold text-sm" data-key="6">6</button>
-        <button type="button" class="ios-btn calc-key py-3 rounded-xl bg-white/70 text-slate-700 font-extrabold text-sm" data-key="+">+</button>
-        <button type="button" class="ios-btn calc-key py-3 rounded-xl bg-white/70 text-slate-800 font-extrabold text-sm" data-key="1">1</button>
-        <button type="button" class="ios-btn calc-key py-3 rounded-xl bg-white/70 text-slate-800 font-extrabold text-sm" data-key="2">2</button>
-        <button type="button" class="ios-btn calc-key py-3 rounded-xl bg-white/70 text-slate-800 font-extrabold text-sm" data-key="3">3</button>
-        <button type="button" class="ios-btn calc-eq py-3 rounded-xl bg-gradient-brand text-white font-extrabold text-sm row-span-2" data-key="=">=</button>
-        <button type="button" class="ios-btn calc-key py-3 rounded-xl bg-white/70 text-slate-800 font-extrabold text-sm col-span-2" data-key="0">0</button>
-        <button type="button" class="ios-btn calc-key py-3 rounded-xl bg-white/70 text-slate-800 font-extrabold text-sm" data-key=".">.</button>
+      <div class="calc-display-wrap">
+        <span class="text-[10px] text-slate-400 font-bold">الناتج</span>
+        <div id="calcDisplay" class="calc-display" dir="ltr">0</div>
+      </div>
+      <div class="grid grid-cols-4 gap-2" id="calcPad">
+        <button type="button" class="calc-key calc-key-clear" data-key="C">C</button>
+        <button type="button" class="calc-key calc-key-operator" data-key="←">⌫</button>
+        <button type="button" class="calc-key calc-key-operator" data-key="/">÷</button>
+        <button type="button" class="calc-key calc-key-operator" data-key="*">×</button>
+        <button type="button" class="calc-key" data-key="7">7</button>
+        <button type="button" class="calc-key" data-key="8">8</button>
+        <button type="button" class="calc-key" data-key="9">9</button>
+        <button type="button" class="calc-key calc-key-operator" data-key="-">−</button>
+        <button type="button" class="calc-key" data-key="4">4</button>
+        <button type="button" class="calc-key" data-key="5">5</button>
+        <button type="button" class="calc-key" data-key="6">6</button>
+        <button type="button" class="calc-key calc-key-operator" data-key="+">+</button>
+        <button type="button" class="calc-key" data-key="1">1</button>
+        <button type="button" class="calc-key" data-key="2">2</button>
+        <button type="button" class="calc-key" data-key="3">3</button>
+        <button type="button" class="calc-key calc-key-equals row-span-2" data-key="=">=</button>
+        <button type="button" class="calc-key col-span-2" data-key="0">0</button>
+        <button type="button" class="calc-key" data-key=".">.</button>
       </div>
       <button type="button" id="btnCalcApply" class="ios-btn w-full bg-gradient-to-br from-emerald-500 to-teal-700 text-white text-xs font-bold py-2.5 rounded-xl">اعتماد الناتج ✓</button>
     </div>
@@ -1672,25 +1748,9 @@
         <button type="button" class="modal-close w-8 h-8 rounded-full bg-slate-200/70 text-slate-600 font-bold text-sm shrink-0" data-close="adminMerchantModal">✕</button>
       </div>
 
-      <div id="adminPinGate" class="space-y-3">
-        <p class="text-xs text-slate-600">أدخل رمز المطور السري.</p>
-        <form id="adminUnlockForm" class="flex gap-2">
-          <input id="adminPinInput" type="password" inputmode="numeric" required placeholder="••••" class="ios-input flex-1 min-w-0 rounded-xl px-3 py-2 text-center text-base font-extrabold tracking-widest" />
-          <button type="submit" class="ios-btn bg-sky-600 text-white text-xs font-extrabold px-4 py-2 rounded-xl shrink-0">دخول</button>
-        </form>
-      </div>
-
       <div id="adminControlsBody" class="hidden space-y-4">
-        <div class="space-y-2.5 bg-indigo-500/10 p-3.5 rounded-2xl border border-indigo-300/70">
-          <div class="flex items-center justify-between">
-            <h4 class="text-xs font-extrabold text-indigo-900">هوية المطور 🛠️</h4>
-            <button type="button" id="btnDeactivateDev" class="text-[10px] font-bold text-rose-600 hover:underline">إغلاق وضع المطور</button>
-          </div>
-          <p class="text-[10px] text-slate-600 leading-relaxed">هذه الإعدادات محفوظة على هذا الجهاز فقط. لا تُبثّ لأي مستخدم آخر.</p>
-          <div class="grid grid-cols-2 gap-2">
-            <div><label class="block text-[10px] font-bold text-slate-600 mb-0.5">بريد المطور</label><input id="cfgDevEmail" type="email" dir="ltr" class="ios-input w-full rounded-xl px-2.5 py-1.5 text-xs font-bold" /></div>
-            <div><label class="block text-[10px] font-bold text-slate-600 mb-0.5">رمز المطور السري</label><input id="cfgDevSecretPin" type="password" inputmode="numeric" placeholder="اتركه فارغاً للإبقاء" class="ios-input w-full rounded-xl px-2.5 py-1.5 text-xs font-bold text-center" /></div>
-          </div>
+        <div class="flex justify-end">
+          <button type="button" id="btnDeactivateDev" class="text-[10px] font-bold text-rose-600 hover:underline">إغلاق وضع المطور</button>
         </div>
 
         <form id="merchantConfigForm" class="space-y-2.5 bg-white/70 p-3.5 rounded-2xl border border-slate-200/80">
@@ -1945,6 +2005,9 @@
 const $ = id => document.getElementById(id);
 const on = (id, ev, fn) => { const el = $(id); if (!el) { console.warn('[missing]', id); return; } if (typeof fn !== 'function') { console.error('[invalid handler]', id, ev); return; } el.addEventListener(ev, fn); };
 const pad = n => String(n).padStart(2, '0');
+
+/* Immutable startup snapshot: do not export live modal/drawer state. */
+const APP_EXPORT_SOURCE_HTML = '<!DOCTYPE html>\\n' + document.documentElement.outerHTML;
 
 function escapeHtml(v) {
   return String(v ?? '').replace(/[&<>"']/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]));
@@ -2560,7 +2623,7 @@ function getMerchantConfig() {
 }
 /* __BAKED_MERCHANT_CFG_START__ */
 function defaultMerchantConfig() {
-  return { shamAccount: '', whatsappPhone: '', monthlyPrice: 'اشتراك شهري شامل', yearlyPrice: 'اشتراك سنوي شامل', qrDataUrl: '', devEmail: 'hussamalzaeem20@gmail.com', devSecretPin: '2002' };
+  return { shamAccount: '', whatsappPhone: '', monthlyPrice: 'اشتراك شهري شامل', yearlyPrice: 'اشتراك سنوي شامل', qrDataUrl: '' };
 }
 /* __BAKED_MERCHANT_CFG_END__ */
 function saveMerchantConfig(cfg) { try { localStorage.setItem(MERCHANT_CFG_KEY, JSON.stringify(cfg)); } catch (e) {} }
@@ -2569,11 +2632,6 @@ const MASTER_DEV_EMAILS = ['hussamalzaeem20@gmail.com', 'hussamsungam@gmail.com'
 
 function isDeveloperModeActive() {
   if (activeAccount && activeAccount.email && MASTER_DEV_EMAILS.includes(activeAccount.email.toLowerCase().trim())) {
-    return true;
-  }
-  const cfg = getMerchantConfig();
-  if (cfg.devEmail && activeAccount && activeAccount.email &&
-      cfg.devEmail.toLowerCase().trim() === activeAccount.email.toLowerCase().trim()) {
     return true;
   }
   try { if (localStorage.getItem(DEV_MODE_STORAGE_KEY) === '1') return true; } catch (e) {}
@@ -3443,66 +3501,47 @@ function openVoucherForTx(txId) {
   };
   const v = currentVoucherData, body = $('voucherCardBody');
   if (body) body.innerHTML = `
-    <div class="px-4 py-3 space-y-2.5 text-slate-900">
-      <div class="text-center space-y-1">
-        <div class="inline-flex items-center justify-center w-9 h-9 rounded-xl bg-slate-900 text-white font-extrabold text-base mx-auto">$</div>
-        <h4 class="text-sm font-extrabold tracking-tight text-slate-900">${escapeHtml(v.bizTitle)}</h4>
-        ${cfg.whatsappPhone ? `<p class="text-[10px] font-mono text-slate-500" dir="ltr">TEL: ${escapeHtml(cfg.whatsappPhone)}</p>` : ''}
-        <div class="inline-block px-3 py-0.5 rounded-md border-2 border-slate-900 text-[11px] font-extrabold tracking-wide mt-1">
-          ${v.typeLabel}
-        </div>
+    <div class="receipt-document px-4 py-4 space-y-3 text-slate-900">
+      <div class="receipt-brand-head text-center space-y-1.5">
+        <div class="inline-flex items-center justify-center w-10 h-10 rounded-2xl bg-slate-900 text-white font-black text-lg mx-auto shadow-md">$</div>
+        <h4 class="text-[15px] font-black tracking-tight text-slate-950">${escapeHtml(v.bizTitle)}</h4>
+        ${cfg.whatsappPhone ? `<p class="text-[10px] font-mono text-slate-500" dir="ltr">${escapeHtml(cfg.whatsappPhone)}</p>` : ''}
+        <div class="receipt-type-pill">${v.typeLabel}</div>
       </div>
 
-      <div class="thermal-dashed pt-2 flex items-center justify-between text-[11px] font-mono text-slate-700">
-        <span>NO: <strong>${no}</strong></span>
-        <span dir="ltr">${v.date} ${v.time}</span>
+      <div class="receipt-meta-grid">
+        <div><span>رقم السند</span><strong dir="ltr">${no}</strong></div>
+        <div><span>التاريخ والوقت</span><strong dir="ltr">${v.date} · ${v.time}</strong></div>
       </div>
 
-      <div class="border-y-2 border-slate-900 py-2.5 px-2 bg-slate-50 text-center space-y-0.5">
-        <span class="text-[10px] font-bold uppercase tracking-wider text-slate-500 block">المبلغ الصافي المعتمد</span>
-        <strong class="text-2xl font-extrabold tracking-tight text-slate-900 block" dir="ltr">${v.amountText}</strong>
-        ${v.usdEq ? `<span class="text-[10px] font-bold text-slate-600 block" dir="ltr">(${v.usdEq})</span>` : ''}
+      <div class="receipt-amount-panel">
+        <span>المبلغ المعتمد</span>
+        <strong dir="ltr">${v.amountText}</strong>
+        ${v.usdEq ? `<small dir="ltr">ما يعادله: ${v.usdEq}</small>` : ''}
       </div>
 
-      <div class="space-y-1.5 text-xs">
-        <div class="flex justify-between gap-2">
-          <span class="text-slate-500 shrink-0">${inc ? 'استلمنا من:' : 'صُرف إلى:'}</span>
-          <strong class="text-slate-900 text-left truncate">${escapeHtml(v.personName)}</strong>
-        </div>
-        ${v.phone ? `<div class="flex justify-between gap-2">
-          <span class="text-slate-500 shrink-0">رقم الهاتف:</span>
-          <span class="font-mono text-[11px] text-slate-800" dir="ltr">${escapeHtml(v.phone)}</span>
-        </div>` : ''}
-        <div class="flex justify-between gap-2">
-          <span class="text-slate-500 shrink-0">التصنيف / البند:</span>
-          <strong class="text-slate-800 text-left truncate">${escapeHtml(v.category)}</strong>
-        </div>
-        <div class="flex justify-between gap-2">
-          <span class="text-slate-500 shrink-0">طريقة الدفع:</span>
-          <strong class="text-slate-800">${escapeHtml(v.method)}</strong>
-        </div>
-        <div class="thermal-dashed pt-1.5 space-y-0.5">
-          <span class="text-[10px] font-bold text-slate-500 block">البيان والتفاصيل:</span>
-          <p class="text-xs font-bold text-slate-900 leading-snug">${escapeHtml(v.note)}</p>
-          ${v.details ? `<p class="text-[11px] text-slate-600 leading-snug">${escapeHtml(v.details)}</p>` : ''}
-        </div>
+      <div class="receipt-details">
+        <div><span>${inc ? 'استلمنا من' : 'المستفيد'}</span><strong>${escapeHtml(v.personName)}</strong></div>
+        ${v.phone ? `<div><span>رقم الهاتف</span><strong dir="ltr">${escapeHtml(v.phone)}</strong></div>` : ''}
+        <div><span>التصنيف</span><strong>${escapeHtml(v.category || '—')}</strong></div>
+        <div><span>طريقة الدفع</span><strong>${escapeHtml(v.method)}</strong></div>
       </div>
 
-      <div class="thermal-dashed pt-2.5 grid grid-cols-2 gap-3 text-center text-[10px] text-slate-500">
-        <div>
-          <span class="block mb-3">توقيع المستلم</span>
-          <div class="border-b border-dotted border-slate-400 mx-2"></div>
-        </div>
-        <div>
-          <span class="block mb-3">الختم والاعتماد</span>
-          <div class="border-b border-dotted border-slate-400 mx-2"></div>
-        </div>
+      <div class="receipt-description">
+        <span>البيان</span>
+        <strong>${escapeHtml(v.note || '—')}</strong>
+        ${v.details ? `<p>${escapeHtml(v.details)}</p>` : ''}
       </div>
 
-      <div class="pt-1.5 text-center space-y-1">
+      <div class="receipt-signatures">
+        <div><span>توقيع المستلم</span><i></i></div>
+        <div><span>الختم والاعتماد</span><i></i></div>
+      </div>
+
+      <div class="pt-1 text-center space-y-1">
         <div class="thermal-barcode mx-auto w-4/5 opacity-85"></div>
         <p class="text-[9px] font-mono tracking-widest text-slate-500" dir="ltr">*${no}*</p>
-        <p class="text-[9px] text-slate-400">صدر إلكترونياً عبر نظام الزعيم PRO</p>
+        <p class="text-[9px] text-slate-400">مستند صادر إلكترونياً عبر نظام الزعيم PRO</p>
       </div>
     </div>`;
   openModal('voucherModal');
@@ -4135,6 +4174,15 @@ function calcEvaluate(apply) {
   showToast(`تم اعتماد المبلغ: ${res}`);
 }
 
+/* Add a person without leaving the current transaction/debt/schedule form. */
+let pendingPersonSelectId = '';
+document.addEventListener('click', e => {
+  const btn = e.target.closest('[data-add-person-for]');
+  if (!btn) return;
+  pendingPersonSelectId = btn.dataset.addPersonFor || '';
+  openPersonModal();
+});
+
 /* ==================== PEOPLE ==================== */
 function openPersonModal(personId) {
   if (!personId && !checkProFeatureAccess('person')) return;
@@ -4178,8 +4226,18 @@ on('personForm', 'submit', e => {
   if (!checkProFeatureAccess('person', state.people.length + 1)) return;
   const newP = { id: uid('per'), name, phone, note };
   state.people.push(newP);
-  saveState(); closeModal('personModal'); renderAll();
-  showToast(`تمت إضافة ${name}`);
+  saveState();
+  closeModal('personModal');
+  renderAll();
+  if (pendingPersonSelectId) {
+    const target = $(pendingPersonSelectId);
+    if (target) {
+      target.value = newP.id;
+      target.dispatchEvent(new Event('change', { bubbles: true }));
+    }
+    pendingPersonSelectId = '';
+  }
+  showToast(`تمت إضافة ${name} وربطه بالحركة`);
 });
 function deletePerson(id) {
   const p = state.people.find(x => x.id === id);
@@ -5298,8 +5356,6 @@ function isEmailAccountPro(email) {
   const clean = String(email || '').trim().toLowerCase();
   if (!clean) return false;
   if (MASTER_DEV_EMAILS.includes(clean)) return true;
-  const cfg = getMerchantConfig();
-  if (cfg.devEmail && cfg.devEmail.toLowerCase().trim() === clean) return true;
   try {
     const raw = localStorage.getItem('alzaeem_pro_sub_user_' + clean);
     if (raw) {
@@ -5580,12 +5636,13 @@ function handleStealthDevTap() {
 }
 function openAdminMerchantModal() {
   const sub = getEffectiveSubscription();
-  const gate = $('adminPinGate'), body = $('adminControlsBody');
-  if ($('adminPinInput')) $('adminPinInput').value = '';
-  const unlocked = sub.isDev;
-  if (gate) gate.classList.toggle('hidden', unlocked);
-  if (body) body.classList.toggle('hidden', !unlocked);
-  if (unlocked) renderAdminMerchantForm();
+  const body = $('adminControlsBody');
+  if (!sub.isDev) {
+    showToast('هذه اللوحة متاحة لحساب المطور فقط');
+    return;
+  }
+  if (body) body.classList.remove('hidden');
+  renderAdminMerchantForm();
   openModal('adminMerchantModal');
 }
 function renderAdminMerchantForm() {
@@ -5593,25 +5650,10 @@ function renderAdminMerchantForm() {
   const set = (id, v) => { const el = $(id); if (el) el.value = v || ''; };
   set('cfgShamAccount', cfg.shamAccount); set('cfgWhatsappPhone', cfg.whatsappPhone);
   set('cfgMonthlyPrice', cfg.monthlyPrice); set('cfgYearlyPrice', cfg.yearlyPrice);
-  set('cfgDevEmail', cfg.devEmail); set('cfgDevSecretPin', '');
   const admQr = $('adminQrPreviewImg');
   if (admQr) { if (cfg.qrDataUrl) { admQr.src = cfg.qrDataUrl; admQr.classList.remove('hidden'); } else { admQr.src = ''; admQr.classList.add('hidden'); } }
   renderAdminLicenses();
 }
-on('adminUnlockForm', 'submit', e => {
-  e.preventDefault();
-  const entered = ($('adminPinInput')?.value || '').trim();
-  /* The default value is still 2002 in code, but it is no longer printed on
-     screen, and we refuse to open the panel while it is unchanged. */
-  if (getMerchantConfig().devSecretPin === '2002') {
-    showToast('غيّر رمز المطور الافتراضي أولاً من داخل اللوحة بعد الدخول');
-  }
-  if (!entered || entered !== String(getMerchantConfig().devSecretPin || '')) { showToast('رمز المطور غير صحيح'); return; }
-  activateDeveloperMode(true);
-  $('adminPinGate')?.classList.add('hidden');
-  $('adminControlsBody')?.classList.remove('hidden');
-  renderAdminMerchantForm();
-});
 on('btnDeactivateDev', 'click', deactivateDeveloperMode);
 on('merchantConfigForm', 'submit', e => {
   e.preventDefault();
@@ -5620,11 +5662,6 @@ on('merchantConfigForm', 'submit', e => {
   cfg.whatsappPhone = ($('cfgWhatsappPhone')?.value || '').trim();
   cfg.monthlyPrice = ($('cfgMonthlyPrice')?.value || '').trim() || 'اشتراك شهري شامل';
   cfg.yearlyPrice = ($('cfgYearlyPrice')?.value || '').trim() || 'اشتراك سنوي شامل';
-  const email = ($('cfgDevEmail')?.value || '').trim().toLowerCase();
-  const pin = ($('cfgDevSecretPin')?.value || '').trim();
-  if (email) cfg.devEmail = email;
-  if (pin.length >= 6) cfg.devSecretPin = pin;
-  else if (pin && pin.length < 6) { showToast('رمز المطور يجب أن يكون 6 أحرف على الأقل'); return; }
   saveMerchantConfig(cfg);
   renderSubscriptionModalContent();
   closeModal('adminMerchantModal');
@@ -5675,11 +5712,7 @@ on('btnExportCustomerBuild', 'click', () => {
     monthlyPrice: String($('cfgMonthlyPrice')?.value || '').trim() || 'اشتراك شهري شامل',
     yearlyPrice: String($('cfgYearlyPrice')?.value || '').trim() || 'اشتراك سنوي شامل',
     qrDataUrl: String(current.qrDataUrl || '').trim(),
-    /* Never ship developer credentials in a customer-facing build. */
-    devEmail: '',
-    devSecretPin: ''
   };
-
   if (!customerCfg.shamAccount && !customerCfg.whatsappPhone && !customerCfg.qrDataUrl) {
     showToast('أدخل بيانات شام كاش أو واتساب أو ارفع باركود التحويل أولاً');
     return;
@@ -5691,32 +5724,31 @@ function defaultMerchantConfig() {
 }
 /* __BAKED_MERCHANT_CFG_END__ */`;
 
-  const cloneDoc = document.documentElement.cloneNode(true);
-  cloneDoc.querySelectorAll('#adminMerchantModal, #subscriptionModal, #smartQuickModal, #voucherModal, #sideNavBackdrop, #toast').forEach(el => {
-    el.classList.add('hidden');
-    el.classList.remove('flex');
-  });
-  const drw = cloneDoc.querySelector('#sideNavDrawer');
-  if (drw) drw.classList.add('translate-x-full');
-
-  const docHtml = '<!DOCTYPE html>\\n' + cloneDoc.outerHTML;
-  const patched = docHtml.replace(
+  /* The customer build is the exact same application source.
+     Only the merchant payment/contact configuration is replaced.
+     Do not clone or normalize the live DOM and do not remove/change any UI. */
+  const sourceHtml = APP_EXPORT_SOURCE_HTML;
+  const patched = sourceHtml.replace(
     /\/\* __BAKED_MERCHANT_CFG_START__ \*\/[\s\S]*?\/\* __BAKED_MERCHANT_CFG_END__ \*\//,
     () => bakedFn
   );
 
-  if (patched === docHtml || !patched.includes('shamAccount')) {
-    showToast('تعذّر تضمين بيانات الدفع في ملف الزبائن؛ لم يتم التصدير');
+  if (patched === sourceHtml || !patched.includes('shamAccount') ||
+      !patched.includes('id="smartQuickModal"') ||
+      !patched.includes('id="universalCalcModal"') ||
+      !patched.includes('id="personModal"')) {
+    showToast('تعذّر التحقق من سلامة نسخة الزبائن؛ لم يتم التصدير');
     return;
   }
 
   const blob = new Blob([patched], { type: 'text/html;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
-  a.href = URL.createObjectURL(blob);
+  a.href = url;
   a.download = 'alzaeem-pro-customers.html';
   a.click();
-  setTimeout(() => URL.revokeObjectURL(a.href), 2000);
-  showToast('تم تصدير نسخة الزبائن مع بيانات الدفع والتواصل والباركود ✓');
+  setTimeout(() => URL.revokeObjectURL(url), 2000);
+  showToast('تم تصدير نسخة مطابقة للتطبيق مع إضافة بيانات الدفع والتواصل ✓');
 });
 
 /* ==================== BOOT ==================== */
