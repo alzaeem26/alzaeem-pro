@@ -163,6 +163,30 @@
     box-shadow: 0 22px 54px -20px rgba(0,0,0,.65);
   }
 
+  /* Quick entry stays inside the live visual viewport when the mobile keyboard opens. */
+  #smartQuickModal.alzaeem-modal-root {
+    align-items: flex-start !important;
+    padding-top: max(8px, env(safe-area-inset-top)) !important;
+    padding-bottom: max(8px, env(safe-area-inset-bottom)) !important;
+    scroll-padding-block: 8px;
+  }
+  #smartQuickModal.alzaeem-modal-root > .ios-modal {
+    width: min(100%, 34rem) !important;
+    max-height: calc(var(--alzaeem-vv-height) - 16px) !important;
+    margin: 8px auto !important;
+    overflow-x: hidden !important;
+    overflow-y: auto !important;
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
+    scroll-padding-block: 12px;
+  }
+  #smartQuickModal #smartQuickInput {
+    min-height: 44px;
+    scroll-margin-block: 14px;
+  }
+  #smartQuickModal #smartQuickEntryForm {
+    padding-bottom: max(4px, env(safe-area-inset-bottom));
+  }
   #subscriptionModal.alzaeem-modal-root { align-items: flex-start !important; }
   #subscriptionModal.alzaeem-modal-root > .ios-modal {
     margin-block: 0;
@@ -294,6 +318,39 @@
   body.quick-entry-open { overflow: hidden; }
   @media (max-width: 640px) {
     #smartQuickInput { font-size: 16px !important; }
+  }
+  #sideNavDrawer nav {
+    padding-top: 10px !important;
+    padding-bottom: 10px !important;
+  }
+  #sideNavDrawer nav.space-y-1 > :not([hidden]) ~ :not([hidden]) {
+    margin-top: 2px !important;
+  }
+  #sideNavDrawer .drawer-section-label {
+    padding: 6px 9px 3px !important;
+    font-size: 9px;
+    letter-spacing: .04em;
+  }
+  #sideNavDrawer .drawer-section-label.pt-4 {
+    padding-top: 9px !important;
+  }
+  #sideNavDrawer .nav-item {
+    min-height: 36px !important;
+    padding-top: 5px !important;
+    padding-bottom: 5px !important;
+    gap: 10px !important;
+    font-size: 12px !important;
+    border-radius: 12px !important;
+  }
+  #sideNavDrawer .nav-item > span:first-child {
+    width: 29px;
+    height: 29px;
+    flex-basis: 29px;
+    border-radius: 10px;
+    font-size: 14px;
+  }
+  #sideNavDrawer .nav-item.active {
+    box-shadow: inset 0 0 0 1px rgba(14,165,233,.08), 0 3px 10px -8px rgba(2,132,199,.5);
   }
   #sideNavDrawer .drawer-footer-btn {
     min-height: 38px;
@@ -1572,26 +1629,26 @@
           <span class="w-8 h-8 rounded-xl bg-emerald-600 text-white font-extrabold flex items-center justify-center text-sm">💳</span>
           <div>
             <h4 class="text-xs sm:text-sm font-extrabold text-slate-900">بيانات التحويل عبر شام كاش</h4>
-            <p class="text-[10px] text-slate-500">تُضبط من لوحة المطور وتُعرض لعملائك</p>
+            <p class="text-[10px] text-slate-500">بيانات الدفع والتواصل لتفعيل اشتراكك</p>
           </div>
         </div>
         <div class="grid grid-cols-1 sm:grid-cols-12 gap-3 items-center bg-slate-50/90 dark:bg-slate-800/70 p-3 rounded-xl border border-slate-200/70">
-          <div class="sm:col-span-4 flex flex-col items-center gap-1">
-            <div class="w-24 h-24 rounded-xl bg-white border border-slate-300 flex items-center justify-center overflow-hidden p-1">
+          <div id="shamCashQrColumn" class="hidden sm:col-span-4 flex flex-col items-center gap-1">
+            <div id="shamCashQrBox" class="hidden w-24 h-24 rounded-xl bg-white border border-slate-300 flex items-center justify-center overflow-hidden p-1">
               <img id="shamCashQrImg" src="" alt="باركود شام كاش" class="w-full h-full object-contain hidden" />
-              <div id="shamCashQrPlaceholder" class="text-[10px] text-slate-400 font-bold leading-tight px-1 text-center">باركود التحويل<br/>(يُرفع من الإدارة)</div>
             </div>
-            <span class="text-[10px] font-bold text-slate-500">باركود التحويل</span>
+            <span id="shamCashQrCaption" class="hidden text-[10px] font-bold text-slate-500">باركود التحويل</span>
           </div>
-          <div class="sm:col-span-8 space-y-2 text-xs">
-            <div class="flex items-center justify-between bg-white dark:bg-slate-900 px-3 py-2 rounded-xl border border-slate-200/80">
-              <div><span class="text-[10px] text-slate-500 block">حساب شام كاش:</span><strong id="merchantShamAccountDisplay" class="text-sm font-extrabold text-emerald-700" dir="ltr">—</strong></div>
+          <div id="shamCashDetailsColumn" class="sm:col-span-12 space-y-2 text-xs">
+            <div id="merchantShamAccountRow" class="hidden flex items-center justify-between bg-white dark:bg-slate-900 px-3 py-2 rounded-xl border border-slate-200/80">
+              <div><span class="text-[10px] text-slate-500 block">حساب شام كاش:</span><strong id="merchantShamAccountDisplay" class="text-sm font-extrabold text-emerald-700" dir="ltr"></strong></div>
               <button type="button" id="btnCopyShamAccount" class="ios-btn bg-emerald-500/15 text-emerald-800 text-[11px] font-bold px-2.5 py-1 rounded-lg">نسخ</button>
             </div>
-            <div class="flex items-center justify-between bg-white dark:bg-slate-900 px-3 py-2 rounded-xl border border-slate-200/80">
-              <div><span class="text-[10px] text-slate-500 block">واتساب الدعم:</span><strong id="merchantWhatsappDisplay" class="text-sm font-extrabold text-sky-800" dir="ltr">—</strong></div>
+            <div id="merchantWhatsappRow" class="hidden flex items-center justify-between bg-white dark:bg-slate-900 px-3 py-2 rounded-xl border border-slate-200/80">
+              <div><span class="text-[10px] text-slate-500 block">واتساب الدعم:</span><strong id="merchantWhatsappDisplay" class="text-sm font-extrabold text-sky-800" dir="ltr"></strong></div>
               <button type="button" id="btnRequestActivation" class="ios-btn bg-emerald-600 text-white text-[11px] font-bold px-3 py-1.5 rounded-lg">طلب التفعيل</button>
             </div>
+            <p id="merchantPaymentUnavailable" class="hidden text-center text-[11px] text-slate-500 py-2">بيانات الدفع والتواصل غير متاحة حالياً.</p>
           </div>
         </div>
         <form id="activateLicenseForm" class="pt-2 border-t border-slate-200/70 space-y-2">
@@ -2178,6 +2235,34 @@ function refreshModalViewport() {
   document.documentElement.style.setProperty('--alzaeem-vv-height', `${height}px`);
   document.documentElement.style.setProperty('--alzaeem-vv-top', `${top}px`);
 }
+function keepQuickEntryVisible() {
+  const modal = $('smartQuickModal');
+  if (!modal || modal.classList.contains('hidden')) return;
+  refreshModalViewport();
+  const panel = modal.querySelector('.ios-modal');
+  const input = $('smartQuickInput');
+  if (!panel || !input) return;
+  requestAnimationFrame(() => {
+    const vv = window.visualViewport;
+    const visibleBottom = (vv?.offsetTop || 0) + (vv?.height || window.innerHeight) - 14;
+    const visibleTop = (vv?.offsetTop || 0) + 10;
+    const rect = input.getBoundingClientRect();
+    if (rect.bottom > visibleBottom) panel.scrollTop += rect.bottom - visibleBottom;
+    else if (rect.top < visibleTop) panel.scrollTop -= visibleTop - rect.top;
+  });
+}
+window.addEventListener('resize', refreshModalViewport, { passive: true });
+window.addEventListener('orientationchange', refreshModalViewport, { passive: true });
+if (window.visualViewport) {
+  window.visualViewport.addEventListener('resize', () => {
+    refreshModalViewport();
+    keepQuickEntryVisible();
+  }, { passive: true });
+  window.visualViewport.addEventListener('scroll', () => {
+    refreshModalViewport();
+    keepQuickEntryVisible();
+  }, { passive: true });
+}
 function syncModalBodyLock() {
   const open = !!document.querySelector('[id$="Modal"].alzaeem-modal-root.flex:not(.hidden)');
   document.body.classList.toggle('modal-open', open);
@@ -2194,8 +2279,10 @@ function openModal(id) {
   el.classList.add('flex');
   el.setAttribute('aria-hidden', 'false');
   syncModalBodyLock();
+  if (id === 'smartQuickModal') document.body.classList.add('quick-entry-open');
   const panel = el.querySelector('.ios-modal') || el.firstElementChild;
   if (panel) panel.scrollTop = 0;
+  if (id === 'smartQuickModal') requestAnimationFrame(keepQuickEntryVisible);
 }
 function closeModal(id) {
   const el = $(id);
@@ -3273,12 +3360,32 @@ function renderSubscriptionModalContent() {
   const set = (id, v) => { const el = $(id); if (el) el.textContent = v; };
   set('displayMonthlyPriceLabel', cfg.monthlyPrice || 'اشتراك شهري شامل');
   set('displayYearlyPriceLabel', cfg.yearlyPrice || 'اشتراك سنوي شامل');
-  set('merchantShamAccountDisplay', cfg.shamAccount || 'غير مضبوط');
-  set('merchantWhatsappDisplay', cfg.whatsappPhone || 'غير مضبوط');
-  const img = $('shamCashQrImg'), ph = $('shamCashQrPlaceholder');
-  if (img && ph) {
-    if (cfg.qrDataUrl) { img.src = cfg.qrDataUrl; img.classList.remove('hidden'); ph.classList.add('hidden'); }
-    else { img.src = ''; img.classList.add('hidden'); ph.classList.remove('hidden'); }
+  const shamAccount = String(cfg.shamAccount || '').trim();
+  const whatsappPhone = String(cfg.whatsappPhone || '').trim();
+  const qrDataUrl = String(cfg.qrDataUrl || '').trim();
+  set('merchantShamAccountDisplay', shamAccount);
+  set('merchantWhatsappDisplay', whatsappPhone);
+  $('merchantShamAccountRow')?.classList.toggle('hidden', !shamAccount);
+  $('merchantWhatsappRow')?.classList.toggle('hidden', !whatsappPhone);
+  $('merchantPaymentUnavailable')?.classList.toggle('hidden', !!(shamAccount || whatsappPhone || qrDataUrl));
+  const img = $('shamCashQrImg'), qrBox = $('shamCashQrBox'), qrCaption = $('shamCashQrCaption');
+  if (img && qrBox && qrCaption) {
+    if (qrDataUrl) {
+      img.src = qrDataUrl;
+      img.classList.remove('hidden');
+      qrBox.classList.remove('hidden');
+      qrBox.classList.add('flex');
+      qrCaption.classList.remove('hidden');
+    } else {
+      img.removeAttribute('src');
+      img.classList.add('hidden');
+      qrBox.classList.add('hidden');
+      qrBox.classList.remove('flex');
+      qrCaption.classList.add('hidden');
+    }
+    $('shamCashQrColumn')?.classList.toggle('hidden', !qrDataUrl);
+    $('shamCashDetailsColumn')?.classList.toggle('sm:col-span-12', !qrDataUrl);
+    $('shamCashDetailsColumn')?.classList.toggle('sm:col-span-8', !!qrDataUrl);
   }
 }
 function openSubscriptionModal() { renderSubscriptionModalContent(); openModal('subscriptionModal'); }
@@ -3587,7 +3694,11 @@ on('btnAddExpense', 'click', () => openTxModal('expense'));
 on('fabAddTx', 'click', () => { closeAllModals(); switchTab('dashboard'); });
 on('btnFabQuickEntry', 'click', () => {
   openModal('smartQuickModal');
-  setTimeout(() => $('smartQuickInput')?.focus(), 80);
+  setTimeout(() => {
+    const input = $('smartQuickInput');
+    input?.focus({ preventScroll: true });
+    keepQuickEntryVisible();
+  }, 100);
 });
 on('btnAddPerson', 'click', () => openPersonModal(''));
 on('btnAddDebt', 'click', () => openDebtModal(''));
@@ -4673,6 +4784,10 @@ function parseSmartQuickEntry(rawText) {
   if (!note) note = category;
   return { kind, amount, currency, category, personId, note };
 }
+on('smartQuickInput', 'focus', () => {
+  setTimeout(keepQuickEntryVisible, 60);
+  setTimeout(keepQuickEntryVisible, 220);
+});
 on('smartQuickInput', 'input', e => {
   const prev = $('smartQuickPreview');
   if (!prev) return;
