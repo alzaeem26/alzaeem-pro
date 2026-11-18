@@ -40,14 +40,14 @@
     --hair: rgba(148,163,184,0.16); --field: rgba(15,23,42,0.6);
   }
   * { -webkit-tap-highlight-color: transparent; }
-  html { scroll-behavior: smooth; }
+  html { scroll-behavior: auto; }
   body {
     font-family: 'IBM Plex Sans Arabic', system-ui, sans-serif;
     background: linear-gradient(160deg, var(--bg-1), var(--bg-2) 46%, var(--bg-3));
     color: var(--ink);
     min-height: 100vh;
     overflow-x: hidden;
-    transition: background .35s ease, color .35s ease;
+    transition: none;
   }
   /* Glass orbs are disabled on purpose: three blurred 72px layers tank
      frame rate on low-end Android, which is the target device. */
@@ -85,6 +85,21 @@
   }
   .ios-input::placeholder { color: var(--ink-faint); }
   .ios-input:focus { border-color: var(--accent); }
+
+  /* Stable rounded-corner fallbacks: retain the original soft card language
+     even during Tailwind CDN startup/repaint on mobile browsers. */
+  .ios-card { border-radius: 1.25rem !important; }
+  .ios-modal { border-radius: 1.35rem !important; }
+  [class~="rounded-lg"] { border-radius: .75rem !important; }
+  [class~="rounded-xl"] { border-radius: 1rem !important; }
+  [class~="rounded-2xl"] { border-radius: 1.25rem !important; }
+  [class~="rounded-3xl"] { border-radius: 1.5rem !important; }
+  [class~="rounded-full"] { border-radius: 9999px !important; }
+  [class~="rounded-md"] { border-radius: .375rem !important; }
+  [class~="rounded-sm"] { border-radius: .125rem !important; }
+  [class~="rounded"] { border-radius: .25rem !important; }
+  .ios-input { border-radius: .85rem; }
+  .nav-item { border-radius: 1rem !important; }
   select.ios-input option { color: #0f172a; }
   .ios-btn { transition: transform .12s ease, box-shadow .18s ease, background .18s ease, filter .18s ease; }
   .ios-btn:active { transform: scale(.975); }
@@ -251,10 +266,11 @@
   }
   /* Premium navigation drawer: lightweight surfaces, clear hierarchy, no heavy blur. */
   #sideNavDrawer {
-    width: min(21rem, 88vw);
+    width: min(17rem, 84vw);
     background: linear-gradient(160deg, rgba(248,252,255,.98), rgba(235,245,250,.98));
     border-left: 1px solid rgba(148,163,184,.22);
-    box-shadow: -18px 0 48px -28px rgba(15,23,42,.42);
+    box-shadow: -14px 0 34px -24px rgba(15,23,42,.38);
+    border-radius: 0 0 0 22px;
     will-change: transform;
     contain: layout paint;
   }
@@ -276,16 +292,16 @@
   body.dark-mode #sideNavDrawer .drawer-section-label { color: #71849d; }
   .nav-item {
     position: relative;
-    min-height: 48px;
+    min-height: 42px;
     border: 1px solid transparent;
     color: #475569;
     transition: background-color .14s ease, color .14s ease, border-color .14s ease;
   }
   body.dark-mode .nav-item { color: #c3d0df; }
   .nav-item > span:first-child {
-    width: 36px; height: 36px; flex: 0 0 36px;
-    border-radius: 12px;
-    font-size: 17px;
+    width: 32px; height: 32px; flex: 0 0 32px;
+    border-radius: 11px;
+    font-size: 16px;
     transition: background-color .14s ease, transform .14s ease;
   }
   .nav-item:hover { background: rgba(148,163,184,.11); }
@@ -319,9 +335,6 @@
   }
   #sideNavBackdrop.drawer-backdrop-visible { opacity: 1; }
   body.drawer-open, body.modal-open { overflow: hidden; }
-  body.modal-open > main, body.modal-open > header { transform: translateZ(0); }
-  [id$="Modal"] { background-color: rgba(15,23,42,.62) !important; -webkit-backdrop-filter:none !important; backdrop-filter:none !important; }
-  [id$="Modal"] > .ios-modal { opacity:1 !important; visibility:visible; }
 
   /* Keep the quick-entry dialog inside the actually visible mobile viewport,
      including the reduced viewport while the on-screen keyboard is open. */
@@ -349,27 +362,31 @@
     #smartQuickInput { font-size: 16px !important; }
   }
   #sideNavDrawer .drawer-footer-btn {
-    min-height: 42px;
+    min-height: 38px;
     border-radius: 13px;
     transition: background-color .14s ease, transform .12s ease;
   }
   #sideNavDrawer .drawer-footer-btn:active { transform: scale(.985); }
   @media (max-width: 640px) {
-    #sideNavDrawer { width: min(20rem, 88vw); }
-    #sideNavDrawer .nav-item { min-height: 50px; }
+    #sideNavDrawer { width: min(16.5rem, 84vw); }
+    #sideNavDrawer .nav-item { min-height: 44px; }
   }
   @media (prefers-reduced-motion: reduce) {
     #sideNavDrawer, #sideNavBackdrop, .nav-item { transition: none !important; }
   }
 
   .row-main-line { display: block; font-weight: 700; font-size: .8125rem; line-height: 1.25rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-  #txTableBody > tr, #fullLogTableBody > tr { height: 76px; }
-  #txTableBody > tr > td, #fullLogTableBody > tr > td { height: 76px; max-height: 76px; vertical-align: middle; }
+  #txTableBody > tr, #fullLogTableBody > tr { height: 58px; }
+  #txTableBody > tr > td, #fullLogTableBody > tr > td {
+    height: 58px; max-height: 58px; padding-block: 6px; vertical-align: middle;
+  }
   #txTableBody .row-sub-line, #fullLogTableBody .row-sub-line { display:block; max-width: min(52vw, 360px); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
   #txTableBody > tr > td:first-child, #fullLogTableBody > tr > td:first-child { min-width: 0; }
   @media (max-width: 640px) {
     #txTableBody > tr, #fullLogTableBody > tr,
-    #txTableBody > tr > td, #fullLogTableBody > tr > td { height: 72px; max-height:72px; }
+    #txTableBody > tr > td, #fullLogTableBody > tr > td {
+      height: 56px; max-height: 56px; padding-block: 5px;
+    }
   }
   .row-sub-line { display: block; font-size: .6875rem; line-height: 1rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
@@ -464,10 +481,49 @@
 </style>
 <style id="alzaeem-document-print-enhancement">
 @media print {
-  @page { size: A4; margin: 14mm; }
-  html, body { background: #fff !important; color: #111827 !important; }
-  .no-print, button, .modal-close { display: none !important; }
-  .ios-card, .ios-modal { box-shadow: none !important; backdrop-filter: none !important; }
+  @page { size: A4; margin: 12mm; }
+  html, body {
+    width: 100% !important; min-height: 0 !important;
+    margin: 0 !important; padding: 0 !important;
+    background: #fff !important; color: #111827 !important;
+    overflow: visible !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+  body * { visibility: hidden !important; }
+  #voucherModal, #personStatementModal, #pnlReportModal {
+    display: block !important; position: static !important;
+    width: 100% !important; height: auto !important; max-height: none !important;
+    overflow: visible !important; padding: 0 !important;
+    margin: 0 !important; background: transparent !important;
+    box-shadow: none !important; border: 0 !important;
+  }
+  #voucherModal .ios-modal {
+    visibility: visible !important; position: static !important;
+    width: 80mm !important; max-width: 80mm !important;
+    height: auto !important; max-height: none !important;
+    margin: 0 auto !important; padding: 2mm !important;
+    overflow: visible !important; border: 0 !important;
+    border-radius: 0 !important; box-shadow: none !important;
+    background: #fff !important; color: #0f172a !important;
+  }
+  #personStatementModal .ios-modal, #pnlReportModal .ios-modal {
+    visibility: visible !important; position: static !important;
+    width: 100% !important; max-width: none !important;
+    height: auto !important; max-height: none !important;
+    margin: 0 !important; padding: 0 !important;
+    overflow: visible !important; border: 0 !important;
+    border-radius: 0 !important; box-shadow: none !important;
+    background: #fff !important; color: #0f172a !important;
+  }
+  #voucherModal .ios-modal *, #personStatementModal .ios-modal *, #pnlReportModal .ios-modal * {
+    visibility: visible !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+  .no-print, button, .modal-close, #toast, #sideNavDrawer, #sideNavBackdrop { display: none !important; }
+  table { page-break-inside: auto; }
+  tr, img, .ios-card, .rounded-xl, .rounded-2xl { page-break-inside: avoid; }
 }
 </style>
 </head>
@@ -3480,7 +3536,14 @@ function buildVoucherPlainText() {
 }
 function buildStandaloneDocument(title, bodyHtml, fileBase) {
   const html = `<!doctype html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${escapeDocumentText(title)}</title><style>
-  *{box-sizing:border-box}body{margin:0;padding:22px;background:#eef2f6;color:#172033;font-family:Tahoma,Arial,sans-serif;line-height:1.8}.sheet{max-width:820px;margin:auto;background:#fff;border:1px solid #dbe3ec;padding:34px;box-shadow:0 8px 28px #0f172a12}.head{display:flex;justify-content:space-between;gap:16px;align-items:center;border-bottom:3px solid #0f766e;padding-bottom:16px}.brand{font-size:24px;font-weight:900;color:#0f766e}.doc-title{font-size:22px;font-weight:900;margin:24px 0}.meta{background:#f1f5f9;border:1px solid #dbe3ec;border-radius:12px;padding:14px;margin:14px 0}.line{padding:11px 4px;border-bottom:1px solid #e2e8f0}.sum{background:#ecfdf5;border:1px solid #a7f3d0;border-radius:12px;padding:14px;font-weight:900;margin-top:18px}footer{text-align:center;color:#64748b;border-top:1px solid #e2e8f0;margin-top:34px;padding-top:12px;font-size:11px}.actions{max-width:820px;margin:12px auto;text-align:left}.actions button{border:0;border-radius:10px;background:#0f766e;color:white;padding:10px 18px;font-weight:bold}@media(max-width:600px){body{padding:0}.sheet{padding:20px 14px;border:0}}@media print{body{padding:0;background:#fff}.sheet{border:0;box-shadow:none;max-width:none;padding:12mm}.actions{display:none}}
+  *{box-sizing:border-box}body{margin:0;padding:22px;background:#eef2f6;color:#172033;font-family:Tahoma,Arial,sans-serif;line-height:1.8}.sheet{max-width:820px;margin:auto;background:#fff;border:1px solid #dbe3ec;padding:34px;box-shadow:0 8px 28px #0f172a12}.head{display:flex;justify-content:space-between;gap:16px;align-items:center;border-bottom:3px solid #0f766e;padding-bottom:16px}.brand{font-size:24px;font-weight:900;color:#0f766e}.doc-title{font-size:22px;font-weight:900;margin:24px 0}.meta{background:#f1f5f9;border:1px solid #dbe3ec;border-radius:12px;padding:14px;margin:14px 0}.line{padding:11px 4px;border-bottom:1px solid #e2e8f0}.sum{background:#ecfdf5;border:1px solid #a7f3d0;border-radius:12px;padding:14px;font-weight:900;margin-top:18px}footer{text-align:center;color:#64748b;border-top:1px solid #e2e8f0;margin-top:34px;padding-top:12px;font-size:11px}.actions{max-width:820px;margin:12px auto;text-align:left}.actions button{border:0;border-radius:10px;background:#0f766e;color:white;padding:10px 18px;font-weight:bold}@media(max-width:600px){body{padding:0}.sheet{padding:20px 14px;border:0}}@media print{
+    @page{size:A4;margin:12mm}
+    html,body{margin:0!important;padding:0!important;background:#fff!important;color:#172033!important;-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}
+    .sheet{width:100%!important;max-width:none!important;margin:0!important;padding:12mm!important;border:0!important;box-shadow:none!important;border-radius:0!important}
+    .head,.meta,th,.sum,.grand{ -webkit-print-color-adjust:exact!important;print-color-adjust:exact!important }
+    .actions{display:none!important}
+    tr,.meta,.sum,.grand,footer{break-inside:avoid}
+  }
   </style></head><body><div class="actions"><button onclick="window.print()">طباعة / حفظ PDF</button></div><main class="sheet"><header class="head"><div><div class="brand">الزعيم PRO</div><small>نظام إدارة الأعمال والحسابات</small></div><strong>مستند رسمي</strong></header><h1 class="doc-title">${escapeDocumentText(title)}</h1>${bodyHtml}<footer>مستند صادر إلكترونياً عن الزعيم PRO · يرجى الاحتفاظ به للرجوع إليه</footer></main></body></html>`;
   const safe = String(fileBase || 'document').replace(/[^\w\u0600-\u06FF-]/g, '_');
   return new File([html], `${safe}.html`, { type: 'text/html;charset=utf-8' });
@@ -5267,7 +5330,14 @@ function buildShopInvoiceDocument(inv) {
   .actions{max-width:850px;margin:12px auto;text-align:left}
   button{border:0;border-radius:10px;background:#0f766e;color:white;padding:11px 20px;font-weight:bold}
   @media(max-width:600px){.page{margin:0;padding:20px 14px;border:0}.meta{grid-template-columns:1fr 1fr}th,td{padding:8px 5px;font-size:11px}}
-  @media print{body{background:#fff}.page{margin:0;max-width:none;box-shadow:none;border:0;padding:12mm}.actions{display:none}}
+  @media print{
+    @page{size:A4;margin:12mm}
+    html,body{margin:0!important;padding:0!important;background:#fff!important;color:#172033!important;-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}
+    .page{width:100%!important;max-width:none!important;margin:0!important;padding:12mm!important;border:0!important;box-shadow:none!important;border-radius:0!important}
+    header,.meta,th,.grand,footer{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}
+    .actions{display:none!important}
+    table{page-break-inside:auto} tr,td,th,.meta,.grand,footer{break-inside:avoid}
+  }
   </style></head><body><div class="actions"><button onclick="window.print()">طباعة / حفظ PDF</button></div>
   <main class="page"><header><div><div class="brand">الزعيم PRO</div><div class="subtitle">نظام إدارة الأعمال والحسابات</div></div>
   <div style="text-align:left"><strong>${typeLabel}</strong><br><span class="subtitle">رقم المستند: ${escapeDocumentText(inv.no)}</span></div></header>
@@ -5937,4 +6007,4 @@ on('btnPrintPnl', 'click', () => window.print());
 </script>
 
 </body>
-  </html>
+          </html>
