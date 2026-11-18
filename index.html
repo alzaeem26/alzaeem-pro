@@ -324,6 +324,18 @@
     background: linear-gradient(135deg, #0f766e, #0284c7 58%, #2563eb);
     box-shadow: 0 8px 18px -10px rgba(2,132,199,.75);
   }
+  #sideNavDrawer .drawer-brand-title {
+    color: #0f172a !important;
+    font-weight: 900 !important;
+    letter-spacing: -.025em;
+    text-shadow: 0 1px 0 rgba(255,255,255,.35);
+  }
+  #sideNavDrawer .drawer-brand-title .brand-pro {
+    color: #0369a1 !important;
+    font-weight: 900 !important;
+  }
+  body.dark-mode #sideNavDrawer .drawer-brand-title { color: #f1f5f9 !important; }
+  body.dark-mode #sideNavDrawer .drawer-brand-title .brand-pro { color: #38bdf8 !important; }
   #sideNavDrawer .drawer-section-label {
     color: #94a3b8;
     font-size: 10px;
@@ -555,7 +567,7 @@
     <div class="flex items-center gap-3 min-w-0">
       <button type="button" id="btnStealthDevTap" class="drawer-brand w-11 h-11 rounded-2xl text-white flex items-center justify-center font-extrabold text-xl shrink-0" aria-label="الزعيم">$</button>
       <div class="min-w-0">
-        <h2 class="text-[15px] font-extrabold text-slate-900 dark:text-slate-100 truncate">الزعيم <span class="text-sky-600 dark:text-sky-400">PRO</span></h2>
+        <h2 class="drawer-brand-title text-[16px] font-black truncate">الزعيم <span class="brand-pro">PRO</span></h2>
         <p id="drawerSubStatusText" class="text-[11px] text-slate-500 truncate mt-0.5">الباقة المجانية</p>
       </div>
     </div>
@@ -5840,7 +5852,9 @@ on('btnExportCustomerBuild', 'click', () => {
   const required = [
     'function getEffectiveSubscription() {\n  return { isPro: true, isDev: false, planType: \'development\'',
     'function isDeveloperModeActive() { return false; }',
-    'id="accountForm"', 'id="btnExportCustomerBuild"'
+    'id="accountForm"',
+    'id="view-dashboard"',
+    'id="view-transactions"'
   ];
   const valid = customerHtml !== originalHtml && required.every(x => customerHtml.includes(x)) &&
     !customerHtml.includes('hussamalzaeem20@gmail.com') &&
