@@ -5849,19 +5849,30 @@ on('btnExportCustomerBuild', 'click', () => {
   ['adminMerchantModal', 'btnDrawerDevAdmin', 'btnOpenAdminMerchant', 'btnSettingsDevAdmin'].forEach(id => customerDoc.getElementById(id)?.remove());
   customerHtml = '<!DOCTYPE html>\n' + customerDoc.documentElement.outerHTML;
 
-  const required = [
-    'function getEffectiveSubscription() {\n  return { isPro: true, isDev: false, planType: \'development\'',
-    'function isDeveloperModeActive() { return false; }',
-    'id="accountForm"',
-    'id="view-dashboard"',
-    'id="view-transactions"'
+  // Validate the exported document structurally. Do not search the raw source
+  // for developer IDs/emails: their selector strings may legitimately remain
+  // inside JavaScript even after the actual developer UI has been removed.
+  const verifyDoc = new DOMParser().parseFromString(customerHtml, 'text/html');
+  const requiredElements = ['accountForm', 'view-dashboard', 'view-transactions'];
+  const requiredFunctions = [
+    /function getEffectiveSubscription\(\)\s*\{\s*return \{\s*isPro:\s*true,\s*isDev:\s*false,\s*planType:\s*['\"]development['\"]/,
+    /function isDeveloperModeActive\(\)\s*\{\s*return false;\s*\}/,
+    /function activateDeveloperMode\(\)\s*\{\s*return false;\s*\}/,
+    /function handleStealthDevTap\(\)\s*\{\s*return false;\s*\}/
   ];
-  const valid = customerHtml !== originalHtml && required.every(x => customerHtml.includes(x)) &&
-    !customerHtml.includes('hussamalzaeem20@gmail.com') &&
-    !customerHtml.includes('hussamsungam@gmail.com') &&
-    !customerHtml.includes('id="adminMerchantModal"') &&
-    !customerHtml.includes('id="btnDrawerDevAdmin"');
-  if (!valid) { showToast('فشل فحص عزل نسخة الزبائن؛ لم يتم التصدير'); return; }
+  const hasRequiredElements = requiredElements.every(id => !!verifyDoc.getElementById(id));
+  const hasNoDeveloperUi = ['adminMerchantModal', 'btnDrawerDevAdmin', 'btnOpenAdminMerchant', 'btnSettingsDevAdmin']
+    .every(id => !verifyDoc.getElementById(id));
+  const hasRequiredFunctions = requiredFunctions.every(rx => rx.test(customerHtml));
+  const hasMerchantData = customerHtml.includes('function defaultMerchantConfig()') &&
+    customerHtml.includes('shamAccount') && customerHtml.includes('qrDataUrl');
+  const valid = customerHtml !== originalHtml && hasRequiredElements && hasNoDeveloperUi &&
+    hasRequiredFunctions && hasMerchantData;
+  if (!valid) {
+    console.error('[ALZAEEM export validation]', { hasRequiredElements, hasNoDeveloperUi, hasRequiredFunctions, hasMerchantData });
+    showToast('فشل فحص بنية نسخة الزبائن؛ لم يتم التصدير. راجع وحدة التحكم للتفاصيل');
+    return;
+  }
 
   const blob = new Blob([customerHtml], { type: 'text/html;charset=utf-8' });
   const url = URL.createObjectURL(blob);
