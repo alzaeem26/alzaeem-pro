@@ -2005,6 +2005,18 @@
 const $ = id => document.getElementById(id);
 const on = (id, ev, fn) => { const el = $(id); if (!el) { console.warn('[missing]', id); return; } if (typeof fn !== 'function') { console.error('[invalid handler]', id, ev); return; } el.addEventListener(ev, fn); };
 const pad = n => String(n).padStart(2, '0');
+function normalizeNumericInput(value) {
+  return String(value ?? '')
+    .replace(/[٠-٩]/g, d => String('٠١٢٣٤٥٦٧٨٩'.indexOf(d)))
+    .replace(/[۰-۹]/g, d => String('۰۱۲۳۴۵۶۷۸۹'.indexOf(d)))
+    .replace(/[٫،]/g, '.');
+}
+function parseAmountInput(value) {
+  const normalized = normalizeNumericInput(value).replace(/\s/g, '');
+  if (!/^-?\d+(?:\.\d+)?$/.test(normalized)) return NaN;
+  return Number(normalized);
+}
+
 
 /* Immutable startup snapshot: do not export live modal/drawer state. */
 const APP_EXPORT_SOURCE_HTML = '<!DOCTYPE html>\\n' + document.documentElement.outerHTML;
@@ -2250,9 +2262,12 @@ let state = loadState();
 let _pushTimer = null;
 function saveState() {
   try {
-    localStorage.setItem(storageKey, JSON.stringify(state));
+    const serialized = JSON.stringify(state);
+    localStorage.setItem(storageKey, serialized);
+    if (localStorage.getItem(storageKey) !== serialized) throw new Error('Local state verification failed');
   } catch (e) {
-    showToast('تعذّر الحفظ — قد تكون مساحة التخزين ممتلئة');
+    console.error('[ALZAEEM] saveState failed:', e);
+    showToast('فشل حفظ البيانات محلياً. لم يتم اعتماد الحركة؛ تحقق من مساحة التخزين أو صلاحية المتصفح.');
     return false;
   }
   clearTimeout(_pushTimer);
@@ -3939,36 +3954,61 @@ on('txForm', 'submit', e => {
   e.preventDefault();
   const editId = $('editTxId')?.value || '';
   const type = $('txType')?.value || 'expense';
-  const amount = parseFloat($('txAmount')?.value);
+  const amount = parseAmountInput($('txAmount')?.value);
   const currency = $('txCurrency')?.value || state.currency;
   const category = $('txCategory')?.value;
   const date = $('txDate')?.value;
   const personId = $('txPerson')?.value || '';
   const note = ($('txNote')?.value || '').trim();
   const details = ($('txDetails')?.value || '').trim();
-  if (isNaN(amount) || amount <= 0 || !date || !note || !category) { showToast('أكمل المبلغ والتاريخ والبيان'); return; }
-  if (!editId && !checkProFeatureAccess('tx', state.transactions.filter(t => String(t.date).startsWith(currentMonthISO())).length + 1)) return;
-  const p = state.people.find(x => x.id === personId);
+
+  if (!Number.isFinite(amount) || amount <= 0 || !date || !note || !category) {
+    showToast('تحقق من المبلغ والتاريخ والتصنيف والبيان؛ يجب أن يكون المبلغ أكبر من صفر');
+    return;
+  }
+  if (!['income', 'expense'].includes(type)) {
+    showToast('نوع الحركة غير صالح');
+    return;
+  }
+  if (!editId && !checkProFeatureAccess('tx',
+      state.transactions.filter(t => String(t.date).startsWith(currentMonthISO())).length + 1)) return;
+
+  let previousState;
+  try { previousState = JSON.stringify(state); }
+  catch (err) { showToast('تعذّر تجهيز الحركة للحفظ'); return; }
+
+  const person = state.people.find(x => x.id === personId);
   const rec = {
     id: editId || uid('tx'), type, amount, currency, category, date,
     method: $('txMethod')?.value || 'نقدي',
-    personId, personName: p ? p.name : '',
+    personId, personName: person ? person.name : '',
     note, details,
     receiptImg: currentReceiptDataUrl || '',
     ...applyRateInfo(amount, currency, $('txExchangeRate')?.value)
   };
+
   if (editId) {
     const i = state.transactions.findIndex(x => x.id === editId);
-    if (i >= 0) state.transactions[i] = { ...state.transactions[i], ...rec };
-    showToast('تم تعديل الحركة');
+    if (i < 0) { showToast('الحركة المراد تعديلها غير موجودة؛ لم يتم الحفظ'); return; }
+    state.transactions[i] = { ...state.transactions[i], ...rec };
   } else {
     state.transactions.push(rec);
-    showToast(type === 'income' ? 'تم تسجيل المدخول' : 'تم تسجيل المصروف');
   }
-  if (!saveState()) return;
+
+  if (!saveState()) {
+    try { state = ensureStateFields(JSON.parse(previousState)); } catch (err) {}
+    renderDashboard();
+    renderTransactions();
+    return;
+  }
+
   closeModal('txModal');
+  renderDashboard();
+  renderTransactions();
   renderAll();
-  openVoucherForTx(rec.id);
+  showToast(editId ? 'تم حفظ تعديل الحركة وتحديث الرصيد والسجل' :
+    (type === 'income' ? 'تم حفظ المدخول وتحديث الرصيد والسجل' : 'تم حفظ المصروف وتحديث الرصيد والسجل'));
+  if (!editId) openVoucherForTx(rec.id);
 });
 function deleteTx(id) {
   const t = state.transactions.find(x => x.id === id);
@@ -4822,10 +4862,7 @@ function parseSmartQuickEntry(rawText) {
   if (/سعودي|ريال/i.test(text) && state.currencies.some(c => c.code === 'ر.س')) currency = 'ر.س';
   if (/يورو|eur/i.test(text) && state.currencies.some(c => c.code === '€')) currency = '€';
 
-  const normalizedText = text
-    .replace(/[٠-٩]/g, d => String('٠١٢٣٤٥٦٧٨٩'.indexOf(d)))
-    .replace(/[۰-۹]/g, d => String('۰۱۲۳۴۵۶۷۸۹'.indexOf(d)))
-    .replace(/[٫،]/g, '.');
+  const normalizedText = normalizeNumericInput(text);
   const nums = normalizedText.match(/\d+(?:[.,]\d+)?/g) || [];
   const rawAmount = nums.length ? nums[nums.length - 1] : '0';
   const amount = Number(rawAmount.replace(',', '.'));
