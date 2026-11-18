@@ -524,7 +524,7 @@
     </button>
     <div class="min-w-0">
       <div class="flex items-center gap-1.5">
-        <span class="text-sm font-extrabold text-slate-900 truncate">الزعيم PRO</span>
+        <span class="text-sm font-black text-sky-900 truncate tracking-tight" style="font-weight:900;text-shadow:0 1px 0 rgba(255,255,255,.65);">الزعيم <span class="font-black text-teal-700">PRO</span></span>
         <span id="activeTabHeaderBadge" class="text-[10px] font-bold bg-sky-500/15 text-sky-800 px-2 py-0.5 rounded-full truncate hidden sm:inline">لوحة القيادة</span>
       </div>
       <p id="dashboardDateLabel" class="text-[10px] text-slate-500 truncate">جارٍ التحميل...</p>
@@ -600,7 +600,7 @@
     <button type="button" id="btnDrawerOpenAccount" class="drawer-footer-btn ios-btn w-full bg-white/80 hover:bg-white dark:bg-slate-800/80 dark:hover:bg-slate-700 border border-slate-200/80 dark:border-slate-700 text-slate-700 dark:text-slate-200 text-xs font-bold px-3 py-2.5">الحساب والمزامنة</button>
     <button type="button" id="btnQuickLockApp" class="hidden drawer-footer-btn ios-btn w-full bg-slate-800/90 hover:bg-slate-900 text-white text-xs font-bold px-3 py-2.5">🔒 قفل التطبيق الآن</button>
     <button type="button" id="btnInstallApp" class="drawer-footer-btn ios-btn w-full bg-gradient-brand text-white text-xs font-bold px-3 py-2.5">⬇️ تثبيت على الشاشة الرئيسية</button>
-    <p class="text-center text-[10px] text-slate-400 pt-1">الزعيم PRO · إدارة أموالك بوضوح</p>
+    <p class="text-center text-[10px] font-extrabold text-sky-800 pt-1 tracking-tight">الزعيم <span class="font-black text-teal-700">PRO</span> · إدارة أموالك بوضوح</p>
   </div>
 </aside>
 
@@ -1770,7 +1770,7 @@
             </div>
           </div>
           <button type="submit" class="ios-btn w-full bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-extrabold py-2 rounded-xl">حفظ الإعدادات على هذا الجهاز ✓</button>
-          <button type="button" id="btnExportCustomerBuild" class="ios-btn w-full bg-sky-600 hover:bg-sky-700 text-white text-xs font-extrabold py-2.5 rounded-xl shadow-xs">📤 تصدير ملف التطبيق للزبائن (مضمّن برقمك وأسعارك)</button>
+          <button type="button" id="btnExportCustomerBuild" class="ios-btn w-full bg-sky-600 hover:bg-sky-700 text-white text-xs font-extrabold py-2.5 rounded-xl shadow-xs">📤 تصدير نسخة الزبائن (PRO كامل + بريد إلكتروني + بيانات الدفع)</button>
           <p class="text-[10px] text-slate-500 leading-relaxed">ملاحظة: الحفظ يحفظ الإعدادات في متصفحك الحالي فقط، أما زر <strong>تصدير ملف التطبيق للزبائن</strong> فينشئ ملف HTML جاهزاً لإرساله لزبائنك وتظهر فيه أرقامك وأسعارك وباركودك تلقائياً.</p>
         </form>
 
@@ -5755,37 +5755,105 @@ on('btnExportCustomerBuild', 'click', () => {
     return;
   }
 
-  const bakedFn = `/* __BAKED_MERCHANT_CFG_START__ */
-function defaultMerchantConfig() {
-  return ${JSON.stringify(customerCfg)};
-}
-/* __BAKED_MERCHANT_CFG_END__ */`;
-
-  /* The customer build is the exact same application source.
-     Only the merchant payment/contact configuration is replaced.
-     Do not clone or normalize the live DOM and do not remove/change any UI. */
-  const sourceHtml = APP_EXPORT_SOURCE_HTML;
-  const patched = sourceHtml.replace(
+  const bakedFn = `/* __BAKED_MERCHANT_CFG_START__ */\nfunction defaultMerchantConfig() {\n  return ${JSON.stringify(customerCfg)};\n}\n/* __BAKED_MERCHANT_CFG_END__ */`;
+  let customerHtml = APP_EXPORT_SOURCE_HTML.replace(
     /\/\* __BAKED_MERCHANT_CFG_START__ \*\/[\s\S]*?\/\* __BAKED_MERCHANT_CFG_END__ \*\//,
     () => bakedFn
   );
+  const originalHtml = customerHtml;
 
-  if (patched === sourceHtml || !patched.includes('shamAccount') ||
-      !patched.includes('id="smartQuickModal"') ||
-      !patched.includes('id="universalCalcModal"') ||
-      !patched.includes('id="personModal"')) {
-    showToast('تعذّر التحقق من سلامة نسخة الزبائن؛ لم يتم التصدير');
-    return;
-  }
+  // Customer build: full PRO access during the development period; no local expiry.
+  customerHtml = customerHtml.replace(
+    /function getEffectiveSubscription\(\)\s*\{[\s\S]*?\n\}/,
+    `function getEffectiveSubscription() {\n  return { isPro: true, isDev: false, planType: 'development', daysLeft: 0, expiresDateStr: 'فترة التطوير' };\n}`
+  );
+  customerHtml = customerHtml.replace(
+    /const MASTER_DEV_EMAILS\s*=\s*\[[^\]]*\];/,
+    'const MASTER_DEV_EMAILS = [];'
+  );
+  customerHtml = customerHtml.replace(
+    /function isDeveloperModeActive\(\)\s*\{[\s\S]*?\n\}/,
+    'function isDeveloperModeActive() { return false; }'
+  );
+  customerHtml = customerHtml.replace(
+    /function activateDeveloperMode\(silent\)\s*\{[\s\S]*?\n\}/,
+    'function activateDeveloperMode() { return false; }'
+  );
+  customerHtml = customerHtml.replace(
+    /function deactivateDeveloperMode\(\)\s*\{[\s\S]*?\n\}/,
+    'function deactivateDeveloperMode() { return false; }'
+  );
+  customerHtml = customerHtml.replace(
+    /function handleStealthDevTap\(\)\s*\{[\s\S]*?\n\}/,
+    'function handleStealthDevTap() { return false; }'
+  );
+  customerHtml = customerHtml.replace(
+    /function openAdminMerchantModal\(\)\s*\{[\s\S]*?\n\}/,
+    'function openAdminMerchantModal() { showToast("لوحة المطور غير متاحة في نسخة الزبائن"); return false; }'
+  );
 
-  const blob = new Blob([patched], { type: 'text/html;charset=utf-8' });
+  // Remove all visible entry points and the developer control surface from the exported app.
+  customerHtml = customerHtml.replace(/<button[^>]*id="btnDrawerDevAdmin"[\s\S]*?<\/button>/, '');
+  customerHtml = customerHtml.replace(/<button[^>]*id="btnOpenAdminMerchant"[\s\S]*?<\/button>/, '');
+  customerHtml = customerHtml.replace(/<button[^>]*id="btnSettingsDevAdmin"[\s\S]*?<\/button>/, '');
+  customerHtml = customerHtml.replace(/on\('btnDrawerDevAdmin',[\s\S]*?\);\s*/g, '');
+  customerHtml = customerHtml.replace(/on\('btnOpenAdminMerchant',[\s\S]*?\);\s*/g, '');
+  customerHtml = customerHtml.replace(/on\('btnSettingsDevAdmin',[\s\S]*?\);\s*/g, '');
+
+  // Require an email identity on first launch. During development this is local identity only;
+  // central verification/synchronization is intentionally deferred.
+  customerHtml = customerHtml.replace(
+    /<button[^>]*data-close="accountModal"[\s\S]*?<\/button>/,
+    ''
+  );
+  customerHtml = customerHtml.replace(
+    /function signOutAccount\(\)\s*\{[\s\S]*?\n\}/,
+    'function signOutAccount() { showToast("تسجيل الخروج غير متاح في نسخة التطوير التجريبية"); return false; }'
+  );
+  customerHtml = customerHtml.replace(
+    /function updateSubscriptionUI\(\)\s*\{[\s\S]*?\n\}/,
+    `function updateSubscriptionUI() {\n  const hdr = $('btnHeaderSubBadge'), icon = $('headerSubIcon'), lbl = $('headerSubLabel'), drw = $('drawerSubStatusText');\n  $('btnDrawerDevAdmin')?.remove(); $('btnOpenAdminMerchant')?.remove(); $('btnSettingsDevAdmin')?.remove();\n  if (hdr) hdr.className = 'ios-btn px-2.5 py-1.5 rounded-2xl bg-emerald-500/15 border border-emerald-400/60 text-emerald-800 text-[11px] font-extrabold flex items-center gap-1 shadow-2xs';\n  if (icon) icon.textContent = '👑'; if (lbl) lbl.textContent = 'PRO مفتوح'; if (drw) drw.textContent = 'كامل الصلاحيات خلال فترة التطوير';\n}`
+  );
+  customerHtml = customerHtml.replace(
+    /document\.addEventListener\('DOMContentLoaded',\s*\(\)\s*=>\s*\{([\s\S]*?)\n\}\);/,
+    (m, body) => `document.addEventListener('DOMContentLoaded', () => {${body}\n  if (!activeAccount || !activeAccount.email) { openAccountModal(); const close = $('accountModal')?.querySelector('[data-close="accountModal"]'); close?.remove(); }\n});`
+  );
+  // The subscription screen must describe the actual development access, not a paid/trial plan.
+  customerHtml = customerHtml.replace(
+    /if \(st\) st\.textContent = sub\.isPro\s*\? \(sub\.planType === 'trial' \? `الفترة التجريبية نشطة \(متبقي \$\{sub\.daysLeft\} يوم\)` : `اشتراك PRO نشط \(حتى \$\{sub\.expiresDateStr\}\)`\)/,
+    "if (st) st.textContent = 'جميع صلاحيات PRO مفتوحة خلال فترة التطوير'"
+  );
+  customerHtml = customerHtml.replace(
+    /sub\.planType === 'trial' \? 'تجريبي 🎁' : sub\.planType === 'yearly' \? 'سنوية PRO 👑' : 'شهرية PRO 👑'/,
+    "sub.planType === 'development' ? 'تطوير PRO 👑' : (sub.planType === 'trial' ? 'تجريبي 🎁' : sub.planType === 'yearly' ? 'سنوية PRO 👑' : 'شهرية PRO 👑')"
+  );
+  customerHtml = customerHtml.replace('المتبقي ${sub.daysLeft} يوم', 'كامل الصلاحيات خلال فترة التطوير');
+  customerHtml = customerHtml.replace("sub.isPro && ['monthly', 'yearly'].includes(sub.planType)", "sub.isPro && ['monthly', 'yearly', 'development'].includes(sub.planType)");
+  customerHtml = customerHtml.replace("if (banner) banner.innerHTML = sub.isDev\n    ?", "if (banner) banner.innerHTML = sub.isDev\n    ?");
+  customerHtml = customerHtml.replace("sub.planType === 'trial' ? `تجريبي (${sub.daysLeft}ي)` : `PRO (${sub.daysLeft}ي)`", "sub.planType === 'development' ? 'PRO مفتوح' : (sub.planType === 'trial' ? `تجريبي (${sub.daysLeft}ي)` : `PRO (${sub.daysLeft}ي)`)");
+
+  // Parse the exported document and remove complete developer-only DOM roots safely.
+  const customerDoc = new DOMParser().parseFromString(customerHtml, 'text/html');
+  ['adminMerchantModal', 'btnDrawerDevAdmin', 'btnOpenAdminMerchant', 'btnSettingsDevAdmin'].forEach(id => customerDoc.getElementById(id)?.remove());
+  customerHtml = '<!DOCTYPE html>\n' + customerDoc.documentElement.outerHTML;
+
+  const required = [
+    'function getEffectiveSubscription() {\n  return { isPro: true, isDev: false, planType: \'development\'',
+    'function isDeveloperModeActive() { return false; }',
+    'id="accountForm"', 'id="btnExportCustomerBuild"'
+  ];
+  const valid = customerHtml !== originalHtml && required.every(x => customerHtml.includes(x)) &&
+    !customerHtml.includes('hussamalzaeem20@gmail.com') &&
+    !customerHtml.includes('hussamsungam@gmail.com') &&
+    !customerHtml.includes('id="adminMerchantModal"') &&
+    !customerHtml.includes('id="btnDrawerDevAdmin"');
+  if (!valid) { showToast('فشل فحص عزل نسخة الزبائن؛ لم يتم التصدير'); return; }
+
+  const blob = new Blob([customerHtml], { type: 'text/html;charset=utf-8' });
   const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = 'alzaeem-pro-customers.html';
-  a.click();
+  const a = document.createElement('a'); a.href = url; a.download = 'alzaeem-pro-customers.html'; a.click();
   setTimeout(() => URL.revokeObjectURL(url), 2000);
-  showToast('تم تصدير نسخة مطابقة للتطبيق مع إضافة بيانات الدفع والتواصل ✓');
+  showToast('تم تصدير نسخة الزبائن: بريد إلزامي وصلاحيات PRO كاملة خلال التطوير ✓');
 });
 
 /* ==================== BOOT ==================== */
