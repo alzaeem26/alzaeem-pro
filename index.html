@@ -2547,11 +2547,13 @@ function getMerchantConfig() {
       return {
         ...base,
         ...saved,
-        shamAccount: (saved.shamAccount !== undefined && saved.shamAccount !== '') ? saved.shamAccount : base.shamAccount,
-        whatsappPhone: (saved.whatsappPhone !== undefined && saved.whatsappPhone !== '') ? saved.whatsappPhone : base.whatsappPhone,
+        /* Embedded merchant payment details take precedence in customer builds.
+           On the developer source these baked values are empty, so local settings remain usable. */
+        shamAccount: base.shamAccount || saved.shamAccount || '',
+        whatsappPhone: base.whatsappPhone || saved.whatsappPhone || '',
         monthlyPrice: (saved.monthlyPrice && saved.monthlyPrice !== 'اشتراك شهري شامل') ? saved.monthlyPrice : (base.monthlyPrice || saved.monthlyPrice || 'اشتراك شهري شامل'),
         yearlyPrice: (saved.yearlyPrice && saved.yearlyPrice !== 'اشتراك سنوي شامل') ? saved.yearlyPrice : (base.yearlyPrice || saved.yearlyPrice || 'اشتراك سنوي شامل'),
-        qrDataUrl: saved.qrDataUrl || base.qrDataUrl
+        qrDataUrl: base.qrDataUrl || saved.qrDataUrl || '' 
       };
     }
   } catch (e) {}
@@ -5618,19 +5620,29 @@ on('btnClearMerchantQr', 'click', () => {
 });
 
 on('btnExportCustomerBuild', 'click', () => {
-  const cfg = getMerchantConfig();
-  cfg.shamAccount = ($('cfgShamAccount')?.value || '').trim();
-  cfg.whatsappPhone = ($('cfgWhatsappPhone')?.value || '').trim();
-  cfg.monthlyPrice = ($('cfgMonthlyPrice')?.value || '').trim() || 'اشتراك شهري شامل';
-  cfg.yearlyPrice = ($('cfgYearlyPrice')?.value || '').trim() || 'اشتراك سنوي شامل';
-  const email = ($('cfgDevEmail')?.value || '').trim().toLowerCase();
-  const pin = ($('cfgDevSecretPin')?.value || '').trim();
-  if (email) cfg.devEmail = email;
-  if (pin.length >= 4) cfg.devSecretPin = pin;
-  saveMerchantConfig(cfg);
-  renderSubscriptionModalContent();
+  const current = getMerchantConfig();
+  const customerCfg = {
+    shamAccount: String($('cfgShamAccount')?.value || '').trim(),
+    whatsappPhone: String($('cfgWhatsappPhone')?.value || '').trim(),
+    monthlyPrice: String($('cfgMonthlyPrice')?.value || '').trim() || 'اشتراك شهري شامل',
+    yearlyPrice: String($('cfgYearlyPrice')?.value || '').trim() || 'اشتراك سنوي شامل',
+    qrDataUrl: String(current.qrDataUrl || '').trim(),
+    /* Never ship developer credentials in a customer-facing build. */
+    devEmail: '',
+    devSecretPin: ''
+  };
 
-  const bakedFn = `/* __BAKED_MERCHANT_CFG_START__ */\nfunction defaultMerchantConfig() {\n  return ${JSON.stringify(cfg)};\n}\n/* __BAKED_MERCHANT_CFG_END__ */`;
+  if (!customerCfg.shamAccount && !customerCfg.whatsappPhone && !customerCfg.qrDataUrl) {
+    showToast('أدخل بيانات شام كاش أو واتساب أو ارفع باركود التحويل أولاً');
+    return;
+  }
+
+  const bakedFn = `/* __BAKED_MERCHANT_CFG_START__ */
+function defaultMerchantConfig() {
+  return ${JSON.stringify(customerCfg)};
+}
+/* __BAKED_MERCHANT_CFG_END__ */`;
+
   const cloneDoc = document.documentElement.cloneNode(true);
   cloneDoc.querySelectorAll('#adminMerchantModal, #subscriptionModal, #smartQuickModal, #voucherModal, #sideNavBackdrop, #toast').forEach(el => {
     el.classList.add('hidden');
@@ -5638,18 +5650,25 @@ on('btnExportCustomerBuild', 'click', () => {
   });
   const drw = cloneDoc.querySelector('#sideNavDrawer');
   if (drw) drw.classList.add('translate-x-full');
-  const docHtml = '<!DOCTYPE html>\n' + cloneDoc.outerHTML;
+
+  const docHtml = '<!DOCTYPE html>\\n' + cloneDoc.outerHTML;
   const patched = docHtml.replace(
     /\/\* __BAKED_MERCHANT_CFG_START__ \*\/[\s\S]*?\/\* __BAKED_MERCHANT_CFG_END__ \*\//,
     () => bakedFn
   );
+
+  if (patched === docHtml || !patched.includes('shamAccount')) {
+    showToast('تعذّر تضمين بيانات الدفع في ملف الزبائن؛ لم يتم التصدير');
+    return;
+  }
+
   const blob = new Blob([patched], { type: 'text/html;charset=utf-8' });
   const a = document.createElement('a');
   a.href = URL.createObjectURL(blob);
   a.download = 'alzaeem-pro-customers.html';
   a.click();
   setTimeout(() => URL.revokeObjectURL(a.href), 2000);
-  showToast('تم تصدير نسخة الزبائن مضمّنة بأرقامك وأسعارك والباركود ✓');
+  showToast('تم تصدير نسخة الزبائن مع بيانات الدفع والتواصل والباركود ✓');
 });
 
 /* ==================== BOOT ==================== */
