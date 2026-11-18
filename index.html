@@ -9,8 +9,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
-<script src="https://cdn.tailwindcss.com/3.4.17"></script>
-<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<script defer src="https://cdn.tailwindcss.com/3.4.17"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 <script>
   tailwind.config = {
     theme: { extend: {
@@ -52,12 +52,27 @@
   /* Glass orbs are disabled on purpose: three blurred 72px layers tank
      frame rate on low-end Android, which is the target device. */
   .ambient-orbs { display: none; }
+  /* Keep the glass appearance but avoid expensive blur/compositing on weak phones. */
+  @media (max-width: 640px), (prefers-reduced-motion: reduce) {
+    .ios-card, .ios-modal, .glass-header {
+      -webkit-backdrop-filter: none !important;
+      backdrop-filter: none !important;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      scroll-behavior: auto !important;
+      animation-duration: .01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: .01ms !important;
+    }
+  }
 
   .ios-card {
     background: var(--card);
     border: 1px solid var(--card-border);
-    backdrop-filter: blur(18px) saturate(150%);
-    -webkit-backdrop-filter: blur(18px) saturate(150%);
+    backdrop-filter: blur(7px) saturate(125%);
+    -webkit-backdrop-filter: blur(7px) saturate(125%);
     box-shadow: 0 1px 0 rgba(255,255,255,0.4) inset, 0 10px 30px -18px rgba(15,23,42,0.25);
   }
   .ios-input {
@@ -76,8 +91,8 @@
   .ios-modal {
     background: var(--card);
     border: 1px solid var(--card-border);
-    backdrop-filter: blur(28px) saturate(170%);
-    -webkit-backdrop-filter: blur(28px) saturate(170%);
+    backdrop-filter: blur(10px) saturate(135%);
+    -webkit-backdrop-filter: blur(10px) saturate(135%);
     box-shadow: 0 28px 70px -24px rgba(2,8,23,0.42);
     border-radius: 1.6rem;
   }
@@ -85,8 +100,8 @@
 
   .glass-header {
     background: var(--card);
-    backdrop-filter: blur(22px) saturate(165%);
-    -webkit-backdrop-filter: blur(22px) saturate(165%);
+    backdrop-filter: blur(8px) saturate(130%);
+    -webkit-backdrop-filter: blur(8px) saturate(130%);
     border-bottom: 1px solid var(--card-border);
   }
   .bg-gradient-brand { background: linear-gradient(135deg, #0ea5e9, #0d9488 55%, #0f766e); }
@@ -101,10 +116,114 @@
     content: ""; position: absolute; inset-inline-start: 22%; inset-inline-end: 22%; bottom: -9px;
     height: 3px; border-radius: 999px; background: linear-gradient(90deg, #0ea5e9, #0d9488);
   }
-  .nav-item { transition: background .16s ease, color .16s ease, transform .12s ease; }
-  .nav-item.active { background: linear-gradient(135deg, rgba(14,165,233,0.16), rgba(13,148,136,0.16)); color: var(--accent); }
-  body.dark-mode .nav-item.active { color: #7dd3fc; }
-  .nav-item:active { transform: scale(.985); }
+  /* Premium navigation drawer: lightweight surfaces, clear hierarchy, no heavy blur. */
+  #sideNavDrawer {
+    width: min(21rem, 88vw);
+    background: linear-gradient(160deg, rgba(248,252,255,.98), rgba(235,245,250,.98));
+    border-left: 1px solid rgba(148,163,184,.22);
+    box-shadow: -18px 0 48px -28px rgba(15,23,42,.42);
+    will-change: transform;
+    contain: layout paint;
+  }
+  body.dark-mode #sideNavDrawer {
+    background: linear-gradient(160deg, rgba(15,27,44,.99), rgba(10,20,35,.99));
+    border-left-color: rgba(148,163,184,.16);
+  }
+  #sideNavDrawer .drawer-brand {
+    background: linear-gradient(135deg, #0f766e, #0284c7 58%, #2563eb);
+    box-shadow: 0 8px 18px -10px rgba(2,132,199,.75);
+  }
+  #sideNavDrawer .drawer-section-label {
+    color: #94a3b8;
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: .08em;
+    padding: 8px 10px 5px;
+  }
+  body.dark-mode #sideNavDrawer .drawer-section-label { color: #71849d; }
+  .nav-item {
+    position: relative;
+    min-height: 48px;
+    border: 1px solid transparent;
+    color: #475569;
+    transition: background-color .14s ease, color .14s ease, border-color .14s ease;
+  }
+  body.dark-mode .nav-item { color: #c3d0df; }
+  .nav-item > span:first-child {
+    width: 36px; height: 36px; flex: 0 0 36px;
+    border-radius: 12px;
+    font-size: 17px;
+    transition: background-color .14s ease, transform .14s ease;
+  }
+  .nav-item:hover { background: rgba(148,163,184,.11); }
+  .nav-item.active {
+    color: #075985;
+    background: linear-gradient(100deg, rgba(14,165,233,.15), rgba(13,148,136,.09));
+    border-color: rgba(14,165,233,.17);
+    box-shadow: 0 3px 10px -8px rgba(2,132,199,.45);
+  }
+  .nav-item.active::before {
+    content: "";
+    position: absolute;
+    inset-block: 9px;
+    inset-inline-start: -1px;
+    width: 3px;
+    border-radius: 4px;
+    background: linear-gradient(#0ea5e9, #0d9488);
+  }
+  .nav-item.active > span:first-child { transform: scale(1.04); }
+  body.dark-mode .nav-item.active {
+    color: #7dd3fc;
+    background: linear-gradient(100deg, rgba(14,165,233,.19), rgba(13,148,136,.12));
+    border-color: rgba(56,189,248,.17);
+  }
+  .nav-item:active { background-color: rgba(14,165,233,.12); }
+  #sideNavBackdrop {
+    background: rgba(2,8,23,.48);
+    opacity: 0;
+    transition: opacity .18s ease;
+    backdrop-filter: none;
+  }
+  #sideNavBackdrop.drawer-backdrop-visible { opacity: 1; }
+  body.drawer-open { overflow: hidden; }
+  /* Keep the quick-entry dialog inside the actually visible mobile viewport,
+     including the reduced viewport while the on-screen keyboard is open. */
+  #smartQuickModal {
+    align-items: flex-start !important;
+    justify-content: center;
+    padding-top: max(8px, env(safe-area-inset-top));
+    padding-bottom: max(8px, env(safe-area-inset-bottom));
+    height: var(--alzaeem-vv-height, 100dvh);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
+  }
+  #smartQuickModal > .ios-modal {
+    max-height: calc(var(--alzaeem-vv-height, 100dvh) - 16px - env(safe-area-inset-top) - env(safe-area-inset-bottom));
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    margin-block: auto;
+    flex-shrink: 0;
+  }
+  body.quick-entry-open { overflow: hidden; }
+  @media (max-width: 640px) {
+    #smartQuickModal { padding-inline: 10px; }
+    #smartQuickModal > .ios-modal { padding: 16px; }
+    #smartQuickInput { font-size: 16px !important; }
+  }
+  #sideNavDrawer .drawer-footer-btn {
+    min-height: 42px;
+    border-radius: 13px;
+    transition: background-color .14s ease, transform .12s ease;
+  }
+  #sideNavDrawer .drawer-footer-btn:active { transform: scale(.985); }
+  @media (max-width: 640px) {
+    #sideNavDrawer { width: min(20rem, 88vw); }
+    #sideNavDrawer .nav-item { min-height: 50px; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    #sideNavDrawer, #sideNavBackdrop, .nav-item { transition: none !important; }
+  }
 
   .row-main-line { display: block; font-weight: 700; font-size: .8125rem; line-height: 1.25rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   .row-sub-line { display: block; font-size: .6875rem; line-height: 1rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
@@ -198,6 +317,14 @@
     .no-print { display: none !important; }
   }
 </style>
+<style id="alzaeem-document-print-enhancement">
+@media print {
+  @page { size: A4; margin: 14mm; }
+  html, body { background: #fff !important; color: #111827 !important; }
+  .no-print, button, .modal-close { display: none !important; }
+  .ios-card, .ios-modal { box-shadow: none !important; backdrop-filter: none !important; }
+}
+</style>
 </head>
 <body class="antialiased selection:bg-sky-500/20">
 
@@ -234,22 +361,24 @@
 </header>
 
 <!-- ==================== SIDE NAV DRAWER ==================== -->
-<div id="sideNavBackdrop" class="fixed inset-0 bg-slate-900/40 z-45 hidden" style="z-index:45"></div>
-<aside id="sideNavDrawer" class="fixed top-0 right-0 h-full w-72 max-w-[82vw] z-50 translate-x-full transition-transform duration-300 ease-out glass-header border-l border-white/70 flex flex-col">
-  <div class="p-4 flex items-center justify-between border-b border-white/60">
-    <div class="flex items-center gap-2.5 min-w-0">
-      <button type="button" id="btnStealthDevTap" class="w-10 h-10 rounded-2xl bg-gradient-brand text-white flex items-center justify-center font-extrabold text-lg icon-badge-3d shrink-0">$</button>
+<div id="sideNavBackdrop" class="fixed inset-0 z-45 hidden" style="z-index:45" aria-hidden="true"></div>
+<aside id="sideNavDrawer" class="fixed top-0 right-0 h-full max-w-[88vw] z-50 translate-x-full transition-transform duration-200 ease-out flex flex-col" role="dialog" aria-modal="true" aria-label="القائمة الرئيسية" aria-hidden="true">
+  <div class="px-4 pt-5 pb-4 flex items-center justify-between border-b border-slate-200/70 dark:border-slate-700/60">
+    <div class="flex items-center gap-3 min-w-0">
+      <button type="button" id="btnStealthDevTap" class="drawer-brand w-11 h-11 rounded-2xl text-white flex items-center justify-center font-extrabold text-xl shrink-0" aria-label="الزعيم">$</button>
       <div class="min-w-0">
-        <h2 class="text-sm font-extrabold text-slate-900 truncate">الزعيم PRO</h2>
-        <p id="drawerSubStatusText" class="text-[11px] text-slate-500 truncate">الباقة المجانية</p>
+        <h2 class="text-[15px] font-extrabold text-slate-900 dark:text-slate-100 truncate">الزعيم <span class="text-sky-600 dark:text-sky-400">PRO</span></h2>
+        <p id="drawerSubStatusText" class="text-[11px] text-slate-500 truncate mt-0.5">الباقة المجانية</p>
       </div>
     </div>
-    <button type="button" id="btnCloseDrawer" class="w-8 h-8 rounded-full bg-slate-200/70 text-slate-600 font-bold text-sm shrink-0">✕</button>
+    <button type="button" id="btnCloseDrawer" class="w-9 h-9 rounded-xl bg-slate-200/70 hover:bg-slate-300/70 dark:bg-slate-700/70 dark:hover:bg-slate-600/70 text-slate-600 dark:text-slate-200 font-bold text-sm shrink-0" aria-label="إغلاق القائمة">✕</button>
   </div>
-  <nav class="flex-1 overflow-y-auto scroll-slim p-3 space-y-1">
+  <nav class="flex-1 overflow-y-auto scroll-slim px-3 py-4 space-y-1" aria-label="أقسام التطبيق">
+    <div class="drawer-section-label">الرئيسية والإدارة</div>
     <button type="button" class="nav-item w-full flex items-center gap-3 px-3 py-2.5 rounded-2xl text-sm font-bold text-slate-700" data-tab="dashboard">
       <span class="w-8 h-8 rounded-xl bg-sky-500/15 text-sky-700 flex items-center justify-center">📊</span> لوحة القيادة
     </button>
+    <div class="drawer-section-label pt-4">الحسابات والمتابعة</div>
     <button type="button" class="nav-item w-full flex items-center gap-3 px-3 py-2.5 rounded-2xl text-sm font-bold text-slate-700" data-tab="transactions">
       <span class="w-8 h-8 rounded-xl bg-emerald-500/15 text-emerald-700 flex items-center justify-center">💸</span> الحركات المالية
     </button>
@@ -267,6 +396,7 @@
     <button type="button" class="nav-item w-full flex items-center gap-3 px-3 py-2.5 rounded-2xl text-sm font-bold text-slate-700" data-tab="fullLog">
       <span class="w-8 h-8 rounded-xl bg-slate-500/15 text-slate-700 flex items-center justify-center">🗂️</span> السجل الشامل
     </button>
+    <div class="drawer-section-label pt-4">إدارة النشاط التجاري</div>
     <button type="button" class="nav-item w-full flex items-center gap-3 px-3 py-2.5 rounded-2xl text-sm font-bold text-slate-700" data-tab="shop">
       <span class="w-8 h-8 rounded-xl bg-teal-500/15 text-teal-700 flex items-center justify-center">🏪</span> المحل ونقطة البيع
       <span id="navLowStockBadge" class="hidden ms-auto text-[10px] font-extrabold bg-rose-500 text-white px-2 py-0.5 rounded-full">0</span>
@@ -278,10 +408,11 @@
       <span class="w-8 h-8 rounded-xl bg-indigo-600 text-white flex items-center justify-center">🛠️</span> لوحة المطور والتاجر
     </button>
   </nav>
-  <div class="p-3 border-t border-white/60 space-y-2">
-    <button type="button" id="btnDrawerOpenAccount" class="ios-btn w-full bg-white/80 hover:bg-white border border-white text-slate-700 text-xs font-bold py-2.5 rounded-xl">الحساب والمزامنة</button>
-    <button type="button" id="btnQuickLockApp" class="hidden ios-btn w-full bg-slate-800/90 text-white text-xs font-bold py-2.5 rounded-xl">🔒 قفل التطبيق الآن</button>
-    <button type="button" id="btnInstallApp" class="ios-btn w-full bg-gradient-brand text-white text-xs font-bold py-2.5 rounded-xl">⬇️ تثبيت على الشاشة الرئيسية</button>
+  <div class="p-3.5 border-t border-slate-200/70 dark:border-slate-700/60 space-y-2.5">
+    <button type="button" id="btnDrawerOpenAccount" class="drawer-footer-btn ios-btn w-full bg-white/80 hover:bg-white dark:bg-slate-800/80 dark:hover:bg-slate-700 border border-slate-200/80 dark:border-slate-700 text-slate-700 dark:text-slate-200 text-xs font-bold px-3 py-2.5">الحساب والمزامنة</button>
+    <button type="button" id="btnQuickLockApp" class="hidden drawer-footer-btn ios-btn w-full bg-slate-800/90 hover:bg-slate-900 text-white text-xs font-bold px-3 py-2.5">🔒 قفل التطبيق الآن</button>
+    <button type="button" id="btnInstallApp" class="drawer-footer-btn ios-btn w-full bg-gradient-brand text-white text-xs font-bold px-3 py-2.5">⬇️ تثبيت على الشاشة الرئيسية</button>
+    <p class="text-center text-[10px] text-slate-400 pt-1">الزعيم PRO · إدارة أموالك بوضوح</p>
   </div>
 </aside>
 
@@ -706,7 +837,7 @@
             <label class="block text-[11px] font-bold text-slate-600 mb-1">المبلغ</label>
             <div class="flex gap-2">
               <input id="txAmount" type="number" step="0.01" min="0.01" required placeholder="0.00" class="ios-input flex-1 min-w-0 rounded-xl px-3 py-2.5 text-base font-extrabold" />
-              <button type="button" class="ios-btn calc-trigger w-11 rounded-xl bg-slate-800/90 text-white text-sm font-bold shrink-0" data-calc-target="txAmount" title="آلة حاسبة">🖩</button>
+              <button type="button" class="ios-btn calc-trigger w-11 rounded-xl bg-slate-800/90 text-white text-sm font-bold shrink-0" data-calc-target="txAmount" title="آلة حاسبة" aria-label="آلة حاسبة"><svg viewBox="0 0 24 24" aria-hidden="true" class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2.8" width="14" height="18.4" rx="2.2"/><path d="M8 6.5h8M8 11h.01M12 11h.01M16 11h.01M8 15h.01M12 15h.01M16 15h.01M8 18.5h.01M12 18.5h.01M16 18.5h.01"/></svg></button>
             </div>
           </div>
           <div>
@@ -799,7 +930,7 @@
             <label class="block text-[11px] font-bold text-slate-600 mb-1">المبلغ</label>
             <div class="flex gap-1.5">
               <input id="debtAmount" type="number" step="0.01" min="0.01" required class="ios-input flex-1 min-w-0 rounded-xl px-3 py-2.5 text-sm font-extrabold" />
-              <button type="button" class="ios-btn calc-trigger w-10 rounded-xl bg-slate-800/90 text-white text-xs font-bold shrink-0" data-calc-target="debtAmount">🖩</button>
+              <button type="button" class="ios-btn calc-trigger w-10 rounded-xl bg-slate-800/90 text-white text-xs font-bold shrink-0" data-calc-target="debtAmount" title="آلة حاسبة" aria-label="آلة حاسبة"><svg viewBox="0 0 24 24" aria-hidden="true" class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2.8" width="14" height="18.4" rx="2.2"/><path d="M8 6.5h8M8 11h.01M12 11h.01M16 11h.01M8 15h.01M12 15h.01M16 15h.01M8 18.5h.01M12 18.5h.01M16 18.5h.01"/></svg></button>
             </div>
           </div>
           <div>
@@ -1085,7 +1216,7 @@
   <div id="universalCalcModal" class="fixed inset-0 bg-slate-900/50 z-[74] hidden items-end sm:items-center justify-center p-0 sm:p-4">
     <div class="ios-modal max-w-xs w-full p-4 animate-slide-up space-y-3 rounded-b-none sm:rounded-[1.6rem]">
       <div class="flex items-center justify-between">
-        <h3 class="text-xs font-extrabold text-slate-700">آلة حاسبة</h3>
+        <div class="flex items-center gap-2"><span class="w-8 h-8 rounded-xl bg-sky-500/10 text-sky-700 flex items-center justify-center"><svg viewBox="0 0 24 24" aria-hidden="true" class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2.8" width="14" height="18.4" rx="2.2"/><path d="M8 6.5h8M8 11h.01M12 11h.01M16 11h.01M8 15h.01M12 15h.01M16 15h.01M8 18.5h.01M12 18.5h.01M16 18.5h.01"/></svg></span><h3 class="text-sm font-extrabold text-slate-800">آلة حاسبة</h3></div>
         <button type="button" class="modal-close w-7 h-7 rounded-full bg-slate-200/70 text-slate-600 font-bold text-xs shrink-0" data-close="universalCalcModal">✕</button>
       </div>
       <div id="calcDisplay" class="bg-slate-900 text-white rounded-xl px-3 py-3 text-right text-xl font-extrabold overflow-x-auto scroll-slim" dir="ltr">0</div>
@@ -1368,7 +1499,7 @@
           <span class="w-8 h-8 rounded-xl bg-emerald-600 text-white font-extrabold flex items-center justify-center text-sm">💳</span>
           <div>
             <h4 class="text-xs sm:text-sm font-extrabold text-slate-900">بيانات التحويل عبر شام كاش</h4>
-            <p class="text-[10px] text-slate-500">تُضبط من لوحة المطور وتُعرض لعملائك</p>
+            <p class="text-[10px] text-slate-500">بيانات الدفع والتواصل المعتمدة لعملاء التطبيق</p>
           </div>
         </div>
         <div class="grid grid-cols-1 sm:grid-cols-12 gap-3 items-center bg-slate-50/90 dark:bg-slate-800/70 p-3 rounded-xl border border-slate-200/70">
@@ -1381,11 +1512,11 @@
           </div>
           <div class="sm:col-span-8 space-y-2 text-xs">
             <div class="flex items-center justify-between bg-white dark:bg-slate-900 px-3 py-2 rounded-xl border border-slate-200/80">
-              <div><span class="text-[10px] text-slate-500 block">حساب شام كاش:</span><strong id="merchantShamAccountDisplay" class="text-sm font-extrabold text-emerald-700" dir="ltr">—</strong></div>
+              <div><span class="text-[10px] text-slate-500 block">حساب شام كاش:</span><strong id="merchantShamAccountDisplay" class="text-sm font-extrabold text-emerald-700" dir="ltr">غير متاح حالياً</strong></div>
               <button type="button" id="btnCopyShamAccount" class="ios-btn bg-emerald-500/15 text-emerald-800 text-[11px] font-bold px-2.5 py-1 rounded-lg">نسخ</button>
             </div>
             <div class="flex items-center justify-between bg-white dark:bg-slate-900 px-3 py-2 rounded-xl border border-slate-200/80">
-              <div><span class="text-[10px] text-slate-500 block">واتساب الدعم:</span><strong id="merchantWhatsappDisplay" class="text-sm font-extrabold text-sky-800" dir="ltr">—</strong></div>
+              <div><span class="text-[10px] text-slate-500 block">واتساب الدعم:</span><strong id="merchantWhatsappDisplay" class="text-sm font-extrabold text-sky-800" dir="ltr">غير متاح حالياً</strong></div>
               <button type="button" id="btnRequestActivation" class="ios-btn bg-emerald-600 text-white text-[11px] font-bold px-3 py-1.5 rounded-lg">طلب التفعيل</button>
             </div>
           </div>
@@ -1530,7 +1661,7 @@
         <div class="flex items-center gap-2">
           <span class="w-8 h-8 rounded-xl bg-amber-500/20 text-amber-700 flex items-center justify-center font-extrabold text-base">⚡</span>
           <div>
-            <h3 class="text-base font-extrabold text-slate-900">إضافة حركة سريعة</h3>
+            <h3 class="text-base font-extrabold text-slate-900">حركة سريعة</h3>
             <p class="text-[11px] text-slate-500">اكتب الحركة بجملة واحدة وسيتم تصنيفها تلقائياً</p>
           </div>
         </div>
@@ -1632,9 +1763,9 @@
 
 <!-- Floating Quick Action Stack (Quick Entry above Home) -->
 <div class="fixed bottom-5 left-5 z-40 flex flex-col items-start gap-2.5">
-  <button type="button" id="btnFabQuickEntry" title="إضافة سريعة" class="ios-btn bg-gradient-to-r from-amber-500 to-orange-600 text-white text-xs font-extrabold px-3.5 py-2.5 rounded-2xl shadow-glass-lg flex items-center gap-1.5 border border-white/40">
+  <button type="button" id="btnFabQuickEntry" title="حركة سريعة" class="ios-btn bg-gradient-to-r from-amber-500 to-orange-600 text-white text-xs font-extrabold px-3.5 py-2.5 rounded-2xl shadow-glass-lg flex items-center gap-1.5 border border-white/40">
     <span class="text-sm">⚡</span>
-    <span>إضافة سريعة</span>
+    <span>حركة سريعة</span>
   </button>
   <button type="button" id="fabAddTx" title="العودة إلى لوحة القيادة" aria-label="لوحة القيادة" class="ios-btn w-12 h-12 rounded-2xl bg-gradient-brand text-white flex items-center justify-center icon-badge-3d shadow-glass-lg self-end">
     <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
@@ -1644,7 +1775,7 @@
 <!-- Toast -->
 <div id="toast" class="hidden fixed bottom-6 inset-x-4 sm:inset-x-auto sm:left-1/2 sm:-translate-x-1/2 z-[95] bg-slate-900 text-white text-xs sm:text-sm font-bold px-4 py-3 rounded-2xl shadow-glass-lg animate-toast text-center"></div>
 
-<!-- ==================== SERVICE WORKER (inline, registered only when served over http/https) ==================== -->
+<!-- ==================== PWA MANIFEST (no service worker/offline cache in this single-file build) ==================== -->
 <script>
   // A blob-URL manifest is rejected by browsers, so the PWA manifest is
   // generated as a real same-origin file only when the app is hosted.
@@ -1920,33 +2051,29 @@ function loadState() {
     try { localStorage.setItem(CORRUPT_KEY, raw); } catch (err) {}
     try { localStorage.setItem(storageKey + '_isolated_' + Date.now(), raw); } catch (err) {}
     setTimeout(() => showToast('⚠️ ملف البيانات المحلي تالف — حُفظت النسخة الأصلية، لم تُحذف بياناتك'), 400);
-    return createDemoState();
+    return createCleanInitialState();
   }
 }
 
 let state = loadState();
 
-let _pushTimer = null;
 function saveState() {
   try {
+    /* LocalStorage writes are synchronous; do not schedule a duplicate write. */
     localStorage.setItem(storageKey, JSON.stringify(state));
+    return true;
   } catch (e) {
     showToast('تعذّر الحفظ — قد تكون مساحة التخزين ممتلئة');
     return false;
   }
-  clearTimeout(_pushTimer);
-  _pushTimer = setTimeout(flushPending, 400);
-  return true;
 }
 /* A 400ms debounce with no unload hook meant edits made just before closing
    the tab were saved locally but never pushed anywhere. */
 function flushPending() {
-  clearTimeout(_pushTimer);
   try { localStorage.setItem(storageKey, JSON.stringify(state)); } catch (e) {}
 }
 document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'hidden') flushPending(); });
 window.addEventListener('pagehide', flushPending);
-window.addEventListener('beforeunload', flushPending);
 
 /* ==================== UI PRIMITIVES ==================== */
 function showToast(msg) {
@@ -1969,6 +2096,7 @@ function closeModal(id) {
   if (!el) return;
   el.classList.add('hidden');
   el.classList.remove('flex');
+  if (id === 'smartQuickModal') document.body.classList.remove('quick-entry-open');
 }
 /* One delegated listener closes every modal — no per-button onclick. */
 document.addEventListener('click', e => {
@@ -1992,6 +2120,17 @@ function toggleSideNavDrawer(force) {
   const open = typeof force === 'boolean' ? force : drawer.classList.contains('translate-x-full');
   backdrop.classList.toggle('hidden', !open);
   drawer.classList.toggle('translate-x-full', !open);
+  drawer.setAttribute('aria-hidden', String(!open));
+  backdrop.setAttribute('aria-hidden', String(!open));
+  document.body.classList.toggle('drawer-open', open);
+  if (open) {
+    requestAnimationFrame(() => backdrop.classList.add('drawer-backdrop-visible'));
+    $('btnCloseDrawer')?.focus({ preventScroll: true });
+  } else {
+    backdrop.classList.remove('drawer-backdrop-visible');
+    $('btnToggleDrawer')?.setAttribute('aria-expanded', 'false');
+  }
+  $('btnToggleDrawer')?.setAttribute('aria-expanded', String(open));
 }
 function switchTab(tab) {
   if (tab === 'shop' && !checkProFeatureAccess('shop')) return;
@@ -2008,6 +2147,11 @@ document.querySelectorAll('[data-tab]').forEach(btn => btn.addEventListener('cli
 on('btnToggleDrawer', 'click', () => toggleSideNavDrawer());
 on('btnCloseDrawer', 'click', () => toggleSideNavDrawer(false));
 on('sideNavBackdrop', 'click', () => toggleSideNavDrawer(false));
+document.addEventListener('keydown', event => {
+  if (event.key === 'Escape' && !$('sideNavDrawer')?.classList.contains('translate-x-full')) {
+    toggleSideNavDrawer(false);
+  }
+});
 
 /* ==================== THEME ==================== */
 function applyDarkModeState(isDark) {
@@ -2219,31 +2363,25 @@ function getMerchantConfig() {
 }
 /* __BAKED_MERCHANT_CFG_START__ */
 function defaultMerchantConfig() {
-  return { shamAccount: '', whatsappPhone: '', monthlyPrice: 'اشتراك شهري شامل', yearlyPrice: 'اشتراك سنوي شامل', qrDataUrl: '', devEmail: 'hussamalzaeem20@gmail.com', devSecretPin: '2002' };
+  return { shamAccount: '', whatsappPhone: '', monthlyPrice: 'اشتراك شهري شامل', yearlyPrice: 'اشتراك سنوي شامل', qrDataUrl: '', devEmail: '', devSecretPin: '' };
 }
 /* __BAKED_MERCHANT_CFG_END__ */
 function saveMerchantConfig(cfg) { try { localStorage.setItem(MERCHANT_CFG_KEY, JSON.stringify(cfg)); } catch (e) {} }
 
-const MASTER_DEV_EMAILS = ['hussamalzaeem20@gmail.com', 'hussamsungam@gmail.com'];
-
+/* Developer access is deliberately session-scoped. Email addresses and
+   localStorage flags are not authentication factors. A browser-only build
+   cannot provide strong developer authentication; use a server-issued
+   session/token for production administration. */
 function isDeveloperModeActive() {
-  if (activeAccount && activeAccount.email && MASTER_DEV_EMAILS.includes(activeAccount.email.toLowerCase().trim())) {
-    return true;
-  }
-  const cfg = getMerchantConfig();
-  if (cfg.devEmail && activeAccount && activeAccount.email &&
-      cfg.devEmail.toLowerCase().trim() === activeAccount.email.toLowerCase().trim()) {
-    return true;
-  }
-  try { if (localStorage.getItem(DEV_MODE_STORAGE_KEY) === '1') return true; } catch (e) {}
-  return false;
+  try { return sessionStorage.getItem(DEV_MODE_STORAGE_KEY) === '1'; } catch (e) { return false; }
 }
 function activateDeveloperMode(silent) {
-  try { localStorage.setItem(DEV_MODE_STORAGE_KEY, '1'); } catch (e) {}
+  try { sessionStorage.setItem(DEV_MODE_STORAGE_KEY, '1'); } catch (e) {}
   updateSubscriptionUI();
   if (!silent) showToast('🛠️ وضع المطور مفعّل على هذا الجهاز');
 }
 function deactivateDeveloperMode() {
+  try { sessionStorage.removeItem(DEV_MODE_STORAGE_KEY); } catch (e) {}
   try { localStorage.removeItem(DEV_MODE_STORAGE_KEY); } catch (e) {}
   closeModal('adminMerchantModal');
   updateSubscriptionUI();
@@ -2446,8 +2584,8 @@ function renderDashboard() {
           <p class="text-xs text-slate-600 mt-0.5">${fmt(s.amount, s.currency)}</p>
         </div>
         <div class="flex items-center gap-1.5 shrink-0">
-          ${getSchedulePhone(s) ? `<button type="button" class="ios-btn bg-emerald-500/15 text-emerald-800 text-xs font-bold px-2.5 py-1.5 rounded-xl" data-action="wa-sched" data-id="${s.id}">واتساب</button>` : ''}
-          <button type="button" class="ios-btn bg-emerald-600 text-white text-xs font-bold px-3 py-1.5 rounded-xl" data-action="collect-sched" data-id="${s.id}">قبض</button>
+          ${getSchedulePhone(s) ? `<button type="button" class="ios-btn bg-emerald-500/15 text-emerald-800 text-xs font-bold px-2.5 py-1.5 rounded-xl" data-action="wa-sched" data-id="${escapeHtml(s.id)}">واتساب</button>` : ''}
+          <button type="button" class="ios-btn bg-emerald-600 text-white text-xs font-bold px-3 py-1.5 rounded-xl" data-action="collect-sched" data-id="${escapeHtml(s.id)}">قبض</button>
         </div></div>`;
     }).join('') : `<p class="text-sm text-slate-400 text-center py-6">لا مواعيد قبض معلّقة</p>`;
   }
@@ -2457,7 +2595,7 @@ function renderDashboard() {
     const txs = [...state.transactions].sort((a, b) => String(b.date).localeCompare(String(a.date))).slice(0, 5);
     rec.innerHTML = txs.length ? txs.map(t => {
       const inc = t.type === 'income', cs = getCurrencyStyle(t.currency), name = personNameOf(t);
-      return `<div class="flex items-center justify-between gap-3 p-2.5 rounded-2xl ${cs.row} cursor-pointer" data-action="open-tx" data-id="${t.id}">
+      return `<div class="flex items-center justify-between gap-3 p-2.5 rounded-2xl ${cs.row} cursor-pointer" data-action="open-tx" data-id="${escapeHtml(t.id)}">
         <div class="flex items-center gap-2.5 min-w-0">
           <div class="w-8 h-8 rounded-xl flex items-center justify-center font-bold text-xs shrink-0 ${inc ? 'bg-emerald-500/15 text-emerald-700' : 'bg-rose-500/15 text-rose-700'}">${inc ? '↑' : '↓'}</div>
           <div class="min-w-0"><p class="font-bold text-sm text-slate-800 truncate">${escapeHtml(t.note)}</p>
@@ -2516,7 +2654,7 @@ function renderTransactions() {
   tbody.innerHTML = rows.length ? rows.map(t => {
     const inc = t.type === 'income', name = personNameOf(t);
     const sub = [name, t.category, t.details].filter(Boolean).join(' • ') || (t.method || 'نقدي');
-    return `<tr class="cursor-pointer hover:bg-white/40 transition" data-action="open-tx" data-id="${t.id}">
+    return `<tr class="cursor-pointer hover:bg-white/40 transition" data-action="open-tx" data-id="${escapeHtml(t.id)}">
       <td class="px-4 py-2.5"><div class="flex items-center gap-2 min-w-0">
         <span class="w-7 h-7 rounded-lg flex items-center justify-center text-xs font-extrabold shrink-0 ${inc ? 'bg-emerald-500/15 text-emerald-700' : 'bg-rose-500/15 text-rose-700'}">${inc ? '↙' : '↗'}</span>
         <div class="min-w-0 flex-1"><span class="row-main-line text-slate-900">${escapeHtml(t.note)}${t.receiptImg ? ' 📎' : ''}</span>
@@ -2525,8 +2663,8 @@ function renderTransactions() {
       <td class="px-3 py-2.5 text-left whitespace-nowrap"><span class="row-main-line ${inc ? 'text-emerald-600' : 'text-rose-600'}" dir="ltr">${inc ? '+' : '−'}${fmt(t.amount, t.currency)}</span>
         <span class="row-sub-line text-slate-400">${t.date}</span></td>
       <td class="px-3 py-2.5 text-center whitespace-nowrap">
-        <button type="button" class="px-2 py-1 rounded-lg bg-emerald-600 text-white text-[10px] font-extrabold" data-action="voucher-tx" data-id="${t.id}">السند</button>
-        <button type="button" class="w-6 h-6 rounded-lg bg-slate-200/80 text-slate-700 text-xs font-extrabold inline-flex items-center justify-center" data-action="open-tx" data-id="${t.id}">⋮</button>
+        <button type="button" class="px-2 py-1 rounded-lg bg-emerald-600 text-white text-[10px] font-extrabold" data-action="voucher-tx" data-id="${escapeHtml(t.id)}">السند</button>
+        <button type="button" class="w-6 h-6 rounded-lg bg-slate-200/80 text-slate-700 text-xs font-extrabold inline-flex items-center justify-center" data-action="open-tx" data-id="${escapeHtml(t.id)}">⋮</button>
       </td></tr>`;
   }).join('') : `<tr><td colspan="4" class="text-center py-6 text-slate-400 text-xs">لا حركات مطابقة</td></tr>`;
 }
@@ -2573,7 +2711,7 @@ function renderBudget() {
         <span class="shrink-0 ${over ? 'text-rose-600 font-extrabold' : 'text-slate-500'}">${fmt(used, cur)} / ${fmt(lim, cur)}</span>
       </div>
       <div class="w-full h-2 rounded-full bg-slate-200/70 overflow-hidden"><div class="h-full rounded-full ${over ? 'bg-gradient-to-l from-rose-500 to-rose-600' : 'bg-gradient-to-l from-sky-500 to-teal-600'}" style="width:${pct}%"></div></div>
-      <div class="flex justify-end"><button type="button" class="text-[10px] font-bold text-rose-500 hover:underline" data-action="del-budget" data-idx="${i}">حذف الفئة</button></div>
+      <div class="flex justify-end"><button type="button" class="text-[10px] font-bold text-rose-500 hover:underline" data-action="del-budget" data-idx="${escapeHtml(i)}">حذف الفئة</button></div>
     </div>`;
   }).join('') : `<p class="text-xs text-slate-400 text-center py-3">لا فئات ميزانية</p>`;
 
@@ -2594,12 +2732,12 @@ function renderSavingsGoals() {
     return `<div class="p-3 rounded-2xl bg-white/60 border border-white/85 space-y-1.5">
       <div class="flex items-center justify-between gap-2">
         <p class="text-xs font-extrabold text-slate-900 truncate">${escapeHtml(g.title)}</p>
-        <button type="button" class="text-[10px] font-bold text-rose-500 hover:underline shrink-0" data-action="del-goal" data-id="${g.id}">حذف</button>
+        <button type="button" class="text-[10px] font-bold text-rose-500 hover:underline shrink-0" data-action="del-goal" data-id="${escapeHtml(g.id)}">حذف</button>
       </div>
       <div class="w-full h-2 rounded-full bg-slate-200/70 overflow-hidden"><div class="h-full rounded-full bg-gradient-to-l from-violet-500 to-indigo-600" style="width:${pct}%"></div></div>
       <div class="flex items-center justify-between text-[11px]">
         <span class="text-slate-500">${fmt(saved, g.currency)} من ${fmt(target, g.currency)} (${pct}%)</span>
-        <button type="button" class="font-bold text-emerald-700 hover:underline" data-action="add-goal-save" data-id="${g.id}">+ إيداع</button>
+        <button type="button" class="font-bold text-emerald-700 hover:underline" data-action="add-goal-save" data-id="${escapeHtml(g.id)}">+ إيداع</button>
       </div></div>`;
   }).join('') : `<p class="text-xs text-slate-400 text-center py-3">لا أهداف ادخار</p>`;
 }
@@ -2615,9 +2753,9 @@ function renderRecurringExpenses() {
       </div>
       <div class="flex items-center gap-2 shrink-0">
         <label class="flex items-center gap-1 text-[10px] font-bold text-slate-600 cursor-pointer">
-          <input type="checkbox" ${r.autoPost ? 'checked' : ''} data-action="toggle-recurring" data-id="${r.id}" /> تلقائي
+          <input type="checkbox" ${r.autoPost ? 'checked' : ''} data-action="toggle-recurring" data-id="${escapeHtml(r.id)}" /> تلقائي
         </label>
-        <button type="button" class="text-[10px] font-bold text-rose-500 hover:underline" data-action="del-recurring" data-id="${r.id}">حذف</button>
+        <button type="button" class="text-[10px] font-bold text-rose-500 hover:underline" data-action="del-recurring" data-id="${escapeHtml(r.id)}">حذف</button>
       </div></div>`).join('') : `<p class="text-xs text-slate-400 text-center py-3">لا مصروفات متكررة</p>`;
 }
 
@@ -2638,7 +2776,7 @@ function renderPeople() {
       <div class="flex items-center gap-2.5 min-w-0 flex-1">
         <span class="w-7 h-7 rounded-lg bg-indigo-500/15 text-indigo-700 flex items-center justify-center text-xs font-extrabold shrink-0">👤</span>
         <div class="min-w-0 flex-1">
-          <button type="button" class="row-main-line text-slate-900 hover:text-sky-700 hover:underline text-right w-full" data-action="filter-person" data-id="${p.id}">${escapeHtml(p.name)}</button>
+          <button type="button" class="row-main-line text-slate-900 hover:text-sky-700 hover:underline text-right w-full" data-action="filter-person" data-id="${escapeHtml(p.id)}">${escapeHtml(p.name)}</button>
           <span class="row-sub-line text-slate-500">${escapeHtml(subInfo)}</span>
         </div>
       </div>
@@ -2647,10 +2785,10 @@ function renderPeople() {
         <span class="row-sub-line text-slate-400">المتبقي</span>
       </div>
       <div class="flex items-center gap-1 shrink-0">
-        <button type="button" class="ios-btn bg-sky-500/15 text-sky-800 text-[10px] font-bold px-2 py-1 rounded-lg" data-action="statement-person" data-id="${p.id}">كشف</button>
-        <button type="button" class="ios-btn bg-amber-500/15 text-amber-800 text-[10px] font-bold px-2 py-1 rounded-lg" data-action="debt-person" data-id="${p.id}">+ دين</button>
-        <button type="button" class="w-6 h-6 rounded-lg bg-slate-200/70 text-slate-700 text-[11px] font-bold flex items-center justify-center" data-action="edit-person" data-id="${p.id}" title="تعديل">✎</button>
-        <button type="button" class="w-6 h-6 rounded-lg bg-rose-500/15 text-rose-600 text-xs font-bold flex items-center justify-center" data-action="del-person" data-id="${p.id}" title="حذف">×</button>
+        <button type="button" class="ios-btn bg-sky-500/15 text-sky-800 text-[10px] font-bold px-2 py-1 rounded-lg" data-action="statement-person" data-id="${escapeHtml(p.id)}">كشف</button>
+        <button type="button" class="ios-btn bg-amber-500/15 text-amber-800 text-[10px] font-bold px-2 py-1 rounded-lg" data-action="debt-person" data-id="${escapeHtml(p.id)}">+ دين</button>
+        <button type="button" class="w-6 h-6 rounded-lg bg-slate-200/70 text-slate-700 text-[11px] font-bold flex items-center justify-center" data-action="edit-person" data-id="${escapeHtml(p.id)}" title="تعديل">✎</button>
+        <button type="button" class="w-6 h-6 rounded-lg bg-rose-500/15 text-rose-600 text-xs font-bold flex items-center justify-center" data-action="del-person" data-id="${escapeHtml(p.id)}" title="حذف">×</button>
       </div>
     </div>`;
   }).join('');
@@ -2697,11 +2835,11 @@ function renderDebts() {
           <p class="text-[10px] text-slate-500">من ${fmt(d.totalAmount, d.currency)}</p>
         </div></div>
       <div class="flex flex-wrap items-center gap-1.5 pt-1.5 border-t border-white/60">
-        ${rem > 0 ? `<button type="button" class="ios-btn bg-emerald-600 text-white text-[11px] font-bold px-3 py-1.5 rounded-lg" data-action="pay-debt" data-id="${d.id}">${pay ? 'سداد' : 'قبض'}</button>` : ''}
-        ${rem > 0 ? `<button type="button" class="ios-btn bg-sky-500/15 text-sky-800 text-[11px] font-bold px-2.5 py-1.5 rounded-lg" data-action="plan-debt" data-id="${d.id}">أقساط</button>` : ''}
-        ${d.phone ? `<button type="button" class="ios-btn bg-emerald-500/15 text-emerald-800 text-[11px] font-bold px-2.5 py-1.5 rounded-lg" data-action="wa-debt" data-id="${d.id}">تذكير</button>` : ''}
-        <button type="button" class="text-[11px] font-bold text-slate-600 hover:underline px-1" data-action="edit-debt" data-id="${d.id}">تعديل</button>
-        <button type="button" class="text-[11px] font-bold text-rose-600 hover:underline px-1" data-action="del-debt" data-id="${d.id}">حذف</button>
+        ${rem > 0 ? `<button type="button" class="ios-btn bg-emerald-600 text-white text-[11px] font-bold px-3 py-1.5 rounded-lg" data-action="pay-debt" data-id="${escapeHtml(d.id)}">${pay ? 'سداد' : 'قبض'}</button>` : ''}
+        ${rem > 0 ? `<button type="button" class="ios-btn bg-sky-500/15 text-sky-800 text-[11px] font-bold px-2.5 py-1.5 rounded-lg" data-action="plan-debt" data-id="${escapeHtml(d.id)}">أقساط</button>` : ''}
+        ${d.phone ? `<button type="button" class="ios-btn bg-emerald-500/15 text-emerald-800 text-[11px] font-bold px-2.5 py-1.5 rounded-lg" data-action="wa-debt" data-id="${escapeHtml(d.id)}">تذكير</button>` : ''}
+        <button type="button" class="text-[11px] font-bold text-slate-600 hover:underline px-1" data-action="edit-debt" data-id="${escapeHtml(d.id)}">تعديل</button>
+        <button type="button" class="text-[11px] font-bold text-rose-600 hover:underline px-1" data-action="del-debt" data-id="${escapeHtml(d.id)}">حذف</button>
       </div></div>`;
   }).join('') : `<p class="text-xs text-slate-400 text-center py-4">لا سجلات مطابقة</p>`;
 }
@@ -2727,7 +2865,7 @@ function renderSchedule() {
       const done = dayList.some(s => s.status === 'completed');
       const sel = selectedCalDate === iso, isToday = iso === today;
       const dot = late ? 'bg-rose-500' : pend ? 'bg-amber-500' : done ? 'bg-emerald-500' : '';
-      html += `<button type="button" data-action="pick-day" data-date="${iso}" class="py-1.5 rounded-xl text-xs font-bold flex flex-col items-center justify-center transition ${sel ? 'bg-gradient-to-br from-sky-500 to-teal-700 text-white' : isToday ? 'bg-sky-500/15 text-sky-900 border border-sky-300' : 'hover:bg-white/60 text-slate-700'}">
+      html += `<button type="button" data-action="pick-day" data-date="${escapeHtml(iso)}" class="py-1.5 rounded-xl text-xs font-bold flex flex-col items-center justify-center transition ${sel ? 'bg-gradient-to-br from-sky-500 to-teal-700 text-white' : isToday ? 'bg-sky-500/15 text-sky-900 border border-sky-300' : 'hover:bg-white/60 text-slate-700'}">
         <span>${d}</span>${dot ? `<span class="w-1.5 h-1.5 rounded-full ${dot} mt-0.5 block"></span>` : '<span class="w-1.5 h-1.5 mt-0.5 block"></span>'}</button>`;
     }
     grid.innerHTML = html;
@@ -2758,10 +2896,10 @@ function renderSchedule() {
         <p class="text-xs text-slate-600 mt-1">${s.date} • <strong class="text-sky-800">${fmt(s.amount, s.currency)}</strong>${s.note ? ` • ${escapeHtml(s.note)}` : ''}</p>
       </div>
       <div class="flex items-center gap-1.5 shrink-0">
-        ${!done && getSchedulePhone(s) ? `<button type="button" class="ios-btn bg-emerald-500/15 text-emerald-800 text-[11px] font-bold px-2.5 py-1.5 rounded-xl" data-action="wa-sched" data-id="${s.id}">واتساب</button>` : ''}
-        ${!done ? `<button type="button" class="ios-btn bg-emerald-600 text-white text-[11px] font-bold px-3 py-1.5 rounded-xl" data-action="collect-sched" data-id="${s.id}">قبض</button>` : ''}
-        <button type="button" class="text-[11px] font-bold text-sky-700 hover:underline px-1" data-action="edit-sched" data-id="${s.id}">تعديل</button>
-        <button type="button" class="text-[11px] font-bold text-rose-600 hover:underline px-1" data-action="del-sched" data-id="${s.id}">حذف</button>
+        ${!done && getSchedulePhone(s) ? `<button type="button" class="ios-btn bg-emerald-500/15 text-emerald-800 text-[11px] font-bold px-2.5 py-1.5 rounded-xl" data-action="wa-sched" data-id="${escapeHtml(s.id)}">واتساب</button>` : ''}
+        ${!done ? `<button type="button" class="ios-btn bg-emerald-600 text-white text-[11px] font-bold px-3 py-1.5 rounded-xl" data-action="collect-sched" data-id="${escapeHtml(s.id)}">قبض</button>` : ''}
+        <button type="button" class="text-[11px] font-bold text-sky-700 hover:underline px-1" data-action="edit-sched" data-id="${escapeHtml(s.id)}">تعديل</button>
+        <button type="button" class="text-[11px] font-bold text-rose-600 hover:underline px-1" data-action="del-sched" data-id="${escapeHtml(s.id)}">حذف</button>
       </div></div>`;
   }).join('') : `<div class="ios-card rounded-2.5xl p-6 text-center text-sm text-slate-400">لا مواعيد مطابقة</div>`;
 }
@@ -2837,7 +2975,7 @@ function renderFullLog() {
   tbody.innerHTML = rows.length ? rows.map(e => {
     const ic = icons[e.kind] || icons.income, isTx = e.kind === 'income' || e.kind === 'expense';
     const sub = [e.personName, e.details].filter(Boolean).join(' • ');
-    return `<tr class="cursor-pointer hover:bg-white/40 transition" data-action="open-record" data-kind="${e.kind}" data-id="${e.rawId}">
+    return `<tr class="cursor-pointer hover:bg-white/40 transition" data-action="open-record" data-kind="${escapeHtml(e.kind)}" data-id="${escapeHtml(e.rawId)}">
       <td class="px-4 py-2.5"><div class="flex items-center gap-2 min-w-0">
         <span class="w-7 h-7 rounded-lg flex items-center justify-center text-xs font-extrabold shrink-0 ${ic[1]}">${ic[0]}</span>
         <div class="min-w-0 flex-1"><span class="row-main-line text-slate-900">${escapeHtml(e.title)}</span>
@@ -2846,8 +2984,8 @@ function renderFullLog() {
       <td class="px-3 py-2.5 text-left whitespace-nowrap"><span class="row-main-line ${e.amountClass}" dir="ltr">${e.amountText}</span>
         <span class="row-sub-line text-slate-400">${e.date}</span></td>
       <td class="px-3 py-2.5 text-center whitespace-nowrap">
-        ${isTx ? `<button type="button" class="px-2 py-1 rounded-lg bg-emerald-600 text-white text-[10px] font-extrabold" data-action="voucher-tx" data-id="${e.rawId}">السند</button>` : ''}
-        <button type="button" class="w-6 h-6 rounded-lg bg-slate-200/80 text-slate-700 text-xs font-extrabold inline-flex items-center justify-center" data-action="open-record" data-kind="${e.kind}" data-id="${e.rawId}">⋮</button>
+        ${isTx ? `<button type="button" class="px-2 py-1 rounded-lg bg-emerald-600 text-white text-[10px] font-extrabold" data-action="voucher-tx" data-id="${escapeHtml(e.rawId)}">السند</button>` : ''}
+        <button type="button" class="w-6 h-6 rounded-lg bg-slate-200/80 text-slate-700 text-xs font-extrabold inline-flex items-center justify-center" data-action="open-record" data-kind="${escapeHtml(e.kind)}" data-id="${escapeHtml(e.rawId)}">⋮</button>
       </td></tr>`;
   }).join('') : `<tr><td colspan="4" class="text-center py-6 text-slate-400 text-xs">لا سجلات مطابقة</td></tr>`;
 }
@@ -2879,7 +3017,7 @@ function renderPersonQuickSummary(personId) {
             ${next ? ` • أقرب موعد: <strong class="${next.date < today ? 'text-rose-600' : 'text-sky-800'}">${next.date}</strong>` : ''}</p>
         </div></div>
       <div class="flex items-center gap-1.5 shrink-0">
-        <button type="button" class="ios-btn bg-sky-600 text-white text-xs font-bold px-3 py-1.5 rounded-xl" data-action="statement-person" data-id="${p.id}">كشف حساب</button>
+        <button type="button" class="ios-btn bg-sky-600 text-white text-xs font-bold px-3 py-1.5 rounded-xl" data-action="statement-person" data-id="${escapeHtml(p.id)}">كشف حساب</button>
         <button type="button" class="ios-btn bg-white/80 border border-white text-slate-700 text-xs font-bold px-3 py-1.5 rounded-xl" data-action="clear-person-filter">إلغاء ✕</button>
       </div></div>
     <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs">
@@ -2918,8 +3056,8 @@ function renderShop() {
         <td class="px-3 py-3 font-extrabold ${unit >= 0 ? 'text-emerald-600' : 'text-rose-600'}">${fmt(unit, p.currency)}</td>
         <td class="px-3 py-3"><span class="px-2.5 py-1 rounded-full text-xs font-extrabold ${isLow ? 'bg-rose-500/20 text-rose-800' : 'bg-emerald-500/15 text-emerald-800'}">${p.qty}${isLow ? ' ⚠' : ''}</span></td>
         <td class="px-3 py-3 text-center whitespace-nowrap">
-          <button type="button" class="text-xs font-bold text-sky-700 hover:underline" data-action="edit-prod" data-id="${p.id}">تعديل</button>
-          <button type="button" class="text-xs font-bold text-rose-600 hover:underline ms-2" data-action="del-prod" data-id="${p.id}">حذف</button></td></tr>`;
+          <button type="button" class="text-xs font-bold text-sky-700 hover:underline" data-action="edit-prod" data-id="${escapeHtml(p.id)}">تعديل</button>
+          <button type="button" class="text-xs font-bold text-rose-600 hover:underline ms-2" data-action="del-prod" data-id="${escapeHtml(p.id)}">حذف</button></td></tr>`;
     }).join('') : `<tr><td colspan="6" class="text-center py-8 text-slate-400">لا أصناف مطابقة</td></tr>`;
   }
 
@@ -2938,8 +3076,8 @@ function renderShop() {
         <td class="px-3 py-3 font-extrabold">${fmt(inv.netTotal, inv.currency)}</td>
         <td class="px-3 py-3 font-extrabold ${isSale ? 'text-teal-700' : 'text-slate-400'}">${isSale ? fmt(inv.profit, inv.currency) : '—'}</td>
         <td class="px-3 py-3 text-center whitespace-nowrap">
-          <button type="button" class="ios-btn bg-emerald-500/15 text-emerald-800 text-[11px] font-bold px-2.5 py-1 rounded-lg" data-action="wa-invoice" data-id="${inv.id}">واتساب</button>
-          <button type="button" class="ios-btn bg-white/80 border border-white text-slate-700 text-[11px] font-bold px-2 py-1 rounded-lg" data-action="del-invoice" data-id="${inv.id}">حذف</button></td></tr>`;
+          <button type="button" class="ios-btn bg-emerald-500/15 text-emerald-800 text-[11px] font-bold px-2.5 py-1 rounded-lg" data-action="wa-invoice" data-id="${escapeHtml(inv.id)}">واتساب</button>
+          <button type="button" class="ios-btn bg-slate-200/70 text-slate-500 text-[11px] font-bold px-2 py-1 rounded-lg" data-action="del-invoice" data-id="${escapeHtml(inv.id)}" title="الحذف المباشر متوقف لحماية القيود">حذف محظور</button></td></tr>`;
     }).join('') : `<tr><td colspan="7" class="text-center py-8 text-slate-400">لا فواتير</td></tr>`;
   }
 }
@@ -2949,11 +3087,11 @@ function renderSettingsLists() {
   const set = (id, html) => { const el = $(id); if (el) el.innerHTML = html; };
   set('currenciesList', state.currencies.map((c, i) => `<span class="inline-flex items-center justify-between gap-1 bg-white/80 border border-white text-slate-800 text-[11px] font-bold px-2 py-1.5 rounded-xl min-w-0">
     <span class="truncate">${escapeHtml(c.name)} (${escapeHtml(c.code)})</span>
-    ${state.currencies.length > 1 ? `<button type="button" class="text-rose-600 font-extrabold shrink-0" data-action="del-currency" data-idx="${i}">×</button>` : ''}</span>`).join(''));
+    ${state.currencies.length > 1 ? `<button type="button" class="text-rose-600 font-extrabold shrink-0" data-action="del-currency" data-idx="${escapeHtml(i)}">×</button>` : ''}</span>`).join(''));
   set('incomeCatsList', state.incomeCategories.map((c, i) => `<span class="inline-flex items-center gap-1.5 bg-emerald-500/15 text-emerald-900 text-xs font-bold px-3 py-1.5 rounded-full">
-    ${escapeHtml(c)}${state.incomeCategories.length > 1 ? `<button type="button" class="text-rose-600 font-extrabold" data-action="del-cat" data-kind="income" data-idx="${i}">×</button>` : ''}</span>`).join(''));
+    ${escapeHtml(c)}${state.incomeCategories.length > 1 ? `<button type="button" class="text-rose-600 font-extrabold" data-action="del-cat" data-kind="income" data-idx="${escapeHtml(i)}">×</button>` : ''}</span>`).join(''));
   set('expenseCatsList', state.expenseCategories.map((c, i) => `<span class="inline-flex items-center gap-1.5 bg-rose-500/15 text-rose-900 text-xs font-bold px-3 py-1.5 rounded-full">
-    ${escapeHtml(c)}${state.expenseCategories.length > 1 ? `<button type="button" class="text-rose-600 font-extrabold" data-action="del-cat" data-kind="expense" data-idx="${i}">×</button>` : ''}</span>`).join(''));
+    ${escapeHtml(c)}${state.expenseCategories.length > 1 ? `<button type="button" class="text-rose-600 font-extrabold" data-action="del-cat" data-kind="expense" data-idx="${escapeHtml(i)}">×</button>` : ''}</span>`).join(''));
 }
 function setCloudBadgeState(status) {
   const badge = $('cloudSyncStatusBadge'), btn = $('btnManualCloudSync');
@@ -3018,10 +3156,10 @@ function renderSubscriptionModalContent() {
       ? `<div><strong class="text-slate-900 block">باقتك: ${sub.planType === 'trial' ? 'تجريبي 🎁' : sub.planType === 'yearly' ? 'سنوية PRO 👑' : 'شهرية PRO 👑'}</strong><span class="text-slate-600">المتبقي ${sub.daysLeft} يوم</span></div><span class="px-2.5 py-1 rounded-full bg-emerald-600 text-white font-extrabold">مفعّل ✓</span>`
       : `<div><strong class="text-slate-900 block">الباقة المجانية</strong><span class="text-slate-600">محدودة — بدون POS</span></div><span class="px-2.5 py-1 rounded-full bg-amber-600 text-white font-extrabold">ترقية</span>`;
   const set = (id, v) => { const el = $(id); if (el) el.textContent = v; };
-  set('displayMonthlyPriceLabel', cfg.monthlyPrice || 'اشتراك شهري شامل');
-  set('displayYearlyPriceLabel', cfg.yearlyPrice || 'اشتراك سنوي شامل');
-  set('merchantShamAccountDisplay', cfg.shamAccount || 'غير مضبوط');
-  set('merchantWhatsappDisplay', cfg.whatsappPhone || 'غير مضبوط');
+  set('displayMonthlyPriceLabel', cfg.monthlyPrice || 'السعر غير محدد من الإدارة');
+  set('displayYearlyPriceLabel', cfg.yearlyPrice || 'السعر غير محدد من الإدارة');
+  set('merchantShamAccountDisplay', cfg.shamAccount || 'لم تُضف الإدارة رقم الحساب بعد');
+  set('merchantWhatsappDisplay', cfg.whatsappPhone || 'لم تُضف الإدارة رقم الدعم بعد');
   const img = $('shamCashQrImg'), ph = $('shamCashQrPlaceholder');
   if (img && ph) {
     if (cfg.qrDataUrl) { img.src = cfg.qrDataUrl; img.classList.remove('hidden'); ph.classList.add('hidden'); }
@@ -3055,7 +3193,7 @@ function openNotificationsModal() {
   box.innerHTML = alerts.length ? alerts.map(a => `<div class="p-3.5 rounded-2xl bg-white/70 border border-white flex items-center justify-between gap-3">
     <div class="min-w-0"><h4 class="font-extrabold text-xs sm:text-sm text-slate-900 truncate">${escapeHtml(a.title)}</h4>
       <p class="text-[11px] text-slate-600 mt-0.5">${escapeHtml(a.desc)}</p></div>
-    <button type="button" class="ios-btn bg-sky-500/15 text-sky-800 text-xs font-bold px-3 py-1.5 rounded-xl shrink-0" data-action="alert-goto" data-tab="${a.tab}">عرض</button></div>`).join('')
+    <button type="button" class="ios-btn bg-sky-500/15 text-sky-800 text-xs font-bold px-3 py-1.5 rounded-xl shrink-0" data-action="alert-goto" data-tab="${escapeHtml(a.tab)}">عرض</button></div>`).join('')
     : `<div class="p-8 text-center text-slate-400 text-xs">لا تنبيهات معلّقة ✓</div>`;
   openModal('notificationsModal');
 }
@@ -3180,7 +3318,13 @@ function openPersonStatementModal(personId) {
 
 /* ==================== CSV ==================== */
 function downloadCsv(filename, header, rows) {
-  const esc = v => `"${String(v ?? '').replace(/"/g, '""')}"`;
+  const safeCsvValue = value => {
+    let text = String(value ?? '');
+    /* Excel/LibreOffice may execute cells beginning with formula markers. */
+    if (/^[\s\u0000-\u001f]*[=+\-@]/.test(text)) text = "'" + text;
+    return text;
+  };
+  const esc = v => `"${safeCsvValue(v).replace(/"/g, '""')}"`;
   const csv = '\uFEFF' + [header.map(esc).join(','), ...rows.map(r => r.map(esc).join(','))].join('\r\n');
   const a = document.createElement('a');
   a.href = URL.createObjectURL(new Blob([csv], { type: 'text/csv;charset=utf-8;' }));
@@ -3332,10 +3476,33 @@ document.querySelectorAll('.plan-pick-btn').forEach(b => b.addEventListener('cli
 on('btnAddIncome', 'click', () => openTxModal('income'));
 on('btnAddExpense', 'click', () => openTxModal('expense'));
 on('fabAddTx', 'click', () => switchTab('dashboard'));
+function syncMobileVisualViewport() {
+  const vv = window.visualViewport;
+  const h = vv?.height || window.innerHeight || document.documentElement.clientHeight;
+  document.documentElement.style.setProperty('--alzaeem-vv-height', `${Math.round(h)}px`);
+}
+syncMobileVisualViewport();
+window.visualViewport?.addEventListener('resize', syncMobileVisualViewport, { passive: true });
+window.visualViewport?.addEventListener('scroll', syncMobileVisualViewport, { passive: true });
+window.addEventListener('resize', syncMobileVisualViewport, { passive: true });
+
 on('btnFabQuickEntry', 'click', () => {
+  syncMobileVisualViewport();
   openModal('smartQuickModal');
-  setTimeout(() => $('smartQuickInput')?.focus(), 80);
+  document.body.classList.add('quick-entry-open');
+  setTimeout(() => {
+    syncMobileVisualViewport();
+    $('smartQuickInput')?.focus({ preventScroll: true });
+  }, 100);
 });
+on('smartQuickModal', 'click', e => {
+  if (e.target === $('smartQuickModal')) {
+    document.body.classList.remove('quick-entry-open');
+  }
+});
+document.querySelectorAll('[data-close="smartQuickModal"]').forEach(btn => btn.addEventListener('click', () => {
+  document.body.classList.remove('quick-entry-open');
+}));
 on('btnAddPerson', 'click', () => openPersonModal(''));
 on('btnAddDebt', 'click', () => openDebtModal(''));
 on('btnAddSchedule', 'click', () => openScheduleModal(''));
@@ -3388,9 +3555,9 @@ function remindDebt(debtId) {
 function deleteShopInvoice(id) {
   const inv = (state.shopInvoices || []).find(x => x.id === id);
   if (!inv) return;
-  if (!confirm(`حذف الفاتورة ${inv.no}؟ لن تُعكس حركة المال أو المخزون تلقائياً.`)) return;
-  state.shopInvoices = state.shopInvoices.filter(x => x.id !== id);
-  saveState(); renderAll(); showToast('تم حذف الفاتورة');
+  /* A hard delete would orphan inventory, cash and/or credit records.
+     Until a full audited void/reversal workflow exists, preserve the invoice. */
+  showToast(`حذف الفاتورة ${inv.no} متوقف لحماية القيود المالية والمخزون. استخدم إجراء تسوية معتمد.`);
 }
 function deleteBudget(idx) {
   if (state.budgets.length <= 1) { showToast('يجب الإبقاء على فئة واحدة على الأقل'); return; }
@@ -3588,11 +3755,11 @@ function openTxRecordOptions(txId) {
   const p = state.people.find(x => x.id === t.personId || x.name === name);
   const grid = $('rasButtonsGrid');
   if (grid) grid.innerHTML = `
-    <button type="button" class="ios-btn col-span-2 bg-gradient-to-br from-emerald-500 to-teal-700 text-white font-extrabold py-2.5 rounded-xl text-xs" data-action="voucher-tx" data-id="${t.id}">📄 السند المالي الرقمي</button>
-    ${t.receiptImg ? `<button type="button" class="ios-btn col-span-2 bg-indigo-500/15 text-indigo-800 font-bold py-2 rounded-xl text-xs" data-action="receipt-view" data-id="${t.id}">📎 صورة الإيصال</button>` : ''}
-    ${p ? `<button type="button" class="ios-btn col-span-2 bg-sky-500/15 text-sky-800 font-bold py-2 rounded-xl text-xs" data-action="filter-person" data-id="${p.id}">👤 ملخص حركات ${escapeHtml(p.name)}</button>` : ''}
-    <button type="button" class="ios-btn bg-amber-500/15 text-amber-900 font-bold py-2 rounded-xl text-xs" data-action="edit-tx" data-id="${t.id}">✎ تعديل</button>
-    <button type="button" class="ios-btn bg-rose-500/15 text-rose-700 font-bold py-2 rounded-xl text-xs" data-action="del-tx" data-id="${t.id}">🗑️ حذف</button>`;
+    <button type="button" class="ios-btn col-span-2 bg-gradient-to-br from-emerald-500 to-teal-700 text-white font-extrabold py-2.5 rounded-xl text-xs" data-action="voucher-tx" data-id="${escapeHtml(t.id)}">📄 السند المالي الرقمي</button>
+    ${t.receiptImg ? `<button type="button" class="ios-btn col-span-2 bg-indigo-500/15 text-indigo-800 font-bold py-2 rounded-xl text-xs" data-action="receipt-view" data-id="${escapeHtml(t.id)}">📎 صورة الإيصال</button>` : ''}
+    ${p ? `<button type="button" class="ios-btn col-span-2 bg-sky-500/15 text-sky-800 font-bold py-2 rounded-xl text-xs" data-action="filter-person" data-id="${escapeHtml(p.id)}">👤 ملخص حركات ${escapeHtml(p.name)}</button>` : ''}
+    <button type="button" class="ios-btn bg-amber-500/15 text-amber-900 font-bold py-2 rounded-xl text-xs" data-action="edit-tx" data-id="${escapeHtml(t.id)}">✎ تعديل</button>
+    <button type="button" class="ios-btn bg-rose-500/15 text-rose-700 font-bold py-2 rounded-xl text-xs" data-action="del-tx" data-id="${escapeHtml(t.id)}">🗑️ حذف</button>`;
   openModal('recordActionSheetModal');
 }
 function openFullLogRecordOptions(kind, rawId) {
@@ -3612,9 +3779,9 @@ function openFullLogRecordOptions(kind, rawId) {
     const p = state.people.find(x => x.id === d.personId);
     const grid = $('rasButtonsGrid');
     if (grid) grid.innerHTML = `
-      ${rem > 0 ? `<button type="button" class="ios-btn col-span-2 bg-emerald-600 text-white font-extrabold py-2.5 rounded-xl text-xs" data-action="pay-debt" data-id="${d.id}">💵 ${pay ? 'تسجيل سداد' : 'تسجيل تحصيل'}</button>` : ''}
-      ${p ? `<button type="button" class="ios-btn bg-sky-500/15 text-sky-800 font-bold py-2 rounded-xl text-xs" data-action="filter-person" data-id="${p.id}">👤 الملخص</button>` : ''}
-      <button type="button" class="ios-btn bg-amber-500/15 text-amber-900 font-bold py-2 rounded-xl text-xs" data-action="edit-debt" data-id="${d.id}">✎ تعديل</button>`;
+      ${rem > 0 ? `<button type="button" class="ios-btn col-span-2 bg-emerald-600 text-white font-extrabold py-2.5 rounded-xl text-xs" data-action="pay-debt" data-id="${escapeHtml(d.id)}">💵 ${pay ? 'تسجيل سداد' : 'تسجيل تحصيل'}</button>` : ''}
+      ${p ? `<button type="button" class="ios-btn bg-sky-500/15 text-sky-800 font-bold py-2 rounded-xl text-xs" data-action="filter-person" data-id="${escapeHtml(p.id)}">👤 الملخص</button>` : ''}
+      <button type="button" class="ios-btn bg-amber-500/15 text-amber-900 font-bold py-2 rounded-xl text-xs" data-action="edit-debt" data-id="${escapeHtml(d.id)}">✎ تعديل</button>`;
     return openModal('recordActionSheetModal');
   }
   if (kind === 'schedule') {
@@ -3627,9 +3794,9 @@ function openFullLogRecordOptions(kind, rawId) {
       ${s.note ? `<div class="text-slate-600 pt-1 border-t border-slate-200/70">${escapeHtml(s.note)}</div>` : ''}`;
     const grid = $('rasButtonsGrid');
     if (grid) grid.innerHTML = `
-      ${s.status === 'pending' ? `<button type="button" class="ios-btn col-span-2 bg-emerald-600 text-white font-extrabold py-2.5 rounded-xl text-xs" data-action="collect-sched" data-id="${s.id}">✓ تأكيد القبض</button>` : ''}
-      <button type="button" class="ios-btn bg-amber-500/15 text-amber-900 font-bold py-2 rounded-xl text-xs" data-action="edit-sched" data-id="${s.id}">✎ تعديل</button>
-      <button type="button" class="ios-btn bg-rose-500/15 text-rose-700 font-bold py-2 rounded-xl text-xs" data-action="del-sched" data-id="${s.id}">🗑️ حذف</button>`;
+      ${s.status === 'pending' ? `<button type="button" class="ios-btn col-span-2 bg-emerald-600 text-white font-extrabold py-2.5 rounded-xl text-xs" data-action="collect-sched" data-id="${escapeHtml(s.id)}">✓ تأكيد القبض</button>` : ''}
+      <button type="button" class="ios-btn bg-amber-500/15 text-amber-900 font-bold py-2 rounded-xl text-xs" data-action="edit-sched" data-id="${escapeHtml(s.id)}">✎ تعديل</button>
+      <button type="button" class="ios-btn bg-rose-500/15 text-rose-700 font-bold py-2 rounded-xl text-xs" data-action="del-sched" data-id="${escapeHtml(s.id)}">🗑️ حذف</button>`;
     openModal('recordActionSheetModal');
   }
 }
@@ -4460,7 +4627,7 @@ on('smartQuickEntryForm', 'submit', e => {
   }
   if (inp) inp.value = '';
   $('smartQuickPreview')?.classList.add('hidden');
-  closeModal('smartQuickModal');
+  closeModal('smartQuickModal'); document.body.classList.remove('quick-entry-open');
   saveState(); renderAll();
 });
 document.querySelectorAll('.smart-example').forEach(b => b.addEventListener('click', () => {
@@ -4563,7 +4730,7 @@ function setParsedCandidates(list) {
   cnt.textContent = `تم العثور على ${parsedContactCandidates.length} جهة`;
   box.innerHTML = parsedContactCandidates.map(c => `<label class="flex items-center justify-between gap-2 p-2 rounded-xl bg-white/75 border border-white text-xs cursor-pointer">
     <div class="flex items-center gap-2 min-w-0">
-      <input type="checkbox" checked data-idx="${c.idx}" />
+      <input type="checkbox" checked data-idx="${escapeHtml(c.idx)}" />
       <span class="font-bold text-slate-900 truncate">${escapeHtml(c.name)}</span></div>
     <span class="text-slate-600 shrink-0" dir="ltr">${escapeHtml(c.phone || 'بدون رقم')}</span></label>`).join('');
 }
@@ -4735,7 +4902,7 @@ function renderPosCart() {
       <td class="px-3 py-2">${fmt(it.price, it.currency)}</td>
       <td class="px-3 py-2 font-extrabold">${it.qty}</td>
       <td class="px-3 py-2 font-extrabold text-sky-800">${fmt(it.price * it.qty, it.currency)}</td>
-      <td class="px-2 py-2 text-center"><button type="button" data-action="rm-pos" data-idx="${idx}" class="text-rose-600 font-bold">✕</button></td></tr>`).join('');
+      <td class="px-2 py-2 text-center"><button type="button" data-action="rm-pos" data-idx="${escapeHtml(idx)}" class="text-rose-600 font-bold">✕</button></td></tr>`).join('');
   }
   const gross = posCart.reduce((s, it) => s + it.price * it.qty, 0);
   const cost = posCart.reduce((s, it) => s + it.cost * it.qty, 0);
@@ -4765,19 +4932,40 @@ on('btnPosSubmit', 'click', () => {
   const party = state.people.find(p => p.id === partyId);
   const mode = $('posPaymentMode')?.value || 'cash';
   const date = $('posInvoiceDate')?.value || todayISO();
-  const discount = parseFloat($('posDiscountInput')?.value) || 0;
+  const discountRaw = $('posDiscountInput')?.value ?? '0';
+  const discount = Number(discountRaw);
   const curr = posCartCurrency() || state.currency;
+  if (!Number.isFinite(discount) || discount < 0) { showToast('قيمة الخصم غير صالحة'); return; }
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(date) || Number.isNaN(new Date(date + 'T00:00:00').getTime())) {
+    showToast('تاريخ الفاتورة غير صالح'); return;
+  }
   if (mode === 'credit' && !party) { showToast('حدّد العميل أو المورد للفواتير الآجلة'); return; }
+  /* Check every gate before touching stock or creating an invoice. */
+  if (mode === 'credit' && !checkProFeatureAccess('debt', state.debts.length + 1)) return;
   if (type === 'sale') {
     const over = posCart.find(it => { const p = state.shopProducts.find(x => x.id === it.prodId); return p && Number(p.qty) < it.qty; });
     if (over) { showToast(`الكمية غير متوفرة: ${over.name}`); return; }
   }
   const gross = posCart.reduce((s, it) => s + it.price * it.qty, 0);
   const cost = posCart.reduce((s, it) => s + it.cost * it.qty, 0);
-  const net = Math.max(0, gross - discount);
-  posCart.forEach(it => {
-    const p = state.shopProducts.find(x => x.id === it.prodId);
-    if (p) p.qty = Math.max(0, Number(p.qty) + (type === 'sale' ? -it.qty : it.qty));
+  if (discount > gross) { showToast('الخصم لا يمكن أن يتجاوز إجمالي الفاتورة'); return; }
+  if (!Number.isFinite(gross) || !Number.isFinite(cost) || gross <= 0 || cost < 0) {
+    showToast('تعذّر اعتماد فاتورة بقيم غير صالحة'); return;
+  }
+  const net = gross - discount;
+  const stockUpdates = posCart.map(it => {
+    const product = state.shopProducts.find(x => x.id === it.prodId);
+    return { product, qty: Number(it.qty), item: it };
+  });
+  if (stockUpdates.some(x => !x.product || !Number.isInteger(x.qty) || x.qty <= 0 ||
+      !Number.isFinite(Number(x.product.qty)) ||
+      (type === 'sale' && Number(x.product.qty) < x.qty))) {
+    showToast('تغيرت بيانات المخزون أو لم تعد الكمية متوفرة؛ حدّث السلة وحاول مجدداً');
+    return;
+  }
+  const stateBeforeCommit = JSON.stringify(state);
+  stockUpdates.forEach(x => {
+    x.product.qty = Number(x.product.qty) + (type === 'sale' ? -x.qty : x.qty);
   });
   const no = 'INV-' + String(Date.now()).slice(-6);
   const summary = posCart.map(it => `${it.name} (×${it.qty})`).join('، ');
@@ -4791,21 +4979,91 @@ on('btnPosSubmit', 'click', () => {
       date, method: 'نقدي', personId: partyId, personName: party ? party.name : '',
       note: `${type === 'sale' ? 'فاتورة مبيع' : 'فاتورة شراء'} #${no}`, details: summary, receiptImg: '' });
   } else {
-    if (!checkProFeatureAccess('debt', state.debts.length + 1)) return;
     state.debts.push({ id: uid('debt'), direction: type === 'sale' ? 'receivable' : 'payable',
       personId: partyId, name: party ? party.name : 'غير محدد', phone: party?.phone || '',
       totalAmount: net, paidAmount: 0, currency: curr, dueDate: todayISO(7),
       note: `${type === 'sale' ? 'مبيع آجل' : 'شراء آجل'} #${no}: ${summary}` });
   }
-  saveState(); closeModal('posInvoiceModal'); renderAll();
+  if (!saveState()) {
+    try { state = JSON.parse(stateBeforeCommit); } catch (rollbackError) {
+      showToast('فشل الحفظ وتعذّر التراجع الآلي؛ أوقف العمليات وصدّر نسخة البيانات فوراً');
+      return;
+    }
+    renderAll();
+    showToast('فشل الحفظ؛ أُلغيت الفاتورة وأُعيد المخزون إلى حالته السابقة');
+    return;
+  }
+  closeModal('posInvoiceModal'); renderAll();
   showToast(`تم اعتماد #${no} وتحديث المخزون`);
 });
-function sendShopInvoiceWhatsapp(invId) {
+function escapeDocumentText(value) {
+  return String(value ?? '').replace(/[&<>"']/g, ch => ({
+    '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;'
+  })[ch]);
+}
+function buildShopInvoiceDocument(inv) {
+  const p = state.people.find(x => x.id === inv.partyId) || state.people.find(x => x.name === inv.partyName);
+  const rows = (inv.items || []).map((it, i) => `
+    <tr><td>${i + 1}</td><td>${escapeDocumentText(it.name)}</td>
+    <td>${Number(it.qty || 0).toLocaleString('ar')}</td>
+    <td>${escapeDocumentText(fmt(it.price, inv.currency))}</td>
+    <td>${escapeDocumentText(fmt(Number(it.price || 0) * Number(it.qty || 0), inv.currency))}</td></tr>`).join('');
+  const typeLabel = inv.type === 'sale' ? 'فاتورة مبيع' : 'فاتورة شراء';
+  const total = escapeDocumentText(fmt(inv.netTotal, inv.currency));
+  const discount = Number(inv.discount || 0);
+  return `<!doctype html><html lang="ar" dir="rtl"><head><meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>${typeLabel} ${escapeDocumentText(inv.no)}</title>
+  <style>
+  *{box-sizing:border-box}body{margin:0;background:#eef2f6;color:#172033;font-family:Tahoma,Arial,sans-serif;line-height:1.7}
+  .page{max-width:850px;margin:24px auto;background:#fff;padding:42px;border:1px solid #dbe3ec;box-shadow:0 12px 36px #0f172a12}
+  header{display:flex;justify-content:space-between;gap:20px;align-items:flex-start;border-bottom:3px solid #0f766e;padding-bottom:22px}
+  .brand{font-size:25px;font-weight:900;color:#0f766e}.subtitle{color:#64748b;font-size:12px}
+  .doc-title{font-size:23px;font-weight:900;margin:28px 0 18px}
+  .meta{display:grid;grid-template-columns:1fr 1fr;gap:10px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:12px;padding:16px}
+  .meta b{color:#64748b;font-size:12px;display:block}.meta span{font-weight:800}
+  table{width:100%;border-collapse:collapse;margin-top:24px}th{background:#eaf4f3;color:#115e59}
+  th,td{padding:12px 10px;border:1px solid #dce5ec;text-align:right;font-size:13px}
+  .totals{width:min(360px,100%);margin:22px 0 0 auto}.totals div{display:flex;justify-content:space-between;padding:8px 12px;border-bottom:1px solid #e2e8f0}
+  .grand{background:#ecfdf5;color:#065f46;font-size:18px;font-weight:900;border-radius:10px;margin-top:8px}
+  footer{border-top:1px solid #e2e8f0;margin-top:42px;padding-top:14px;color:#64748b;font-size:11px;text-align:center}
+  .actions{max-width:850px;margin:12px auto;text-align:left}
+  button{border:0;border-radius:10px;background:#0f766e;color:white;padding:11px 20px;font-weight:bold}
+  @media(max-width:600px){.page{margin:0;padding:20px 14px;border:0}.meta{grid-template-columns:1fr 1fr}th,td{padding:8px 5px;font-size:11px}}
+  @media print{body{background:#fff}.page{margin:0;max-width:none;box-shadow:none;border:0;padding:12mm}.actions{display:none}}
+  </style></head><body><div class="actions"><button onclick="window.print()">طباعة / حفظ PDF</button></div>
+  <main class="page"><header><div><div class="brand">الزعيم PRO</div><div class="subtitle">نظام إدارة الأعمال والحسابات</div></div>
+  <div style="text-align:left"><strong>${typeLabel}</strong><br><span class="subtitle">رقم المستند: ${escapeDocumentText(inv.no)}</span></div></header>
+  <h1 class="doc-title">${typeLabel}</h1>
+  <section class="meta"><div><b>التاريخ</b><span>${escapeDocumentText(inv.date)}</span></div>
+  <div><b>الطرف</b><span>${escapeDocumentText(inv.partyName)}</span></div>
+  <div><b>طريقة الدفع</b><span>${inv.paymentMode === 'cash' ? 'نقدي' : 'آجل'}</span></div>
+  <div><b>رقم الهاتف</b><span>${escapeDocumentText(p?.phone || '—')}</span></div></section>
+  <table><thead><tr><th>#</th><th>البيان</th><th>الكمية</th><th>سعر الوحدة</th><th>الإجمالي</th></tr></thead><tbody>${rows}</tbody></table>
+  <section class="totals">${discount ? `<div><span>الخصم</span><strong>${escapeDocumentText(fmt(discount, inv.currency))}</strong></div>` : ''}
+  <div class="grand"><span>الصافي المستحق</span><strong>${total}</strong></div></section>
+  <footer>وثيقة صادرة عن الزعيم PRO · يرجى الاحتفاظ بها للرجوع إليها عند الحاجة</footer></main></body></html>`;
+}
+async function sendShopInvoiceWhatsapp(invId) {
   const inv = (state.shopInvoices || []).find(x => x.id === invId);
   if (!inv) return;
   const p = state.people.find(x => x.id === inv.partyId) || state.people.find(x => x.name === inv.partyName);
-  const lines = inv.items.map(it => `• ${it.name} ×${it.qty} = ${fmt(it.price * it.qty, inv.currency)}`).join('\n');
-  openWhatsapp(p?.phone || '', `فاتورة ${inv.type === 'sale' ? 'مبيع' : 'شراء'} (${inv.no})\nالتاريخ: ${inv.date}\nالطرف: ${inv.partyName}\n${lines}\n${inv.discount ? 'خصم: ' + fmt(inv.discount, inv.currency) + '\n' : ''}الصافي: ${fmt(inv.netTotal, inv.currency)} (${inv.paymentMode === 'cash' ? 'نقدي' : 'آجل'})\n— الزعيم PRO`);
+  const html = buildShopInvoiceDocument(inv);
+  const safeNo = String(inv.no || inv.id || 'invoice').replace(/[^a-zA-Z0-9_-]/g, '_');
+  const file = new File([html], `فاتورة-${safeNo}.html`, { type: 'text/html;charset=utf-8' });
+  if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
+    try {
+      await navigator.share({ files: [file], title: `فاتورة ${inv.no}`, text: 'مرفق مستند الفاتورة بصيغته الأصلية.' });
+      return;
+    } catch (err) {
+      if (err?.name === 'AbortError') return;
+    }
+  }
+  const url = URL.createObjectURL(file);
+  const a = document.createElement('a');
+  a.href = url; a.download = file.name; document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 1500);
+  showToast('تم تنزيل الفاتورة كملف. أرفق الملف يدوياً في واتساب؛ لم نرسلها كنص.');
 }
 function switchShopSubView(view) {
   shopSubView = view;
@@ -4879,9 +5137,6 @@ function removeSavedAccountFromList(email) {
 function isEmailAccountPro(email) {
   const clean = String(email || '').trim().toLowerCase();
   if (!clean) return false;
-  if (MASTER_DEV_EMAILS.includes(clean)) return true;
-  const cfg = getMerchantConfig();
-  if (cfg.devEmail && cfg.devEmail.toLowerCase().trim() === clean) return true;
   try {
     const raw = localStorage.getItem('alzaeem_pro_sub_user_' + clean);
     if (raw) {
@@ -4899,6 +5154,9 @@ function switchToEmailAccount(email, name, keepCurrentIfNew = false) {
     return;
   }
   const oldKey = storageKey;
+  /* Never carry a developer session across local account boundaries. */
+  try { sessionStorage.removeItem(DEV_MODE_STORAGE_KEY); } catch (e) {}
+  try { localStorage.removeItem(DEV_MODE_STORAGE_KEY); } catch (e) {}
   if (oldKey !== ('alzaeem_pro_user_' + cleanEmail) && keepCurrentIfNew) {
     if (!isEmailAccountPro(cleanEmail) && !getEffectiveSubscription().isPro) {
       showToast('سحب أو نسخ البيانات لحساب آخر يتطلب اشتراك PRO في الحساب المستهدف');
@@ -4919,7 +5177,11 @@ function switchToEmailAccount(email, name, keepCurrentIfNew = false) {
   let existing = null;
   try { existing = localStorage.getItem(newKey); } catch (err) {}
   if (existing) {
-    try { state = ensureStateFields(JSON.parse(existing)); } catch (err) { state = createDemoState(); }
+    try { state = ensureStateFields(JSON.parse(existing)); } catch (err) {
+      try { localStorage.setItem(newKey + '_isolated_' + Date.now(), existing); } catch (saveErr) {}
+      state = createCleanInitialState();
+      showToast('بيانات الحساب تالفة؛ حُفظت النسخة الأصلية وبدأنا ببيانات فارغة');
+    }
   } else if (oldKey !== newKey && keepCurrentIfNew) {
     state = ensureStateFields(JSON.parse(JSON.stringify(state)));
   } else if (oldKey !== newKey) {
@@ -4941,7 +5203,7 @@ function renderSavedAccountsLists() {
 
   const buildHtml = () => list.map(acc => {
     const isCur = acc.email === activeEmail;
-    const isDevAcc = MASTER_DEV_EMAILS.includes(acc.email);
+    const isDevAcc = false;
     return `<div class="p-2.5 rounded-xl border flex items-center justify-between gap-2 text-xs ${isCur ? 'bg-sky-500/15 border-sky-400/80' : 'bg-white/75 border-white'}">
       <div class="min-w-0">
         <div class="flex items-center gap-1.5">
@@ -5023,6 +5285,7 @@ on('signOutForm', 'submit', e => {
   activeAccount = null;
   storageKey = STORAGE_KEY;
   try { localStorage.removeItem(ACTIVE_ACCOUNT_KEY); } catch (err) {}
+  try { sessionStorage.removeItem(DEV_MODE_STORAGE_KEY); } catch (err) {}
   try { localStorage.removeItem(DEV_MODE_STORAGE_KEY); } catch (err) {}
   state = loadState();
   populateCurrencySelects();
@@ -5074,9 +5337,53 @@ on('btnExportJson', 'click', () => {
   setTimeout(() => URL.revokeObjectURL(a.href), 1500);
   showToast('تم تصدير النسخة الاحتياطية');
 });
+function validateImportedState(data) {
+  if (!data || typeof data !== 'object' || Array.isArray(data)) return 'بنية الملف غير صحيحة';
+  const requiredArrays = ['transactions', 'debts', 'people', 'schedules', 'shopProducts', 'shopInvoices'];
+  for (const key of requiredArrays) if (data[key] !== undefined && !Array.isArray(data[key])) return `الحقل ${key} يجب أن يكون قائمة`;
+  if (!Array.isArray(data.transactions) || !Array.isArray(data.debts)) return 'ملف غير صالح: الحركات والديون غير موجودة';
+  const uniqueIds = (items, label) => {
+    const seen = new Set();
+    for (const item of items || []) {
+      if (!item || typeof item !== 'object' || Array.isArray(item)) return `${label}: سجل غير صالح`;
+      if (item.id != null) {
+        const id = String(item.id);
+        if (!id || id.length > 120 || /[<>"'`\\s]/.test(id)) return `${label}: معرّف غير صالح`;
+        if (seen.has(id)) return `${label}: يوجد معرّف مكرر`;
+        seen.add(id);
+      }
+    }
+    return '';
+  };
+  for (const [key, label] of [['people','الأشخاص'],['transactions','الحركات'],['debts','الديون'],
+    ['schedules','المواعيد'],['shopProducts','الأصناف'],['shopInvoices','الفواتير']]) {
+    const err = uniqueIds(data[key] || [], label); if (err) return err;
+  }
+  for (const t of data.transactions) {
+    if (!['income','expense'].includes(t.type)) return 'نوع حركة مالية غير صالح';
+    if (!Number.isFinite(Number(t.amount)) || Number(t.amount) <= 0) return 'يوجد مبلغ حركة غير صالح';
+    if (typeof t.date !== 'string' || !/^\d{4}-\d{2}-\d{2}$/.test(t.date)) return 'يوجد تاريخ حركة غير صالح';
+  }
+  for (const d of data.debts) {
+    if (d.direction && !['receivable','payable'].includes(d.direction)) return 'اتجاه دين غير صالح';
+    const total = Number(d.totalAmount), paid = Number(d.paidAmount || 0);
+    if (!Number.isFinite(total) || !Number.isFinite(paid) || total < 0 || paid < 0 || paid > total) return 'يوجد رصيد دين غير منطقي';
+  }
+  for (const p of data.shopProducts || []) {
+    if (!Number.isFinite(Number(p.qty)) || Number(p.qty) < 0 ||
+        !Number.isFinite(Number(p.price)) || Number(p.price) < 0 ||
+        !Number.isFinite(Number(p.cost || 0)) || Number(p.cost || 0) < 0) return 'بيانات صنف أو كمية مخزون غير صالحة';
+  }
+  for (const inv of data.shopInvoices || []) {
+    if (!Array.isArray(inv.items) || !Number.isFinite(Number(inv.netTotal)) || Number(inv.netTotal) < 0) return 'بيانات فاتورة غير صالحة';
+  }
+  return '';
+}
+
 on('inputImportJson', 'change', e => {
   const file = e.target.files[0];
   if (!file) return;
+  if (file.size > 10 * 1024 * 1024) { e.target.value = ''; showToast('حجم النسخة الاحتياطية يتجاوز الحد المسموح (10MB)'); return; }
   const sub = getEffectiveSubscription();
   const isPaidOrDev = sub.isDev || (sub.isPro && ['monthly', 'yearly'].includes(sub.planType));
   if (!isPaidOrDev) {
@@ -5089,11 +5396,14 @@ on('inputImportJson', 'change', e => {
   r.onload = ev => {
     let parsed = null;
     try { parsed = JSON.parse(ev.target.result); } catch (err) { showToast('الملف ليس JSON صالحاً'); return; }
-    if (!parsed || !Array.isArray(parsed.transactions) || !Array.isArray(parsed.debts)) { showToast('ملف غير صالح'); return; }
-    if (!confirm(`سيحل هذا الملف محل بياناتك الحالية (${parsed.transactions.length} حركة، ${parsed.debts.length} دين). متابعة؟`)) return;
+    const validationError = validateImportedState(parsed);
+    if (validationError) { showToast(`رُفض الاستيراد: ${validationError}`); return; }
+    if (!confirm(`سيحل هذا الملف محل بياناتك الحالية (${parsed.transactions.length} حركة، ${parsed.debts.length} دين). أنشئ نسخة احتياطية قبل المتابعة. هل تريد الاستمرار؟`)) return;
+    const previousState = state;
     state = ensureStateFields(parsed);
     populateCurrencySelects(); populatePeopleSelects();
-    if (saveState()) { renderAll(); showToast('تم استيراد البيانات'); }
+    if (saveState()) { renderAll(); showToast('تم استيراد البيانات والتحقق من بنيتها'); }
+    else { state = previousState; renderAll(); showToast('فشل حفظ النسخة المستوردة؛ أُعيدت البيانات السابقة'); }
   };
   r.readAsText(file);
   e.target.value = '';
@@ -5183,12 +5493,12 @@ function renderAdminMerchantForm() {
 on('adminUnlockForm', 'submit', e => {
   e.preventDefault();
   const entered = ($('adminPinInput')?.value || '').trim();
-  /* The default value is still 2002 in code, but it is no longer printed on
-     screen, and we refuse to open the panel while it is unchanged. */
-  if (getMerchantConfig().devSecretPin === '2002') {
-    showToast('غيّر رمز المطور الافتراضي أولاً من داخل اللوحة بعد الدخول');
+  const configuredPin = String(getMerchantConfig().devSecretPin || '');
+  if (configuredPin.length < 8) {
+    showToast('لوحة المطور غير مهيأة: يلزم إعداد رمز من 8 محارف على الأقل خارج نسخة العملاء');
+    return;
   }
-  if (!entered || entered !== String(getMerchantConfig().devSecretPin || '')) { showToast('رمز المطور غير صحيح'); return; }
+  if (!entered || entered !== configuredPin) { showToast('رمز المطور غير صحيح'); return; }
   activateDeveloperMode(true);
   $('adminPinGate')?.classList.add('hidden');
   $('adminControlsBody')?.classList.remove('hidden');
@@ -5258,11 +5568,13 @@ on('btnExportCustomerBuild', 'click', () => {
   const email = ($('cfgDevEmail')?.value || '').trim().toLowerCase();
   const pin = ($('cfgDevSecretPin')?.value || '').trim();
   if (email) cfg.devEmail = email;
-  if (pin.length >= 4) cfg.devSecretPin = pin;
+  if (pin.length >= 8) cfg.devSecretPin = pin;
   saveMerchantConfig(cfg);
   renderSubscriptionModalContent();
 
-  const bakedFn = `/* __BAKED_MERCHANT_CFG_START__ */\nfunction defaultMerchantConfig() {\n  return ${JSON.stringify(cfg)};\n}\n/* __BAKED_MERCHANT_CFG_END__ */`;
+  /* Customer builds carry merchant display settings only, never admin secrets. */
+  const customerCfg = { ...cfg, devEmail: '', devSecretPin: '' };
+  const bakedFn = `/* __BAKED_MERCHANT_CFG_START__ */\nfunction defaultMerchantConfig() {\n  return ${JSON.stringify(customerCfg)};\n}\n/* __BAKED_MERCHANT_CFG_END__ */`;
   const cloneDoc = document.documentElement.cloneNode(true);
   cloneDoc.querySelectorAll('#adminMerchantModal, #subscriptionModal, #smartQuickModal, #voucherModal, #sideNavBackdrop, #toast').forEach(el => {
     el.classList.add('hidden');
@@ -5388,4 +5700,4 @@ on('btnPrintPnl', 'click', () => window.print());
 </script>
 
 </body>
-          </html>
+  </html>
