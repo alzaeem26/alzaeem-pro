@@ -90,76 +90,146 @@
   .ios-btn:active { transform: scale(.975); }
   .ios-btn:disabled { opacity: .55; cursor: not-allowed; }
 
-  /* Unified modal compositor: one overlay layer, controlled translucency, stable scrolling. */
-  [id$="Modal"].fixed {
-    z-index: 1000;
-    isolation: isolate;
+  /* =========================================================
+     ALZAEEM MODAL LAYER SYSTEM
+     Each dialog is a viewport-level independent surface.
+     No backdrop-filter, transforms or nested stacking contexts.
+     ========================================================= */
+  :root {
+    --alzaeem-vv-height: 100dvh;
+    --alzaeem-vv-top: 0px;
+    --alzaeem-modal-bg: rgba(248, 250, 252, .965);
+    --alzaeem-modal-border: rgba(148, 163, 184, .24);
+    --alzaeem-overlay: rgba(15, 23, 42, .46);
+  }
+  body.dark-mode {
+    --alzaeem-modal-bg: rgba(20, 32, 51, .975);
+    --alzaeem-modal-border: rgba(148, 163, 184, .20);
+    --alzaeem-overlay: rgba(2, 6, 23, .62);
+  }
+
+  /* A modal root is fixed to the visual viewport, not to the page scroll. */
+  [id$="Modal"].alzaeem-modal-root {
+    position: fixed !important;
+    inset-inline: 0 !important;
+    top: var(--alzaeem-vv-top) !important;
+    height: var(--alzaeem-vv-height) !important;
+    min-height: 0 !important;
+    max-height: var(--alzaeem-vv-height) !important;
+    box-sizing: border-box !important;
+    z-index: var(--alzaeem-layer, 1100) !important;
+    display: none;
+    align-items: flex-start !important;
+    justify-content: center !important;
+    overflow-x: hidden !important;
+    overflow-y: auto !important;
     overscroll-behavior: contain;
     -webkit-overflow-scrolling: touch;
-    padding-top: max(12px, env(safe-area-inset-top));
-    padding-right: max(12px, env(safe-area-inset-right));
-    padding-bottom: max(12px, env(safe-area-inset-bottom));
-    padding-left: max(12px, env(safe-area-inset-left));
-    background-color: rgba(15, 23, 42, .40) !important;
-    -webkit-backdrop-filter: blur(2px);
-    backdrop-filter: blur(2px);
-    opacity: 1;
-    transition: opacity .14s ease-out;
-  }
-  [id$="Modal"].modal-preparing { visibility: hidden !important; }
-  [id$="Modal"].modal-entering { opacity: 0; }
-  [id$="Modal"].modal-entering.modal-visible { opacity: 1; }
-  .ios-modal {
-    background: rgba(250, 252, 255, .94) !important;
-    border: 1px solid rgba(255,255,255,.72);
-    -webkit-backdrop-filter: blur(3px) saturate(112%);
-    backdrop-filter: blur(3px) saturate(112%);
-    box-shadow: 0 22px 56px -26px rgba(2,8,23,.38), 0 1px 0 rgba(255,255,255,.65) inset;
-    border-radius: 1.45rem;
+    touch-action: pan-y pinch-zoom;
+    padding:
+      max(12px, env(safe-area-inset-top))
+      max(10px, env(safe-area-inset-right))
+      max(12px, env(safe-area-inset-bottom))
+      max(10px, env(safe-area-inset-left)) !important;
+    background: var(--alzaeem-overlay) !important;
+    -webkit-backdrop-filter: none !important;
+    backdrop-filter: none !important;
+    opacity: 1 !important;
+    visibility: visible;
+    transition: none !important;
+    animation: none !important;
     isolation: isolate;
+    contain: layout paint;
+  }
+  [id$="Modal"].alzaeem-modal-root.flex:not(.hidden) { display: flex !important; }
+  [id$="Modal"].alzaeem-modal-root.hidden { display: none !important; }
+
+  /* Dialog panels scroll internally; the overlay remains stationary. */
+  [id$="Modal"].alzaeem-modal-root > .ios-modal,
+  [id$="Modal"].alzaeem-modal-root > div:not(.pointer-events-none) {
+    box-sizing: border-box;
+    flex: 0 0 auto;
     width: min(100%, 42rem);
-    max-height: calc(100dvh - max(24px, env(safe-area-inset-top)) - max(24px, env(safe-area-inset-bottom)));
+    max-width: min(100%, 42rem);
+    max-height: calc(var(--alzaeem-vv-height) - max(24px, env(safe-area-inset-top)) - max(24px, env(safe-area-inset-bottom)));
+    margin-block: auto;
     overflow-x: hidden;
     overflow-y: auto;
     overscroll-behavior: contain;
     -webkit-overflow-scrolling: touch;
-    scrollbar-gutter: stable;
+    touch-action: pan-y pinch-zoom;
+    scrollbar-width: thin;
+    background: var(--alzaeem-modal-bg) !important;
+    border: 1px solid var(--alzaeem-modal-border) !important;
+    border-radius: 1.35rem;
+    box-shadow: 0 18px 48px -22px rgba(2, 8, 23, .42), 0 1px 0 rgba(255,255,255,.55) inset;
+    -webkit-backdrop-filter: none !important;
+    backdrop-filter: none !important;
     transform: none !important;
     animation: none !important;
+    opacity: 1 !important;
+    contain: layout paint;
   }
-  body.dark-mode .ios-modal {
-    background: rgba(20, 32, 51, .95) !important;
-    border-color: rgba(148,163,184,.22);
-    box-shadow: 0 22px 56px -26px rgba(0,0,0,.62), 0 1px 0 rgba(255,255,255,.05) inset;
+  body.dark-mode [id$="Modal"].alzaeem-modal-root > .ios-modal,
+  body.dark-mode [id$="Modal"].alzaeem-modal-root > div:not(.pointer-events-none) {
+    background: var(--alzaeem-modal-bg) !important;
+    border-color: var(--alzaeem-modal-border) !important;
+    box-shadow: 0 18px 48px -22px rgba(0,0,0,.62);
   }
-  [id$="Modal"].flex:not(.hidden) { display: flex !important; }
-  [id$="Modal"] > .ios-modal { flex: 0 1 auto; margin-block: auto; }
-  #subscriptionModal { align-items: flex-start !important; }
-  #subscriptionModal > .ios-modal {
-    max-height: calc(100dvh - max(24px, env(safe-area-inset-top)) - max(24px, env(safe-area-inset-bottom)));
+
+  /* Subscription plans have their own scroll area and never move the page behind. */
+  #subscriptionModal.alzaeem-modal-root { align-items: flex-start !important; }
+  #subscriptionModal.alzaeem-modal-root > .ios-modal {
     margin-block: 0;
+    max-height: calc(var(--alzaeem-vv-height) - max(24px, env(safe-area-inset-top)) - max(24px, env(safe-area-inset-bottom)));
     overscroll-behavior: contain;
     touch-action: pan-y;
   }
-  .ios-card { background-color: rgba(255,255,255,.94); }
-  body.dark-mode .ios-card { background-color: rgba(20,31,49,.95); }
-  @media (max-width: 640px) {
-    [id$="Modal"].fixed {
-      align-items: center;
-      padding: max(8px, env(safe-area-inset-top)) 8px max(8px, env(safe-area-inset-bottom));
-    }
-    .ios-modal {
-      max-height: calc(100dvh - max(16px, env(safe-area-inset-top)) - max(16px, env(safe-area-inset-bottom)));
-      border-radius: 1.2rem;
-      padding-bottom: max(1rem, env(safe-area-inset-bottom));
-    }
-    #subscriptionModal { align-items: flex-start !important; }
+
+  /* Quick-entry and transaction forms fit above the keyboard. */
+  #smartQuickModal.alzaeem-modal-root,
+  #txModal.alzaeem-modal-root,
+  #debtModal.alzaeem-modal-root {
+    align-items: flex-start !important;
   }
-  @supports not (height: 100dvh) {
-    .ios-modal { max-height: calc(100vh - 32px); }
-    #subscriptionModal > .ios-modal { max-height: calc(100vh - 32px); }
+  #smartQuickModal.alzaeem-modal-root > .ios-modal,
+  #txModal.alzaeem-modal-root > .ios-modal,
+  #debtModal.alzaeem-modal-root > .ios-modal {
+    margin-block: auto;
   }
 
+  /* No animated borders or compositing transitions on refresh. */
+  body.modal-open { overflow: hidden !important; overscroll-behavior: none; }
+  body.modal-open > header,
+  body.modal-open > main { user-select: none; }
+  body.modal-open #fabAddTx { pointer-events: auto !important; }
+
+  /* Home action stays reachable and can dismiss the active layer stack. */
+  #fabAddTx { position: relative; z-index: 3005 !important; pointer-events: auto; }
+  body.modal-open #fabAddTx {
+    pointer-events: auto !important;
+    position: fixed !important;
+    right: max(14px, env(safe-area-inset-right));
+    bottom: max(18px, env(safe-area-inset-bottom));
+    z-index: 3005 !important;
+  }
+  @media (max-width: 640px) {
+    [id$="Modal"].alzaeem-modal-root {
+      padding:
+        max(8px, env(safe-area-inset-top))
+        8px
+        max(8px, env(safe-area-inset-bottom))
+        8px !important;
+    }
+    [id$="Modal"].alzaeem-modal-root > .ios-modal,
+    [id$="Modal"].alzaeem-modal-root > div:not(.pointer-events-none) {
+      max-height: calc(var(--alzaeem-vv-height) - max(16px, env(safe-area-inset-top)) - max(16px, env(safe-area-inset-bottom)));
+      border-radius: 1.15rem;
+    }
+  }
+  @supports not (height: 100dvh) {
+    :root { --alzaeem-vv-height: 100vh; }
+  }
 
   .glass-header {
     background: var(--card);
@@ -2160,40 +2230,60 @@ function showToast(msg) {
   clearTimeout(el._t);
   el._t = setTimeout(() => el.classList.add('hidden'), 3200);
 }
-let modalLayerSequence = 1000;
+/* One central modal layer manager. Every modal is a direct child of body,
+   so page transforms, scroll containers and tab sections cannot capture it. */
+let modalLayerSequence = 1100;
+function prepareModalLayerRoots() {
+  document.querySelectorAll('[id$="Modal"].fixed').forEach(el => {
+    if (el.parentElement !== document.body) document.body.appendChild(el);
+    el.classList.add('alzaeem-modal-root');
+    el.setAttribute('aria-hidden', el.classList.contains('hidden') ? 'true' : 'false');
+    el.style.setProperty('--alzaeem-layer', '1100');
+  });
+}
+function refreshModalViewport() {
+  const vv = window.visualViewport;
+  const height = Math.max(240, Math.round(vv?.height || window.innerHeight || document.documentElement.clientHeight));
+  const top = Math.max(0, Math.round(vv?.offsetTop || 0));
+  document.documentElement.style.setProperty('--alzaeem-vv-height', `${height}px`);
+  document.documentElement.style.setProperty('--alzaeem-vv-top', `${top}px`);
+}
+function syncModalBodyLock() {
+  const open = !!document.querySelector('[id$="Modal"].alzaeem-modal-root.flex:not(.hidden)');
+  document.body.classList.toggle('modal-open', open);
+  if (!open) document.body.classList.remove('quick-entry-open');
+}
 function openModal(id) {
   const el = $(id);
   if (!el) { console.warn('[missing modal]', id); return; }
-
-  // Bring the requested modal above every currently open modal without
-  // moving it in the DOM (which could break form references and event wiring).
-  modalLayerSequence += 2;
-  el.style.zIndex = String(modalLayerSequence);
-  el.classList.add('modal-preparing', 'modal-entering');
+  prepareModalLayerRoots();
+  refreshModalViewport();
+  modalLayerSequence = Math.max(modalLayerSequence + 2, 1100);
+  el.style.setProperty('--alzaeem-layer', String(modalLayerSequence));
   el.classList.remove('hidden');
   el.classList.add('flex');
   el.setAttribute('aria-hidden', 'false');
-  document.body.classList.add('modal-open');
-
-  // Reveal only after layout has settled, avoiding the one-frame layer flash.
-  requestAnimationFrame(() => {
-    requestAnimationFrame(() => {
-      if (!el.isConnected || el.classList.contains('hidden')) return;
-      el.classList.remove('modal-preparing');
-      el.classList.add('modal-visible');
-      el.querySelector('.ios-modal')?.scrollTo({ top: 0, behavior: 'instant' });
-    });
-  });
+  syncModalBodyLock();
+  const panel = el.querySelector('.ios-modal') || el.firstElementChild;
+  if (panel) panel.scrollTop = 0;
 }
 function closeModal(id) {
   const el = $(id);
   if (!el) return;
   el.classList.add('hidden');
-  el.classList.remove('flex', 'modal-preparing', 'modal-entering', 'modal-visible');
+  el.classList.remove('flex');
   el.setAttribute('aria-hidden', 'true');
   if (id === 'smartQuickModal') document.body.classList.remove('quick-entry-open');
-  const anyOpen = document.querySelector('[id$="Modal"].flex:not(.hidden)');
-  if (!anyOpen) document.body.classList.remove('modal-open');
+  syncModalBodyLock();
+}
+function closeAllModals() {
+  document.querySelectorAll('[id$="Modal"].alzaeem-modal-root').forEach(el => {
+    el.classList.add('hidden');
+    el.classList.remove('flex');
+    el.setAttribute('aria-hidden', 'true');
+  });
+  document.body.classList.remove('modal-open', 'quick-entry-open');
+  toggleSideNavDrawer(false);
 }
 /* One delegated listener closes every modal — no per-button onclick. */
 document.addEventListener('click', e => {
@@ -2245,9 +2335,11 @@ on('btnToggleDrawer', 'click', () => toggleSideNavDrawer());
 on('btnCloseDrawer', 'click', () => toggleSideNavDrawer(false));
 on('sideNavBackdrop', 'click', () => toggleSideNavDrawer(false));
 document.addEventListener('keydown', event => {
-  if (event.key === 'Escape' && !$('sideNavDrawer')?.classList.contains('translate-x-full')) {
-    toggleSideNavDrawer(false);
-  }
+  if (event.key !== 'Escape') return;
+  const opened = [...document.querySelectorAll('[id$="Modal"].alzaeem-modal-root.flex:not(.hidden)')]
+    .sort((a,b) => Number(b.style.getPropertyValue('--alzaeem-layer') || 0) - Number(a.style.getPropertyValue('--alzaeem-layer') || 0));
+  if (opened.length) closeModal(opened[0].id);
+  else if (!$('sideNavDrawer')?.classList.contains('translate-x-full')) toggleSideNavDrawer(false);
 });
 
 /* ==================== THEME ==================== */
@@ -3617,16 +3709,19 @@ document.querySelectorAll('.plan-pick-btn').forEach(b => b.addEventListener('cli
 }));
 on('btnAddIncome', 'click', () => openTxModal('income'));
 on('btnAddExpense', 'click', () => openTxModal('expense'));
-on('fabAddTx', 'click', () => switchTab('dashboard'));
+on('fabAddTx', 'click', () => {
+  closeAllModals();
+  switchTab('dashboard');
+});
 function syncMobileVisualViewport() {
-  const vv = window.visualViewport;
-  const h = vv?.height || window.innerHeight || document.documentElement.clientHeight;
-  document.documentElement.style.setProperty('--alzaeem-vv-height', `${Math.round(h)}px`);
+  refreshModalViewport();
 }
+prepareModalLayerRoots();
 syncMobileVisualViewport();
 window.visualViewport?.addEventListener('resize', syncMobileVisualViewport, { passive: true });
 window.visualViewport?.addEventListener('scroll', syncMobileVisualViewport, { passive: true });
 window.addEventListener('resize', syncMobileVisualViewport, { passive: true });
+window.addEventListener('orientationchange', syncMobileVisualViewport, { passive: true });
 
 on('btnFabQuickEntry', 'click', () => {
   syncMobileVisualViewport();
@@ -5842,4 +5937,4 @@ on('btnPrintPnl', 'click', () => window.print());
 </script>
 
 </body>
-          </html>
+  </html>
